@@ -8,9 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Building2, Lock, CheckCircle } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const CompanyProfile = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
 
@@ -34,7 +37,7 @@ const CompanyProfile = () => {
 
   const validateStep1 = () => {
     if (!companyName || !street || !zip || !city || !country || !sector || !companySize) {
-      toast.error("Please fill in all required fields");
+      toast.error(t.validation.required);
       return false;
     }
     return true;
@@ -42,19 +45,19 @@ const CompanyProfile = () => {
 
   const validateStep2 = () => {
     if (!masterCode || !masterCodeConfirm || !deleteCode || !deleteCodeConfirm) {
-      toast.error("Please fill in all code fields");
+      toast.error(t.validation.required);
       return false;
     }
     if (masterCode !== masterCodeConfirm) {
-      toast.error("Master codes don't match");
+      toast.error(t.validation.masterCodeMismatch);
       return false;
     }
     if (deleteCode !== deleteCodeConfirm) {
-      toast.error("Delete codes don't match");
+      toast.error(t.validation.deleteCodeMismatch);
       return false;
     }
     if (masterCode.length < 8 || deleteCode.length < 8) {
-      toast.error("Codes must be at least 8 characters long");
+      toast.error(t.validation.codeLength);
       return false;
     }
     return true;
@@ -115,6 +118,9 @@ const CompanyProfile = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <Card className="w-full max-w-3xl shadow-glow">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -123,14 +129,14 @@ const CompanyProfile = () => {
             {step === 3 && <CheckCircle className="h-12 w-12 text-primary" />}
           </div>
           <CardTitle className="text-2xl">
-            {step === 1 && "Company Information"}
-            {step === 2 && "Security Codes"}
-            {step === 3 && "Review & Submit"}
+            {step === 1 && t.onboarding.title}
+            {step === 2 && t.onboarding.securityCodes}
+            {step === 3 && t.onboarding.reviewTitle}
           </CardTitle>
           <CardDescription>
-            {step === 1 && "Tell us about your company"}
-            {step === 2 && "Set up secure access codes for company management"}
-            {step === 3 && "Review your information before submitting"}
+            {step === 1 && t.onboarding.subtitle}
+            {step === 2 && t.onboarding.securitySubtitle}
+            {step === 3 && t.onboarding.reviewSubtitle}
           </CardDescription>
           <div className="flex justify-center gap-2 mt-4">
             <div className={`h-2 w-16 rounded ${step >= 1 ? 'bg-primary' : 'bg-muted'}`} />
@@ -143,7 +149,7 @@ const CompanyProfile = () => {
           {step === 1 && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="company-name">Company Name *</Label>
+                <Label htmlFor="company-name">{t.onboarding.companyName} *</Label>
                 <Input
                   id="company-name"
                   value={companyName}
@@ -154,7 +160,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="legal-name">Legal Name (Optional)</Label>
+                <Label htmlFor="legal-name">{t.onboarding.legalName}</Label>
                 <Input
                   id="legal-name"
                   value={legalName}
@@ -164,7 +170,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="street">Street Address *</Label>
+                <Label htmlFor="street">{t.onboarding.street} *</Label>
                 <Input
                   id="street"
                   value={street}
@@ -176,7 +182,7 @@ const CompanyProfile = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="zip">ZIP Code *</Label>
+                  <Label htmlFor="zip">{t.onboarding.zip} *</Label>
                   <Input
                     id="zip"
                     value={zip}
@@ -186,7 +192,7 @@ const CompanyProfile = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="city">City *</Label>
+                  <Label htmlFor="city">{t.onboarding.city} *</Label>
                   <Input
                     id="city"
                     value={city}
@@ -198,7 +204,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="country">Country *</Label>
+                <Label htmlFor="country">{t.onboarding.country} *</Label>
                 <Input
                   id="country"
                   value={country}
@@ -210,41 +216,41 @@ const CompanyProfile = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sector">Sector *</Label>
+                  <Label htmlFor="sector">{t.onboarding.sector} *</Label>
                   <Select value={sector} onValueChange={setSector} required>
                     <SelectTrigger id="sector">
                       <SelectValue placeholder="Select sector" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="technology">Technology</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="healthcare">Healthcare</SelectItem>
-                      <SelectItem value="energy">Energy</SelectItem>
-                      <SelectItem value="transport">Transport</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="technology">{t.sectors.technology}</SelectItem>
+                      <SelectItem value="finance">{t.sectors.finance}</SelectItem>
+                      <SelectItem value="healthcare">{t.sectors.healthcare}</SelectItem>
+                      <SelectItem value="energy">{t.sectors.energy}</SelectItem>
+                      <SelectItem value="transport">{t.sectors.transport}</SelectItem>
+                      <SelectItem value="other">{t.sectors.other}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="company-size">Company Size *</Label>
+                  <Label htmlFor="company-size">{t.onboarding.companySize} *</Label>
                   <Select value={companySize} onValueChange={setCompanySize} required>
                     <SelectTrigger id="company-size">
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1-10">1-10 employees</SelectItem>
-                      <SelectItem value="11-50">11-50 employees</SelectItem>
-                      <SelectItem value="51-200">51-200 employees</SelectItem>
-                      <SelectItem value="201-500">201-500 employees</SelectItem>
-                      <SelectItem value="501+">501+ employees</SelectItem>
+                      <SelectItem value="1-10">{t.companySize["1-10"]}</SelectItem>
+                      <SelectItem value="11-50">{t.companySize["11-50"]}</SelectItem>
+                      <SelectItem value="51-200">{t.companySize["51-200"]}</SelectItem>
+                      <SelectItem value="201-500">{t.companySize["201-500"]}</SelectItem>
+                      <SelectItem value="501+">{t.companySize["501+"]}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="website">Website (Optional)</Label>
+                <Label htmlFor="website">{t.onboarding.website}</Label>
                 <Input
                   id="website"
                   type="url"
@@ -255,7 +261,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="vat-id">VAT ID (Optional)</Label>
+                <Label htmlFor="vat-id">{t.onboarding.vatId}</Label>
                 <Input
                   id="vat-id"
                   value={vatId}
@@ -265,7 +271,7 @@ const CompanyProfile = () => {
               </div>
 
               <Button type="button" className="w-full" onClick={handleNext}>
-                Next
+                {t.onboarding.next}
               </Button>
             </div>
           )}
@@ -273,16 +279,16 @@ const CompanyProfile = () => {
           {step === 2 && (
             <div className="space-y-6">
               <div className="bg-muted/50 p-4 rounded-lg space-y-2">
-                <p className="text-sm font-medium">Why are security codes important?</p>
+                <p className="text-sm font-medium">{t.onboarding.securityNote}</p>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li><strong>Master Code:</strong> Used to invite/remove users and manage company settings</li>
-                  <li><strong>Delete Code:</strong> Emergency code for complete company data reset</li>
-                  <li>Keep these codes secure - they grant full access to your company data</li>
+                  <li><strong>{t.onboarding.masterCode}:</strong> {t.onboarding.masterCodeDesc}</li>
+                  <li><strong>{t.onboarding.deleteCode}:</strong> {t.onboarding.deleteCodeDesc}</li>
+                  <li>{t.onboarding.securityWarning}</li>
                 </ul>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="master-code">Master Code *</Label>
+                <Label htmlFor="master-code">{t.onboarding.masterCode} *</Label>
                 <Input
                   id="master-code"
                   type="password"
@@ -294,7 +300,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="master-code-confirm">Confirm Master Code *</Label>
+                <Label htmlFor="master-code-confirm">{t.onboarding.masterCodeConfirm} *</Label>
                 <Input
                   id="master-code-confirm"
                   type="password"
@@ -306,7 +312,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="delete-code">Delete Code *</Label>
+                <Label htmlFor="delete-code">{t.onboarding.deleteCode} *</Label>
                 <Input
                   id="delete-code"
                   type="password"
@@ -318,7 +324,7 @@ const CompanyProfile = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="delete-code-confirm">Confirm Delete Code *</Label>
+                <Label htmlFor="delete-code-confirm">{t.onboarding.deleteCodeConfirm} *</Label>
                 <Input
                   id="delete-code-confirm"
                   type="password"
@@ -331,10 +337,10 @@ const CompanyProfile = () => {
 
               <div className="flex gap-3">
                 <Button type="button" variant="outline" onClick={handleBack} className="flex-1">
-                  Back
+                  {t.onboarding.back}
                 </Button>
                 <Button type="button" onClick={() => validateStep2() && setStep(3)} className="flex-1">
-                  Review
+                  {t.onboarding.review}
                 </Button>
               </div>
             </div>
@@ -344,23 +350,23 @@ const CompanyProfile = () => {
             <div className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-medium mb-2">Company Information</h3>
+                  <h3 className="font-medium mb-2">{t.onboarding.title}</h3>
                   <div className="bg-muted/50 p-4 rounded-lg space-y-1 text-sm">
-                    <p><strong>Name:</strong> {companyName}</p>
-                    {legalName && <p><strong>Legal Name:</strong> {legalName}</p>}
-                    <p><strong>Address:</strong> {street}, {zip} {city}, {country}</p>
-                    <p><strong>Sector:</strong> {sector}</p>
-                    <p><strong>Company Size:</strong> {companySize}</p>
-                    {website && <p><strong>Website:</strong> {website}</p>}
-                    {vatId && <p><strong>VAT ID:</strong> {vatId}</p>}
+                    <p><strong>{t.onboarding.companyName}:</strong> {companyName}</p>
+                    {legalName && <p><strong>{t.onboarding.legalName}:</strong> {legalName}</p>}
+                    <p><strong>{t.onboarding.street}:</strong> {street}, {zip} {city}, {country}</p>
+                    <p><strong>{t.onboarding.sector}:</strong> {t.sectors[sector as keyof typeof t.sectors]}</p>
+                    <p><strong>{t.onboarding.companySize}:</strong> {t.companySize[companySize as keyof typeof t.companySize]}</p>
+                    {website && <p><strong>{t.onboarding.website}:</strong> {website}</p>}
+                    {vatId && <p><strong>{t.onboarding.vatId}:</strong> {vatId}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-medium mb-2">Security</h3>
+                  <h3 className="font-medium mb-2">{t.onboarding.securityCodes}</h3>
                   <div className="bg-muted/50 p-4 rounded-lg space-y-1 text-sm">
-                    <p>✓ Master Code configured</p>
-                    <p>✓ Delete Code configured</p>
+                    <p>✓ {t.onboarding.masterCode} configured</p>
+                    <p>✓ {t.onboarding.deleteCode} configured</p>
                     <p className="text-muted-foreground text-xs mt-2">
                       Codes are securely hashed and stored
                     </p>
@@ -370,10 +376,10 @@ const CompanyProfile = () => {
 
               <div className="flex gap-3">
                 <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={loading}>
-                  Back
+                  {t.onboarding.back}
                 </Button>
                 <Button type="button" onClick={handleSubmit} className="flex-1" disabled={loading}>
-                  {loading ? "Creating..." : "Create Company"}
+                  {loading ? t.onboarding.submitting : t.onboarding.submit}
                 </Button>
               </div>
             </div>

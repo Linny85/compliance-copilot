@@ -71,3 +71,15 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Internationalization (i18n)
+
+This app supports English (EN) and German (DE).
+
+### Adding New Translation Keys
+
+1. Open `src/lib/i18n.ts`
+2. Add your key to both `en` and `de` objects
+3. Use in components: `const { t } = useI18n(); return <p>{t.yourKey}</p>`
+
+Language persistence: User profile for authenticated users, localStorage for guests, browser detection as fallback.
