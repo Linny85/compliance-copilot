@@ -130,10 +130,10 @@ const CompanyProfile = () => {
 
       toast.success("Company profile created successfully!");
       
-      // Navigate to dashboard after brief delay to allow toast to show
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true });
-      }, 1000);
+      // ⏳ 800ms delay to ensure claims, RLS policies, and subscription triggers are fully active
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      navigate('/dashboard', { replace: true });
 
     } catch (error: any) {
       console.error("Onboarding error:", error);
