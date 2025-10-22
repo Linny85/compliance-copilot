@@ -146,8 +146,6 @@ const CompanyProfile = () => {
   };
 
   const handleSectorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
     const v = (e.currentTarget.value || '').trim();
     if (process.env.NODE_ENV !== 'production') {
       console.debug('[company-profile] sector.change', v);
@@ -156,8 +154,6 @@ const CompanyProfile = () => {
   };
 
   const handleCompanySizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
     const v = (e.currentTarget.value || '').trim();
     if (process.env.NODE_ENV !== 'production') {
       console.debug('[company-profile] companySize.change', v);
