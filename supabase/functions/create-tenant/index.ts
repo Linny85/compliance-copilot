@@ -341,11 +341,43 @@ Deno.serve(async (req) => {
       } else {
         tenantLog.info('Audit log created');
       }
-    } catch (txError) {
+    } catch (txError: any) {
       userLog.error('Transaction failed, rolling back', { 
-        error: txError instanceof Error ? txError.message : String(txError) 
+        error: txError instanceof Error ? txError.message : String(txError),
+        code: txError?.code,
+        details: txError?.details,
       });
-      throw txError;
+      
+      // Determine appropriate status code based on error type
+      const errorMsg = String(txError?.message || txError || '');
+      const errorCode = txError?.code || '';
+      
+      let status = 500;
+      let errorResponse = { error: 'Transaction failed', detail: errorMsg };
+      
+      // RLS/Policy violations
+      if (/policy|rls|not allowed|permission denied/i.test(errorMsg) || errorCode === '42501') {
+        status = 403;
+        errorResponse = { error: 'Permission denied', detail: 'RLS policy violation or insufficient permissions' };
+      }
+      // Constraint violations (duplicate, foreign key, etc.)
+      else if (/duplicate|constraint|unique|foreign key/i.test(errorMsg) || errorCode.startsWith('23')) {
+        status = 409;
+        errorResponse = { error: 'Conflict', detail: 'A record with this data already exists or violates constraints' };
+      }
+      // Invalid data
+      else if (/invalid|check|type|value/i.test(errorMsg) || errorCode === '22P02') {
+        status = 400;
+        errorResponse = { error: 'Invalid data', detail: errorMsg };
+      }
+      
+      userLog.error('Transaction error classified', { status, errorCode });
+      endTimer('onboarding_failed');
+      
+      return new Response(
+        JSON.stringify(errorResponse),
+        { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const duration = endTimer('onboarding_complete');
@@ -356,17 +388,40 @@ Deno.serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error) {
+  } catch (error: any) {
     log.error('Onboarding failed with exception', { 
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
+      code: error?.code,
     });
     endTimer('onboarding_failed');
     
-    const errorMessage = error instanceof Error ? error.message : 'Internal server error';
+    // Classify top-level errors
+    const errorMsg = String(error?.message || error || 'Internal server error');
+    const errorCode = error?.code || '';
+    
+    let status = 500;
+    let errorResponse = { error: 'Internal server error', detail: errorMsg };
+    
+    // Authentication errors
+    if (/unauthorized|auth|token/i.test(errorMsg) || errorCode === 'PGRST301') {
+      status = 401;
+      errorResponse = { error: 'Unauthorized', detail: 'Authentication failed or token invalid' };
+    }
+    // RLS/Policy violations
+    else if (/policy|rls|not allowed|permission denied/i.test(errorMsg) || errorCode === '42501') {
+      status = 403;
+      errorResponse = { error: 'Permission denied', detail: 'Insufficient permissions' };
+    }
+    // Validation errors
+    else if (/invalid|validation|required/i.test(errorMsg)) {
+      status = 400;
+      errorResponse = { error: 'Invalid input', detail: errorMsg };
+    }
+    
     return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify(errorResponse),
+      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

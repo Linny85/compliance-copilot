@@ -123,6 +123,7 @@ const CompanyProfile = () => {
 
     setLoading(true);
     setError(null);
+    setDiag(null); // Clear previous diagnostics
 
     try {
       // 🔍 DIAGNOSE: Pre-fetch probe
@@ -163,9 +164,53 @@ const CompanyProfile = () => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        // Extract detailed error information from backend response
+        const errorData = (error as any);
+        const errorMsg = errorData?.message || errorData?.error || error?.toString() || "Failed to create company profile";
+        const errorDetail = (data as any)?.detail || (data as any)?.error || '';
+        
+        const fullMsg = errorDetail ? `${errorMsg}: ${errorDetail}` : errorMsg;
+        
+        console.error('[CompanyProfile] Backend error:', { 
+          error: errorMsg, 
+          detail: errorDetail,
+          status: errorData?.status,
+          data 
+        });
+        
+        // Set diagnostic banner with error details
+        const lastAction = (window as any).__lastAction;
+        setDiag({
+          msg: fullMsg,
+          stack: errorData?.stack,
+          lastAction
+        });
+        
+        setError(fullMsg);
+        toast.error(fullMsg);
+        return; // Don't navigate on error
+      }
 
-      toast.success("Company profile created successfully!");
+      // Check for error in response data
+      if (data && typeof data === 'object' && 'error' in data) {
+        const dataError = data as { error: string; detail?: string };
+        const fullMsg = dataError.detail ? `${dataError.error}: ${dataError.detail}` : dataError.error;
+        
+        console.error('[CompanyProfile] Response error:', dataError);
+        
+        const lastAction = (window as any).__lastAction;
+        setDiag({
+          msg: fullMsg,
+          lastAction
+        });
+        
+        setError(fullMsg);
+        toast.error(fullMsg);
+        return; // Don't navigate on error
+      }
+
+      toast.success(t.common.success);
       
       // ⏳ 800ms delay to ensure claims, RLS policies, and subscription triggers are fully active
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -173,15 +218,18 @@ const CompanyProfile = () => {
       navigate('/dashboard', { replace: true });
 
     } catch (error: any) {
-      console.error("Onboarding error:", error);
+      console.error("[CompanyProfile] Exception:", error);
       const errorMsg = error.message || "Failed to create company profile";
-      setError(errorMsg);
-      toast.error(errorMsg);
+      const errorDetail = error?.details || error?.detail || '';
+      const fullMsg = errorDetail ? `${errorMsg}: ${errorDetail}` : errorMsg;
+      
+      setError(fullMsg);
+      toast.error(fullMsg);
       
       // 🔍 DIAGNOSE: Capture error for banner
       const lastAction = (window as any).__lastAction;
       setDiag({
-        msg: errorMsg,
+        msg: fullMsg,
         stack: error.stack,
         lastAction
       });
