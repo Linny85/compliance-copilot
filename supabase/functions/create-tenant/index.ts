@@ -187,10 +187,10 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingProfile?.company_id) {
-      userLog.warn('User already has a company', { companyId: existingProfile.company_id });
+      userLog.info('User already has a company - returning existing', { companyId: existingProfile.company_id });
       return new Response(
-        JSON.stringify({ error: 'User already has a company' }),
-        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ tenantId: existingProfile.company_id, existed: true }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -273,6 +273,41 @@ Deno.serve(async (req) => {
 
       if (companyError) {
         userLog.error('Company creation failed', { error: companyError.message, code: companyError.code });
+        
+        // Idempotenz: Bei Duplicate-Key auf master_code_hash → prüfen ob eigene Firma
+        if (companyError.code === '23505' && String(companyError.message || '').includes('master_code')) {
+          userLog.info('Duplicate master_code detected - checking if user owns this company');
+          const { data: ownCompany } = await supabaseAdmin
+            .from('companies')
+            .select('id')
+            .eq('master_code_hash', masterCodeHash)
+            .maybeSingle();
+          
+          if (ownCompany?.id) {
+            // Prüfen ob diese Firma dem User gehört (via user_roles oder created_by)
+            const { data: role } = await supabaseAdmin
+              .from('user_roles')
+              .select('company_id')
+              .eq('user_id', user.id)
+              .eq('company_id', ownCompany.id)
+              .maybeSingle();
+            
+            if (role) {
+              userLog.info('Company with this master_code already belongs to user - idempotent success');
+              return new Response(
+                JSON.stringify({ tenantId: ownCompany.id, existed: true }),
+                { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+              );
+            } else {
+              userLog.error('Master code already in use by another company');
+              return new Response(
+                JSON.stringify({ error: 'Master code already in use', detail: 'This master code is already registered to another company' }),
+                { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+              );
+            }
+          }
+        }
+        
         throw companyError;
       }
 
@@ -384,7 +419,7 @@ Deno.serve(async (req) => {
     tenantLog.info('Onboarding completed successfully', { durationMs: duration.ms });
 
     return new Response(
-      JSON.stringify({ tenantId: newCompany.id }),
+      JSON.stringify({ tenantId: newCompany.id, existed: false }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
