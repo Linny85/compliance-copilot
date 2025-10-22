@@ -11,9 +11,18 @@ import { Building2, Lock, CheckCircle } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
+export const sectorOptions = [
+  { value: 'it', label: { de: 'IT / Software', en: 'IT / Software', sv: 'IT / mjukvara' } },
+  { value: 'finance', label: { de: 'Finanzen', en: 'Finance', sv: 'Finans' } },
+  { value: 'health', label: { de: 'Gesundheit', en: 'Healthcare', sv: 'Hälso- och sjukvård' } },
+  { value: 'manufacturing', label: { de: 'Industrie', en: 'Manufacturing', sv: 'Tillverkning' } },
+  { value: 'public', label: { de: 'Öffentlicher Sektor', en: 'Public Sector', sv: 'Offentlig sektor' } },
+  { value: 'other', label: { de: 'Sonstiges', en: 'Other', sv: 'Annat' } },
+] as const;
+
 const CompanyProfile = () => {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
 
@@ -149,11 +158,14 @@ const CompanyProfile = () => {
     }
   };
 
-  const handleSectorChange = (value: string) => {
+  const handleSectorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const v = (e.currentTarget.value || '').trim();
     if (process.env.NODE_ENV !== 'production') {
-      console.debug('[company-profile] sector.change', value);
+      console.debug('[company-profile] sector.change', v);
     }
-    setSector(value);
+    if (v) setSector(v);
   };
 
   const handleCompanySizeChange = (value: string) => {
@@ -289,19 +301,22 @@ const CompanyProfile = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="sector">{t.onboarding.sector} *</Label>
-                    <Select value={sector} onValueChange={handleSectorChange} required>
-                      <SelectTrigger id="sector">
-                        <SelectValue placeholder="Select sector" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="technology">{t.sectors.technology}</SelectItem>
-                        <SelectItem value="finance">{t.sectors.finance}</SelectItem>
-                        <SelectItem value="healthcare">{t.sectors.healthcare}</SelectItem>
-                        <SelectItem value="energy">{t.sectors.energy}</SelectItem>
-                        <SelectItem value="transport">{t.sectors.transport}</SelectItem>
-                        <SelectItem value="other">{t.sectors.other}</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      id="sector"
+                      name="sector"
+                      autoComplete="off"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      value={sector ?? ''}
+                      onChange={handleSectorChange}
+                      required
+                    >
+                      <option value="" disabled>— {t.onboarding.sector} —</option>
+                      {sectorOptions.map(o => (
+                        <option key={o.value} value={o.value}>
+                          {o.label[language]}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="space-y-2">
