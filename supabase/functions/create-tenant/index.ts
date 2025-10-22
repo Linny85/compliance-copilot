@@ -181,7 +181,7 @@ Deno.serve(async (req) => {
     // Idempotency check: Does user already have a company?
     userLog.info('Checking for existing company by erstellt_von');
     const { data: existingCompany } = await supabaseAdmin
-      .from('unternehmen')
+      .from('Unternehmen')
       .select('id')
       .eq('erstellt_von', user.id)
       .maybeSingle();
@@ -252,7 +252,7 @@ Deno.serve(async (req) => {
       // Create company (using admin client to bypass RLS)
       userLog.info('Creating company');
       const { data: companyData, error: companyError } = await supabaseAdmin
-        .from('unternehmen')
+        .from('Unternehmen')
         .insert({
           name: company.name.trim(),
           legal_name: company.legalName?.trim(),
@@ -283,7 +283,7 @@ Deno.serve(async (req) => {
           
           // Try to fetch the existing company by erstellt_von
           const { data: existingAgain } = await supabaseAdmin
-            .from('unternehmen')
+            .from('Unternehmen')
             .select('id')
             .eq('erstellt_von', user.id)
             .maybeSingle();
