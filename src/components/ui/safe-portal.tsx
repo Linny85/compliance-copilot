@@ -1,6 +1,33 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { safeRemove } from "@/lib/dom/safeCleanup";
+
+/* Safe Portal utilities to avoid DOM removeChild errors */
+export function safeRemove(node: HTMLElement | null) {
+  try {
+    if (!node) return;
+    const parent = node.parentNode as (Node & { contains?: (n:Node)=>boolean }) | null;
+    if (!parent) return;
+    // Nur entfernen, wenn der Knoten wirklich Kind des Parents ist
+    if (typeof parent.contains === 'function' && !parent.contains(node)) return;
+    parent.removeChild(node);
+  } catch (err) {
+    if (process.env.NODE_ENV !== 'production') {
+      // In DEV nur loggen, nie crashen
+      console.warn('[safeRemove skipped]', err);
+    }
+  }
+}
+
+/** optional: helper to create a portal container */
+export function ensurePortalContainer(attr = 'data-safe-portal'): HTMLElement {
+  let el = document.querySelector<HTMLElement>(`[${attr}]`);
+  if (!el) {
+    el = document.createElement('div');
+    el.setAttribute(attr, 'true');
+    document.body.appendChild(el);
+  }
+  return el;
+}
 
 interface SafePortalProps {
   children: React.ReactNode;
