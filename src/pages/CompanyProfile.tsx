@@ -34,6 +34,7 @@ const CompanyProfile = () => {
   const { t, language } = useI18n();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [error, setError] = useState<string | null>(null);
 
   // Development diagnostics
   useEffect(() => {
@@ -109,6 +110,9 @@ const CompanyProfile = () => {
       e.stopPropagation();
     }
     
+    // Busy-guard to prevent double-submit
+    if (loading) return;
+    
     if (!validateStep2()) return;
 
     if (process.env.NODE_ENV !== 'production') {
@@ -116,6 +120,7 @@ const CompanyProfile = () => {
     }
 
     setLoading(true);
+    setError(null);
 
     try {
       const { data, error } = await supabase.functions.invoke('create-tenant', {
@@ -153,7 +158,9 @@ const CompanyProfile = () => {
 
     } catch (error: any) {
       console.error("Onboarding error:", error);
-      toast.error(error.message || "Failed to create company profile");
+      const errorMsg = error.message || "Failed to create company profile";
+      setError(errorMsg);
+      toast.error(errorMsg);
       
       if (process.env.NODE_ENV !== 'production') {
         console.debug('[company-profile] submit:error', error);
@@ -463,6 +470,11 @@ const CompanyProfile = () => {
 
             {step === 3 && (
               <div className="space-y-6">
+                {error && (
+                  <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-lg text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-medium mb-2">{t.onboarding.title}</h3>
@@ -494,6 +506,7 @@ const CompanyProfile = () => {
                     {t.onboarding.back}
                   </Button>
                   <Button type="submit" className="flex-1" disabled={loading}>
+                    {loading && <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent"></span>}
                     {loading ? t.onboarding.submitting : t.onboarding.submit}
                   </Button>
                 </div>
