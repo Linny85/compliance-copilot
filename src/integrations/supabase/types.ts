@@ -64,14 +64,55 @@ export type Database = {
           },
         ]
       }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          company_id: string
+          created_at: string | null
+          id: string
+          ip_address: string | null
+          meta_json: Json | null
+          target: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          company_id: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          meta_json?: Json | null
+          target?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          company_id?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: string | null
+          meta_json?: Json | null
+          target?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           address: string | null
           country: string | null
           created_at: string | null
-          delete_code: string
+          delete_code_hash: string
           id: string
-          master_code: string
+          master_code_hash: string
           name: string
           sector: string | null
           subscription_status: string | null
@@ -82,9 +123,9 @@ export type Database = {
           address?: string | null
           country?: string | null
           created_at?: string | null
-          delete_code: string
+          delete_code_hash: string
           id?: string
-          master_code: string
+          master_code_hash: string
           name: string
           sector?: string | null
           subscription_status?: string | null
@@ -95,9 +136,9 @@ export type Database = {
           address?: string | null
           country?: string | null
           created_at?: string | null
-          delete_code?: string
+          delete_code_hash?: string
           id?: string
-          master_code?: string
+          master_code_hash?: string
           name?: string
           sector?: string | null
           subscription_status?: string | null
@@ -105,6 +146,50 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      documents: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          created_by: string | null
+          file_url: string | null
+          id: string
+          metadata: Json | null
+          title: string
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          created_by?: string | null
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          title: string
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          file_url?: string | null
+          id?: string
+          metadata?: Json | null
+          title?: string
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       nis2_risks: {
         Row: {
@@ -188,6 +273,56 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          company_id: string
+          created_at: string | null
+          external_customer_id: string | null
+          external_subscription_id: string | null
+          id: string
+          plan_id: string | null
+          provider: string | null
+          status: string | null
+          trial_end: string | null
+          trial_start: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string | null
+          external_customer_id?: string | null
+          external_subscription_id?: string | null
+          id?: string
+          plan_id?: string | null
+          provider?: string | null
+          status?: string | null
+          trial_end?: string | null
+          trial_start?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string | null
+          external_customer_id?: string | null
+          external_subscription_id?: string | null
+          id?: string
+          plan_id?: string | null
+          provider?: string | null
+          status?: string | null
+          trial_end?: string | null
+          trial_start?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           company_id: string
@@ -225,6 +360,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_audit_log: {
+        Args: {
+          _action: string
+          _actor_user_id: string
+          _company_id: string
+          _ip_address?: string
+          _meta_json?: Json
+          _target: string
+        }
+        Returns: string
+      }
       get_user_company: {
         Args: { _user_id: string }
         Returns: string
