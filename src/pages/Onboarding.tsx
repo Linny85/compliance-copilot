@@ -8,9 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Building2 } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
@@ -130,19 +133,22 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <Card className="w-full max-w-2xl shadow-glow">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <Building2 className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="text-2xl">Create Your Company</CardTitle>
-          <CardDescription>Set up your compliance workspace</CardDescription>
+          <CardTitle className="text-2xl">{t.onboarding.title}</CardTitle>
+          <CardDescription>{t.onboarding.subtitle}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="company-name">Company Name *</Label>
+                <Label htmlFor="company-name">{t.onboarding.companyName} *</Label>
                 <Input
                   id="company-name"
                   value={companyName}
@@ -153,7 +159,7 @@ const Onboarding = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
+                <Label htmlFor="address">{t.onboarding.address}</Label>
                 <Input
                   id="address"
                   value={address}
@@ -164,24 +170,24 @@ const Onboarding = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="sector">Sector</Label>
+                  <Label htmlFor="sector">{t.onboarding.sector}</Label>
                   <Select value={sector} onValueChange={setSector}>
                     <SelectTrigger id="sector">
-                      <SelectValue placeholder="Select sector" />
+                      <SelectValue placeholder={t.onboarding.selectSector} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="technology">Technology</SelectItem>
-                      <SelectItem value="finance">Finance</SelectItem>
-                      <SelectItem value="healthcare">Healthcare</SelectItem>
-                      <SelectItem value="energy">Energy</SelectItem>
-                      <SelectItem value="transport">Transport</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="technology">{t.sectors.technology}</SelectItem>
+                      <SelectItem value="finance">{t.sectors.finance}</SelectItem>
+                      <SelectItem value="healthcare">{t.sectors.healthcare}</SelectItem>
+                      <SelectItem value="energy">{t.sectors.energy}</SelectItem>
+                      <SelectItem value="transport">{t.sectors.transport}</SelectItem>
+                      <SelectItem value="other">{t.sectors.other}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="country">Country</Label>
+                  <Label htmlFor="country">{t.onboarding.country}</Label>
                   <Input
                     id="country"
                     value={country}
@@ -194,19 +200,19 @@ const Onboarding = () => {
 
             <div className="border-t pt-6 space-y-4">
               <div className="flex justify-between items-center">
-                <Label>Security Codes</Label>
+                <Label>{t.onboarding.securityCodes}</Label>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={handleGenerateCodes}
                 >
-                  Generate Codes
+                  {t.onboarding.generateCodes}
                 </Button>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="master-code">Master Code *</Label>
+                <Label htmlFor="master-code">{t.onboarding.masterCode} *</Label>
                 <Input
                   id="master-code"
                   value={masterCode}
@@ -215,12 +221,12 @@ const Onboarding = () => {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Used to manage users and company settings
+                  {t.onboarding.masterCodeDesc}
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="delete-code">Delete Code *</Label>
+                <Label htmlFor="delete-code">{t.onboarding.deleteCode} *</Label>
                 <Input
                   id="delete-code"
                   value={deleteCode}
@@ -229,13 +235,13 @@ const Onboarding = () => {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Emergency code for company reset
+                  {t.onboarding.deleteCodeDesc}
                 </p>
               </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating Company..." : "Create Company"}
+              {loading ? t.onboarding.submitting : t.onboarding.submit}
             </Button>
           </form>
         </CardContent>

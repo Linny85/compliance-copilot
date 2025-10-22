@@ -169,7 +169,7 @@ const Auth = () => {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                  <span className="bg-card px-2 text-muted-foreground">{t.common.orContinueWith}</span>
                 </div>
               </div>
               
@@ -186,7 +186,7 @@ const Auth = () => {
             <TabsContent value="signup" className="space-y-4">
               <form onSubmit={handleSignup} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
+                  <Label htmlFor="signup-name">{t.common.fullName}</Label>
                   <Input
                     id="signup-name"
                     type="text"
@@ -228,7 +228,7 @@ const Auth = () => {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                  <span className="bg-card px-2 text-muted-foreground">{t.common.orContinueWith}</span>
                 </div>
               </div>
               

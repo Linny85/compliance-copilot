@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { NextStepsCard } from "@/components/dashboard/NextStepsCard";
 import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface CompanyData {
@@ -106,14 +107,17 @@ const Dashboard = () => {
         <AppSidebar />
         <main className="flex-1 p-6 lg:p-8">
           <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
-            {/* Header */}
-            <div className="space-y-1">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                {t.dashboard.welcome}
-              </h1>
-              <p className="text-muted-foreground">
-                {companyData.name}
-              </p>
+            {/* Header with Language Switcher */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1 flex-1">
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                  {t.dashboard.welcome}
+                </h1>
+                <p className="text-muted-foreground">
+                  {companyData.name}
+                </p>
+              </div>
+              <LanguageSwitcher />
             </div>
 
             {/* Main Cards Grid */}

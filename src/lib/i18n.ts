@@ -16,8 +16,8 @@ export const translations = {
     },
     // Onboarding
     onboarding: {
-      title: "Company Information",
-      subtitle: "Tell us about your company",
+      title: "Create Your Company",
+      subtitle: "Set up your compliance workspace",
       companyName: "Company Name",
       legalName: "Legal Name (Optional)",
       street: "Street Address",
@@ -28,6 +28,7 @@ export const translations = {
       companySize: "Company Size",
       website: "Website (Optional)",
       vatId: "VAT ID (Optional)",
+      address: "Address",
       masterCode: "Master Code",
       masterCodeConfirm: "Confirm Master Code",
       deleteCode: "Delete Code",
@@ -40,14 +41,16 @@ export const translations = {
       back: "Back",
       review: "Review",
       submit: "Create Company",
-      submitting: "Creating...",
+      submitting: "Creating Company...",
       securityNote: "Why are security codes important?",
-      masterCodeDesc: "Used to invite/remove users and manage company settings",
-      deleteCodeDesc: "Emergency code for complete company data reset",
+      masterCodeDesc: "Used to manage users and company settings",
+      deleteCodeDesc: "Emergency code for company reset",
       securityWarning: "Keep these codes secure - they grant full access to your company data",
       step1: "Company Info",
       step2: "Security",
       step3: "Review",
+      generateCodes: "Generate Codes",
+      selectSector: "Select sector",
     },
     // Sectors
     sectors: {
@@ -114,6 +117,15 @@ export const translations = {
       title: "AI Act Registry",
       systems: "AI Systems",
     },
+    // Navigation
+    nav: {
+      dashboard: "Dashboard",
+      risks: "NIS2 Risks",
+      ai: "AI Systems",
+      docs: "Documents",
+      admin: "Admin",
+      logout: "Logout",
+    },
     // Common
     common: {
       save: "Save",
@@ -127,6 +139,8 @@ export const translations = {
       optional: "Optional",
       confirm: "Confirm",
       language: "Language",
+      fullName: "Full Name",
+      orContinueWith: "Or continue with",
     },
     // Validation
     validation: {
@@ -155,8 +169,8 @@ export const translations = {
     },
     // Onboarding
     onboarding: {
-      title: "Unternehmensinformationen",
-      subtitle: "Erzählen Sie uns von Ihrem Unternehmen",
+      title: "Unternehmen erstellen",
+      subtitle: "Richten Sie Ihren Compliance-Arbeitsbereich ein",
       companyName: "Firmenname",
       legalName: "Rechtlicher Name (Optional)",
       street: "Straße",
@@ -167,6 +181,7 @@ export const translations = {
       companySize: "Unternehmensgröße",
       website: "Website (Optional)",
       vatId: "USt-IdNr. (Optional)",
+      address: "Adresse",
       masterCode: "Master-Code",
       masterCodeConfirm: "Master-Code bestätigen",
       deleteCode: "Lösch-Code",
@@ -179,14 +194,16 @@ export const translations = {
       back: "Zurück",
       review: "Überprüfen",
       submit: "Unternehmen erstellen",
-      submitting: "Wird erstellt...",
+      submitting: "Unternehmen wird erstellt...",
       securityNote: "Warum sind Sicherheitscodes wichtig?",
-      masterCodeDesc: "Wird verwendet, um Benutzer einzuladen/zu entfernen und Unternehmenseinstellungen zu verwalten",
-      deleteCodeDesc: "Notfall-Code für vollständigen Unternehmensdaten-Reset",
+      masterCodeDesc: "Wird verwendet, um Benutzer zu verwalten und Unternehmenseinstellungen anzupassen",
+      deleteCodeDesc: "Notfall-Code für Unternehmenszurücksetzung",
       securityWarning: "Bewahren Sie diese Codes sicher auf - sie gewähren vollen Zugriff auf Ihre Unternehmensdaten",
       step1: "Unternehmensinfo",
       step2: "Sicherheit",
       step3: "Überprüfung",
+      generateCodes: "Codes generieren",
+      selectSector: "Sektor auswählen",
     },
     // Sectors
     sectors: {
@@ -253,6 +270,15 @@ export const translations = {
       title: "KI-Gesetz-Register",
       systems: "KI-Systeme",
     },
+    // Navigation
+    nav: {
+      dashboard: "Dashboard",
+      risks: "NIS2 Risiken",
+      ai: "KI-Systeme",
+      docs: "Dokumente",
+      admin: "Admin",
+      logout: "Abmelden",
+    },
     // Common
     common: {
       save: "Speichern",
@@ -266,6 +292,8 @@ export const translations = {
       optional: "Optional",
       confirm: "Bestätigen",
       language: "Sprache",
+      fullName: "Vollständiger Name",
+      orContinueWith: "Oder fortfahren mit",
     },
     // Validation
     validation: {

@@ -22,22 +22,24 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-
-const navigationItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "NIS2 Risks", url: "/nis2", icon: Shield },
-  { title: "AI Systems", url: "/ai-act", icon: Brain },
-  { title: "Documents", url: "/documents", icon: FileText },
-  { title: "Admin", url: "/admin", icon: Settings },
-];
+import { useI18n } from "@/contexts/I18nContext";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const navigate = useNavigate();
+  const { t } = useI18n();
+
+  const navigationItems = [
+    { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
+    { title: t.nav.risks, url: "/nis2", icon: Shield },
+    { title: t.nav.ai, url: "/ai-act", icon: Brain },
+    { title: t.nav.docs, url: "/documents", icon: FileText },
+    { title: t.nav.admin, url: "/admin", icon: Settings },
+  ];
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success("Logged out successfully");
+    toast.success(t.nav.logout);
     navigate("/auth");
   };
 
@@ -79,7 +81,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={handleLogout}>
                   <LogOut className="h-4 w-4" />
-                  {!isCollapsed && <span>Logout</span>}
+                  {!isCollapsed && <span>{t.nav.logout}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
