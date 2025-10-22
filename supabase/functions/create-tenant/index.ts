@@ -178,8 +178,8 @@ Deno.serve(async (req) => {
 
     userLog.info('User authenticated successfully');
 
-    // Check if user already has a company (check created_by for idempotency)
-    userLog.info('Checking for existing company');
+    // Idempotency check: Does user already have a company?
+    userLog.info('Checking for existing company by created_by');
     const { data: existingCompany } = await supabaseAdmin
       .from('companies')
       .select('id')
@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingCompany?.id) {
-      userLog.info('User already has a company - returning existing', { companyId: existingCompany.id });
+      userLog.info('User already has a company - idempotent success', { companyId: existingCompany.id });
       return new Response(
         JSON.stringify({ tenantId: existingCompany.id, existed: true }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -275,30 +275,29 @@ Deno.serve(async (req) => {
       if (companyError) {
         userLog.error('Company creation failed', { error: companyError.message, code: companyError.code });
         
-        // Idempotenz: Bei Duplicate-Key → prüfen ob eigene Firma (created_by oder master_code)
-        if (companyError.code === '23505') {
-          const msg = String(companyError.message || '');
+        const errorMsg = String(companyError.message || companyError);
+        
+        // Idempotency: Handle duplicate key / conflict errors
+        if (/duplicate key|unique|already exists|conflict|23505/i.test(errorMsg) || companyError.code === '23505') {
+          userLog.info('Duplicate detected - attempting to fetch existing company');
           
-          // Duplicate created_by → User hat bereits eine Firma erstellt
-          if (msg.includes('created_by')) {
-            userLog.info('Duplicate created_by detected - user already created a company');
-            const { data: ownCompany } = await supabaseAdmin
-              .from('companies')
-              .select('id')
-              .eq('created_by', user.id)
-              .maybeSingle();
-            
-            if (ownCompany?.id) {
-              userLog.info('Returning existing company owned by user');
-              return new Response(
-                JSON.stringify({ tenantId: ownCompany.id, existed: true }),
-                { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-              );
-            }
+          // Try to fetch the existing company by created_by
+          const { data: existingAgain } = await supabaseAdmin
+            .from('companies')
+            .select('id')
+            .eq('created_by', user.id)
+            .maybeSingle();
+          
+          if (existingAgain?.id) {
+            userLog.info('Found existing company after conflict - idempotent success', { companyId: existingAgain.id });
+            return new Response(
+              JSON.stringify({ tenantId: existingAgain.id, existed: true }),
+              { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
           }
           
-          // Duplicate master_code → Master-Code bereits vergeben
-          if (msg.includes('master_code')) {
+          // If we still can't find it, check if it's a master_code duplicate (different owner)
+          if (errorMsg.includes('master_code')) {
             userLog.error('Master code already in use by another company');
             return new Response(
               JSON.stringify({ error: 'Master code already in use', detail: 'This master code is already registered to another company' }),
