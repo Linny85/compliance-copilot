@@ -51,6 +51,8 @@ export const translations = {
       step3: "Review",
       generateCodes: "Generate Codes",
       selectSector: "Select sector",
+      companyCreated: "Company created successfully",
+      companyExistsInfo: "Company already exists, proceeding to dashboard",
     },
     // Sectors
     sectors: {
@@ -142,6 +144,10 @@ export const translations = {
       fullName: "Full Name",
       orContinueWith: "Or continue with",
     },
+    // Errors
+    errors: {
+      generic: "An error occurred. Please try again.",
+    },
     // Validation
     validation: {
       required: "Please fill in all required fields",
@@ -204,6 +210,8 @@ export const translations = {
       step3: "Überprüfung",
       generateCodes: "Codes generieren",
       selectSector: "Sektor auswählen",
+      companyCreated: "Unternehmen erfolgreich erstellt",
+      companyExistsInfo: "Unternehmen existiert bereits, weiter zum Dashboard",
     },
     // Sectors
     sectors: {
@@ -295,6 +303,10 @@ export const translations = {
       fullName: "Vollständiger Name",
       orContinueWith: "Oder fortfahren mit",
     },
+    // Errors
+    errors: {
+      generic: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    },
     // Validation
     validation: {
       required: "Bitte füllen Sie alle erforderlichen Felder aus",
@@ -357,6 +369,8 @@ export const translations = {
       step3: "Granska",
       generateCodes: "Generera koder",
       selectSector: "Välj sektor",
+      companyCreated: "Företag skapat framgångsrikt",
+      companyExistsInfo: "Företaget finns redan, fortsätter till instrumentpanelen",
     },
     // Sectors
     sectors: {
@@ -447,6 +461,10 @@ export const translations = {
       language: "Språk",
       fullName: "Fullständigt namn",
       orContinueWith: "Eller fortsätt med",
+    },
+    // Errors
+    errors: {
+      generic: "Ett fel uppstod. Försök igen.",
     },
     // Validation
     validation: {

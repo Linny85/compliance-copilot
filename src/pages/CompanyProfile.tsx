@@ -164,53 +164,32 @@ const CompanyProfile = () => {
         },
       });
 
+      // Handle error or existing company (idempotent success)
       if (error) {
-        // Extract detailed error information from backend response
-        const errorData = (error as any);
-        const errorMsg = errorData?.message || errorData?.error || error?.toString() || "Failed to create company profile";
-        const errorDetail = (data as any)?.detail || (data as any)?.error || '';
+        const status = (error as any)?.context?.response?.status ?? (error as any)?.status;
         
-        const fullMsg = errorDetail ? `${errorMsg}: ${errorDetail}` : errorMsg;
+        // 409 or existed=true means company already exists → idempotent success
+        if (status === 409 || (data as any)?.existed) {
+          toast.success(t.onboarding?.companyExistsInfo || "Company already exists, proceeding to dashboard");
+          await new Promise(resolve => setTimeout(resolve, 800));
+          navigate('/dashboard', { replace: true });
+          return;
+        }
         
-        console.error('[CompanyProfile] Backend error:', { 
-          error: errorMsg, 
-          detail: errorDetail,
-          status: errorData?.status,
-          data 
-        });
-        
-        // Set diagnostic banner with error details
-        const lastAction = (window as any).__lastAction;
-        setDiag({
-          msg: fullMsg,
-          stack: errorData?.stack,
-          lastAction
-        });
-        
-        setError(fullMsg);
-        toast.error(fullMsg);
-        return; // Don't navigate on error
+        // Other errors: throw to be caught below
+        throw error;
       }
 
-      // Check for error in response data
-      if (data && typeof data === 'object' && 'error' in data) {
-        const dataError = data as { error: string; detail?: string };
-        const fullMsg = dataError.detail ? `${dataError.error}: ${dataError.detail}` : dataError.error;
-        
-        console.error('[CompanyProfile] Response error:', dataError);
-        
-        const lastAction = (window as any).__lastAction;
-        setDiag({
-          msg: fullMsg,
-          lastAction
-        });
-        
-        setError(fullMsg);
-        toast.error(fullMsg);
-        return; // Don't navigate on error
+      // Check if company already existed (idempotent success without error)
+      if ((data as any)?.existed) {
+        toast.success(t.onboarding?.companyExistsInfo || "Company already exists, proceeding to dashboard");
+        await new Promise(resolve => setTimeout(resolve, 800));
+        navigate('/dashboard', { replace: true });
+        return;
       }
 
-      toast.success(t.common.success);
+      // New company created successfully
+      toast.success(t.onboarding?.companyCreated || t.common.success);
       
       // ⏳ 800ms delay to ensure claims, RLS policies, and subscription triggers are fully active
       await new Promise(resolve => setTimeout(resolve, 800));
@@ -219,18 +198,16 @@ const CompanyProfile = () => {
 
     } catch (error: any) {
       console.error("[CompanyProfile] Exception:", error);
-      const errorMsg = error.message || "Failed to create company profile";
-      const errorDetail = error?.details || error?.detail || '';
-      const fullMsg = errorDetail ? `${errorMsg}: ${errorDetail}` : errorMsg;
+      const errorMsg = error?.message || error?.toString() || t.errors?.generic || "Failed to create company profile";
       
-      setError(fullMsg);
-      toast.error(fullMsg);
+      setError(errorMsg);
+      toast.error(errorMsg);
       
       // 🔍 DIAGNOSE: Capture error for banner
       const lastAction = (window as any).__lastAction;
       setDiag({
-        msg: fullMsg,
-        stack: error.stack,
+        msg: errorMsg,
+        stack: error?.stack,
         lastAction
       });
     } finally {
