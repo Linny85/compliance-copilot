@@ -26,6 +26,9 @@ export const LanguageSwitcher = () => {
         <DropdownMenuItem onClick={() => setLanguage('de')}>
           Deutsch (DE)
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setLanguage('sv')}>
+          Svenska (SV)
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -13,13 +13,15 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 const getDefaultLanguage = (): Language => {
   // Check localStorage first
   const stored = localStorage.getItem('lang');
-  if (stored === 'en' || stored === 'de') {
+  if (stored === 'en' || stored === 'de' || stored === 'sv') {
     return stored;
   }
 
   // Detect from browser
   const browserLang = navigator.language.toLowerCase();
-  return browserLang.startsWith('de') ? 'de' : 'en';
+  if (browserLang.startsWith('de')) return 'de';
+  if (browserLang.startsWith('sv')) return 'sv';
+  return 'en';
 };
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
