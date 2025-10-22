@@ -112,6 +112,7 @@ export type Database = {
           company_size: string | null
           country: string | null
           created_at: string | null
+          created_by: string | null
           delete_code_hash: string
           id: string
           legal_name: string | null
@@ -132,6 +133,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string | null
+          created_by?: string | null
           delete_code_hash: string
           id?: string
           legal_name?: string | null
@@ -152,6 +154,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string | null
+          created_by?: string | null
           delete_code_hash?: string
           id?: string
           legal_name?: string | null
@@ -395,10 +398,7 @@ export type Database = {
         }
         Returns: string
       }
-      get_user_company: {
-        Args: { _user_id: string }
-        Returns: string
-      }
+      get_user_company: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
           _company_id: string

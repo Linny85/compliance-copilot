@@ -178,18 +178,18 @@ Deno.serve(async (req) => {
 
     userLog.info('User authenticated successfully');
 
-    // Check if user already has a company (use admin client to bypass RLS)
+    // Check if user already has a company (check created_by for idempotency)
     userLog.info('Checking for existing company');
-    const { data: existingProfile } = await supabaseAdmin
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
+    const { data: existingCompany } = await supabaseAdmin
+      .from('companies')
+      .select('id')
+      .eq('created_by', user.id)
       .maybeSingle();
 
-    if (existingProfile?.company_id) {
-      userLog.info('User already has a company - returning existing', { companyId: existingProfile.company_id });
+    if (existingCompany?.id) {
+      userLog.info('User already has a company - returning existing', { companyId: existingCompany.id });
       return new Response(
-        JSON.stringify({ tenantId: existingProfile.company_id, existed: true }),
+        JSON.stringify({ tenantId: existingCompany.id, existed: true }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -267,6 +267,7 @@ Deno.serve(async (req) => {
           company_size: company.companySize?.trim(),
           master_code_hash: masterCodeHash,
           delete_code_hash: deleteCodeHash,
+          created_by: user.id,
         })
         .select()
         .single();
@@ -274,37 +275,35 @@ Deno.serve(async (req) => {
       if (companyError) {
         userLog.error('Company creation failed', { error: companyError.message, code: companyError.code });
         
-        // Idempotenz: Bei Duplicate-Key auf master_code_hash → prüfen ob eigene Firma
-        if (companyError.code === '23505' && String(companyError.message || '').includes('master_code')) {
-          userLog.info('Duplicate master_code detected - checking if user owns this company');
-          const { data: ownCompany } = await supabaseAdmin
-            .from('companies')
-            .select('id')
-            .eq('master_code_hash', masterCodeHash)
-            .maybeSingle();
+        // Idempotenz: Bei Duplicate-Key → prüfen ob eigene Firma (created_by oder master_code)
+        if (companyError.code === '23505') {
+          const msg = String(companyError.message || '');
           
-          if (ownCompany?.id) {
-            // Prüfen ob diese Firma dem User gehört (via user_roles oder created_by)
-            const { data: role } = await supabaseAdmin
-              .from('user_roles')
-              .select('company_id')
-              .eq('user_id', user.id)
-              .eq('company_id', ownCompany.id)
+          // Duplicate created_by → User hat bereits eine Firma erstellt
+          if (msg.includes('created_by')) {
+            userLog.info('Duplicate created_by detected - user already created a company');
+            const { data: ownCompany } = await supabaseAdmin
+              .from('companies')
+              .select('id')
+              .eq('created_by', user.id)
               .maybeSingle();
             
-            if (role) {
-              userLog.info('Company with this master_code already belongs to user - idempotent success');
+            if (ownCompany?.id) {
+              userLog.info('Returning existing company owned by user');
               return new Response(
                 JSON.stringify({ tenantId: ownCompany.id, existed: true }),
                 { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
               );
-            } else {
-              userLog.error('Master code already in use by another company');
-              return new Response(
-                JSON.stringify({ error: 'Master code already in use', detail: 'This master code is already registered to another company' }),
-                { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-              );
             }
+          }
+          
+          // Duplicate master_code → Master-Code bereits vergeben
+          if (msg.includes('master_code')) {
+            userLog.error('Master code already in use by another company');
+            return new Response(
+              JSON.stringify({ error: 'Master code already in use', detail: 'This master code is already registered to another company' }),
+              { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+            );
           }
         }
         
