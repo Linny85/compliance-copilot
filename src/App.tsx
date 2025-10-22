@@ -21,29 +21,29 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <I18nProvider>
+      <BrowserRouter>
+        <AuthGuard>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/company-profile" element={
+              <ErrorBoundary>
+                <CompanyProfile />
+              </ErrorBoundary>
+            } />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/nis2" element={<NIS2 />} />
+            <Route path="/ai-act" element={<AIAct />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/admin" element={<Admin />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthGuard>
+      </BrowserRouter>
       <TooltipProvider>
         <Toaster position="top-right" richColors closeButton expand duration={3500} />
-        <BrowserRouter>
-          <AuthGuard>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/company-profile" element={
-                <ErrorBoundary>
-                  <CompanyProfile />
-                </ErrorBoundary>
-              } />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/nis2" element={<NIS2 />} />
-              <Route path="/ai-act" element={<AIAct />} />
-              <Route path="/documents" element={<Documents />} />
-              <Route path="/admin" element={<Admin />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthGuard>
-        </BrowserRouter>
       </TooltipProvider>
     </I18nProvider>
   </QueryClientProvider>
