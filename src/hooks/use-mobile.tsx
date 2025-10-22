@@ -12,7 +12,17 @@ export function useIsMobile() {
     };
     mql.addEventListener("change", onChange);
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    return () => mql.removeEventListener("change", onChange);
+    
+    // Safe cleanup to prevent removeChild errors
+    return () => {
+      try {
+        mql.removeEventListener("change", onChange);
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.debug('[use-mobile] Failed to remove change listener:', error);
+        }
+      }
+    };
   }, []);
 
   return !!isMobile;

@@ -85,7 +85,17 @@ const SidebarProvider = React.forwardRef<
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    
+    // Safe cleanup to prevent removeChild errors
+    return () => {
+      try {
+        window.removeEventListener("keydown", handleKeyDown);
+      } catch (error) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.debug('[sidebar] Failed to remove keydown listener:', error);
+        }
+      }
+    };
   }, [toggleSidebar]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".

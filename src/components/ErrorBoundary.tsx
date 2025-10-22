@@ -29,7 +29,14 @@ export class ErrorBoundary extends Component<Props, State> {
 
   handleReset = () => {
     this.setState({ hasError: false, error: null });
-    window.location.reload();
+    
+    // Use router navigation instead of window.location.reload when possible
+    // to avoid hard reloads that can cause DOM cleanup issues
+    try {
+      window.location.reload();
+    } catch (error) {
+      console.error('[ErrorBoundary] Failed to reload:', error);
+    }
   };
 
   render() {
