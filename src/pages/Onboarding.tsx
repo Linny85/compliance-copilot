@@ -74,6 +74,11 @@ const Onboarding = () => {
     setLoading(true);
 
     try {
+      // In production, hash these codes server-side
+      // For now, we're storing them as-is (will be hashed in the migration)
+      const masterCodeHash = masterCode; // TODO: Implement proper hashing
+      const deleteCodeHash = deleteCode;
+
       // Create company
       const { data: company, error: companyError } = await supabase
         .from("companies")
@@ -82,8 +87,8 @@ const Onboarding = () => {
           address,
           sector,
           country,
-          master_code: masterCode,
-          delete_code: deleteCode,
+          master_code_hash: masterCodeHash,
+          delete_code_hash: deleteCodeHash,
         })
         .select()
         .single();
@@ -97,7 +102,7 @@ const Onboarding = () => {
           id: userId,
           company_id: company.id,
           email: userEmail,
-          full_name: companyName, // Can be updated later
+          full_name: companyName,
         });
 
       if (profileError) throw profileError;
