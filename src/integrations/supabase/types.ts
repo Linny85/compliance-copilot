@@ -108,42 +108,63 @@ export type Database = {
       companies: {
         Row: {
           address: string | null
+          city: string | null
+          company_size: string | null
           country: string | null
           created_at: string | null
           delete_code_hash: string
           id: string
+          legal_name: string | null
           master_code_hash: string
           name: string
           sector: string | null
+          street: string | null
           subscription_status: string | null
           trial_ends_at: string | null
           updated_at: string | null
+          vat_id: string | null
+          website: string | null
+          zip: string | null
         }
         Insert: {
           address?: string | null
+          city?: string | null
+          company_size?: string | null
           country?: string | null
           created_at?: string | null
           delete_code_hash: string
           id?: string
+          legal_name?: string | null
           master_code_hash: string
           name: string
           sector?: string | null
+          street?: string | null
           subscription_status?: string | null
           trial_ends_at?: string | null
           updated_at?: string | null
+          vat_id?: string | null
+          website?: string | null
+          zip?: string | null
         }
         Update: {
           address?: string | null
+          city?: string | null
+          company_size?: string | null
           country?: string | null
           created_at?: string | null
           delete_code_hash?: string
           id?: string
+          legal_name?: string | null
           master_code_hash?: string
           name?: string
           sector?: string | null
+          street?: string | null
           subscription_status?: string | null
           trial_ends_at?: string | null
           updated_at?: string | null
+          vat_id?: string | null
+          website?: string | null
+          zip?: string | null
         }
         Relationships: []
       }
