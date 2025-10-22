@@ -11,6 +11,21 @@ import { Building2, Lock, CheckCircle } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
+// 🔍 DIAGNOSE: Global action tracker
+if (typeof window !== 'undefined') {
+  (window as any).__lastAction = '(init)';
+}
+
+// 🔍 DIAGNOSE: Handler wrapper for tracking
+function wrap<T extends (...args: any[]) => any>(name: string, fn: T): T {
+  return ((...args: any[]) => {
+    if (typeof window !== 'undefined') {
+      (window as any).__lastAction = name;
+    }
+    return fn(...args);
+  }) as any as T;
+}
+
 export const sectorOptions = [
   { value: 'it', label: { de: 'IT / Software', en: 'IT / Software', sv: 'IT / mjukvara' } },
   { value: 'finance', label: { de: 'Finanzen', en: 'Finance', sv: 'Finans' } },
@@ -35,6 +50,9 @@ const CompanyProfile = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  
+  // 🔍 DIAGNOSE: Visible error banner state
+  const [diag, setDiag] = useState<{msg: string; stack?: string; lastAction?: string} | null>(null);
 
   // Step 1: Company Info
   const [companyName, setCompanyName] = useState("");
@@ -107,6 +125,25 @@ const CompanyProfile = () => {
     setError(null);
 
     try {
+      // 🔍 DIAGNOSE: Pre-fetch probe
+      if (process.env.NODE_ENV !== 'production') {
+        const probe = {
+          companyName: typeof companyName,
+          legalName: typeof legalName,
+          street: typeof street,
+          zip: typeof zip,
+          city: typeof city,
+          country: typeof country,
+          sector: typeof sector,
+          website: typeof website,
+          vatId: typeof vatId,
+          companySize: typeof companySize,
+          masterCode: typeof masterCode,
+          deleteCode: typeof deleteCode,
+        };
+        console.debug('[preFetchProbe]', probe);
+      }
+
       const { data, error } = await supabase.functions.invoke('create-tenant', {
         body: {
           company: {
@@ -140,6 +177,14 @@ const CompanyProfile = () => {
       const errorMsg = error.message || "Failed to create company profile";
       setError(errorMsg);
       toast.error(errorMsg);
+      
+      // 🔍 DIAGNOSE: Capture error for banner
+      const lastAction = (window as any).__lastAction;
+      setDiag({
+        msg: errorMsg,
+        stack: error.stack,
+        lastAction
+      });
     } finally {
       setLoading(false);
     }
@@ -167,11 +212,113 @@ const CompanyProfile = () => {
     handleSubmit(e);
   };
 
+  // 🔍 DIAGNOSE: Wrapped handlers for tracking
+  const handleNextWrapped = wrap('handleNext', handleNext);
+  const handleBackWrapped = wrap('handleBack', handleBack);
+  const handleSubmitWrapped = wrap('handleSubmit', handleSubmit);
+  const handleSectorChangeWrapped = wrap('handleSectorChange', handleSectorChange);
+  const handleCompanySizeChangeWrapped = wrap('handleCompanySizeChange', handleCompanySizeChange);
+  const handleFormSubmitWrapped = wrap('handleFormSubmit', handleFormSubmit);
+
+  // 🔍 DIAGNOSE: Safe submit wrapper with error capture
+  const safeHandleFormSubmit = async (e: React.FormEvent) => {
+    try {
+      await handleFormSubmitWrapped(e);
+    } catch (err: any) {
+      const msg = String(err?.message || err);
+      const stack = String(err?.stack || '');
+      const lastAction = (window as any).__lastAction;
+      console.error('[CompanyProfile.submit.error]', { msg, stack, lastAction });
+      setDiag({ msg, stack, lastAction });
+      // Don't re-throw - keep diagnosis visible instead of showing error boundary
+    }
+  };
+
+  // 🔍 DIAGNOSE: Global error listeners (dev only, once)
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      if (!(window as any).__cp_err_hooks) {
+        (window as any).__cp_err_hooks = true;
+        
+        const errorHandler = (ev: ErrorEvent) => {
+          console.error('[window.error]', ev.error || ev.message, {
+            filename: ev.filename,
+            lineno: ev.lineno,
+            colno: ev.colno
+          });
+        };
+        
+        const rejectionHandler = (ev: PromiseRejectionEvent) => {
+          console.error('[window.unhandledrejection]', ev.reason);
+        };
+        
+        window.addEventListener('error', errorHandler);
+        window.addEventListener('unhandledrejection', rejectionHandler);
+        
+        return () => {
+          window.removeEventListener('error', errorHandler);
+          window.removeEventListener('unhandledrejection', rejectionHandler);
+        };
+      }
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
       <div className="absolute top-4 right-4">
         <LanguageSwitcher />
       </div>
+      
+      {/* 🔍 DIAGNOSE: Visible error banner */}
+      {diag && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 9999,
+            margin: 12,
+            padding: 12,
+            borderRadius: 8,
+            background: '#FEF3C7',
+            color: '#92400E',
+            whiteSpace: 'pre-wrap',
+            fontSize: '14px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          }}
+        >
+          <strong>🔍 Diagnose:</strong> {diag.msg}
+          {diag.lastAction && (
+            <div style={{ marginTop: 6, fontWeight: 'bold' }}>
+              Last action: {diag.lastAction}
+            </div>
+          )}
+          {diag.stack && (
+            <details style={{ marginTop: 6 }}>
+              <summary style={{ cursor: 'pointer' }}>Stack Trace</summary>
+              <pre style={{ marginTop: 6, fontSize: '12px', overflow: 'auto', maxHeight: '200px' }}>
+                {diag.stack}
+              </pre>
+            </details>
+          )}
+          <button
+            onClick={() => setDiag(null)}
+            style={{
+              marginTop: 8,
+              padding: '4px 8px',
+              background: '#92400E',
+              color: '#FEF3C7',
+              border: 'none',
+              borderRadius: 4,
+              cursor: 'pointer'
+            }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+      
       <Card className="w-full max-w-3xl shadow-glow">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -202,7 +349,7 @@ const CompanyProfile = () => {
             method="post"
             noValidate
             autoComplete="off"
-            onSubmit={handleFormSubmit}
+            onSubmit={safeHandleFormSubmit}
           >
             {step === 1 && (
               <div className="space-y-4">
@@ -293,7 +440,7 @@ const CompanyProfile = () => {
                       autoComplete="off"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={sector ?? ''}
-                      onChange={handleSectorChange}
+                      onChange={handleSectorChangeWrapped}
                       required
                     >
                       <option value="" disabled>— {t.onboarding.sector} —</option>
@@ -313,7 +460,7 @@ const CompanyProfile = () => {
                       autoComplete="off"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       value={companySize ?? ''}
-                      onChange={handleCompanySizeChange}
+                      onChange={handleCompanySizeChangeWrapped}
                       required
                     >
                       <option value="" disabled>— {t.onboarding.companySize} —</option>
@@ -351,7 +498,7 @@ const CompanyProfile = () => {
                   />
                 </div>
 
-                <Button type="button" className="w-full" onClick={handleNext}>
+                <Button type="button" className="w-full" onClick={handleNextWrapped}>
                   {t.onboarding.next}
                 </Button>
               </div>
@@ -425,10 +572,10 @@ const CompanyProfile = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <Button type="button" variant="outline" onClick={handleBack} className="flex-1">
+                  <Button type="button" variant="outline" onClick={handleBackWrapped} className="flex-1">
                     {t.onboarding.back}
                   </Button>
-                  <Button type="button" onClick={() => validateStep2() && setStep(3)} className="flex-1">
+                  <Button type="button" onClick={wrap('validateAndReview', () => validateStep2() && setStep(3))} className="flex-1">
                     {t.onboarding.review}
                   </Button>
                 </div>
@@ -469,7 +616,7 @@ const CompanyProfile = () => {
                 </div>
 
                 <div className="flex gap-3">
-                  <Button type="button" variant="outline" onClick={handleBack} className="flex-1" disabled={loading}>
+                  <Button type="button" variant="outline" onClick={handleBackWrapped} className="flex-1" disabled={loading}>
                     {t.onboarding.back}
                   </Button>
                   <Button type="submit" className="flex-1" disabled={loading}>
