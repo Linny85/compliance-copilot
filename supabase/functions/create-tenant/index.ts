@@ -179,11 +179,11 @@ Deno.serve(async (req) => {
     userLog.info('User authenticated successfully');
 
     // Idempotency check: Does user already have a company?
-    userLog.info('Checking for existing company by created_by');
+    userLog.info('Checking for existing company by erstellt_von');
     const { data: existingCompany } = await supabaseAdmin
-      .from('companies')
+      .from('unternehmen')
       .select('id')
-      .eq('created_by', user.id)
+      .eq('erstellt_von', user.id)
       .maybeSingle();
 
     if (existingCompany?.id) {
@@ -252,7 +252,7 @@ Deno.serve(async (req) => {
       // Create company (using admin client to bypass RLS)
       userLog.info('Creating company');
       const { data: companyData, error: companyError } = await supabaseAdmin
-        .from('companies')
+        .from('unternehmen')
         .insert({
           name: company.name.trim(),
           legal_name: company.legalName?.trim(),
@@ -267,7 +267,7 @@ Deno.serve(async (req) => {
           company_size: company.companySize?.trim(),
           master_code_hash: masterCodeHash,
           delete_code_hash: deleteCodeHash,
-          created_by: user.id,
+          erstellt_von: user.id,
         })
         .select()
         .single();
@@ -281,11 +281,11 @@ Deno.serve(async (req) => {
         if (/duplicate key|unique|already exists|conflict|23505/i.test(errorMsg) || companyError.code === '23505') {
           userLog.info('Duplicate detected - attempting to fetch existing company');
           
-          // Try to fetch the existing company by created_by
+          // Try to fetch the existing company by erstellt_von
           const { data: existingAgain } = await supabaseAdmin
-            .from('companies')
+            .from('unternehmen')
             .select('id')
-            .eq('created_by', user.id)
+            .eq('erstellt_von', user.id)
             .maybeSingle();
           
           if (existingAgain?.id) {
