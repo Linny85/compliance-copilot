@@ -36,18 +36,6 @@ const CompanyProfile = () => {
   const [step, setStep] = useState(1);
   const [error, setError] = useState<string | null>(null);
 
-  // Development diagnostics
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[company-profile] diagnostics:', {
-        route: '/company-profile',
-        formSecured: true,
-        errorBoundary: true,
-        autofillScoped: true
-      });
-    }
-  }, []);
-
   // Step 1: Company Info
   const [companyName, setCompanyName] = useState("");
   const [legalName, setLegalName] = useState("");
@@ -115,10 +103,6 @@ const CompanyProfile = () => {
     
     if (!validateStep2()) return;
 
-    if (process.env.NODE_ENV !== 'production') {
-      console.debug('[company-profile] submit:start');
-    }
-
     setLoading(true);
     setError(null);
 
@@ -144,33 +128,20 @@ const CompanyProfile = () => {
 
       if (error) throw error;
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.debug('[company-profile] submit:success');
-      }
-
       toast.success("Company profile created successfully!");
       
-      // Refresh user info and navigate to dashboard
+      // Navigate to dashboard after brief delay to allow toast to show
       setTimeout(() => {
-        navigate('/dashboard');
-        window.location.reload(); // Force refresh to update auth state
-      }, 500);
+        navigate('/dashboard', { replace: true });
+      }, 1000);
 
     } catch (error: any) {
       console.error("Onboarding error:", error);
       const errorMsg = error.message || "Failed to create company profile";
       setError(errorMsg);
       toast.error(errorMsg);
-      
-      if (process.env.NODE_ENV !== 'production') {
-        console.debug('[company-profile] submit:error', error);
-      }
     } finally {
       setLoading(false);
-      
-      if (process.env.NODE_ENV !== 'production') {
-        console.debug('[company-profile] submit:end');
-      }
     }
   };
 
