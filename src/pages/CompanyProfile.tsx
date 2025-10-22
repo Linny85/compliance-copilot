@@ -20,6 +20,15 @@ export const sectorOptions = [
   { value: 'other', label: { de: 'Sonstiges', en: 'Other', sv: 'Annat' } },
 ] as const;
 
+export const companySizeOptions = [
+  { value: '1-10', label: { de: '1–10 Mitarbeiter', en: '1–10 employees', sv: '1–10 anställda' } },
+  { value: '11-50', label: { de: '11–50 Mitarbeiter', en: '11–50 employees', sv: '11–50 anställda' } },
+  { value: '51-200', label: { de: '51–200 Mitarbeiter', en: '51–200 employees', sv: '51–200 anställda' } },
+  { value: '201-500', label: { de: '201–500 Mitarbeiter', en: '201–500 employees', sv: '201–500 anställda' } },
+  { value: '501-1000', label: { de: '501–1000 Mitarbeiter', en: '501–1000 employees', sv: '501–1000 anställda' } },
+  { value: '1000+', label: { de: 'über 1000', en: 'over 1000', sv: 'över 1000' } },
+] as const;
+
 const CompanyProfile = () => {
   const navigate = useNavigate();
   const { t, language } = useI18n();
@@ -168,11 +177,14 @@ const CompanyProfile = () => {
     if (v) setSector(v);
   };
 
-  const handleCompanySizeChange = (value: string) => {
+  const handleCompanySizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const v = (e.currentTarget.value || '').trim();
     if (process.env.NODE_ENV !== 'production') {
-      console.debug('[company-profile] companySize.change', value);
+      console.debug('[company-profile] companySize.change', v);
     }
-    setCompanySize(value);
+    if (v) setCompanySize(v);
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -321,18 +333,22 @@ const CompanyProfile = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="company-size">{t.onboarding.companySize} *</Label>
-                    <Select value={companySize} onValueChange={handleCompanySizeChange} required>
-                      <SelectTrigger id="company-size">
-                        <SelectValue placeholder="Select size" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1-10">{t.companySize["1-10"]}</SelectItem>
-                        <SelectItem value="11-50">{t.companySize["11-50"]}</SelectItem>
-                        <SelectItem value="51-200">{t.companySize["51-200"]}</SelectItem>
-                        <SelectItem value="201-500">{t.companySize["201-500"]}</SelectItem>
-                        <SelectItem value="501+">{t.companySize["501+"]}</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <select
+                      id="company-size"
+                      name="company-size"
+                      autoComplete="off"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      value={companySize ?? ''}
+                      onChange={handleCompanySizeChange}
+                      required
+                    >
+                      <option value="" disabled>— {t.onboarding.companySize} —</option>
+                      {companySizeOptions.map(o => (
+                        <option key={o.value} value={o.value}>
+                          {o.label[language]}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 
