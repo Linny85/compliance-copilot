@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthGuard } from "./components/AuthGuard";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { I18nProvider } from "./contexts/I18nContext";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
@@ -30,7 +31,11 @@ const App = () => (
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/company-profile" element={<CompanyProfile />} />
+              <Route path="/company-profile" element={
+                <ErrorBoundary>
+                  <CompanyProfile />
+                </ErrorBoundary>
+              } />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/nis2" element={<NIS2 />} />
               <Route path="/ai-act" element={<AIAct />} />
