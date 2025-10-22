@@ -84,7 +84,7 @@ const Onboarding = () => {
 
       // Create company
       const { data: company, error: companyError } = await supabase
-        .from("companies")
+        .from("Unternehmen")
         .insert({
           name: companyName,
           address,

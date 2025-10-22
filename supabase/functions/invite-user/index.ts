@@ -58,7 +58,7 @@ serve(async (req) => {
 
     // Verify master code
     const { data: company } = await supabaseAdmin
-      .from('companies')
+      .from('Unternehmen')
       .select('master_code_hash')
       .eq('id', profile.company_id)
       .single();

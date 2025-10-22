@@ -57,7 +57,7 @@ const Dashboard = () => {
 
       // Load company data
       const { data: company } = await supabase
-        .from("companies")
+        .from("Unternehmen")
         .select("name, country, sector")
         .eq("id", profile.company_id)
         .single();

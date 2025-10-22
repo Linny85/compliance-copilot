@@ -28,7 +28,7 @@ serve(async (req) => {
 
     // Get company's master code hash
     const { data: company, error: companyError } = await supabase
-      .from('companies')
+      .from('Unternehmen')
       .select('master_code_hash')
       .eq('id', companyId)
       .single();

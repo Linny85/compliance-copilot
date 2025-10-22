@@ -59,7 +59,7 @@ export type Database = {
             foreignKeyName: "ai_systems_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
@@ -100,76 +100,10 @@ export type Database = {
             foreignKeyName: "audit_logs_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
-      }
-      companies: {
-        Row: {
-          address: string | null
-          city: string | null
-          company_size: string | null
-          country: string | null
-          created_at: string | null
-          created_by: string | null
-          delete_code_hash: string
-          id: string
-          legal_name: string | null
-          master_code_hash: string
-          name: string
-          sector: string | null
-          street: string | null
-          subscription_status: string | null
-          trial_ends_at: string | null
-          updated_at: string | null
-          vat_id: string | null
-          website: string | null
-          zip: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          company_size?: string | null
-          country?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          delete_code_hash: string
-          id?: string
-          legal_name?: string | null
-          master_code_hash: string
-          name: string
-          sector?: string | null
-          street?: string | null
-          subscription_status?: string | null
-          trial_ends_at?: string | null
-          updated_at?: string | null
-          vat_id?: string | null
-          website?: string | null
-          zip?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          company_size?: string | null
-          country?: string | null
-          created_at?: string | null
-          created_by?: string | null
-          delete_code_hash?: string
-          id?: string
-          legal_name?: string | null
-          master_code_hash?: string
-          name?: string
-          sector?: string | null
-          street?: string | null
-          subscription_status?: string | null
-          trial_ends_at?: string | null
-          updated_at?: string | null
-          vat_id?: string | null
-          website?: string | null
-          zip?: string | null
-        }
-        Relationships: []
       }
       documents: {
         Row: {
@@ -210,7 +144,7 @@ export type Database = {
             foreignKeyName: "documents_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
@@ -257,7 +191,7 @@ export type Database = {
             foreignKeyName: "nis2_risks_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
@@ -295,7 +229,7 @@ export type Database = {
             foreignKeyName: "profiles_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
@@ -345,10 +279,76 @@ export type Database = {
             foreignKeyName: "subscriptions_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: true
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
+      }
+      Unternehmen: {
+        Row: {
+          address: string | null
+          city: string | null
+          company_size: string | null
+          country: string | null
+          created_at: string | null
+          delete_code_hash: string
+          erstellt_von: string | null
+          id: string
+          legal_name: string | null
+          master_code_hash: string
+          name: string
+          sector: string | null
+          street: string | null
+          subscription_status: string | null
+          trial_ends_at: string | null
+          updated_at: string | null
+          vat_id: string | null
+          website: string | null
+          zip: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          company_size?: string | null
+          country?: string | null
+          created_at?: string | null
+          delete_code_hash: string
+          erstellt_von?: string | null
+          id?: string
+          legal_name?: string | null
+          master_code_hash: string
+          name: string
+          sector?: string | null
+          street?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+          vat_id?: string | null
+          website?: string | null
+          zip?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          company_size?: string | null
+          country?: string | null
+          created_at?: string | null
+          delete_code_hash?: string
+          erstellt_von?: string | null
+          id?: string
+          legal_name?: string | null
+          master_code_hash?: string
+          name?: string
+          sector?: string | null
+          street?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string | null
+          vat_id?: string | null
+          website?: string | null
+          zip?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -377,7 +377,7 @@ export type Database = {
             foreignKeyName: "user_roles_company_id_fkey"
             columns: ["company_id"]
             isOneToOne: false
-            referencedRelation: "companies"
+            referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
         ]
