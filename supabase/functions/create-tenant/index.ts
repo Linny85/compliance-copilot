@@ -17,15 +17,17 @@ async function hashCode(code: string): Promise<string> {
 interface OnboardingRequest {
   company: {
     name: string;
-    legalName?: string;
-    street: string;
-    zip: string;
-    city: string;
+    // Support both a single address field (preferred) and legacy street/zip/city fields
+    address?: string;
+    street?: string;
+    zip?: string;
+    city?: string;
     country: string;
     sector: string;
     website?: string;
     vatId?: string;
-    companySize: string;
+    companySize?: string;
+    legalName?: string;
   };
   masterCode: string;
   deleteCode: string;
@@ -63,22 +65,27 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (existingProfile?.company_id) {
-      console.log('User already has company:', existingProfile.company_id);
+      console.log('User already has company'); // GDPR-friendly: avoid PII in logs
       return new Response(
         JSON.stringify({ error: 'User already has a company' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 409, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     const body: OnboardingRequest = await req.json();
     const { company, masterCode, deleteCode } = body;
 
-    // Validate required fields
-    if (!company.name || !company.street || !company.zip || !company.city || 
-        !company.country || !company.sector || !company.companySize ||
-        !masterCode || !deleteCode) {
+    // Diagnose → Plan → Apply
+    // Diagnose: Ensure input meets API contract while keeping backward compatibility with legacy fields
+    // Plan: Require name, country, sector, codes, and either address OR (street + zip + city)
+    // Apply: Validate and 400 on failure
+    const hasFullAddress = Boolean((company.address && company.address.trim()) ||
+      (company.street && company.street.trim() && company.zip && company.zip.trim() && company.city && company.city.trim()));
+
+    if (!company.name?.trim() || !company.country?.trim() || !company.sector?.trim() ||
+        !masterCode?.trim() || !deleteCode?.trim() || !hasFullAddress) {
       return new Response(
-        JSON.stringify({ error: 'Missing required fields' }),
+        JSON.stringify({ error: 'Invalid input. Please provide required fields.' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -93,16 +100,18 @@ Deno.serve(async (req) => {
     const { data: newCompany, error: companyError } = await supabase
       .from('companies')
       .insert({
-        name: company.name,
-        legal_name: company.legalName,
-        street: company.street,
-        zip: company.zip,
-        city: company.city,
-        country: company.country,
-        sector: company.sector,
-        website: company.website,
-        vat_id: company.vatId,
-        company_size: company.companySize,
+        name: company.name?.trim(),
+        legal_name: company.legalName?.trim(),
+        // Prefer single address if provided; otherwise store legacy fields
+        address: company.address?.trim(),
+        street: company.street?.trim(),
+        zip: company.zip?.trim(),
+        city: company.city?.trim(),
+        country: company.country?.trim(),
+        sector: company.sector?.trim(),
+        website: company.website?.trim(),
+        vat_id: company.vatId?.trim(),
+        company_size: company.companySize?.trim(),
         master_code_hash: masterCodeHash,
         delete_code_hash: deleteCodeHash,
       })
@@ -149,25 +158,11 @@ Deno.serve(async (req) => {
 
     console.log('Master admin role created');
 
-    // Create trial subscription (14 days)
-    const now = new Date();
-    const trialEnd = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
-
-    const { error: subscriptionError } = await supabase
-      .from('subscriptions')
-      .insert({
-        company_id: newCompany.id,
-        status: 'trial',
-        trial_start: now.toISOString(),
-        trial_end: trialEnd.toISOString(),
-      });
-
-    if (subscriptionError) {
-      console.error('Subscription creation error:', subscriptionError);
-      throw subscriptionError;
-    }
-
-    console.log('Trial subscription created');
+    // Diagnose → Plan → Apply
+    // Diagnose: Subscriptions table does not allow INSERT via RLS
+    // Plan: Rely on company defaults (subscription_status, trial_ends_at). Avoid direct inserts.
+    // Apply: Skip manual subscription creation to prevent RLS errors
+    console.log('Subscription setup handled by company defaults');
 
     // Log audit entry
     const { error: auditError } = await supabase
@@ -193,11 +188,7 @@ Deno.serve(async (req) => {
     console.log('Onboarding completed successfully');
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        companyId: newCompany.id,
-        message: 'Company created successfully' 
-      }),
+      JSON.stringify({ tenantId: newCompany.id }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
