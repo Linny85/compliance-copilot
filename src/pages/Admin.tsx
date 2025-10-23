@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { QAMonitorCard } from "@/components/dashboard/QAMonitorCard";
 import { ComplianceStatusCard } from "@/components/dashboard/ComplianceStatusCard";
 import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
+import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 
 interface User {
   id: string;
@@ -329,11 +330,12 @@ const Admin = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="compliance" className="space-y-4">
+              <TabsContent value="compliance" className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
                   {companyId && <ComplianceStatusCard companyId={companyId} />}
                   {companyId && <AIInsightsCard companyId={companyId} />}
                 </div>
+                {companyId && <AlertsPanel companyId={companyId} />}
               </TabsContent>
 
               <TabsContent value="qa-monitor" className="space-y-4">
