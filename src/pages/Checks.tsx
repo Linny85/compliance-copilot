@@ -17,6 +17,11 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ControlSelect } from "@/components/controls/ControlSelect";
 import { SpecEditor } from "@/components/checks/SpecEditor";
+import { ResultsFilters, ResultFilters } from "@/components/checks/ResultsFilters";
+import { ResultDetailsDialog } from "@/components/checks/ResultDetailsDialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { format } from "date-fns";
+import { Eye, Download } from "lucide-react";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
@@ -42,6 +47,7 @@ interface CheckResult {
   outcome: Outcome;
   message?: string | null;
   created_at: string;
+  run_id: string;
   check_rules: { code: string; title: string; severity: Severity; control_id: string | null };
   check_runs: { status: RunStatus; window_start: string; window_end: string };
 }
@@ -57,10 +63,59 @@ export default function ChecksPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<CheckRule | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  
+  // Results filters & pagination
+  const [filters, setFilters] = useState<ResultFilters>({
+    severity: [],
+    outcome: [],
+    status: []
+  });
+  const [resultsPage, setResultsPage] = useState(1);
+  const [resultsTotal, setResultsTotal] = useState(0);
+  const [resultsLoading, setResultsLoading] = useState(false);
+  const [drilldownOpen, setDrilldownOpen] = useState(false);
+  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  // Debounced results loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      loadResults();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [filters, resultsPage]);
+
+  const loadResults = async () => {
+    setResultsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("list-results", {
+        body: { 
+          page: resultsPage, 
+          pageSize: 50,
+          filters: {
+            from: filters.from?.toISOString(),
+            to: filters.to?.toISOString(),
+            severity: filters.severity,
+            outcome: filters.outcome,
+            status: filters.status,
+            control_id: filters.control_id,
+            q: filters.q
+          }
+        }
+      });
+      if (error) throw error;
+      setResults(data.results || []);
+      setResultsTotal(data.pagination?.total || 0);
+    } catch (e) {
+      console.error('[loadResults] Error:', e);
+      toast({ title: t("checks:errors.load_failed"), variant: "destructive" });
+    } finally {
+      setResultsLoading(false);
+    }
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -362,7 +417,16 @@ export default function ChecksPage() {
         </TabsContent>
 
         <TabsContent value="results" className="space-y-4">
-          {loading ? (
+          <ResultsFilters
+            filters={filters}
+            onChange={setFilters}
+            onReset={() => {
+              setFilters({ severity: [], outcome: [], status: [] });
+              setResultsPage(1);
+            }}
+          />
+
+          {resultsLoading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">{t("common:loading")}</p>
             </div>
@@ -374,52 +438,107 @@ export default function ChecksPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4">
-              {results.map((result) => (
-                <Card key={result.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2 flex-1">
-                        <div className="flex items-center gap-2">
-                          <Badge className={getOutcomeColor(result.outcome)}>
-                            <span className="flex items-center gap-1">
-                              {getOutcomeIcon(result.outcome)}
-                              {t(`checks:outcome.${result.outcome}`)}
-                            </span>
-                          </Badge>
-                          <span className="text-sm text-muted-foreground">
-                            {result.check_rules.code}: {result.check_rules.title}
-                          </span>
-                        </div>
-                        {result.message && (
-                          <p className="text-sm text-muted-foreground">{result.message}</p>
-                        )}
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span>{new Date(result.created_at).toLocaleString()}</span>
-                          {(() => {
-                            const sev = (result.check_rules?.severity ?? 'medium') as Severity;
-                            return (
-                              <Badge className={getSeverityColor(sev)} variant="outline">
-                                {t(`common:severity.${sev}`)}
-                              </Badge>
-                            );
-                          })()}
-                          {(() => {
-                            const runStatus = (result.check_runs?.status ?? 'success') as RunStatus;
-                            return (
-                              <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 border">
-                                {getRunStatusIcon(runStatus)}
-                                {t(`common:status.${runStatus}`)}
+            <>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t("checks:results.time")}</TableHead>
+                      <TableHead>{t("checks:results.rule")}</TableHead>
+                      <TableHead>{t("checks:results.outcome")}</TableHead>
+                      <TableHead>{t("checks:results.runStatus")}</TableHead>
+                      <TableHead>{t("checks:results.severity")}</TableHead>
+                      <TableHead className="max-w-xs">{t("checks:results.message")}</TableHead>
+                      <TableHead className="text-right">{t("checks:results.actions")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {results.map((result) => {
+                      const run = result.check_runs;
+                      return (
+                        <TableRow key={result.id}>
+                          <TableCell className="text-sm whitespace-nowrap">
+                            {format(new Date(result.created_at), "PPp")}
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium text-sm">{result.check_rules.code}</div>
+                            <div className="text-xs text-muted-foreground truncate max-w-xs">
+                              {result.check_rules.title}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getOutcomeColor(result.outcome)}>
+                              <span className="flex items-center gap-1">
+                                {getOutcomeIcon(result.outcome)}
+                                {t(`checks:outcome.${result.outcome}`)}
                               </span>
-                            );
-                          })()}
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <span className="inline-flex items-center gap-1 text-sm">
+                              {getRunStatusIcon(run.status)}
+                              {t(`checks:status.${run.status}`)}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getSeverityColor(result.check_rules.severity)} variant="outline">
+                              {t(`common:severity.${result.check_rules.severity}`)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate text-sm text-muted-foreground">
+                            {result.message || "-"}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedRunId(result.run_id);
+                                setDrilldownOpen(true);
+                              }}
+                            >
+                              <Eye className="h-4 w-4" />
+                              <span className="ml-1 sr-only sm:not-sr-only sm:inline">
+                                {t("checks:results.viewDetails")}
+                              </span>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                  {t("checks:results.showing", { 
+                    from: (resultsPage - 1) * 50 + 1, 
+                    to: Math.min(resultsPage * 50, resultsTotal), 
+                    total: resultsTotal 
+                  }) || `Showing ${(resultsPage - 1) * 50 + 1}-${Math.min(resultsPage * 50, resultsTotal)} of ${resultsTotal}`}
+                </p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setResultsPage(p => Math.max(1, p - 1))}
+                    disabled={resultsPage === 1}
+                  >
+                    {t("common:previous") || "Previous"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setResultsPage(p => p + 1)}
+                    disabled={resultsPage * 50 >= resultsTotal}
+                  >
+                    {t("common:next") || "Next"}
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
         </TabsContent>
       </Tabs>
@@ -531,6 +650,17 @@ export default function ChecksPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Drill-down Details Dialog */}
+      <ResultDetailsDialog
+        open={drilldownOpen}
+        onOpenChange={setDrilldownOpen}
+        runId={selectedRunId}
+        onRerun={(ruleId) => {
+          runChecks([ruleId]);
+          setDrilldownOpen(false);
+        }}
+      />
     </div>
   );
 }

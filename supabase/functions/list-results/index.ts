@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
     // Build query with filters
     let query = sb
       .from('check_results')
-      .select('*, check_runs!inner(status, window_start, window_end), check_rules!inner(code, title, severity, control_id)', { count: 'exact' })
+      .select('id, run_id, outcome, message, created_at, check_runs!inner(status, window_start, window_end), check_rules!inner(code, title, severity, control_id)', { count: 'exact' })
       .eq('tenant_id', tenant_id);
 
     // Date range filter
