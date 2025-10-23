@@ -2,6 +2,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n/init";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { I18nProvider } from "./contexts/I18nContext";
@@ -31,32 +33,34 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <I18nProvider>
-      <TooltipProvider>
-        <Toaster position="top-right" richColors closeButton expand duration={3500} />
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <AuthGuard>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/company-profile" element={
-                <ErrorBoundary>
-                  <CompanyProfile />
-                </ErrorBoundary>
-              } />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/nis2" element={<NIS2 />} />
-              <Route path="/ai-act" element={<AIAct />} />
-              <Route path="/documents" element={<Documents />} />
-              <Route path="/admin" element={<Admin />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthGuard>
-        </BrowserRouter>
-      </TooltipProvider>
-    </I18nProvider>
+    <I18nextProvider i18n={i18n}>
+      <I18nProvider>
+        <TooltipProvider>
+          <Toaster position="top-right" richColors closeButton expand duration={3500} />
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <AuthGuard>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/company-profile" element={
+                  <ErrorBoundary>
+                    <CompanyProfile />
+                  </ErrorBoundary>
+                } />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/nis2" element={<NIS2 />} />
+                <Route path="/ai-act" element={<AIAct />} />
+                <Route path="/documents" element={<Documents />} />
+                <Route path="/admin" element={<Admin />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthGuard>
+          </BrowserRouter>
+        </TooltipProvider>
+      </I18nProvider>
+    </I18nextProvider>
   </QueryClientProvider>
 );
 
