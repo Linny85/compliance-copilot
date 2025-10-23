@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle } from "lucide-react";
+import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle } from "lucide-react";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
@@ -59,7 +59,12 @@ export default function ChecksPage() {
       ]);
 
       if (rulesRes.error) throw rulesRes.error;
-      if (resultsRes.error) throw new Error(resultsRes.error.message || String(resultsRes.error));
+      if (resultsRes.error) {
+        const msg = typeof resultsRes.error === 'string'
+          ? resultsRes.error
+          : (resultsRes.error.message || JSON.stringify(resultsRes.error));
+        throw new Error(msg);
+      }
 
       setRules(rulesRes.data?.checks || []);
       setResults(resultsRes.data?.results || []);
@@ -101,14 +106,15 @@ export default function ChecksPage() {
     }
   };
 
+  const severityColors: Record<Severity, string> = {
+    low: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+    medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+    high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+    critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+  };
+
   const getSeverityColor = (severity: Severity): string => {
-    const colors: Record<Severity, string> = {
-      low: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-      medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-      high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
-      critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-    };
-    return colors[severity] || colors.medium;
+    return severityColors[severity] || severityColors.medium;
   };
 
   const getOutcomeIcon = (outcome: Outcome) => {
@@ -124,13 +130,14 @@ export default function ChecksPage() {
     }
   };
 
+  const outcomeColors: Record<Outcome, string> = {
+    pass: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
+    fail: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
+    warn: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+  };
+
   const getOutcomeColor = (outcome: Outcome): string => {
-    const colors: Record<Outcome, string> = {
-      pass: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
-      fail: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
-      warn: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
-    };
-    return colors[outcome] || colors.pass;
+    return outcomeColors[outcome] || outcomeColors.pass;
   };
 
   const getRunStatusIcon = (status: RunStatus) => {
@@ -144,7 +151,7 @@ export default function ChecksPage() {
       case "partial":
         return <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />;
       default:
-        return <Clock className="h-3.5 w-3.5" aria-hidden="true" />;
+        return <Circle className="h-3.5 w-3.5" aria-hidden="true" />;
     }
   };
 
@@ -270,10 +277,15 @@ export default function ChecksPage() {
                           <Badge className={getSeverityColor(result.check_rules.severity)} variant="outline">
                             {t(`common:severity.${result.check_rules.severity}`)}
                           </Badge>
-                          <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 border">
-                            {getRunStatusIcon(result.check_runs.status)}
-                            {t(`common:status.${result.check_runs.status}`)}
-                          </span>
+                          {(() => {
+                            const runStatus = (result.check_runs?.status ?? 'success') as RunStatus;
+                            return (
+                              <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 border">
+                                {getRunStatusIcon(runStatus)}
+                                {t(`common:status.${runStatus}`)}
+                              </span>
+                            );
+                          })()}
                         </div>
                       </div>
                     </div>

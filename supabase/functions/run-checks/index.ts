@@ -210,22 +210,26 @@ Deno.serve(async (req) => {
     if (anyFail) finalStatus = 'failed';
     else if (anyWarn) finalStatus = 'partial';
 
-    // Update all runs with final status
-    if (rules && rules.length > 0) {
+    // Update all runs with final status (only open runs to avoid race conditions)
+    if (results.length > 0) {
       const runIds = results.map(r => r.rule_id);
       const { data: runsToUpdate } = await sb
         .from('check_runs')
-        .select('id')
+        .select('id, finished_at, status')
         .eq('tenant_id', tenant_id)
         .in('rule_id', runIds)
         .eq('window_start', start.toISOString())
         .eq('window_end', end.toISOString());
 
-      if (runsToUpdate) {
+      const openRunIds = (runsToUpdate || [])
+        .filter(r => !r.finished_at || r.status !== 'success')
+        .map(r => r.id);
+
+      if (openRunIds.length) {
         await sb
           .from('check_runs')
           .update({ status: finalStatus, finished_at: new Date().toISOString() })
-          .in('id', runsToUpdate.map(r => r.id));
+          .in('id', openRunIds);
       }
     }
 
