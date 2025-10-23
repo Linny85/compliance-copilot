@@ -60,10 +60,18 @@ Deno.serve(async (req) => {
 
     console.log('[list-results]', { tenant_id, page: safePage, pageSize: safePageSize, filters });
 
-    // Build query with filters
+    // Build query with filters (RLS-safe via auth client)
     let query = sb
       .from('check_results')
-      .select('id, run_id, outcome, message, created_at, check_runs!inner(status, window_start, window_end), check_rules!inner(code, title, severity, control_id)', { count: 'exact' })
+      .select(`
+        id, 
+        run_id, 
+        outcome, 
+        message, 
+        created_at,
+        check_runs!inner(id, status, window_start, window_end),
+        check_rules!inner(id, code, title, severity, control_id)
+      `, { count: 'exact' })
       .eq('tenant_id', tenant_id);
 
     // Date range filter

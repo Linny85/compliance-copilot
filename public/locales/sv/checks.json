@@ -128,7 +128,8 @@
     "message": "Meddelande",
     "actions": "Åtgärder",
     "viewDetails": "Visa detaljer",
-    "export": "Exportera CSV"
+    "export": "Exportera CSV",
+    "showing": "Visar {{from}}-{{to}} av {{total}}"
   },
   "drilldown": {
     "title": "Körningsdetaljer",

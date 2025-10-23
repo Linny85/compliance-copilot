@@ -115,7 +115,9 @@
     "error": "Fel",
     "success": "Framgång",
     "language": "Språk",
-    "settings": "Inställningar"
+    "settings": "Inställningar",
+    "previous": "Föregående",
+    "next": "Nästa"
   },
   "status": {
     "running": "Pågår",

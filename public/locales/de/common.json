@@ -137,7 +137,9 @@
     "evidenceTypes": "Evidenztypen",
     "actions": "Aktionen",
     "createPolicy": "Richtlinie erstellen",
-    "disabled": "Deaktiviert"
+    "disabled": "Deaktiviert",
+    "previous": "Zurück",
+    "next": "Weiter"
   },
   "status": {
     "running": "Laufend",

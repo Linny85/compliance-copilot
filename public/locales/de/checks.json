@@ -128,7 +128,8 @@
     "message": "Nachricht",
     "actions": "Aktionen",
     "viewDetails": "Details anzeigen",
-    "export": "CSV exportieren"
+    "export": "CSV exportieren",
+    "showing": "Zeige {{from}}-{{to}} von {{total}}"
   },
   "drilldown": {
     "title": "Run-Details",

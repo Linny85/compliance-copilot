@@ -137,7 +137,9 @@
     "evidenceTypes": "Evidence Types",
     "actions": "Actions",
     "createPolicy": "Create Policy",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "previous": "Previous",
+    "next": "Next"
   },
   "status": {
     "running": "Running",
