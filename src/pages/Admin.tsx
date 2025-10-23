@@ -18,6 +18,7 @@ import { ComplianceStatusCard } from "@/components/dashboard/ComplianceStatusCar
 import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { OpsDashboardCard } from "@/components/dashboard/OpsDashboardCard";
+import { ForecastCard } from "@/components/dashboard/ForecastCard";
 
 interface User {
   id: string;
@@ -337,6 +338,7 @@ const Admin = () => {
                   {companyId && <ComplianceStatusCard companyId={companyId} />}
                   {companyId && <AIInsightsCard companyId={companyId} />}
                 </div>
+                {companyId && <ForecastCard companyId={companyId} />}
                 {companyId && <AlertsPanel companyId={companyId} />}
               </TabsContent>
 
