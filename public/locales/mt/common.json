@@ -4,15 +4,100 @@
     "signUp": "Irreġistra",
     "signOut": "Oħroġ",
     "email": "Email",
-    "password": "Password"
+    "password": "Password",
+    "confirmPassword": "Ikkonferma password",
+    "forgotPassword": "Insejt il-password?",
+    "resetPassword": "Irrisettja password",
+    "createAccount": "Oħloq kont",
+    "alreadyHaveAccount": "Diġà għandek kont?",
+    "dontHaveAccount": "M'għandekx kont?",
+    "invalidCredentials": "Email jew password invalidi",
+    "emailRequired": "Email meħtieġ",
+    "passwordRequired": "Password meħtieġ",
+    "passwordsDoNotMatch": "Passwords ma jaqblux"
+  },
+  "onboarding": {
+    "welcome": "Merħba",
+    "setupCompany": "Issettja l-kumpanija tiegħek",
+    "companyName": "Isem il-kumpanija",
+    "country": "Pajjiż",
+    "sector": "Settur",
+    "companySize": "Daqs tal-kumpanija",
+    "masterCode": "Kodiċi prinċipali",
+    "deleteCode": "Kodiċi tat-tħassir",
+    "continue": "Kompli",
+    "finish": "Tmiem",
+    "step": "Pass {{current}} minn {{total}}"
   },
   "dashboard": {
     "welcome": "Merħba",
-    "nextSteps": "Passi li jmiss"
+    "nextSteps": "Passi li jmiss",
+    "addFirstRisk": "Żid l-ewwel riskju",
+    "addFirstRiskDesc": "Iddokumenta u evalwa l-ewwel riskju tas-sigurtà ċibernetika tiegħek",
+    "registerAI": "Irreġistra sistema AI",
+    "registerAIDesc": "Ikkataloga s-sistemi AI tiegħek għall-konformità EU AI Act",
+    "generatePolicy": "Iġġenera politika",
+    "generatePolicyDesc": "Oħloq mudelli ta' dokumentazzjoni tal-konformità",
+    "trial": "Perjodu ta' prova",
+    "daysLeft": "{{count}} jum li jifdal",
+    "daysLeft_other": "{{count}} jiem li jifdlu",
+    "trialExpired": "Perjodu ta' prova skada",
+    "upgradePlan": "Aġġorna l-pjan",
+    "organization": "Organizzazzjoni",
+    "viewProfile": "Ara profil tal-kumpanija"
+  },
+  "nis2": {
+    "title": "Sigurtà Ċibernetika NIS2",
+    "addRisk": "Żid riskju",
+    "riskTitle": "Titlu tar-riskju",
+    "description": "Deskrizzjoni",
+    "riskLevel": "Livell ta' riskju",
+    "status": "Stat",
+    "mitigationPlan": "Pjan ta' mitigazzjoni",
+    "save": "Issejvja",
+    "cancel": "Ikkanċella",
+    "noRisks": "Ebda riskji ddokumentati s'issa"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Irreġistra sistema AI",
+    "systemName": "Isem is-sistema",
+    "purpose": "Skop",
+    "riskClassification": "Klassifikazzjoni tar-riskju",
+    "deploymentStatus": "Stat tad-dispożizzjoni",
+    "dataTypes": "Tipi ta' data",
+    "noSystems": "Ebda sistemi AI rreġistrati s'issa"
+  },
+  "documents": {
+    "title": "Dokumenti",
+    "generate": "Iġġenera dokument",
+    "type": "Tip ta' dokument",
+    "noDocuments": "Ebda dokumenti s'issa",
+    "policy": "Politika",
+    "report": "Rapport",
+    "certificate": "Ċertifikat"
+  },
+  "admin": {
+    "title": "Amministrazzjoni",
+    "users": "Utenti",
+    "inviteUser": "Istieden utent",
+    "removeUser": "Neħħi utent",
+    "role": "Rwol",
+    "masterAdmin": "Amministratur prinċipali",
+    "admin": "Amministratur",
+    "member": "Membru"
   },
   "common": {
     "save": "Issejvja",
     "cancel": "Ikkanċella",
-    "loading": "Qed jitgħabba..."
+    "delete": "Ħassar",
+    "edit": "Editja",
+    "close": "Agħlaq",
+    "confirm": "Ikkonferma",
+    "loading": "Qed jitgħabba...",
+    "error": "Żball",
+    "success": "Suċċess",
+    "language": "Lingwa",
+    "settings": "Settings"
   }
 }

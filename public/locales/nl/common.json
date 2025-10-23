@@ -4,15 +4,100 @@
     "signUp": "Registreren",
     "signOut": "Uitloggen",
     "email": "E-mail",
-    "password": "Wachtwoord"
+    "password": "Wachtwoord",
+    "confirmPassword": "Bevestig wachtwoord",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "resetPassword": "Wachtwoord resetten",
+    "createAccount": "Account aanmaken",
+    "alreadyHaveAccount": "Heb je al een account?",
+    "dontHaveAccount": "Heb je geen account?",
+    "invalidCredentials": "Ongeldig e-mail of wachtwoord",
+    "emailRequired": "E-mail is verplicht",
+    "passwordRequired": "Wachtwoord is verplicht",
+    "passwordsDoNotMatch": "Wachtwoorden komen niet overeen"
+  },
+  "onboarding": {
+    "welcome": "Welkom",
+    "setupCompany": "Configureer uw bedrijf",
+    "companyName": "Bedrijfsnaam",
+    "country": "Land",
+    "sector": "Sector",
+    "companySize": "Bedrijfsgrootte",
+    "masterCode": "Hoofdcode",
+    "deleteCode": "Verwijdercode",
+    "continue": "Doorgaan",
+    "finish": "Voltooien",
+    "step": "Stap {{current}} van {{total}}"
   },
   "dashboard": {
     "welcome": "Welkom",
-    "nextSteps": "Volgende stappen"
+    "nextSteps": "Volgende stappen",
+    "addFirstRisk": "Eerste risico toevoegen",
+    "addFirstRiskDesc": "Documenteer en beoordeel uw eerste cybersecurity risico",
+    "registerAI": "AI-systeem registreren",
+    "registerAIDesc": "Catalogiseer uw AI-systemen voor EU AI Act compliance",
+    "generatePolicy": "Beleid genereren",
+    "generatePolicyDesc": "Maak compliance documentatiesjablonen",
+    "trial": "Proefperiode",
+    "daysLeft": "{{count}} dag over",
+    "daysLeft_other": "{{count}} dagen over",
+    "trialExpired": "Proefperiode verlopen",
+    "upgradePlan": "Upgrade plan",
+    "organization": "Organisatie",
+    "viewProfile": "Bekijk bedrijfsprofiel"
+  },
+  "nis2": {
+    "title": "NIS2 Cybersecurity",
+    "addRisk": "Risico toevoegen",
+    "riskTitle": "Risicotitel",
+    "description": "Beschrijving",
+    "riskLevel": "Risiconiveau",
+    "status": "Status",
+    "mitigationPlan": "Mitigatieplan",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "noRisks": "Nog geen risico's gedocumenteerd"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "AI-systeem registreren",
+    "systemName": "Systeemnaam",
+    "purpose": "Doel",
+    "riskClassification": "Risicoclassificatie",
+    "deploymentStatus": "Implementatiestatus",
+    "dataTypes": "Datatypes",
+    "noSystems": "Nog geen AI-systemen geregistreerd"
+  },
+  "documents": {
+    "title": "Documenten",
+    "generate": "Document genereren",
+    "type": "Documenttype",
+    "noDocuments": "Nog geen documenten",
+    "policy": "Beleid",
+    "report": "Rapport",
+    "certificate": "Certificaat"
+  },
+  "admin": {
+    "title": "Administratie",
+    "users": "Gebruikers",
+    "inviteUser": "Gebruiker uitnodigen",
+    "removeUser": "Gebruiker verwijderen",
+    "role": "Rol",
+    "masterAdmin": "Hoofdbeheerder",
+    "admin": "Beheerder",
+    "member": "Lid"
   },
   "common": {
     "save": "Opslaan",
     "cancel": "Annuleren",
-    "loading": "Laden..."
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "confirm": "Bevestigen",
+    "loading": "Laden...",
+    "error": "Fout",
+    "success": "Succes",
+    "language": "Taal",
+    "settings": "Instellingen"
   }
 }

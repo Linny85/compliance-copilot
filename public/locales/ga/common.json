@@ -4,15 +4,100 @@
     "signUp": "Cláraigh",
     "signOut": "Logáil amach",
     "email": "Ríomhphost",
-    "password": "Pasfhocal"
+    "password": "Pasfhocal",
+    "confirmPassword": "Deimhnigh pasfhocal",
+    "forgotPassword": "Pasfhocal dearmadta?",
+    "resetPassword": "Athshocraigh pasfhocal",
+    "createAccount": "Cruthaigh cuntas",
+    "alreadyHaveAccount": "An bhfuil cuntas agat cheana?",
+    "dontHaveAccount": "Níl cuntas agat?",
+    "invalidCredentials": "Ríomhphost nó pasfhocal neamhbhailí",
+    "emailRequired": "Tá ríomhphost riachtanach",
+    "passwordRequired": "Tá pasfhocal riachtanach",
+    "passwordsDoNotMatch": "Ní hionann na pasfhocail"
+  },
+  "onboarding": {
+    "welcome": "Fáilte",
+    "setupCompany": "Socraigh do chuideachta",
+    "companyName": "Ainm cuideachta",
+    "country": "Tír",
+    "sector": "Earnáil",
+    "companySize": "Méid cuideachta",
+    "masterCode": "Príomhchód",
+    "deleteCode": "Cód scriostha",
+    "continue": "Lean ar aghaidh",
+    "finish": "Críochnaigh",
+    "step": "Céim {{current}} as {{total}}"
   },
   "dashboard": {
     "welcome": "Fáilte",
-    "nextSteps": "Céad chéimeanna eile"
+    "nextSteps": "Céad chéimeanna eile",
+    "addFirstRisk": "Cuir an chéad riosca leis",
+    "addFirstRiskDesc": "Doiciméadaigh agus measúnaigh do chéad riosca cibearshláine",
+    "registerAI": "Cláraigh córas AI",
+    "registerAIDesc": "Catalógaigh do chórais AI le haghaidh comhlíonadh Achta AI an AE",
+    "generatePolicy": "Gineadh beartas",
+    "generatePolicyDesc": "Cruthaigh teimpléid doiciméadúcháin chomhlíonta",
+    "trial": "Tréimhse trialach",
+    "daysLeft": "{{count}} lá fágtha",
+    "daysLeft_other": "{{count}} laethanta fágtha",
+    "trialExpired": "Tréimhse trialach caite",
+    "upgradePlan": "Uasghrádaigh plean",
+    "organization": "Eagraíocht",
+    "viewProfile": "Féach ar phróifíl cuideachta"
+  },
+  "nis2": {
+    "title": "Cibearshláine NIS2",
+    "addRisk": "Cuir riosca leis",
+    "riskTitle": "Teideal riosca",
+    "description": "Cur síos",
+    "riskLevel": "Leibhéal riosca",
+    "status": "Stádas",
+    "mitigationPlan": "Plean maolaithe",
+    "save": "Sábháil",
+    "cancel": "Cealaigh",
+    "noRisks": "Níl aon rioscaí doiciméadaithe fós"
+  },
+  "aiAct": {
+    "title": "Acht AI an AE",
+    "registerSystem": "Cláraigh córas AI",
+    "systemName": "Ainm córais",
+    "purpose": "Cuspóir",
+    "riskClassification": "Aicmiú riosca",
+    "deploymentStatus": "Stádas imscartha",
+    "dataTypes": "Cineálacha sonraí",
+    "noSystems": "Níl aon chórais AI cláraithe fós"
+  },
+  "documents": {
+    "title": "Doiciméid",
+    "generate": "Gineadh doiciméad",
+    "type": "Cineál doiciméid",
+    "noDocuments": "Níl aon doiciméid fós",
+    "policy": "Beartas",
+    "report": "Tuarascáil",
+    "certificate": "Teastas"
+  },
+  "admin": {
+    "title": "Riarachán",
+    "users": "Úsáideoirí",
+    "inviteUser": "Tabhair cuireadh d'úsáideoir",
+    "removeUser": "Bain úsáideoir",
+    "role": "Ról",
+    "masterAdmin": "Príomhriarthóir",
+    "admin": "Riarthóir",
+    "member": "Ball"
   },
   "common": {
     "save": "Sábháil",
     "cancel": "Cealaigh",
-    "loading": "Ag lódáil..."
+    "delete": "Scrios",
+    "edit": "Cuir in eagar",
+    "close": "Dún",
+    "confirm": "Deimhnigh",
+    "loading": "Ag lódáil...",
+    "error": "Earráid",
+    "success": "Rath",
+    "language": "Teanga",
+    "settings": "Socruithe"
   }
 }

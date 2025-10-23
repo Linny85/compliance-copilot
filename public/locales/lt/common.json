@@ -4,15 +4,100 @@
     "signUp": "Registruotis",
     "signOut": "Atsijungti",
     "email": "El. paštas",
-    "password": "Slaptažodis"
+    "password": "Slaptažodis",
+    "confirmPassword": "Patvirtinti slaptažodį",
+    "forgotPassword": "Pamiršote slaptažodį?",
+    "resetPassword": "Atkurti slaptažodį",
+    "createAccount": "Sukurti paskyrą",
+    "alreadyHaveAccount": "Jau turite paskyrą?",
+    "dontHaveAccount": "Neturite paskyros?",
+    "invalidCredentials": "Neteisingas el. paštas arba slaptažodis",
+    "emailRequired": "El. paštas privalomas",
+    "passwordRequired": "Slaptažodis privalomas",
+    "passwordsDoNotMatch": "Slaptažodžiai nesutampa"
+  },
+  "onboarding": {
+    "welcome": "Sveiki atvykę",
+    "setupCompany": "Nustatykite savo įmonę",
+    "companyName": "Įmonės pavadinimas",
+    "country": "Šalis",
+    "sector": "Sektorius",
+    "companySize": "Įmonės dydis",
+    "masterCode": "Pagrindinis kodas",
+    "deleteCode": "Ištrynimo kodas",
+    "continue": "Tęsti",
+    "finish": "Baigti",
+    "step": "{{current}} žingsnis iš {{total}}"
   },
   "dashboard": {
     "welcome": "Sveiki atvykę",
-    "nextSteps": "Kiti žingsniai"
+    "nextSteps": "Kiti žingsniai",
+    "addFirstRisk": "Pridėti pirmą riziką",
+    "addFirstRiskDesc": "Dokumentuokite ir įvertinkite savo pirmą kibernetinio saugumo riziką",
+    "registerAI": "Registruoti DI sistemą",
+    "registerAIDesc": "Katalogizuokite savo DI sistemas ES DI akto atitikčiai",
+    "generatePolicy": "Generuoti politiką",
+    "generatePolicyDesc": "Kurti atitikties dokumentacijos šablonus",
+    "trial": "Bandomasis laikotarpis",
+    "daysLeft": "{{count}} diena liko",
+    "daysLeft_other": "{{count}} dienų liko",
+    "trialExpired": "Bandomasis laikotarpis pasibaigė",
+    "upgradePlan": "Atnaujinti planą",
+    "organization": "Organizacija",
+    "viewProfile": "Peržiūrėti įmonės profilį"
+  },
+  "nis2": {
+    "title": "NIS2 Kibernetinis saugumas",
+    "addRisk": "Pridėti riziką",
+    "riskTitle": "Rizikos pavadinimas",
+    "description": "Aprašymas",
+    "riskLevel": "Rizikos lygis",
+    "status": "Būsena",
+    "mitigationPlan": "Mažinimo planas",
+    "save": "Išsaugoti",
+    "cancel": "Atšaukti",
+    "noRisks": "Dar nėra dokumentuotų rizikų"
+  },
+  "aiAct": {
+    "title": "ES DI aktas",
+    "registerSystem": "Registruoti DI sistemą",
+    "systemName": "Sistemos pavadinimas",
+    "purpose": "Paskirtis",
+    "riskClassification": "Rizikos klasifikacija",
+    "deploymentStatus": "Diegimo būsena",
+    "dataTypes": "Duomenų tipai",
+    "noSystems": "Dar nėra registruotų DI sistemų"
+  },
+  "documents": {
+    "title": "Dokumentai",
+    "generate": "Generuoti dokumentą",
+    "type": "Dokumento tipas",
+    "noDocuments": "Dar nėra dokumentų",
+    "policy": "Politika",
+    "report": "Ataskaita",
+    "certificate": "Sertifikatas"
+  },
+  "admin": {
+    "title": "Administravimas",
+    "users": "Naudotojai",
+    "inviteUser": "Pakviesti naudotoją",
+    "removeUser": "Pašalinti naudotoją",
+    "role": "Vaidmuo",
+    "masterAdmin": "Pagrindinis administratorius",
+    "admin": "Administratorius",
+    "member": "Narys"
   },
   "common": {
     "save": "Išsaugoti",
     "cancel": "Atšaukti",
-    "loading": "Įkeliama..."
+    "delete": "Ištrinti",
+    "edit": "Redaguoti",
+    "close": "Uždaryti",
+    "confirm": "Patvirtinti",
+    "loading": "Įkeliama...",
+    "error": "Klaida",
+    "success": "Sėkmė",
+    "language": "Kalba",
+    "settings": "Nustatymai"
   }
 }

@@ -4,15 +4,100 @@
     "signUp": "Registrer deg",
     "signOut": "Logg ut",
     "email": "E-post",
-    "password": "Passord"
+    "password": "Passord",
+    "confirmPassword": "Bekreft passord",
+    "forgotPassword": "Glemt passord?",
+    "resetPassword": "Tilbakestill passord",
+    "createAccount": "Opprett konto",
+    "alreadyHaveAccount": "Har du allerede en konto?",
+    "dontHaveAccount": "Har du ikke en konto?",
+    "invalidCredentials": "Ugyldig e-post eller passord",
+    "emailRequired": "E-post er påkrevd",
+    "passwordRequired": "Passord er påkrevd",
+    "passwordsDoNotMatch": "Passordene stemmer ikke overens"
+  },
+  "onboarding": {
+    "welcome": "Velkommen",
+    "setupCompany": "Sett opp bedriften din",
+    "companyName": "Bedriftsnavn",
+    "country": "Land",
+    "sector": "Sektor",
+    "companySize": "Bedriftsstørrelse",
+    "masterCode": "Hovedkode",
+    "deleteCode": "Slettekode",
+    "continue": "Fortsett",
+    "finish": "Fullfør",
+    "step": "Trinn {{current}} av {{total}}"
   },
   "dashboard": {
     "welcome": "Velkommen",
-    "nextSteps": "Neste steg"
+    "nextSteps": "Neste steg",
+    "addFirstRisk": "Legg til første risiko",
+    "addFirstRiskDesc": "Dokumenter og vurder din første cybersikkerhetsrisiko",
+    "registerAI": "Registrer AI-system",
+    "registerAIDesc": "Katalogiser dine AI-systemer for EU AI Act overholdelse",
+    "generatePolicy": "Generer policy",
+    "generatePolicyDesc": "Opprett maler for overholdelsesdokumentasjon",
+    "trial": "Prøveperiode",
+    "daysLeft": "{{count}} dag igjen",
+    "daysLeft_other": "{{count}} dager igjen",
+    "trialExpired": "Prøveperiode utløpt",
+    "upgradePlan": "Oppgrader plan",
+    "organization": "Organisasjon",
+    "viewProfile": "Se bedriftsprofil"
+  },
+  "nis2": {
+    "title": "NIS2 Cybersikkerhet",
+    "addRisk": "Legg til risiko",
+    "riskTitle": "Risikotittel",
+    "description": "Beskrivelse",
+    "riskLevel": "Risikonivå",
+    "status": "Status",
+    "mitigationPlan": "Avbøtningsplan",
+    "save": "Lagre",
+    "cancel": "Avbryt",
+    "noRisks": "Ingen risikoer dokumentert ennå"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Registrer AI-system",
+    "systemName": "Systemnavn",
+    "purpose": "Formål",
+    "riskClassification": "Risikoclassifisering",
+    "deploymentStatus": "Implementeringsstatus",
+    "dataTypes": "Datatyper",
+    "noSystems": "Ingen AI-systemer registrert ennå"
+  },
+  "documents": {
+    "title": "Dokumenter",
+    "generate": "Generer dokument",
+    "type": "Dokumenttype",
+    "noDocuments": "Ingen dokumenter ennå",
+    "policy": "Policy",
+    "report": "Rapport",
+    "certificate": "Sertifikat"
+  },
+  "admin": {
+    "title": "Administrasjon",
+    "users": "Brukere",
+    "inviteUser": "Inviter bruker",
+    "removeUser": "Fjern bruker",
+    "role": "Rolle",
+    "masterAdmin": "Hovedadministrator",
+    "admin": "Administrator",
+    "member": "Medlem"
   },
   "common": {
     "save": "Lagre",
     "cancel": "Avbryt",
-    "loading": "Laster..."
+    "delete": "Slett",
+    "edit": "Rediger",
+    "close": "Lukk",
+    "confirm": "Bekreft",
+    "loading": "Laster...",
+    "error": "Feil",
+    "success": "Suksess",
+    "language": "Språk",
+    "settings": "Innstillinger"
   }
 }

@@ -4,15 +4,100 @@
     "signUp": "Регистрация",
     "signOut": "Изход",
     "email": "Имейл",
-    "password": "Парола"
+    "password": "Парола",
+    "confirmPassword": "Потвърдете паролата",
+    "forgotPassword": "Забравена парола?",
+    "resetPassword": "Нулиране на парола",
+    "createAccount": "Създаване на акаунт",
+    "alreadyHaveAccount": "Вече имате акаунт?",
+    "dontHaveAccount": "Нямате акаунт?",
+    "invalidCredentials": "Невалиден имейл или парола",
+    "emailRequired": "Имейлът е задължителен",
+    "passwordRequired": "Паролата е задължителна",
+    "passwordsDoNotMatch": "Паролите не съвпадат"
+  },
+  "onboarding": {
+    "welcome": "Добре дошли",
+    "setupCompany": "Настройте вашата компания",
+    "companyName": "Име на компанията",
+    "country": "Държава",
+    "sector": "Сектор",
+    "companySize": "Размер на компанията",
+    "masterCode": "Главен код",
+    "deleteCode": "Код за изтриване",
+    "continue": "Продължи",
+    "finish": "Завърши",
+    "step": "Стъпка {{current}} от {{total}}"
   },
   "dashboard": {
     "welcome": "Добре дошли",
-    "nextSteps": "Следващи стъпки"
+    "nextSteps": "Следващи стъпки",
+    "addFirstRisk": "Добавете първи риск",
+    "addFirstRiskDesc": "Документирайте и оценете първия си киберсигурност риск",
+    "registerAI": "Регистрирайте AI система",
+    "registerAIDesc": "Каталогизирайте вашите AI системи за съответствие с EU AI Act",
+    "generatePolicy": "Генерирайте политика",
+    "generatePolicyDesc": "Създайте шаблони за документация за съответствие",
+    "trial": "Пробен период",
+    "daysLeft": "{{count}} ден остават",
+    "daysLeft_other": "{{count}} дни остават",
+    "trialExpired": "Пробният период изтече",
+    "upgradePlan": "Надградете плана",
+    "organization": "Организация",
+    "viewProfile": "Преглед на профила на компанията"
+  },
+  "nis2": {
+    "title": "NIS2 Киберсигурност",
+    "addRisk": "Добавете риск",
+    "riskTitle": "Заглавие на риска",
+    "description": "Описание",
+    "riskLevel": "Ниво на риска",
+    "status": "Статус",
+    "mitigationPlan": "План за смекчаване",
+    "save": "Запази",
+    "cancel": "Отказ",
+    "noRisks": "Все още няма документирани рискове"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Регистрирайте AI система",
+    "systemName": "Име на системата",
+    "purpose": "Цел",
+    "riskClassification": "Класификация на риска",
+    "deploymentStatus": "Статус на внедряване",
+    "dataTypes": "Типове данни",
+    "noSystems": "Все още няма регистрирани AI системи"
+  },
+  "documents": {
+    "title": "Документи",
+    "generate": "Генерирайте документ",
+    "type": "Тип документ",
+    "noDocuments": "Все още няма документи",
+    "policy": "Политика",
+    "report": "Доклад",
+    "certificate": "Сертификат"
+  },
+  "admin": {
+    "title": "Администрация",
+    "users": "Потребители",
+    "inviteUser": "Поканете потребител",
+    "removeUser": "Премахнете потребител",
+    "role": "Роля",
+    "masterAdmin": "Главен администратор",
+    "admin": "Администратор",
+    "member": "Член"
   },
   "common": {
     "save": "Запази",
     "cancel": "Отказ",
-    "loading": "Зареждане..."
+    "delete": "Изтрий",
+    "edit": "Редактирай",
+    "close": "Затвори",
+    "confirm": "Потвърди",
+    "loading": "Зареждане...",
+    "error": "Грешка",
+    "success": "Успех",
+    "language": "Език",
+    "settings": "Настройки"
   }
 }

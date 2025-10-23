@@ -4,15 +4,100 @@
     "signUp": "Registracija",
     "signOut": "Odjava",
     "email": "E-pošta",
-    "password": "Geslo"
+    "password": "Geslo",
+    "confirmPassword": "Potrdi geslo",
+    "forgotPassword": "Pozabljeno geslo?",
+    "resetPassword": "Ponastavi geslo",
+    "createAccount": "Ustvari račun",
+    "alreadyHaveAccount": "Že imate račun?",
+    "dontHaveAccount": "Nimate računa?",
+    "invalidCredentials": "Neveljavna e-pošta ali geslo",
+    "emailRequired": "E-pošta je obvezna",
+    "passwordRequired": "Geslo je obvezno",
+    "passwordsDoNotMatch": "Gesli se ne ujemata"
+  },
+  "onboarding": {
+    "welcome": "Dobrodošli",
+    "setupCompany": "Nastavite svoje podjetje",
+    "companyName": "Ime podjetja",
+    "country": "Država",
+    "sector": "Sektor",
+    "companySize": "Velikost podjetja",
+    "masterCode": "Glavna koda",
+    "deleteCode": "Koda za brisanje",
+    "continue": "Nadaljuj",
+    "finish": "Zaključi",
+    "step": "Korak {{current}} od {{total}}"
   },
   "dashboard": {
     "welcome": "Dobrodošli",
-    "nextSteps": "Naslednji koraki"
+    "nextSteps": "Naslednji koraki",
+    "addFirstRisk": "Dodaj prvo tveganje",
+    "addFirstRiskDesc": "Dokumentirajte in ocenite svoje prvo kibernetsko tveganje",
+    "registerAI": "Registriraj AI sistem",
+    "registerAIDesc": "Katalogizirajte svoje AI sisteme za skladnost z EU AI Act",
+    "generatePolicy": "Generiraj politiko",
+    "generatePolicyDesc": "Ustvarite predloge dokumentacije za skladnost",
+    "trial": "Poskusno obdobje",
+    "daysLeft": "{{count}} dan preostal",
+    "daysLeft_other": "{{count}} dni preostalih",
+    "trialExpired": "Poskusno obdobje poteklo",
+    "upgradePlan": "Nadgradi načrt",
+    "organization": "Organizacija",
+    "viewProfile": "Poglej profil podjetja"
+  },
+  "nis2": {
+    "title": "Kibernetska varnost NIS2",
+    "addRisk": "Dodaj tveganje",
+    "riskTitle": "Naslov tveganja",
+    "description": "Opis",
+    "riskLevel": "Raven tveganja",
+    "status": "Status",
+    "mitigationPlan": "Načrt zmanjševanja",
+    "save": "Shrani",
+    "cancel": "Prekliči",
+    "noRisks": "Še ni dokumentiranih tveganj"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Registriraj AI sistem",
+    "systemName": "Ime sistema",
+    "purpose": "Namen",
+    "riskClassification": "Klasifikacija tveganja",
+    "deploymentStatus": "Status uvedbe",
+    "dataTypes": "Vrste podatkov",
+    "noSystems": "Še ni registriranih AI sistemov"
+  },
+  "documents": {
+    "title": "Dokumenti",
+    "generate": "Generiraj dokument",
+    "type": "Tip dokumenta",
+    "noDocuments": "Še ni dokumentov",
+    "policy": "Politika",
+    "report": "Poročilo",
+    "certificate": "Certifikat"
+  },
+  "admin": {
+    "title": "Administracija",
+    "users": "Uporabniki",
+    "inviteUser": "Povabi uporabnika",
+    "removeUser": "Odstrani uporabnika",
+    "role": "Vloga",
+    "masterAdmin": "Glavni administrator",
+    "admin": "Administrator",
+    "member": "Član"
   },
   "common": {
     "save": "Shrani",
     "cancel": "Prekliči",
-    "loading": "Nalaganje..."
+    "delete": "Izbriši",
+    "edit": "Uredi",
+    "close": "Zapri",
+    "confirm": "Potrdi",
+    "loading": "Nalaganje...",
+    "error": "Napaka",
+    "success": "Uspeh",
+    "language": "Jezik",
+    "settings": "Nastavitve"
   }
 }

@@ -4,15 +4,100 @@
     "signUp": "Nýskrá",
     "signOut": "Skrá út",
     "email": "Netfang",
-    "password": "Lykilorð"
+    "password": "Lykilorð",
+    "confirmPassword": "Staðfesta lykilorð",
+    "forgotPassword": "Gleymt lykilorð?",
+    "resetPassword": "Endurstilla lykilorð",
+    "createAccount": "Búa til reikning",
+    "alreadyHaveAccount": "Ertu þegar með reikning?",
+    "dontHaveAccount": "Ertu ekki með reikning?",
+    "invalidCredentials": "Ógilt netfang eða lykilorð",
+    "emailRequired": "Netfang er nauðsynlegt",
+    "passwordRequired": "Lykilorð er nauðsynlegt",
+    "passwordsDoNotMatch": "Lykilorð passa ekki saman"
+  },
+  "onboarding": {
+    "welcome": "Velkomin",
+    "setupCompany": "Setja upp fyrirtækið þitt",
+    "companyName": "Nafn fyrirtækis",
+    "country": "Land",
+    "sector": "Geiri",
+    "companySize": "Stærð fyrirtækis",
+    "masterCode": "Aðalkóði",
+    "deleteCode": "Eyðingarkóði",
+    "continue": "Halda áfram",
+    "finish": "Ljúka",
+    "step": "Skref {{current}} af {{total}}"
   },
   "dashboard": {
     "welcome": "Velkomin",
-    "nextSteps": "Næstu skref"
+    "nextSteps": "Næstu skref",
+    "addFirstRisk": "Bæta við fyrstu áhættu",
+    "addFirstRiskDesc": "Skjalfesta og meta fyrstu netöryggisáhættuna þína",
+    "registerAI": "Skrá gervigreindarkerfi",
+    "registerAIDesc": "Skrá gervigreindarkerfi þín fyrir EU AI Act reglufylgni",
+    "generatePolicy": "Búa til stefnu",
+    "generatePolicyDesc": "Búa til sniðmát fyrir reglufylgniskjöl",
+    "trial": "Prufutímabil",
+    "daysLeft": "{{count}} dagur eftir",
+    "daysLeft_other": "{{count}} dagar eftir",
+    "trialExpired": "Prufutímabil útrunnið",
+    "upgradePlan": "Uppfæra áskrift",
+    "organization": "Stofnun",
+    "viewProfile": "Skoða fyrirtækjasnið"
+  },
+  "nis2": {
+    "title": "NIS2 Netöryggi",
+    "addRisk": "Bæta við áhættu",
+    "riskTitle": "Titill áhættu",
+    "description": "Lýsing",
+    "riskLevel": "Áhættustig",
+    "status": "Staða",
+    "mitigationPlan": "Mótvægisáætlun",
+    "save": "Vista",
+    "cancel": "Hætta við",
+    "noRisks": "Engar áhættur skjalfestar enn"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Skrá gervigreindarkerfi",
+    "systemName": "Heiti kerfis",
+    "purpose": "Tilgangur",
+    "riskClassification": "Áhættuflokkun",
+    "deploymentStatus": "Uppsetningarstaða",
+    "dataTypes": "Gagnategundir",
+    "noSystems": "Engin gervigreindarkerfi skráð enn"
+  },
+  "documents": {
+    "title": "Skjöl",
+    "generate": "Búa til skjal",
+    "type": "Tegund skjals",
+    "noDocuments": "Engin skjöl enn",
+    "policy": "Stefna",
+    "report": "Skýrsla",
+    "certificate": "Vottorð"
+  },
+  "admin": {
+    "title": "Stjórnun",
+    "users": "Notendur",
+    "inviteUser": "Bjóða notanda",
+    "removeUser": "Fjarlægja notanda",
+    "role": "Hlutverk",
+    "masterAdmin": "Aðalstjórnandi",
+    "admin": "Stjórnandi",
+    "member": "Meðlimur"
   },
   "common": {
     "save": "Vista",
     "cancel": "Hætta við",
-    "loading": "Hleð..."
+    "delete": "Eyða",
+    "edit": "Breyta",
+    "close": "Loka",
+    "confirm": "Staðfesta",
+    "loading": "Hleð...",
+    "error": "Villa",
+    "success": "Tókst",
+    "language": "Tungumál",
+    "settings": "Stillingar"
   }
 }

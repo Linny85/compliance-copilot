@@ -4,15 +4,100 @@
     "signUp": "Registrar-se",
     "signOut": "Tancar sessió",
     "email": "Correu electrònic",
-    "password": "Contrasenya"
+    "password": "Contrasenya",
+    "confirmPassword": "Confirmar contrasenya",
+    "forgotPassword": "Has oblidat la contrasenya?",
+    "resetPassword": "Restablir contrasenya",
+    "createAccount": "Crear compte",
+    "alreadyHaveAccount": "Ja tens un compte?",
+    "dontHaveAccount": "No tens un compte?",
+    "invalidCredentials": "Correu o contrasenya invàlids",
+    "emailRequired": "El correu és obligatori",
+    "passwordRequired": "La contrasenya és obligatòria",
+    "passwordsDoNotMatch": "Les contrasenyes no coincideixen"
+  },
+  "onboarding": {
+    "welcome": "Benvingut",
+    "setupCompany": "Configura la teva empresa",
+    "companyName": "Nom de l'empresa",
+    "country": "País",
+    "sector": "Sector",
+    "companySize": "Mida de l'empresa",
+    "masterCode": "Codi mestre",
+    "deleteCode": "Codi d'eliminació",
+    "continue": "Continuar",
+    "finish": "Finalitzar",
+    "step": "Pas {{current}} de {{total}}"
   },
   "dashboard": {
     "welcome": "Benvingut",
-    "nextSteps": "Propers passos"
+    "nextSteps": "Propers passos",
+    "addFirstRisk": "Afegir primer risc",
+    "addFirstRiskDesc": "Documenta i avalua el teu primer risc de ciberseguretat",
+    "registerAI": "Registrar sistema IA",
+    "registerAIDesc": "Cataloga els teus sistemes IA per al compliment EU AI Act",
+    "generatePolicy": "Generar política",
+    "generatePolicyDesc": "Crear plantilles de documentació de compliment",
+    "trial": "Prova",
+    "daysLeft": "{{count}} dia restant",
+    "daysLeft_other": "{{count}} dies restants",
+    "trialExpired": "Prova expirada",
+    "upgradePlan": "Millorar pla",
+    "organization": "Organització",
+    "viewProfile": "Veure perfil de l'empresa"
+  },
+  "nis2": {
+    "title": "Ciberseguretat NIS2",
+    "addRisk": "Afegir risc",
+    "riskTitle": "Títol del risc",
+    "description": "Descripció",
+    "riskLevel": "Nivell de risc",
+    "status": "Estat",
+    "mitigationPlan": "Pla de mitigació",
+    "save": "Desar",
+    "cancel": "Cancel·lar",
+    "noRisks": "Cap risc documentat encara"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Registrar sistema IA",
+    "systemName": "Nom del sistema",
+    "purpose": "Propòsit",
+    "riskClassification": "Classificació de risc",
+    "deploymentStatus": "Estat d'implementació",
+    "dataTypes": "Tipus de dades",
+    "noSystems": "Cap sistema IA registrat encara"
+  },
+  "documents": {
+    "title": "Documents",
+    "generate": "Generar document",
+    "type": "Tipus de document",
+    "noDocuments": "Cap document encara",
+    "policy": "Política",
+    "report": "Informe",
+    "certificate": "Certificat"
+  },
+  "admin": {
+    "title": "Administració",
+    "users": "Usuaris",
+    "inviteUser": "Convidar usuari",
+    "removeUser": "Eliminar usuari",
+    "role": "Rol",
+    "masterAdmin": "Administrador principal",
+    "admin": "Administrador",
+    "member": "Membre"
   },
   "common": {
     "save": "Desar",
     "cancel": "Cancel·lar",
-    "loading": "Carregant..."
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Tancar",
+    "confirm": "Confirmar",
+    "loading": "Carregant...",
+    "error": "Error",
+    "success": "Èxit",
+    "language": "Idioma",
+    "settings": "Configuració"
   }
 }

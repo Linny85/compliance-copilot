@@ -4,15 +4,100 @@
     "signUp": "Înregistrare",
     "signOut": "Deconectare",
     "email": "E-mail",
-    "password": "Parolă"
+    "password": "Parolă",
+    "confirmPassword": "Confirmă parola",
+    "forgotPassword": "Ai uitat parola?",
+    "resetPassword": "Resetează parola",
+    "createAccount": "Creează cont",
+    "alreadyHaveAccount": "Ai deja un cont?",
+    "dontHaveAccount": "Nu ai un cont?",
+    "invalidCredentials": "E-mail sau parolă invalide",
+    "emailRequired": "E-mailul este obligatoriu",
+    "passwordRequired": "Parola este obligatorie",
+    "passwordsDoNotMatch": "Parolele nu se potrivesc"
+  },
+  "onboarding": {
+    "welcome": "Bun venit",
+    "setupCompany": "Configurează compania ta",
+    "companyName": "Nume companie",
+    "country": "Țară",
+    "sector": "Sector",
+    "companySize": "Mărime companie",
+    "masterCode": "Cod master",
+    "deleteCode": "Cod ștergere",
+    "continue": "Continuă",
+    "finish": "Finalizează",
+    "step": "Pasul {{current}} din {{total}}"
   },
   "dashboard": {
     "welcome": "Bun venit",
-    "nextSteps": "Pașii următori"
+    "nextSteps": "Pașii următori",
+    "addFirstRisk": "Adaugă primul risc",
+    "addFirstRiskDesc": "Documentează și evaluează primul tău risc de securitate cibernetică",
+    "registerAI": "Înregistrează sistem IA",
+    "registerAIDesc": "Cataloghează sistemele tale IA pentru conformitatea EU AI Act",
+    "generatePolicy": "Generează politică",
+    "generatePolicyDesc": "Creează șabloane de documentație de conformitate",
+    "trial": "Perioadă de probă",
+    "daysLeft": "{{count}} zi rămasă",
+    "daysLeft_other": "{{count}} zile rămase",
+    "trialExpired": "Perioadă de probă expirată",
+    "upgradePlan": "Upgrade plan",
+    "organization": "Organizație",
+    "viewProfile": "Vezi profilul companiei"
+  },
+  "nis2": {
+    "title": "Securitate cibernetică NIS2",
+    "addRisk": "Adaugă risc",
+    "riskTitle": "Titlu risc",
+    "description": "Descriere",
+    "riskLevel": "Nivel de risc",
+    "status": "Status",
+    "mitigationPlan": "Plan de atenuare",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "noRisks": "Niciun risc documentat încă"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Înregistrează sistem IA",
+    "systemName": "Nume sistem",
+    "purpose": "Scop",
+    "riskClassification": "Clasificare risc",
+    "deploymentStatus": "Status implementare",
+    "dataTypes": "Tipuri de date",
+    "noSystems": "Niciun sistem IA înregistrat încă"
+  },
+  "documents": {
+    "title": "Documente",
+    "generate": "Generează document",
+    "type": "Tip document",
+    "noDocuments": "Niciun document încă",
+    "policy": "Politică",
+    "report": "Raport",
+    "certificate": "Certificat"
+  },
+  "admin": {
+    "title": "Administrare",
+    "users": "Utilizatori",
+    "inviteUser": "Invită utilizator",
+    "removeUser": "Elimină utilizator",
+    "role": "Rol",
+    "masterAdmin": "Administrator principal",
+    "admin": "Administrator",
+    "member": "Membru"
   },
   "common": {
     "save": "Salvează",
     "cancel": "Anulează",
-    "loading": "Se încarcă..."
+    "delete": "Șterge",
+    "edit": "Editează",
+    "close": "Închide",
+    "confirm": "Confirmă",
+    "loading": "Se încarcă...",
+    "error": "Eroare",
+    "success": "Succes",
+    "language": "Limbă",
+    "settings": "Setări"
   }
 }

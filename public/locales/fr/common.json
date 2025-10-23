@@ -4,15 +4,100 @@
     "signUp": "S'inscrire",
     "signOut": "Déconnexion",
     "email": "E-mail",
-    "password": "Mot de passe"
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "createAccount": "Créer un compte",
+    "alreadyHaveAccount": "Vous avez déjà un compte?",
+    "dontHaveAccount": "Vous n'avez pas de compte?",
+    "invalidCredentials": "E-mail ou mot de passe invalide",
+    "emailRequired": "L'e-mail est requis",
+    "passwordRequired": "Le mot de passe est requis",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas"
+  },
+  "onboarding": {
+    "welcome": "Bienvenue",
+    "setupCompany": "Configurez votre entreprise",
+    "companyName": "Nom de l'entreprise",
+    "country": "Pays",
+    "sector": "Secteur",
+    "companySize": "Taille de l'entreprise",
+    "masterCode": "Code maître",
+    "deleteCode": "Code de suppression",
+    "continue": "Continuer",
+    "finish": "Terminer",
+    "step": "Étape {{current}} sur {{total}}"
   },
   "dashboard": {
     "welcome": "Bienvenue",
-    "nextSteps": "Prochaines étapes"
+    "nextSteps": "Prochaines étapes",
+    "addFirstRisk": "Ajouter le premier risque",
+    "addFirstRiskDesc": "Documentez et évaluez votre premier risque cybersécurité",
+    "registerAI": "Enregistrer un système IA",
+    "registerAIDesc": "Cataloguez vos systèmes IA pour la conformité EU AI Act",
+    "generatePolicy": "Générer une politique",
+    "generatePolicyDesc": "Créer des modèles de documentation de conformité",
+    "trial": "Essai",
+    "daysLeft": "{{count}} jour restant",
+    "daysLeft_other": "{{count}} jours restants",
+    "trialExpired": "Essai expiré",
+    "upgradePlan": "Mettre à niveau",
+    "organization": "Organisation",
+    "viewProfile": "Voir le profil de l'entreprise"
+  },
+  "nis2": {
+    "title": "Cybersécurité NIS2",
+    "addRisk": "Ajouter un risque",
+    "riskTitle": "Titre du risque",
+    "description": "Description",
+    "riskLevel": "Niveau de risque",
+    "status": "Statut",
+    "mitigationPlan": "Plan d'atténuation",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "noRisks": "Aucun risque documenté"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Enregistrer un système IA",
+    "systemName": "Nom du système",
+    "purpose": "Objectif",
+    "riskClassification": "Classification des risques",
+    "deploymentStatus": "Statut de déploiement",
+    "dataTypes": "Types de données",
+    "noSystems": "Aucun système IA enregistré"
+  },
+  "documents": {
+    "title": "Documents",
+    "generate": "Générer un document",
+    "type": "Type de document",
+    "noDocuments": "Aucun document",
+    "policy": "Politique",
+    "report": "Rapport",
+    "certificate": "Certificat"
+  },
+  "admin": {
+    "title": "Administration",
+    "users": "Utilisateurs",
+    "inviteUser": "Inviter un utilisateur",
+    "removeUser": "Supprimer un utilisateur",
+    "role": "Rôle",
+    "masterAdmin": "Administrateur principal",
+    "admin": "Administrateur",
+    "member": "Membre"
   },
   "common": {
     "save": "Enregistrer",
     "cancel": "Annuler",
-    "loading": "Chargement..."
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "language": "Langue",
+    "settings": "Paramètres"
   }
 }
