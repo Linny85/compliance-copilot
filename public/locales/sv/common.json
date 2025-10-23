@@ -32,6 +32,7 @@
   "dashboard": {
     "welcome": "Välkommen",
     "nextSteps": "Nästa steg",
+    "nextStepsDesc": "Lägg till din första risk, registrera AI-system, skapa policymallar",
     "addFirstRisk": "Lägg till första risken",
     "addFirstRiskDesc": "Dokumentera och bedöm din första cybersäkerhetsrisk",
     "registerAI": "Registrera AI-system",
@@ -43,7 +44,19 @@
     "daysLeft_other": "{{count}} dagar kvar",
     "trialExpired": "Provperioden har gått ut",
     "upgradePlan": "Uppgradera plan",
+    "trialStatus": "Provstatus",
+    "trialStatusDesc": "Din prenumerationsinformation",
+    "active": "Aktiv",
+    "expired": "Utgången",
+    "dayRemaining": "dag kvar",
+    "daysRemaining": "dagar kvar",
+    "trialNote": "Full åtkomst under provperioden",
     "organization": "Organisation",
+    "organizationDesc": "Företagsinformation och kontaktuppgifter",
+    "companyName": "Företagsnamn",
+    "country": "Land",
+    "sector": "Sektor",
+    "editOrganization": "Redigera organisation",
     "viewProfile": "Visa företagsprofil"
   },
   "nis2": {
@@ -70,12 +83,15 @@
   },
   "documents": {
     "title": "Dokument",
+    "subtitle": "Skapa och hantera efterlevnadsdokumentation",
     "generate": "Generera dokument",
     "type": "Dokumenttyp",
     "noDocuments": "Inga dokument ännu",
     "policy": "Policy",
     "report": "Rapport",
-    "certificate": "Certifikat"
+    "certificate": "Certifikat",
+    "comingSoon": "Dokumentgenerering kommer snart",
+    "comingSoonDesc": "Skapa NIS2-policyer, AI Act-rapporter och efterlevnadscertifikat"
   },
   "admin": {
     "title": "Administration",
@@ -99,5 +115,13 @@
     "success": "Framgång",
     "language": "Språk",
     "settings": "Inställningar"
+  },
+  "sectors": {
+    "it": "IT / Programvara",
+    "finance": "Finans",
+    "health": "Hälsovård",
+    "manufacturing": "Tillverkning",
+    "public": "Offentlig sektor",
+    "other": "Annat"
   }
 }

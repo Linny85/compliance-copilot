@@ -107,7 +107,10 @@ export const translations = {
     // Documents
     documents: {
       title: "Documents",
+      subtitle: "Generate and manage compliance documentation",
       generate: "Generate Document",
+      comingSoon: "Document generation coming soon",
+      comingSoonDesc: "Generate NIS2 policies, AI Act reports, and compliance certificates",
     },
     // NIS2
     nis2: {
@@ -266,7 +269,10 @@ export const translations = {
     // Documents
     documents: {
       title: "Dokumente",
+      subtitle: "Compliance-Dokumentation generieren und verwalten",
       generate: "Dokument generieren",
+      comingSoon: "Dokumentengenerierung in Kürze verfügbar",
+      comingSoonDesc: "Generieren Sie NIS2-Richtlinien, AI Act-Berichte und Konformitätszertifikate",
     },
     // NIS2
     nis2: {
@@ -425,7 +431,10 @@ export const translations = {
     // Documents
     documents: {
       title: "Dokument",
+      subtitle: "Skapa och hantera compliance-dokumentation",
       generate: "Skapa dokument",
+      comingSoon: "Dokumentgenerering kommer snart",
+      comingSoonDesc: "Skapa NIS2-policyer, AI Act-rapporter och efterlevnadscertifikat",
     },
     // NIS2
     nis2: {

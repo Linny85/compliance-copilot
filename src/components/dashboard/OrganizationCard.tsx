@@ -10,22 +10,14 @@ interface OrganizationCardProps {
   sector: string;
 }
 
-const sectorLabels: Record<string, { en: string; de: string }> = {
-  it: { en: "IT / Software", de: "IT / Software" },
-  finance: { en: "Finance", de: "Finanzen" },
-  health: { en: "Healthcare", de: "Gesundheit" },
-  manufacturing: { en: "Manufacturing", de: "Industrie" },
-  public: { en: "Public Sector", de: "Öffentlicher Sektor" },
-  other: { en: "Other", de: "Sonstiges" },
-};
-
 export function OrganizationCard({ companyName, country, sector }: OrganizationCardProps) {
   const navigate = useNavigate();
-  const { t, language } = useI18n();
+  const { t } = useI18n();
 
   const getSectorLabel = (sectorValue: string) => {
     const normalized = sectorValue?.toLowerCase() || "other";
-    return sectorLabels[normalized]?.[language] || sectorValue;
+    const sectorKey = `sectors.${normalized}` as keyof typeof t;
+    return (t as any).sectors?.[normalized] || sectorValue;
   };
 
   return (

@@ -32,6 +32,7 @@
   "dashboard": {
     "welcome": "Welcome",
     "nextSteps": "Next Steps",
+    "nextStepsDesc": "Add your first risk, register AI systems, create policy templates",
     "addFirstRisk": "Add First Risk",
     "addFirstRiskDesc": "Document and assess your first cybersecurity risk",
     "registerAI": "Register AI System",
@@ -43,7 +44,19 @@
     "daysLeft_other": "{{count}} days left",
     "trialExpired": "Trial Expired",
     "upgradePlan": "Upgrade Plan",
+    "trialStatus": "Trial Status",
+    "trialStatusDesc": "Your subscription information",
+    "active": "Active",
+    "expired": "Expired",
+    "dayRemaining": "day remaining",
+    "daysRemaining": "days remaining",
+    "trialNote": "Full access during trial period",
     "organization": "Organization",
+    "organizationDesc": "Company information and contact details",
+    "companyName": "Company Name",
+    "country": "Country",
+    "sector": "Sector",
+    "editOrganization": "Edit Organization",
     "viewProfile": "View Company Profile"
   },
   "nis2": {
@@ -70,12 +83,15 @@
   },
   "documents": {
     "title": "Documents",
+    "subtitle": "Generate and manage compliance documentation",
     "generate": "Generate Document",
     "type": "Document Type",
     "noDocuments": "No documents yet",
     "policy": "Policy",
     "report": "Report",
-    "certificate": "Certificate"
+    "certificate": "Certificate",
+    "comingSoon": "Document generation coming soon",
+    "comingSoonDesc": "Generate NIS2 policies, AI Act reports, and compliance certificates"
   },
   "admin": {
     "title": "Administration",
@@ -99,5 +115,13 @@
     "success": "Success",
     "language": "Language",
     "settings": "Settings"
+  },
+  "sectors": {
+    "it": "IT / Software",
+    "finance": "Finance",
+    "health": "Healthcare",
+    "manufacturing": "Manufacturing",
+    "public": "Public Sector",
+    "other": "Other"
   }
 }

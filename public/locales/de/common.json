@@ -32,6 +32,7 @@
   "dashboard": {
     "welcome": "Willkommen",
     "nextSteps": "Nächste Schritte",
+    "nextStepsDesc": "Fügen Sie Ihr erstes Risiko hinzu, registrieren Sie KI-Systeme, erstellen Sie Richtlinienvorlagen",
     "addFirstRisk": "Erstes Risiko hinzufügen",
     "addFirstRiskDesc": "Dokumentieren und bewerten Sie Ihr erstes Cybersicherheitsrisiko",
     "registerAI": "KI-System registrieren",
@@ -43,7 +44,19 @@
     "daysLeft_other": "{{count}} Tage übrig",
     "trialExpired": "Testversion abgelaufen",
     "upgradePlan": "Plan upgraden",
+    "trialStatus": "Trial-Status",
+    "trialStatusDesc": "Ihre Abonnementinformationen",
+    "active": "Aktiv",
+    "expired": "Abgelaufen",
+    "dayRemaining": "Tag verbleibend",
+    "daysRemaining": "Tage verbleibend",
+    "trialNote": "Voller Zugriff während der Testphase",
     "organization": "Organisation",
+    "organizationDesc": "Unternehmensinformationen und Kontaktdaten",
+    "companyName": "Firmenname",
+    "country": "Land",
+    "sector": "Sektor",
+    "editOrganization": "Organisation bearbeiten",
     "viewProfile": "Firmenprofil anzeigen"
   },
   "nis2": {
@@ -70,12 +83,15 @@
   },
   "documents": {
     "title": "Dokumente",
+    "subtitle": "Compliance-Dokumentation generieren und verwalten",
     "generate": "Dokument generieren",
     "type": "Dokumenttyp",
     "noDocuments": "Noch keine Dokumente",
     "policy": "Richtlinie",
     "report": "Bericht",
-    "certificate": "Zertifikat"
+    "certificate": "Zertifikat",
+    "comingSoon": "Dokumentengenerierung in Kürze verfügbar",
+    "comingSoonDesc": "Generieren Sie NIS2-Richtlinien, AI Act-Berichte und Konformitätszertifikate"
   },
   "admin": {
     "title": "Verwaltung",
@@ -99,5 +115,13 @@
     "success": "Erfolg",
     "language": "Sprache",
     "settings": "Einstellungen"
+  },
+  "sectors": {
+    "it": "IT / Software",
+    "finance": "Finanzen",
+    "health": "Gesundheitswesen",
+    "manufacturing": "Industrie",
+    "public": "Öffentlicher Sektor",
+    "other": "Sonstiges"
   }
 }
