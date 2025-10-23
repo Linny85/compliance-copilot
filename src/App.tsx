@@ -14,6 +14,7 @@ import AIAct from "./pages/AIAct";
 import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
 import AuditLog from "./pages/AuditLog";
+import NOC from "./pages/NOC";
 import Controls from "./pages/Controls";
 import Scope from "./pages/Scope";
 import Evidence from "./pages/Evidence";
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/settings/notifications" element={<SettingsNotifications />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/audit" element={<AuditLog />} />
+                <Route path="/admin/noc" element={<NOC />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

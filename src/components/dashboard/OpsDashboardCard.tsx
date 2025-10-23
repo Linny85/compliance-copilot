@@ -13,6 +13,13 @@ type OpsRow = {
   last_24h_alerts: number;
   success_rate_30d: number;
   wow_delta_30d: number;
+  mtta_p50_ms: number;
+  mtta_p90_ms: number;
+  mttr_p50_ms: number;
+  mttr_p90_ms: number;
+  burn_24h_x: number;
+  burn_7d_x: number;
+  burn_status: 'healthy' | 'elevated' | 'excessive';
   traffic_light: 'green' | 'yellow' | 'red';
   updated_at: string;
 };
@@ -131,6 +138,11 @@ export function OpsDashboardCard({ companyId }: { companyId: string }) {
                 {Math.round(row.mtta_ms / 1000)}s /{' '}
                 {Math.round(row.mttr_ms / 1000)}s
               </div>
+              <div className="text-xs text-muted-foreground">
+                p50: {Math.round(row.mtta_p50_ms / 1000)}s / {Math.round(row.mttr_p50_ms / 1000)}s
+                &nbsp;•&nbsp;
+                p90: {Math.round(row.mtta_p90_ms / 1000)}s / {Math.round(row.mttr_p90_ms / 1000)}s
+              </div>
             </div>
             <div className="p-4 border rounded">
               <div className="text-sm text-muted-foreground">Open Alerts</div>
@@ -139,6 +151,23 @@ export function OpsDashboardCard({ companyId }: { companyId: string }) {
               </div>
               <div className="text-xs text-muted-foreground">
                 Last 24h: {row.last_24h_alerts}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 p-4 border rounded">
+            <div className="text-sm text-muted-foreground">Error Budget Burn-Rate</div>
+            <div className="mt-1 flex items-center gap-3">
+              <div className="text-2xl">{row.burn_24h_x.toFixed(1)}×</div>
+              <div className={`px-2 py-1 rounded text-xs font-medium ${
+                row.burn_status === 'excessive' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                row.burn_status === 'elevated' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
+                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+              }`}>
+                {row.burn_status.toUpperCase()}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                7d: {row.burn_7d_x.toFixed(1)}×
               </div>
             </div>
           </div>

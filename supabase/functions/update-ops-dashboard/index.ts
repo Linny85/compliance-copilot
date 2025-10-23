@@ -39,6 +39,13 @@ serve(async (req) => {
       last_24h_alerts: r.last_24h_alerts ?? 0,
       success_rate_30d: r.success_rate_30d ?? 0,
       wow_delta_30d: r.wow_delta_30d ?? 0,
+      mtta_p50_ms: Math.round(r.mtta_p50_ms ?? 0),
+      mtta_p90_ms: Math.round(r.mtta_p90_ms ?? 0),
+      mttr_p50_ms: Math.round(r.mttr_p50_ms ?? 0),
+      mttr_p90_ms: Math.round(r.mttr_p90_ms ?? 0),
+      burn_24h_x: r.burn_24h_x ?? 0,
+      burn_7d_x: r.burn_7d_x ?? 0,
+      burn_status: r.burn_status ?? "healthy",
       traffic_light: r.traffic_light ?? "green",
       updated_at: new Date().toISOString(),
     }));

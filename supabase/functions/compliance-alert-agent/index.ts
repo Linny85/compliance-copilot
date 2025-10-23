@@ -197,6 +197,72 @@ serve(async (req) => {
         }
       }
 
+      // Check burn-rate
+      const { data: burn } = await sb
+        .from("v_slo_burn_7d" as any)
+        .select("*")
+        .eq("tenant_id", tenantId)
+        .maybeSingle();
+
+      if (burn) {
+        // Excessive burn-rate (>= 3x)
+        if (burn.burn_24h_x >= 3.0) {
+          const shouldCreate = await sb.rpc("should_create_alert", {
+            _tenant_id: tenantId,
+            _alert_type: "burn_rate",
+            _metric_name: "burn_24h",
+            _cooldown_minutes: 60,
+          });
+
+          if (shouldCreate.data) {
+            alerts.push({
+              tenant_id: tenantId,
+              alert_type: "burn_rate",
+              severity: "critical",
+              title: `Critical: Error Budget Burning at ${burn.burn_24h_x.toFixed(1)}×`,
+              description: `Consuming error budget at ${burn.burn_24h_x.toFixed(1)}× normal rate. SLO breach imminent if not addressed.`,
+              metric_name: "burn_24h",
+              metric_value: burn.burn_24h_x,
+              threshold_value: 3.0,
+              metadata: {
+                burn_24h: burn.burn_24h_x,
+                burn_7d: burn.burn_7d_x,
+                status: burn.burn_status,
+                target_sr: burn.target_sr,
+              },
+            });
+          }
+        }
+        // Elevated burn-rate (>= 2x)
+        else if (burn.burn_24h_x >= 2.0) {
+          const shouldCreate = await sb.rpc("should_create_alert", {
+            _tenant_id: tenantId,
+            _alert_type: "burn_rate",
+            _metric_name: "burn_24h",
+            _cooldown_minutes: 120,
+          });
+
+          if (shouldCreate.data) {
+            alerts.push({
+              tenant_id: tenantId,
+              alert_type: "burn_rate",
+              severity: "warning",
+              title: `Warning: Elevated Error Budget Burn-Rate ${burn.burn_24h_x.toFixed(1)}×`,
+              description: `Error budget consumption is ${burn.burn_24h_x.toFixed(1)}× normal rate. Monitor closely to prevent SLO breach.`,
+              metric_name: "burn_24h",
+              metric_value: burn.burn_24h_x,
+              threshold_value: 2.0,
+              metadata: {
+                burn_24h: burn.burn_24h_x,
+                burn_7d: burn.burn_7d_x,
+                status: burn.burn_status,
+                target_sr: burn.target_sr,
+              },
+            });
+          }
+        }
+      }
+
       // Persist alerts
       if (alerts.length > 0) {
         const { error: insertErr } = await sb.from("alert_history").insert(alerts);
