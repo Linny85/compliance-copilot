@@ -94,5 +94,15 @@
       "updated": "Regel aktualisiert.",
       "deleted": "Regel gelöscht."
     }
+  },
+  "specEditor": {
+    "form": "Formular",
+    "json": "JSON",
+    "metric": "Metrik",
+    "metricPlaceholder": "z. B. password_rotation_days",
+    "value": "Wert",
+    "operator": "Operator",
+    "threshold": "Schwellenwert",
+    "table": "Tabelle"
   }
 }

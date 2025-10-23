@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { ControlSelect } from "@/components/controls/ControlSelect";
+import { SpecEditor } from "@/components/checks/SpecEditor";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
@@ -504,16 +505,15 @@ export default function ChecksPage() {
 
               <div>
                 <Label>{t("checks:form.fields.spec")}</Label>
-                <Textarea
-                  rows={8}
-                  className="font-mono text-sm"
+                <SpecEditor
+                  kind={editingRule.kind as 'static' | 'query'}
                   value={JSON.stringify(editingRule.spec, null, 2)}
-                  onChange={(e) => {
+                  onChange={(v) => {
                     try {
-                      const parsed = JSON.parse(e.target.value);
+                      const parsed = JSON.parse(v);
                       setEditingRule({ ...editingRule, spec: parsed });
                     } catch {
-                      // Invalid JSON, don't update
+                      // Invalid JSON, keep previous value
                     }
                   }}
                 />

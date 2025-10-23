@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
 import { ControlSelect } from "@/components/controls/ControlSelect";
+import { SpecEditor } from "@/components/checks/SpecEditor";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Kind = 'static' | 'query';
@@ -212,15 +213,11 @@ export default function ChecksNewRule() {
                 {t("checks:form.fields.spec")}
                 <span className="ml-2 text-xs text-muted-foreground">({t(`checks:kind.${kind}`)})</span>
               </Label>
-              <Textarea rows={10} className="font-mono text-sm" {...register("specText")} />
-              <div className="flex gap-2 pt-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setValue("specText", templates.static)}>
-                  {t("checks:form.actions.load_static_template")}
-                </Button>
-                <Button type="button" variant="outline" size="sm" onClick={() => setValue("specText", templates.query)}>
-                  {t("checks:form.actions.load_query_template")}
-                </Button>
-              </div>
+              <SpecEditor 
+                kind={kind}
+                value={watch("specText")}
+                onChange={(v) => setValue("specText", v, { shouldValidate: true })}
+              />
               {errors.specText && <p className="text-sm text-red-500">{errors.specText.message}</p>}
             </div>
 

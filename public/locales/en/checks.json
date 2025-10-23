@@ -94,5 +94,15 @@
       "updated": "Rule updated.",
       "deleted": "Rule deleted."
     }
+  },
+  "specEditor": {
+    "form": "Form",
+    "json": "JSON",
+    "metric": "Metric",
+    "metricPlaceholder": "e.g. password_rotation_days",
+    "value": "Value",
+    "operator": "Operator",
+    "threshold": "Threshold",
+    "table": "Table"
   }
 }
