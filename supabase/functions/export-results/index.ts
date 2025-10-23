@@ -18,11 +18,11 @@ Deno.serve(async (req) => {
     const anon = Deno.env.get('SUPABASE_ANON_KEY')!;
     const auth = req.headers.get('Authorization') || '';
 
-    const sb = createClient(url, anon, {
+    const sbAuth = createClient(url, anon, {
       global: { headers: { Authorization: auth } },
     });
 
-    const { data: { user } } = await sb.auth.getUser();
+    const { data: { user } } = await sbAuth.auth.getUser();
     if (!user) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    const { data: profile } = await sb
+    const { data: profile } = await sbAuth
       .from('profiles')
       .select('company_id')
       .eq('id', user.id)
@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
     console.log('[export-results]', { tenant_id, filters });
 
     // Build query with filters (same as list-results)
-    let query = sb
+    let query = sbAuth
       .from('check_results')
       .select(`
         id, 

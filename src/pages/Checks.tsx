@@ -463,6 +463,7 @@ export default function ChecksPage() {
             <Button
               variant="outline"
               size="sm"
+              disabled={results.length === 0 || exporting || resultsLoading}
               onClick={async () => {
                 setExporting(true);
                 try {
@@ -472,16 +473,17 @@ export default function ChecksPage() {
                   
                   if (error) throw error;
                   
+                  const filename = `check_results_${new Date().toISOString().split('T')[0]}.csv`;
                   const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
                   const link = document.createElement('a');
                   link.href = URL.createObjectURL(blob);
-                  link.download = `check_results_${new Date().toISOString().split('T')[0]}.csv`;
+                  link.download = filename;
                   link.click();
                   URL.revokeObjectURL(link.href);
                   
                   toast({
                     title: t("checks:success.exported"),
-                    description: t("checks:success.exported_desc")
+                    description: `${t("checks:success.exported_desc")} (${filename})`
                   });
                 } catch (e: any) {
                   console.error("[export-results]", e);
@@ -493,7 +495,6 @@ export default function ChecksPage() {
                   setExporting(false);
                 }
               }}
-              disabled={exporting || resultsLoading}
             >
               <Download className="h-4 w-4 mr-2" />
               {exporting ? t("common:loading") : t("checks:results.export")}
