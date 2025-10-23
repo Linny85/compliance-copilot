@@ -45,6 +45,20 @@ serve(async (req) => {
         continue;
       }
 
+      // Guard: Pause Auto-Apply bei schlechter Modellzuverlässigkeit
+      const { data: model } = await sb
+        .from("v_forecast_model_metrics_latest")
+        .select("reliability")
+        .eq("tenant_id", forecast.tenant_id)
+        .maybeSingle();
+
+      const reliability = Number(model?.reliability ?? 0);
+      // Wenn auto_apply true oder undefined ist, prüfe Reliability
+      if ((typeof auto_apply === "undefined" || auto_apply) && reliability < 70) {
+        console.log(`[adaptive-slo-tuner] Auto-apply paused: tenant=${forecast.tenant_id}, reliability=${reliability.toFixed(1)}%`);
+        continue;
+      }
+
       // Bound adjustment
       const boundedTarget = Math.max(SLO_MIN, Math.min(SLO_MAX, forecast.suggested_slo_target));
       const actualDelta = boundedTarget - forecast.current_slo_target;

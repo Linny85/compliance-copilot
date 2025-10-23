@@ -23,9 +23,10 @@ type Forecast = {
 };
 
 export function ForecastCard({ companyId }: { companyId: string }) {
-  const [forecast, setForecast] = useState<Forecast | null>(null);
+const [forecast, setForecast] = useState<Forecast | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
+  const [metrics, setMetrics] = useState<any>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -46,8 +47,24 @@ export function ForecastCard({ companyId }: { companyId: string }) {
     }
   };
 
+  const loadMetrics = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-forecast-metrics', {
+        body: { tenant_id: companyId }
+      });
+      if (!error && data?.metrics) {
+        setMetrics(data.metrics);
+      }
+    } catch (error) {
+      console.error('[ForecastCard] metrics error:', error);
+    }
+  };
+
   useEffect(() => {
-    if (companyId) loadForecast();
+    if (companyId) {
+      loadForecast();
+      loadMetrics();
+    }
   }, [companyId]);
 
   const applySuggestedSLO = async () => {
@@ -123,6 +140,22 @@ export function ForecastCard({ companyId }: { companyId: string }) {
           <p className="text-sm text-muted-foreground">
             Predictive risk analysis powered by AI
           </p>
+          {metrics && (
+            <div className="mt-2 text-sm">
+              <span className={
+                metrics.reliability >= 90 ? 'text-green-600 dark:text-green-400' :
+                metrics.reliability >= 70 ? 'text-yellow-600 dark:text-yellow-400' : 
+                'text-red-600 dark:text-red-400'
+              }>
+                Model Reliability: {Number(metrics.reliability).toFixed(0)}%
+              </span>
+              <span className="ml-2 text-muted-foreground">
+                (P {Number(metrics.precision_predicted).toFixed(0)}% ·
+                 R {Number(metrics.recall_breached).toFixed(0)}% ·
+                 MAE {Number(metrics.mae_sr).toFixed(1)}%)
+              </span>
+            </div>
+          )}
         </div>
         <div className="text-3xl">{riskEmoji[forecast.risk_level]}</div>
       </div>
