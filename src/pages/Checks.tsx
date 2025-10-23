@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { ControlSelect } from "@/components/controls/ControlSelect";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
@@ -489,6 +490,15 @@ export default function ChecksPage() {
                   rows={3}
                   value={editingRule.description || ''}
                   onChange={(e) => setEditingRule({ ...editingRule, description: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label>{t("checks:form.fields.control_id")}</Label>
+                <ControlSelect
+                  value={editingRule.control_id || null}
+                  onChange={(id) => setEditingRule({ ...editingRule, control_id: id || "" })}
+                  placeholder={t("checks:form.placeholders.control_id") || ""}
                 />
               </div>
 

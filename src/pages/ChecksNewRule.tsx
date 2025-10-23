@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
+import { ControlSelect } from "@/components/controls/ControlSelect";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Kind = 'static' | 'query';
@@ -198,7 +199,11 @@ export default function ChecksNewRule() {
 
             <div>
               <Label>{t("checks:form.fields.control_id")}</Label>
-              <Input placeholder={t("checks:form.placeholders.control_id") || ""} {...register("control_id")} />
+              <ControlSelect
+                value={watch("control_id") || null}
+                onChange={(id) => setValue("control_id", id || "", { shouldValidate: true })}
+                placeholder={t("checks:form.placeholders.control_id") || ""}
+              />
               <p className="text-xs text-muted-foreground">{t("checks:form.help.control_id")}</p>
             </div>
 
