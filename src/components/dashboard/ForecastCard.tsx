@@ -28,6 +28,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [applying, setApplying] = useState(false);
   const [metrics, setMetrics] = useState<any>(null);
   const [trend, setTrend] = useState<any[]>([]);
+  const [ensemble, setEnsemble] = useState<any>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -74,11 +75,25 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadEnsemble = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-ensemble-forecast', {
+        body: { tenant_id: companyId }
+      });
+      if (!error && data?.ensemble) {
+        setEnsemble(data.ensemble);
+      }
+    } catch (error) {
+      console.error('[ForecastCard] ensemble error:', error);
+    }
+  };
+
   useEffect(() => {
     if (companyId) {
       loadForecast();
       loadMetrics();
       loadTrend();
+      loadEnsemble();
     }
   }, [companyId]);
 
@@ -274,6 +289,32 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
           <Button onClick={applySuggestedSLO} disabled={applying} variant="default">
             {applying ? 'Applying...' : 'Apply Adjustment'}
           </Button>
+        </div>
+      )}
+
+      {ensemble && (
+        <div className="mt-4 border-t pt-4">
+          <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            90-Day Ensemble Forecast
+          </h4>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="p-3 border rounded bg-muted/30">
+              <div className="text-xs text-muted-foreground">Predicted Success Rate</div>
+              <div className="text-xl font-bold mt-1">{Number(ensemble.forecast_sr_90d).toFixed(1)}%</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                CI: {Number(ensemble.lower_ci).toFixed(1)}% – {Number(ensemble.upper_ci).toFixed(1)}%
+              </div>
+            </div>
+            <div className="p-3 border rounded bg-muted/30">
+              <div className="text-xs text-muted-foreground">Model Weights</div>
+              <div className="text-xs mt-1 space-y-0.5">
+                <div>ARIMA: {Number(ensemble.weight_arima * 100).toFixed(0)}%</div>
+                <div>Gradient: {Number(ensemble.weight_gradient * 100).toFixed(0)}%</div>
+                <div>Bayesian: {Number(ensemble.weight_bayes * 100).toFixed(0)}%</div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

@@ -561,6 +561,51 @@ export type Database = {
           },
         ]
       }
+      forecast_ensemble: {
+        Row: {
+          forecast_sr_90d: number | null
+          generated_at: string | null
+          id: string
+          lower_ci: number | null
+          model_arima: number | null
+          model_bayes: number | null
+          model_gradient: number | null
+          tenant_id: string
+          upper_ci: number | null
+          weight_arima: number | null
+          weight_bayes: number | null
+          weight_gradient: number | null
+        }
+        Insert: {
+          forecast_sr_90d?: number | null
+          generated_at?: string | null
+          id?: string
+          lower_ci?: number | null
+          model_arima?: number | null
+          model_bayes?: number | null
+          model_gradient?: number | null
+          tenant_id: string
+          upper_ci?: number | null
+          weight_arima?: number | null
+          weight_bayes?: number | null
+          weight_gradient?: number | null
+        }
+        Update: {
+          forecast_sr_90d?: number | null
+          generated_at?: string | null
+          id?: string
+          lower_ci?: number | null
+          model_arima?: number | null
+          model_bayes?: number | null
+          model_gradient?: number | null
+          tenant_id?: string
+          upper_ci?: number | null
+          weight_arima?: number | null
+          weight_bayes?: number | null
+          weight_gradient?: number | null
+        }
+        Relationships: []
+      }
       frameworks: {
         Row: {
           code: string
@@ -1328,6 +1373,19 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_forecast_ensemble_latest: {
+        Row: {
+          forecast_sr_90d: number | null
+          generated_at: string | null
+          lower_ci: number | null
+          tenant_id: string | null
+          upper_ci: number | null
+          weight_arima: number | null
+          weight_bayes: number | null
+          weight_gradient: number | null
+        }
+        Relationships: []
       }
     }
     Functions: {
