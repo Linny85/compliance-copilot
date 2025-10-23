@@ -1,0 +1,103 @@
+{
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "signOut": "Abmelden",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "forgotPassword": "Passwort vergessen?",
+    "resetPassword": "Passwort zurücksetzen",
+    "createAccount": "Konto erstellen",
+    "alreadyHaveAccount": "Bereits ein Konto?",
+    "dontHaveAccount": "Noch kein Konto?",
+    "invalidCredentials": "Ungültige E-Mail oder Passwort",
+    "emailRequired": "E-Mail ist erforderlich",
+    "passwordRequired": "Passwort ist erforderlich",
+    "passwordsDoNotMatch": "Passwörter stimmen nicht überein"
+  },
+  "onboarding": {
+    "welcome": "Willkommen",
+    "setupCompany": "Unternehmen einrichten",
+    "companyName": "Firmenname",
+    "country": "Land",
+    "sector": "Branche",
+    "companySize": "Unternehmensgröße",
+    "masterCode": "Master-Code",
+    "deleteCode": "Lösch-Code",
+    "continue": "Weiter",
+    "finish": "Abschließen",
+    "step": "Schritt {{current}} von {{total}}"
+  },
+  "dashboard": {
+    "welcome": "Willkommen",
+    "nextSteps": "Nächste Schritte",
+    "addFirstRisk": "Erstes Risiko hinzufügen",
+    "addFirstRiskDesc": "Dokumentieren und bewerten Sie Ihr erstes Cybersicherheitsrisiko",
+    "registerAI": "KI-System registrieren",
+    "registerAIDesc": "Erfassen Sie Ihre KI-Systeme für EU AI Act Compliance",
+    "generatePolicy": "Richtlinie generieren",
+    "generatePolicyDesc": "Erstellen Sie Compliance-Dokumentationsvorlagen",
+    "trial": "Testversion",
+    "daysLeft": "{{count}} Tag übrig",
+    "daysLeft_other": "{{count}} Tage übrig",
+    "trialExpired": "Testversion abgelaufen",
+    "upgradePlan": "Plan upgraden",
+    "organization": "Organisation",
+    "viewProfile": "Firmenprofil anzeigen"
+  },
+  "nis2": {
+    "title": "NIS2 Cybersicherheit",
+    "addRisk": "Risiko hinzufügen",
+    "riskTitle": "Risikotitel",
+    "description": "Beschreibung",
+    "riskLevel": "Risikolevel",
+    "status": "Status",
+    "mitigationPlan": "Mitigationsplan",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "noRisks": "Noch keine Risiken dokumentiert"
+  },
+  "aiAct": {
+    "title": "EU KI-Verordnung",
+    "registerSystem": "System registrieren",
+    "systemName": "Systemname",
+    "purpose": "Zweck",
+    "riskClassification": "Risikoklassifikation",
+    "deploymentStatus": "Einsatzstatus",
+    "dataTypes": "Datentypen",
+    "noSystems": "Noch keine KI-Systeme registriert"
+  },
+  "documents": {
+    "title": "Dokumente",
+    "generate": "Dokument generieren",
+    "type": "Dokumenttyp",
+    "noDocuments": "Noch keine Dokumente",
+    "policy": "Richtlinie",
+    "report": "Bericht",
+    "certificate": "Zertifikat"
+  },
+  "admin": {
+    "title": "Verwaltung",
+    "users": "Benutzer",
+    "inviteUser": "Benutzer einladen",
+    "removeUser": "Benutzer entfernen",
+    "role": "Rolle",
+    "masterAdmin": "Hauptadministrator",
+    "admin": "Administrator",
+    "member": "Mitglied"
+  },
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "language": "Sprache",
+    "settings": "Einstellungen"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "invalidCredentials": "Invalid email or password",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+  "onboarding": {
+    "welcome": "Welcome",
+    "setupCompany": "Set Up Your Company",
+    "companyName": "Company Name",
+    "country": "Country",
+    "sector": "Sector",
+    "companySize": "Company Size",
+    "masterCode": "Master Code",
+    "deleteCode": "Delete Code",
+    "continue": "Continue",
+    "finish": "Finish",
+    "step": "Step {{current}} of {{total}}"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "nextSteps": "Next Steps",
+    "addFirstRisk": "Add First Risk",
+    "addFirstRiskDesc": "Document and assess your first cybersecurity risk",
+    "registerAI": "Register AI System",
+    "registerAIDesc": "Catalog your AI systems for EU AI Act compliance",
+    "generatePolicy": "Generate Policy",
+    "generatePolicyDesc": "Create compliance documentation templates",
+    "trial": "Trial",
+    "daysLeft": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "trialExpired": "Trial Expired",
+    "upgradePlan": "Upgrade Plan",
+    "organization": "Organization",
+    "viewProfile": "View Company Profile"
+  },
+  "nis2": {
+    "title": "NIS2 Cybersecurity",
+    "addRisk": "Add Risk",
+    "riskTitle": "Risk Title",
+    "description": "Description",
+    "riskLevel": "Risk Level",
+    "status": "Status",
+    "mitigationPlan": "Mitigation Plan",
+    "save": "Save",
+    "cancel": "Cancel",
+    "noRisks": "No risks documented yet"
+  },
+  "aiAct": {
+    "title": "EU AI Act",
+    "registerSystem": "Register AI System",
+    "systemName": "System Name",
+    "purpose": "Purpose",
+    "riskClassification": "Risk Classification",
+    "deploymentStatus": "Deployment Status",
+    "dataTypes": "Data Types",
+    "noSystems": "No AI systems registered yet"
+  },
+  "documents": {
+    "title": "Documents",
+    "generate": "Generate Document",
+    "type": "Document Type",
+    "noDocuments": "No documents yet",
+    "policy": "Policy",
+    "report": "Report",
+    "certificate": "Certificate"
+  },
+  "admin": {
+    "title": "Administration",
+    "users": "Users",
+    "inviteUser": "Invite User",
+    "removeUser": "Remove User",
+    "role": "Role",
+    "masterAdmin": "Master Admin",
+    "admin": "Admin",
+    "member": "Member"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "language": "Language",
+    "settings": "Settings"
+  }
+}

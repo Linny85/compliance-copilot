@@ -291,6 +291,7 @@ export type Database = {
           company_size: string | null
           country: string | null
           created_at: string | null
+          default_locale: string | null
           delete_code_hash: string
           erstellt_von: string | null
           id: string
@@ -312,6 +313,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string | null
+          default_locale?: string | null
           delete_code_hash: string
           erstellt_von?: string | null
           id?: string
@@ -333,6 +335,7 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string | null
+          default_locale?: string | null
           delete_code_hash?: string
           erstellt_von?: string | null
           id?: string

@@ -1,0 +1,103 @@
+{
+  "auth": {
+    "signIn": "Logga in",
+    "signUp": "Registrera",
+    "signOut": "Logga ut",
+    "email": "E-post",
+    "password": "Lösenord",
+    "confirmPassword": "Bekräfta lösenord",
+    "forgotPassword": "Glömt lösenord?",
+    "resetPassword": "Återställ lösenord",
+    "createAccount": "Skapa konto",
+    "alreadyHaveAccount": "Har du redan ett konto?",
+    "dontHaveAccount": "Har du inget konto?",
+    "invalidCredentials": "Ogiltig e-post eller lösenord",
+    "emailRequired": "E-post krävs",
+    "passwordRequired": "Lösenord krävs",
+    "passwordsDoNotMatch": "Lösenorden matchar inte"
+  },
+  "onboarding": {
+    "welcome": "Välkommen",
+    "setupCompany": "Konfigurera ditt företag",
+    "companyName": "Företagsnamn",
+    "country": "Land",
+    "sector": "Sektor",
+    "companySize": "Företagsstorlek",
+    "masterCode": "Huvudkod",
+    "deleteCode": "Raderingskod",
+    "continue": "Fortsätt",
+    "finish": "Slutför",
+    "step": "Steg {{current}} av {{total}}"
+  },
+  "dashboard": {
+    "welcome": "Välkommen",
+    "nextSteps": "Nästa steg",
+    "addFirstRisk": "Lägg till första risken",
+    "addFirstRiskDesc": "Dokumentera och bedöm din första cybersäkerhetsrisk",
+    "registerAI": "Registrera AI-system",
+    "registerAIDesc": "Katalogisera dina AI-system för EU AI Act-efterlevnad",
+    "generatePolicy": "Generera policy",
+    "generatePolicyDesc": "Skapa mallar för efterlevnadsdokumentation",
+    "trial": "Provperiod",
+    "daysLeft": "{{count}} dag kvar",
+    "daysLeft_other": "{{count}} dagar kvar",
+    "trialExpired": "Provperioden har gått ut",
+    "upgradePlan": "Uppgradera plan",
+    "organization": "Organisation",
+    "viewProfile": "Visa företagsprofil"
+  },
+  "nis2": {
+    "title": "NIS2 Cybersäkerhet",
+    "addRisk": "Lägg till risk",
+    "riskTitle": "Risktitel",
+    "description": "Beskrivning",
+    "riskLevel": "Risknivå",
+    "status": "Status",
+    "mitigationPlan": "Migreringsplan",
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "noRisks": "Inga risker dokumenterade ännu"
+  },
+  "aiAct": {
+    "title": "EU AI-förordning",
+    "registerSystem": "Registrera system",
+    "systemName": "Systemnamn",
+    "purpose": "Syfte",
+    "riskClassification": "Riskklassificering",
+    "deploymentStatus": "Driftstatus",
+    "dataTypes": "Datatyper",
+    "noSystems": "Inga AI-system registrerade ännu"
+  },
+  "documents": {
+    "title": "Dokument",
+    "generate": "Generera dokument",
+    "type": "Dokumenttyp",
+    "noDocuments": "Inga dokument ännu",
+    "policy": "Policy",
+    "report": "Rapport",
+    "certificate": "Certifikat"
+  },
+  "admin": {
+    "title": "Administration",
+    "users": "Användare",
+    "inviteUser": "Bjud in användare",
+    "removeUser": "Ta bort användare",
+    "role": "Roll",
+    "masterAdmin": "Huvudadministratör",
+    "admin": "Administratör",
+    "member": "Medlem"
+  },
+  "common": {
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "delete": "Radera",
+    "edit": "Redigera",
+    "close": "Stäng",
+    "confirm": "Bekräfta",
+    "loading": "Laddar...",
+    "error": "Fel",
+    "success": "Framgång",
+    "language": "Språk",
+    "settings": "Inställningar"
+  }
+}
