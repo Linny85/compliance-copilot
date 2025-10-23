@@ -13,6 +13,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Settings, Plus, UserMinus, Clock, CreditCard } from "lucide-react";
 import { toast } from "sonner";
+import { QAMonitorCard } from "@/components/dashboard/QAMonitorCard";
 
 interface User {
   id: string;
@@ -180,6 +181,7 @@ const Admin = () => {
               <TabsList>
                 <TabsTrigger value="users">Users</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
+                <TabsTrigger value="qa-monitor">QA Monitor</TabsTrigger>
               </TabsList>
 
               <TabsContent value="users" className="space-y-4">
@@ -322,6 +324,10 @@ const Admin = () => {
                     )}
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="qa-monitor" className="space-y-4">
+                {companyId && <QAMonitorCard companyId={companyId} />}
               </TabsContent>
             </Tabs>
 

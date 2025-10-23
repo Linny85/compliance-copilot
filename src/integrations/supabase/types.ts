@@ -766,6 +766,42 @@ export type Database = {
           },
         ]
       }
+      qa_monitor: {
+        Row: {
+          avg_latency_ms: number | null
+          created_at: string | null
+          failed_24h: number | null
+          id: string
+          last_run_at: string | null
+          last_run_id: string | null
+          last_run_status: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avg_latency_ms?: number | null
+          created_at?: string | null
+          failed_24h?: number | null
+          id?: string
+          last_run_at?: string | null
+          last_run_id?: string | null
+          last_run_status?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avg_latency_ms?: number | null
+          created_at?: string | null
+          failed_24h?: number | null
+          id?: string
+          last_run_at?: string | null
+          last_run_id?: string | null
+          last_run_status?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       qa_results: {
         Row: {
           created_by: string | null
