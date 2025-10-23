@@ -46,11 +46,14 @@
     "noResults": "Inga resultat ännu"
   },
   "success": {
-    "checks_run": "Kontroller kördes framgångsrikt"
+    "checks_run": "Kontroller kördes framgångsrikt",
+    "exported": "Resultat exporterade",
+    "exported_desc": "CSV-fil laddades ner framgångsrikt"
   },
   "errors": {
     "load_failed": "Misslyckades att ladda kontroller",
-    "run_failed": "Misslyckades att köra kontroller"
+    "run_failed": "Misslyckades att köra kontroller",
+    "export_failed": "Misslyckades att exportera resultat"
   },
   "form": {
     "new_rule_title": "Skapa ny regel",

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,6 +56,8 @@ export default function ChecksPage() {
   const { t } = useTranslation(["checks", "common"]);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [rules, setRules] = useState<CheckRule[]>([]);
   const [results, setResults] = useState<CheckResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,6 +65,7 @@ export default function ChecksPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<CheckRule | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [exporting, setExporting] = useState(false);
   
   // Results filters & pagination
   const [filters, setFilters] = useState<ResultFilters>({
@@ -75,6 +78,37 @@ export default function ChecksPage() {
   const [resultsLoading, setResultsLoading] = useState(false);
   const [drilldownOpen, setDrilldownOpen] = useState(false);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
+
+  // Initialize filters from URL on mount
+  useEffect(() => {
+    const outcome = searchParams.get('outcome')?.split(',').filter(Boolean) || [];
+    const severity = searchParams.get('severity')?.split(',').filter(Boolean) || [];
+    const status = searchParams.get('status')?.split(',').filter(Boolean) || [];
+    const q = searchParams.get('q') || '';
+    const control_id = searchParams.get('control_id') || undefined;
+    
+    if (outcome.length || severity.length || status.length || q || control_id) {
+      setFilters({
+        outcome: outcome as Outcome[],
+        severity: severity as Severity[],
+        status: status as RunStatus[],
+        q,
+        control_id
+      });
+    }
+  }, []);
+
+  // Persist filters to URL
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.outcome && filters.outcome.length) params.set('outcome', filters.outcome.join(','));
+    if (filters.severity && filters.severity.length) params.set('severity', filters.severity.join(','));
+    if (filters.status && filters.status.length) params.set('status', filters.status.join(','));
+    if (filters.q) params.set('q', filters.q);
+    if (filters.control_id) params.set('control_id', filters.control_id);
+    
+    setSearchParams(params, { replace: true });
+  }, [filters]);
 
   useEffect(() => {
     loadData();
@@ -417,14 +451,54 @@ export default function ChecksPage() {
         </TabsContent>
 
         <TabsContent value="results" className="space-y-4">
-          <ResultsFilters
-            filters={filters}
-            onChange={setFilters}
-            onReset={() => {
-              setFilters({ severity: [], outcome: [], status: [] });
-              setResultsPage(1);
-            }}
-          />
+          <div className="flex items-center justify-between gap-4">
+            <ResultsFilters
+              filters={filters}
+              onChange={setFilters}
+              onReset={() => {
+                setFilters({ severity: [], outcome: [], status: [] });
+                setResultsPage(1);
+              }}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                setExporting(true);
+                try {
+                  const { data, error } = await supabase.functions.invoke("export-results", {
+                    body: { filters }
+                  });
+                  
+                  if (error) throw error;
+                  
+                  const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+                  const link = document.createElement('a');
+                  link.href = URL.createObjectURL(blob);
+                  link.download = `check_results_${new Date().toISOString().split('T')[0]}.csv`;
+                  link.click();
+                  URL.revokeObjectURL(link.href);
+                  
+                  toast({
+                    title: t("checks:success.exported"),
+                    description: t("checks:success.exported_desc")
+                  });
+                } catch (e: any) {
+                  console.error("[export-results]", e);
+                  toast({
+                    title: t("checks:errors.export_failed"),
+                    variant: "destructive"
+                  });
+                } finally {
+                  setExporting(false);
+                }
+              }}
+              disabled={exporting || resultsLoading}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {exporting ? t("common:loading") : t("checks:results.export")}
+            </Button>
+          </div>
 
           {resultsLoading ? (
             <div className="text-center py-12">

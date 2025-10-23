@@ -46,11 +46,14 @@
     "noResults": "No results yet"
   },
   "success": {
-    "checks_run": "Checks executed successfully"
+    "checks_run": "Checks executed successfully",
+    "exported": "Results exported",
+    "exported_desc": "CSV file downloaded successfully"
   },
   "errors": {
     "load_failed": "Failed to load checks",
-    "run_failed": "Failed to run checks"
+    "run_failed": "Failed to run checks",
+    "export_failed": "Failed to export results"
   },
   "form": {
     "new_rule_title": "Create New Rule",

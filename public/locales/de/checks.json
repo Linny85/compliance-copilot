@@ -46,11 +46,14 @@
     "noResults": "Noch keine Ergebnisse"
   },
   "success": {
-    "checks_run": "Checks erfolgreich ausgeführt"
+    "checks_run": "Checks erfolgreich ausgeführt",
+    "exported": "Ergebnisse exportiert",
+    "exported_desc": "CSV-Datei erfolgreich heruntergeladen"
   },
   "errors": {
     "load_failed": "Laden der Checks fehlgeschlagen",
-    "run_failed": "Ausführung der Checks fehlgeschlagen"
+    "run_failed": "Ausführung der Checks fehlgeschlagen",
+    "export_failed": "Export der Ergebnisse fehlgeschlagen"
   },
   "form": {
     "new_rule_title": "Neue Regel anlegen",
