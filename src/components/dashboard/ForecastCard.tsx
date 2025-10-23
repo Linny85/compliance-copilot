@@ -30,6 +30,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [trend, setTrend] = useState<any[]>([]);
   const [ensemble, setEnsemble] = useState<any>(null);
   const [weights, setWeights] = useState<any>(null);
+  const [experiment, setExperiment] = useState<any>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -102,6 +103,41 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadExperiment = async () => {
+    try {
+      // First get the assignment
+      const { data: assignment, error: assignError } = await supabase
+        .from('model_experiment_assignments' as any)
+        .select('experiment_id')
+        .eq('tenant_id', companyId)
+        .maybeSingle();
+
+      if (assignError || !assignment) {
+        setExperiment(null);
+        return;
+      }
+
+      const experimentId = (assignment as any).experiment_id;
+      if (!experimentId) {
+        setExperiment(null);
+        return;
+      }
+
+      // Then get the experiment details
+      const { data: exp, error: expError } = await supabase
+        .from('model_experiments' as any)
+        .select('id, name, status, allocation, started_at, notes')
+        .eq('id', experimentId)
+        .maybeSingle();
+
+      if (!expError && exp) {
+        setExperiment(exp);
+      }
+    } catch (error) {
+      console.error('[ForecastCard] experiment error:', error);
+    }
+  };
+
   useEffect(() => {
     if (companyId) {
       loadForecast();
@@ -109,6 +145,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
       loadTrend();
       loadEnsemble();
       loadWeights();
+      loadExperiment();
     }
   }, [companyId]);
 
@@ -354,6 +391,43 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
             Last tuned: {new Date(weights.adjusted_at).toLocaleString()} · 
             Reliability: {Number(weights.reliability).toFixed(0)}% · 
             MAE: {Number(weights.mae).toFixed(1)}
+          </div>
+        </div>
+      )}
+
+      {experiment && (
+        <div className="mt-4 border-t pt-3">
+          <h4 className="text-sm font-semibold mb-2">🔬 Active Experiment</h4>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Status:</span>
+              <Badge variant={
+                experiment.status === 'succeeded' ? 'default' :
+                experiment.status === 'running' ? 'secondary' :
+                experiment.status === 'rolled_back' ? 'destructive' : 'outline'
+              }>
+                {experiment.status.toUpperCase()}
+              </Badge>
+            </div>
+            {experiment.allocation && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Canary allocation:</span>
+                <span className="text-sm font-medium">{(experiment.allocation * 100).toFixed(0)}%</span>
+              </div>
+            )}
+            {experiment.started_at && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Started:</span>
+                <span className="text-sm font-medium">
+                  {new Date(experiment.started_at).toLocaleDateString()}
+                </span>
+              </div>
+            )}
+            {experiment.notes && (
+              <div className="text-xs text-muted-foreground mt-2 pt-2 border-t">
+                {experiment.notes}
+              </div>
+            )}
           </div>
         </div>
       )}
