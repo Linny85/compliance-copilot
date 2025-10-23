@@ -1,0 +1,49 @@
+{
+  "title": "Evidenz",
+  "subtitle": "Compliance-Nachweise hochladen, prüfen und nachverfolgen",
+  "tabs": {
+    "requests": "Anforderungen",
+    "evidence": "Nachweise"
+  },
+  "actions": {
+    "newRequest": "Neue Anforderung",
+    "upload": "Nachweis hochladen",
+    "review": "Prüfen"
+  },
+  "fields": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "dueAt": "Fällig am",
+    "file": "Datei",
+    "status": "Status",
+    "verdict": "Ergebnis",
+    "note": "Notiz",
+    "control": "Kontrolle"
+  },
+  "status": {
+    "open": "Offen",
+    "fulfilled": "Erfüllt",
+    "expired": "Abgelaufen",
+    "cancelled": "Storniert"
+  },
+  "verdict": {
+    "pending": "Ausstehend",
+    "pass": "Bestanden",
+    "fail": "Nicht bestanden",
+    "warn": "Hinweis"
+  },
+  "empty": {
+    "noRequests": "Keine Evidenzanforderungen",
+    "noEvidence": "Keine Nachweise hochgeladen"
+  },
+  "success": {
+    "request_created": "Evidenzanforderung erstellt",
+    "uploaded": "Nachweis hochgeladen",
+    "review_saved": "Prüfung gespeichert"
+  },
+  "errors": {
+    "create_failed": "Erstellen fehlgeschlagen",
+    "upload_failed": "Upload fehlgeschlagen",
+    "review_failed": "Speichern der Prüfung fehlgeschlagen"
+  }
+}

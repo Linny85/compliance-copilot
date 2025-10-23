@@ -1,0 +1,53 @@
+{
+  "title": "Omfattningsmatris",
+  "subtitle": "Definiera och hantera efterlevnadsomfattning i din organisation",
+  "empty_state": "Inga omfattningsenheter hittades",
+  "kinds": {
+    "business_unit": "Affärsenhet",
+    "process": "Process",
+    "system": "System",
+    "vendor": "Leverantör"
+  },
+  "filters": {
+    "title": "Filtrera enheter",
+    "all": "Alla typer"
+  },
+  "fields": {
+    "kind": "Typ",
+    "name": "Namn",
+    "name_placeholder": "Ange enhetsnamn",
+    "control": "Kontroll",
+    "control_search_placeholder": "Sök efter kod eller titel...",
+    "status": "Status",
+    "note": "Anteckning",
+    "note_placeholder": "Valfri anteckning eller undantagsskäl"
+  },
+  "status": {
+    "in_scope": "Inom omfattning",
+    "out_of_scope": "Utanför omfattning",
+    "exception": "Undantag"
+  },
+  "actions": {
+    "new_unit": "Ny enhet",
+    "create": "Skapa enhet",
+    "assign_control": "Tilldela kontroll",
+    "assign": "Tilldela"
+  },
+  "dialogs": {
+    "create_unit": {
+      "title": "Skapa omfattningsenhet"
+    },
+    "assign_control": {
+      "title": "Tilldela kontroll till enhet"
+    }
+  },
+  "success": {
+    "unit_created": "Omfattningsenhet skapad",
+    "control_assigned": "Kontroll tilldelad"
+  },
+  "errors": {
+    "load_failed": "Misslyckades att ladda omfattningsenheter",
+    "create_failed": "Misslyckades att skapa enhet",
+    "assign_failed": "Misslyckades att tilldela kontroll"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "title": "Evidence",
+  "subtitle": "Upload, review and track compliance evidence",
+  "tabs": {
+    "requests": "Requests",
+    "evidence": "Evidence"
+  },
+  "actions": {
+    "newRequest": "New Request",
+    "upload": "Upload Evidence",
+    "review": "Review"
+  },
+  "fields": {
+    "title": "Title",
+    "description": "Description",
+    "dueAt": "Due at",
+    "file": "File",
+    "status": "Status",
+    "verdict": "Verdict",
+    "note": "Note",
+    "control": "Control"
+  },
+  "status": {
+    "open": "Open",
+    "fulfilled": "Fulfilled",
+    "expired": "Expired",
+    "cancelled": "Cancelled"
+  },
+  "verdict": {
+    "pending": "Pending",
+    "pass": "Pass",
+    "fail": "Fail",
+    "warn": "Warn"
+  },
+  "empty": {
+    "noRequests": "No evidence requests",
+    "noEvidence": "No evidence uploaded"
+  },
+  "success": {
+    "request_created": "Evidence request created",
+    "uploaded": "Evidence uploaded",
+    "review_saved": "Review saved"
+  },
+  "errors": {
+    "create_failed": "Failed to create request",
+    "upload_failed": "Upload failed",
+    "review_failed": "Failed to save review"
+  }
+}

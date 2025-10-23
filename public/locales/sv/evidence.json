@@ -1,0 +1,49 @@
+{
+  "title": "Bevis",
+  "subtitle": "Ladda upp, granska och spåra efterlevnadsbevis",
+  "tabs": {
+    "requests": "Förfrågningar",
+    "evidence": "Bevis"
+  },
+  "actions": {
+    "newRequest": "Ny förfrågan",
+    "upload": "Ladda upp bevis",
+    "review": "Granska"
+  },
+  "fields": {
+    "title": "Titel",
+    "description": "Beskrivning",
+    "dueAt": "Förfaller",
+    "file": "Fil",
+    "status": "Status",
+    "verdict": "Beslut",
+    "note": "Anteckning",
+    "control": "Kontroll"
+  },
+  "status": {
+    "open": "Öppen",
+    "fulfilled": "Uppfylld",
+    "expired": "Utgången",
+    "cancelled": "Avbruten"
+  },
+  "verdict": {
+    "pending": "Väntande",
+    "pass": "Godkänd",
+    "fail": "Underkänd",
+    "warn": "Varning"
+  },
+  "empty": {
+    "noRequests": "Inga bevisförfrågningar",
+    "noEvidence": "Inget bevis uppladdat"
+  },
+  "success": {
+    "request_created": "Bevisförfrågan skapad",
+    "uploaded": "Bevis uppladdat",
+    "review_saved": "Granskning sparad"
+  },
+  "errors": {
+    "create_failed": "Misslyckades att skapa förfrågan",
+    "upload_failed": "Uppladdning misslyckades",
+    "review_failed": "Misslyckades att spara granskning"
+  }
+}

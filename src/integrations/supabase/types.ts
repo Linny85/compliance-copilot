@@ -237,6 +237,130 @@ export type Database = {
           },
         ]
       }
+      evidence_requests: {
+        Row: {
+          control_id: string
+          created_at: string
+          description: string | null
+          due_at: string | null
+          id: string
+          requested_by: string
+          status: string
+          tenant_id: string
+          title: string
+        }
+        Insert: {
+          control_id: string
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          requested_by: string
+          status?: string
+          tenant_id: string
+          title: string
+        }
+        Update: {
+          control_id?: string
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          requested_by?: string
+          status?: string
+          tenant_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidence_requests_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidence_requests_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      evidences: {
+        Row: {
+          control_id: string
+          file_path: string
+          file_size: number
+          hash_sha256: string
+          id: string
+          mime_type: string | null
+          note: string | null
+          request_id: string | null
+          reviewed_at: string | null
+          reviewer_id: string | null
+          tenant_id: string
+          uploaded_at: string
+          uploaded_by: string
+          verdict: string
+        }
+        Insert: {
+          control_id: string
+          file_path: string
+          file_size: number
+          hash_sha256: string
+          id?: string
+          mime_type?: string | null
+          note?: string | null
+          request_id?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          tenant_id: string
+          uploaded_at?: string
+          uploaded_by: string
+          verdict?: string
+        }
+        Update: {
+          control_id?: string
+          file_path?: string
+          file_size?: number
+          hash_sha256?: string
+          id?: string
+          mime_type?: string | null
+          note?: string | null
+          request_id?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          tenant_id?: string
+          uploaded_at?: string
+          uploaded_by?: string
+          verdict?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidences_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       frameworks: {
         Row: {
           code: string

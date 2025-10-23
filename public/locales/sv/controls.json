@@ -1,0 +1,19 @@
+{
+  "title": "Kontrollbibliotek",
+  "subtitle": "Bläddra bland efterlevnadskontroller och skapa policymallar",
+  "filters": {
+    "title": "Filtrera kontroller",
+    "allFrameworks": "Alla ramverk"
+  },
+  "labels": {
+    "objective": "Mål",
+    "evidenceTypes": "Bevistyper",
+    "severity": "Allvarlighetsgrad"
+  },
+  "actions": {
+    "createPolicy": "Skapa policy"
+  },
+  "empty": {
+    "noControls": "Inga kontroller hittades"
+  }
+}

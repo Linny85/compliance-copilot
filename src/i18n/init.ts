@@ -14,7 +14,7 @@ i18n
     load: 'languageOnly', // 'de-AT' → 'de'
     lowerCaseLng: true,
     nonExplicitSupportedLngs: true,
-    ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope'],
+    ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope', 'evidence'],
     defaultNS: 'common',
     backend: {
       loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,

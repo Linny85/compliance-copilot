@@ -16,6 +16,7 @@ import Admin from "./pages/Admin";
 import AuditLog from "./pages/AuditLog";
 import Controls from "./pages/Controls";
 import Scope from "./pages/Scope";
+import Evidence from "./pages/Evidence";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 
@@ -42,6 +43,7 @@ const App = () => (
                 <Route path="/documents" element={<Documents />} />
                 <Route path="/controls" element={<Controls />} />
                 <Route path="/scope" element={<Scope />} />
+                <Route path="/evidence" element={<Evidence />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/audit" element={<AuditLog />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
