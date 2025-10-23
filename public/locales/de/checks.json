@@ -51,5 +51,41 @@
   "errors": {
     "load_failed": "Laden der Checks fehlgeschlagen",
     "run_failed": "Ausführung der Checks fehlgeschlagen"
+  },
+  "form": {
+    "new_rule_title": "Neue Regel anlegen",
+    "new_rule_nav": "Neue Regel",
+    "fields": {
+      "title": "Titel",
+      "code": "Code",
+      "description": "Beschreibung",
+      "severity": "Schweregrad",
+      "kind": "Art",
+      "enabled": "Aktiv",
+      "control_id": "Control-ID (UUID, optional)",
+      "spec": "Spezifikation (JSON)"
+    },
+    "placeholders": {
+      "severity": "Schweregrad wählen",
+      "kind": "Art wählen",
+      "control_id": "z. B. UUID aus Controls"
+    },
+    "help": {
+      "code": "Erlaubt: Buchstaben, Ziffern, - _ : .  (pro Tenant eindeutig)",
+      "control_id": "Optional: Verknüpfe die Regel mit einer Control (UUID)."
+    },
+    "actions": {
+      "load_static_template": "Static-Template laden",
+      "load_query_template": "Query-Template laden"
+    },
+    "errors": {
+      "invalid_json": "Spec ist kein gültiges JSON.",
+      "invalid_spec": "Spec entspricht nicht dem erwarteten Schema.",
+      "save_failed": "Regel konnte nicht gespeichert werden.",
+      "duplicate_code": "Code existiert bereits für diesen Mandanten."
+    },
+    "success": {
+      "saved": "Regel wurde gespeichert."
+    }
   }
 }

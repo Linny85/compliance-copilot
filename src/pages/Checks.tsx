@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle } from "lucide-react";
+import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle, Plus } from "lucide-react";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
@@ -39,6 +40,7 @@ interface CheckResult {
 export default function ChecksPage() {
   const { t } = useTranslation(["checks", "common"]);
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [rules, setRules] = useState<CheckRule[]>([]);
   const [results, setResults] = useState<CheckResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -159,6 +161,10 @@ export default function ChecksPage() {
           <p className="text-muted-foreground mt-2">{t("checks:subtitle")}</p>
         </div>
         <div className="flex gap-2">
+          <Button onClick={() => navigate("/checks/new")} variant="outline">
+            <Plus className="h-4 w-4 mr-2" />
+            {t("checks:actions.newRule")}
+          </Button>
           <Button onClick={() => loadData()} variant="outline" size="icon">
             <RefreshCw className="h-4 w-4" />
           </Button>

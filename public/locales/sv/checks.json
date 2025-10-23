@@ -51,5 +51,41 @@
   "errors": {
     "load_failed": "Misslyckades att ladda kontroller",
     "run_failed": "Misslyckades att köra kontroller"
+  },
+  "form": {
+    "new_rule_title": "Skapa ny regel",
+    "new_rule_nav": "Ny regel",
+    "fields": {
+      "title": "Titel",
+      "code": "Kod",
+      "description": "Beskrivning",
+      "severity": "Allvarlighetsgrad",
+      "kind": "Typ",
+      "enabled": "Aktiverad",
+      "control_id": "Kontroll-ID (UUID, valfritt)",
+      "spec": "Specifikation (JSON)"
+    },
+    "placeholders": {
+      "severity": "Välj allvarlighetsgrad",
+      "kind": "Välj typ",
+      "control_id": "t.ex. UUID från kontroller"
+    },
+    "help": {
+      "code": "Tillåtet: bokstäver, siffror, - _ : .  (unikt per klient)",
+      "control_id": "Valfritt: Länka denna regel till en kontroll (UUID)."
+    },
+    "actions": {
+      "load_static_template": "Ladda statisk mall",
+      "load_query_template": "Ladda Query-mall"
+    },
+    "errors": {
+      "invalid_json": "Spec är inte giltig JSON.",
+      "invalid_spec": "Spec matchar inte förväntat schema.",
+      "save_failed": "Misslyckades att spara regel.",
+      "duplicate_code": "Koden finns redan för denna klient."
+    },
+    "success": {
+      "saved": "Regel sparad framgångsrikt."
+    }
   }
 }

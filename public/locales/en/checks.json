@@ -51,5 +51,41 @@
   "errors": {
     "load_failed": "Failed to load checks",
     "run_failed": "Failed to run checks"
+  },
+  "form": {
+    "new_rule_title": "Create New Rule",
+    "new_rule_nav": "New Rule",
+    "fields": {
+      "title": "Title",
+      "code": "Code",
+      "description": "Description",
+      "severity": "Severity",
+      "kind": "Type",
+      "enabled": "Enabled",
+      "control_id": "Control ID (UUID, optional)",
+      "spec": "Specification (JSON)"
+    },
+    "placeholders": {
+      "severity": "Select severity",
+      "kind": "Select type",
+      "control_id": "e.g. UUID from Controls"
+    },
+    "help": {
+      "code": "Allowed: letters, digits, - _ : .  (unique per tenant)",
+      "control_id": "Optional: Link this rule to a control (UUID)."
+    },
+    "actions": {
+      "load_static_template": "Load Static Template",
+      "load_query_template": "Load Query Template"
+    },
+    "errors": {
+      "invalid_json": "Spec is not valid JSON.",
+      "invalid_spec": "Spec does not match expected schema.",
+      "save_failed": "Failed to save rule.",
+      "duplicate_code": "Code already exists for this tenant."
+    },
+    "success": {
+      "saved": "Rule saved successfully."
+    }
   }
 }
