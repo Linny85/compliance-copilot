@@ -4,6 +4,13 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import i18nVerify from "./scripts/vite-i18n-verify-plugin";
 
+// Detect Lovable/Preview environment to avoid sandbox issues
+const isLovable =
+  process.env.LOVABLE_ENV === '1' ||
+  process.env.NODE_ENV === 'preview' ||
+  process.env.VERCEL === '1' ||
+  false;
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
@@ -13,11 +20,13 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(), 
     mode === "development" && componentTagger(),
-    i18nVerify({
-      localesDir: 'public/locales',
-      cmd: 'npm run i18n:verify',
-      debounceMs: 300,
-    }),
+    // Plugin ONLY enabled locally (not in Lovable sandbox)
+    !isLovable && process.env.I18N_VERIFY === '1' &&
+      i18nVerify({
+        localesDir: 'public/locales',
+        cmd: 'npm run i18n:verify',
+        debounceMs: 300,
+      }),
   ].filter(Boolean),
   resolve: {
     alias: {
