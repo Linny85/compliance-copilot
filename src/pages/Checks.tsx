@@ -8,8 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
-import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle, Plus, Pencil, Trash2 } from "lucide-react";
+import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle, Plus, Pencil, Trash2, Link } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -337,17 +339,39 @@ export default function ChecksPage() {
           <p className="text-muted-foreground mt-2">{t("checks:subtitle")}</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate("/checks/new")} variant="outline" disabled={isAdmin !== true}>
-            <Plus className="h-4 w-4 mr-2" />
-            {t("checks:actions.newRule")}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button onClick={() => navigate("/checks/new")} variant="outline" disabled={isAdmin !== true}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {t("checks:actions.newRule")}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {isAdmin === false && (
+                <TooltipContent>{t('common:tooltips.adminOnly')}</TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
           <Button onClick={() => loadData()} variant="outline" size="icon">
             <RefreshCw className="h-4 w-4" />
           </Button>
-          <Button onClick={() => runChecks()} disabled={running || rules.length === 0}>
-            <PlayCircle className="h-4 w-4 mr-2" />
-            {running ? t("common:loading") : t("checks:actions.runAll")}
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button onClick={() => runChecks()} disabled={running || rules.length === 0}>
+                    <PlayCircle className="h-4 w-4 mr-2" />
+                    {running ? t("common:loading") : t("checks:actions.runAll")}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              {rules.length === 0 && (
+                <TooltipContent>{t('common:tooltips.noRules')}</TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 
@@ -401,43 +425,70 @@ export default function ChecksPage() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        {isAdmin === true && (
-                          <Button
-                            onClick={() => openEditModal(rule)}
-                            size="sm"
-                            variant="ghost"
-                          >
-                            <Pencil className="h-4 w-4 mr-1" />
-                            {t("common:edit")}
-                          </Button>
-                        )}
-                        {isAdmin === true && (
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
-                                <Trash2 className="h-4 w-4 mr-1" />
-                                {t("common:delete")}
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>{t("checks:form.delete_confirm_title")}</AlertDialogTitle>
-                              </AlertDialogHeader>
-                              <p className="text-sm text-muted-foreground">
-                                {t("checks:form.delete_confirm_text", { code: rule.code })}
-                              </p>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>{t("common:cancel")}</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDelete(rule.id)}
-                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                >
+                        <TooltipProvider>
+                          {isAdmin === true ? (
+                            <Button
+                              onClick={() => openEditModal(rule)}
+                              size="sm"
+                              variant="ghost"
+                            >
+                              <Pencil className="h-4 w-4 mr-1" />
+                              {t("common:edit")}
+                            </Button>
+                          ) : isAdmin === false ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span>
+                                  <Button size="sm" variant="ghost" disabled>
+                                    <Pencil className="h-4 w-4 mr-1" />
+                                    {t("common:edit")}
+                                  </Button>
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>{t('common:tooltips.adminOnly')}</TooltipContent>
+                            </Tooltip>
+                          ) : null}
+                          
+                          {isAdmin === true ? (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                                  <Trash2 className="h-4 w-4 mr-1" />
                                   {t("common:delete")}
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        )}
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{t("checks:form.delete_confirm_title")}</AlertDialogTitle>
+                                </AlertDialogHeader>
+                                <p className="text-sm text-muted-foreground">
+                                  {t("checks:form.delete_confirm_text", { code: rule.code })}
+                                </p>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>{t("common:cancel")}</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDelete(rule.id)}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                  >
+                                    {t("common:delete")}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          ) : isAdmin === false ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span>
+                                  <Button size="sm" variant="ghost" disabled className="text-destructive">
+                                    <Trash2 className="h-4 w-4 mr-1" />
+                                    {t("common:delete")}
+                                  </Button>
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>{t('common:tooltips.adminOnly')}</TooltipContent>
+                            </Tooltip>
+                          ) : null}
+                        </TooltipProvider>
                         <Button
                           onClick={() => runChecks([rule.id])}
                           disabled={running || !rule.enabled}
@@ -466,50 +517,88 @@ export default function ChecksPage() {
                 setResultsPage(1);
               }}
             />
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={isAdmin !== true || results.length === 0 || exporting || resultsLoading}
-              onClick={async () => {
-                setExporting(true);
-                try {
-                  const { data, error } = await supabase.functions.invoke("export-results", {
-                    body: { filters }
-                  });
-                  
-                  if (error) throw error;
-                  
-                  const filename = `check_results_${new Date().toISOString().split('T')[0]}.csv`;
-                  const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
-                  const link = document.createElement('a');
-                  link.href = URL.createObjectURL(blob);
-                  link.download = filename;
-                  link.click();
-                  URL.revokeObjectURL(link.href);
-                  
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
                   toast({
-                    title: t("checks:success.exported"),
-                    description: `${t("checks:success.exported_desc")} (${filename})`
+                    title: t('checks:results.copyViewLink'),
+                    description: t('checks:results.copyViewLink_desc'),
                   });
-                } catch (e: any) {
-                  console.error("[export-results]", e);
-                  toast({
-                    title: t("checks:errors.export_failed"),
-                    variant: "destructive"
-                  });
-                } finally {
-                  setExporting(false);
-                }
-              }}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {exporting ? t("common:loading") : t("checks:results.export")}
-            </Button>
+                }}
+              >
+                <Link className="h-4 w-4 mr-2" />
+                {t('checks:results.copyViewLink')}
+              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={isAdmin !== true || results.length === 0 || exporting || resultsLoading}
+                        onClick={async () => {
+                          if (results.length === 0) {
+                            toast({
+                              title: t("checks:errors.noResultsToExport"),
+                              variant: "destructive"
+                            });
+                            return;
+                          }
+                          setExporting(true);
+                          try {
+                            const { data, error } = await supabase.functions.invoke("export-results", {
+                              body: { filters }
+                            });
+                            
+                            if (error) throw error;
+                            
+                            const filename = `check_results_${new Date().toISOString().split('T')[0]}.csv`;
+                            const blob = new Blob([data], { type: 'text/csv;charset=utf-8;' });
+                            const link = document.createElement('a');
+                            link.href = URL.createObjectURL(blob);
+                            link.download = filename;
+                            link.click();
+                            URL.revokeObjectURL(link.href);
+                            
+                            toast({
+                              title: t("checks:success.exported"),
+                              description: `${t("checks:success.exported_desc")} (${filename})`
+                            });
+                          } catch (e: any) {
+                            console.error("[export-results]", e);
+                            toast({
+                              title: t("checks:errors.export_failed"),
+                              variant: "destructive"
+                            });
+                          } finally {
+                            setExporting(false);
+                          }
+                        }}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        {exporting ? t("common:loading") : "Export CSV"}
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  {(isAdmin === false || results.length === 0) && (
+                    <TooltipContent>
+                      {isAdmin === false ? t('common:tooltips.adminOnly') : t("checks:errors.noResultsToExport")}
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
+            </div>
           </div>
 
           {resultsLoading ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">{t("common:loading")}</p>
+            <div className="space-y-2">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))}
             </div>
           ) : results.length === 0 ? (
             <Card>
@@ -593,7 +682,7 @@ export default function ChecksPage() {
 
               {/* Pagination */}
               <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground" aria-label="Pagination info">
                   {t("checks:results.showing", { 
                     from: (resultsPage - 1) * 50 + 1, 
                     to: Math.min(resultsPage * 50, resultsTotal), 
@@ -606,6 +695,7 @@ export default function ChecksPage() {
                     size="sm"
                     onClick={() => setResultsPage(p => Math.max(1, p - 1))}
                     disabled={resultsPage === 1}
+                    aria-label="Previous page"
                   >
                     {t("common:previous") || "Previous"}
                   </Button>
@@ -614,6 +704,7 @@ export default function ChecksPage() {
                     size="sm"
                     onClick={() => setResultsPage(p => p + 1)}
                     disabled={resultsPage * 50 >= resultsTotal}
+                    aria-label="Next page"
                   >
                     {t("common:next") || "Next"}
                   </Button>

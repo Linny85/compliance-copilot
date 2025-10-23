@@ -53,7 +53,8 @@
   "errors": {
     "load_failed": "Failed to load checks",
     "run_failed": "Failed to run checks",
-    "export_failed": "Failed to export results"
+    "export_failed": "Failed to export results",
+    "noResultsToExport": "No results to export."
   },
   "form": {
     "new_rule_title": "Create New Rule",
@@ -132,7 +133,9 @@
     "actions": "Actions",
     "viewDetails": "View Details",
     "export": "Export CSV",
-    "showing": "Showing {{from}}-{{to}} of {{total}}"
+    "showing": "Showing {{from}}-{{to}} of {{total}}",
+    "copyViewLink": "Copy View Link",
+    "copyViewLink_desc": "The current filter link has been copied to the clipboard."
   },
   "drilldown": {
     "title": "Run Details",

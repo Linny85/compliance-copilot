@@ -10,6 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Download, Loader2 } from "lucide-react";
 
@@ -105,46 +107,66 @@ export default function ControlsMapping() {
           <h1 className="text-3xl font-bold">{t("checks:mapping.title")}</h1>
           <p className="text-muted-foreground mt-2">{t("checks:mapping.subtitle")}</p>
         </div>
-        <Button
-          disabled={isAdmin !== true || exporting || loading || !items.length}
-          onClick={async () => {
-            setExporting(true);
-            try {
-              const { data, error } = await supabase.functions.invoke("export-control-mapping", {
-                body: { filters: { q, withRulesOnly, severity: sev, outcome: out } },
-              });
-              if (error) throw error;
-              const filename = `control_mapping_${new Date().toISOString().split("T")[0]}.csv`;
-              const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
-              const link = document.createElement("a");
-              link.href = URL.createObjectURL(blob);
-              link.download = filename;
-              link.click();
-              URL.revokeObjectURL(link.href);
-              toast({ 
-                title: t("checks:success.exported"), 
-                description: `${t("checks:success.exported_desc")} (${filename})` 
-              });
-            } catch (e) {
-              console.error("[mapping] export error", e);
-              toast({ title: t("checks:errors.export_failed"), variant: "destructive" });
-            } finally {
-              setExporting(false);
-            }
-          }}
-        >
-          {exporting ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              {t("common:loading")}
-            </>
-          ) : (
-            <>
-              <Download className="h-4 w-4 mr-2" />
-              {t("checks:mapping.export")}
-            </>
-          )}
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>
+                <Button
+                  disabled={isAdmin !== true || exporting || loading || !items.length}
+                  onClick={async () => {
+                    if (!items.length) {
+                      toast({
+                        title: t("checks:errors.noResultsToExport"),
+                        variant: "destructive"
+                      });
+                      return;
+                    }
+                    setExporting(true);
+                    try {
+                      const { data, error } = await supabase.functions.invoke("export-control-mapping", {
+                        body: { filters: { q, withRulesOnly, severity: sev, outcome: out } },
+                      });
+                      if (error) throw error;
+                      const filename = `control_mapping_${new Date().toISOString().split("T")[0]}.csv`;
+                      const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+                      const link = document.createElement("a");
+                      link.href = URL.createObjectURL(blob);
+                      link.download = filename;
+                      link.click();
+                      URL.revokeObjectURL(link.href);
+                      toast({ 
+                        title: t("checks:success.exported"), 
+                        description: `${t("checks:success.exported_desc")} (${filename})` 
+                      });
+                    } catch (e) {
+                      console.error("[mapping] export error", e);
+                      toast({ title: t("checks:errors.export_failed"), variant: "destructive" });
+                    } finally {
+                      setExporting(false);
+                    }
+                  }}
+                >
+                  {exporting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      {t("common:loading")}
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </>
+                  )}
+                </Button>
+              </span>
+            </TooltipTrigger>
+            {(isAdmin === false || !items.length) && (
+              <TooltipContent>
+                {isAdmin === false ? t('common:tooltips.adminOnly') : t("checks:errors.noResultsToExport")}
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
       </div>
 
       {/* Filters */}
@@ -212,9 +234,10 @@ export default function ControlsMapping() {
       <Card>
         <CardContent className="p-0">
           {loading ? (
-            <div className="p-6 text-center">
-              <Loader2 className="h-8 w-8 mx-auto animate-spin text-muted-foreground mb-2" />
-              <p className="text-muted-foreground">{t("common:loading")}</p>
+            <div className="p-6 space-y-2">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full" />
+              ))}
             </div>
           ) : !items.length ? (
             <div className="p-6 text-center text-muted-foreground">
@@ -309,7 +332,7 @@ export default function ControlsMapping() {
 
       {/* Pagination */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-muted-foreground" aria-label="Pagination info">
           {total ? `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, total)} / ${total}` : "0"}
         </div>
         <div className="flex gap-2">
@@ -317,6 +340,7 @@ export default function ControlsMapping() {
             variant="outline" 
             disabled={page === 1 || loading} 
             onClick={() => setPage(p => Math.max(1, p - 1))}
+            aria-label="Previous page"
           >
             {t("common:previous") || "Previous"}
           </Button>
@@ -324,6 +348,7 @@ export default function ControlsMapping() {
             variant="outline"
             disabled={page >= totalPages || loading}
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            aria-label="Next page"
           >
             {t("common:next") || "Next"}
           </Button>

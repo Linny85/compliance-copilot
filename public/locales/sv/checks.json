@@ -53,7 +53,8 @@
   "errors": {
     "load_failed": "Misslyckades att ladda kontroller",
     "run_failed": "Misslyckades att köra kontroller",
-    "export_failed": "Misslyckades att exportera resultat"
+    "export_failed": "Misslyckades att exportera resultat",
+    "noResultsToExport": "Inga resultat att exportera."
   },
   "form": {
     "new_rule_title": "Skapa ny regel",
@@ -132,7 +133,9 @@
     "actions": "Åtgärder",
     "viewDetails": "Visa detaljer",
     "export": "Exportera CSV",
-    "showing": "Visar {{from}}-{{to}} av {{total}}"
+    "showing": "Visar {{from}}-{{to}} av {{total}}",
+    "copyViewLink": "Kopiera vylänk",
+    "copyViewLink_desc": "Den aktuella filterlänken har kopierats till urklipp."
   },
   "drilldown": {
     "title": "Körningsdetaljer",

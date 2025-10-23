@@ -53,7 +53,8 @@
   "errors": {
     "load_failed": "Laden der Checks fehlgeschlagen",
     "run_failed": "Ausführung der Checks fehlgeschlagen",
-    "export_failed": "Export der Ergebnisse fehlgeschlagen"
+    "export_failed": "Export der Ergebnisse fehlgeschlagen",
+    "noResultsToExport": "Keine Ergebnisse zum Exportieren."
   },
   "form": {
     "new_rule_title": "Neue Regel anlegen",
@@ -132,7 +133,9 @@
     "actions": "Aktionen",
     "viewDetails": "Details anzeigen",
     "export": "CSV exportieren",
-    "showing": "Zeige {{from}}-{{to}} von {{total}}"
+    "showing": "Zeige {{from}}-{{to}} von {{total}}",
+    "copyViewLink": "Ansichts-Link kopieren",
+    "copyViewLink_desc": "Der aktuelle Filter-Link wurde in die Zwischenablage kopiert."
   },
   "drilldown": {
     "title": "Run-Details",
