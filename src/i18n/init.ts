@@ -28,7 +28,7 @@ i18n
       escapeValue: false, // React already escapes
     },
     react: {
-      useSuspense: true,
+      useSuspense: false, // Disable suspense for Lovable preview compatibility
     },
     returnEmptyString: false,
     saveMissing: false,
