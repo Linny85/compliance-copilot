@@ -14,6 +14,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Settings, Plus, UserMinus, Clock, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { QAMonitorCard } from "@/components/dashboard/QAMonitorCard";
+import { ComplianceStatusCard } from "@/components/dashboard/ComplianceStatusCard";
 
 interface User {
   id: string;
@@ -181,6 +182,7 @@ const Admin = () => {
               <TabsList>
                 <TabsTrigger value="users">Users</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
+                <TabsTrigger value="compliance">Compliance</TabsTrigger>
                 <TabsTrigger value="qa-monitor">QA Monitor</TabsTrigger>
               </TabsList>
 
@@ -324,6 +326,10 @@ const Admin = () => {
                     )}
                   </CardContent>
                 </Card>
+              </TabsContent>
+
+              <TabsContent value="compliance" className="space-y-4">
+                {companyId && <ComplianceStatusCard companyId={companyId} />}
               </TabsContent>
 
               <TabsContent value="qa-monitor" className="space-y-4">

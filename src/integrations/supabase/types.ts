@@ -1309,6 +1309,26 @@ export type Database = {
           },
         ]
       }
+      v_compliance_summary: {
+        Row: {
+          failed: number | null
+          last_run_at: string | null
+          passed: number | null
+          success_rate: number | null
+          tenant_id: string | null
+          total: number | null
+          warnings: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       cleanup_notification_deliveries: { Args: never; Returns: undefined }
