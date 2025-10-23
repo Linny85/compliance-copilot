@@ -1,0 +1,55 @@
+{
+  "title": "Automatiserade kontroller",
+  "subtitle": "Deterministiska regler kopplade till kontroller",
+  "tabs": {
+    "rules": "Regler",
+    "results": "Resultat"
+  },
+  "actions": {
+    "runAll": "Kör alla",
+    "runSelected": "Kör valda",
+    "refresh": "Uppdatera",
+    "newRule": "Ny regel"
+  },
+  "labels": {
+    "code": "Kod",
+    "title": "Titel",
+    "kind": "Typ",
+    "severity": "Allvarlighetsgrad",
+    "enabled": "Aktiverad",
+    "schedule": "Schema",
+    "control": "Kontroll",
+    "outcome": "Resultat",
+    "message": "Meddelande",
+    "time": "Tid",
+    "status": "Status"
+  },
+  "outcome": {
+    "pass": "Godkänd",
+    "fail": "Underkänd",
+    "warn": "Varning"
+  },
+  "status": {
+    "running": "Kör",
+    "success": "Lyckades",
+    "failed": "Misslyckades",
+    "partial": "Delvis"
+  },
+  "kind": {
+    "static": "Statisk",
+    "query": "Query",
+    "http": "HTTP",
+    "script": "Script"
+  },
+  "empty": {
+    "noRules": "Inga regler konfigurerade",
+    "noResults": "Inga resultat ännu"
+  },
+  "success": {
+    "checks_run": "Kontroller kördes framgångsrikt"
+  },
+  "errors": {
+    "load_failed": "Misslyckades att ladda kontroller",
+    "run_failed": "Misslyckades att köra kontroller"
+  }
+}

@@ -8,6 +8,7 @@ import {
   LogOut,
   Network,
   FileCheck,
+  PlayCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,6 +39,7 @@ export function AppSidebar() {
     { title: t.nav.controls, url: "/controls", icon: Shield },
     { title: t.nav.scope, url: "/scope", icon: Network },
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
+    { title: t.nav.checks, url: "/checks", icon: PlayCircle },
     { title: t.nav.docs, url: "/documents", icon: FileText },
     { title: t.nav.admin, url: "/admin", icon: Settings },
   ];

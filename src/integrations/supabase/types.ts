@@ -152,6 +152,175 @@ export type Database = {
           },
         ]
       }
+      check_results: {
+        Row: {
+          created_at: string
+          details: Json | null
+          id: string
+          message: string | null
+          outcome: string
+          rule_id: string
+          run_id: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          id?: string
+          message?: string | null
+          outcome: string
+          rule_id: string
+          run_id: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          id?: string
+          message?: string | null
+          outcome?: string
+          rule_id?: string
+          run_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "check_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_results_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "check_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      check_rules: {
+        Row: {
+          code: string
+          control_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          enabled: boolean
+          id: string
+          kind: string
+          schedule: string | null
+          severity: string
+          spec: Json
+          tenant_id: string
+          title: string
+        }
+        Insert: {
+          code: string
+          control_id: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          kind: string
+          schedule?: string | null
+          severity?: string
+          spec: Json
+          tenant_id: string
+          title: string
+        }
+        Update: {
+          code?: string
+          control_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          kind?: string
+          schedule?: string | null
+          severity?: string
+          spec?: Json
+          tenant_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_rules_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      check_runs: {
+        Row: {
+          finished_at: string | null
+          id: string
+          requested_by: string | null
+          rule_id: string
+          started_at: string
+          status: string
+          tenant_id: string
+          window_end: string
+          window_start: string
+        }
+        Insert: {
+          finished_at?: string | null
+          id?: string
+          requested_by?: string | null
+          rule_id: string
+          started_at?: string
+          status?: string
+          tenant_id: string
+          window_end: string
+          window_start: string
+        }
+        Update: {
+          finished_at?: string | null
+          id?: string
+          requested_by?: string | null
+          rule_id?: string
+          started_at?: string
+          status?: string
+          tenant_id?: string
+          window_end?: string
+          window_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_runs_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "check_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_runs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       controls: {
         Row: {
           code: string

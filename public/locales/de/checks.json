@@ -1,0 +1,55 @@
+{
+  "title": "Automatisierte Checks",
+  "subtitle": "Deterministische Regeln mit Controls verknüpft",
+  "tabs": {
+    "rules": "Regeln",
+    "results": "Ergebnisse"
+  },
+  "actions": {
+    "runAll": "Alle ausführen",
+    "runSelected": "Auswahl ausführen",
+    "refresh": "Aktualisieren",
+    "newRule": "Neue Regel"
+  },
+  "labels": {
+    "code": "Code",
+    "title": "Titel",
+    "kind": "Typ",
+    "severity": "Schweregrad",
+    "enabled": "Aktiv",
+    "schedule": "Zeitplan",
+    "control": "Kontrolle",
+    "outcome": "Ergebnis",
+    "message": "Nachricht",
+    "time": "Zeit",
+    "status": "Status"
+  },
+  "outcome": {
+    "pass": "Bestanden",
+    "fail": "Nicht bestanden",
+    "warn": "Hinweis"
+  },
+  "status": {
+    "running": "Läuft",
+    "success": "Erfolgreich",
+    "failed": "Fehlgeschlagen",
+    "partial": "Teilweise"
+  },
+  "kind": {
+    "static": "Statisch",
+    "query": "Query",
+    "http": "HTTP",
+    "script": "Script"
+  },
+  "empty": {
+    "noRules": "Keine Regeln konfiguriert",
+    "noResults": "Noch keine Ergebnisse"
+  },
+  "success": {
+    "checks_run": "Checks erfolgreich ausgeführt"
+  },
+  "errors": {
+    "load_failed": "Laden der Checks fehlgeschlagen",
+    "run_failed": "Ausführung der Checks fehlgeschlagen"
+  }
+}

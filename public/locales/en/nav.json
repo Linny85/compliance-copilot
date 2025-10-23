@@ -1,0 +1,12 @@
+{
+  "dashboard": "Dashboard",
+  "risks": "NIS2 Risks",
+  "ai": "AI Systems",
+  "controls": "Controls",
+  "scope": "Scope",
+  "evidence": "Evidence",
+  "checks": "Checks",
+  "docs": "Documents",
+  "admin": "Admin",
+  "logout": "Logout"
+}

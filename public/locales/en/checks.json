@@ -1,0 +1,55 @@
+{
+  "title": "Automated Checks",
+  "subtitle": "Deterministic rules mapped to controls",
+  "tabs": {
+    "rules": "Rules",
+    "results": "Results"
+  },
+  "actions": {
+    "runAll": "Run All",
+    "runSelected": "Run Selected",
+    "refresh": "Refresh",
+    "newRule": "New Rule"
+  },
+  "labels": {
+    "code": "Code",
+    "title": "Title",
+    "kind": "Type",
+    "severity": "Severity",
+    "enabled": "Enabled",
+    "schedule": "Schedule",
+    "control": "Control",
+    "outcome": "Outcome",
+    "message": "Message",
+    "time": "Time",
+    "status": "Status"
+  },
+  "outcome": {
+    "pass": "Pass",
+    "fail": "Fail",
+    "warn": "Warn"
+  },
+  "status": {
+    "running": "Running",
+    "success": "Success",
+    "failed": "Failed",
+    "partial": "Partial"
+  },
+  "kind": {
+    "static": "Static",
+    "query": "Query",
+    "http": "HTTP",
+    "script": "Script"
+  },
+  "empty": {
+    "noRules": "No rules configured",
+    "noResults": "No results yet"
+  },
+  "success": {
+    "checks_run": "Checks executed successfully"
+  },
+  "errors": {
+    "load_failed": "Failed to load checks",
+    "run_failed": "Failed to run checks"
+  }
+}
