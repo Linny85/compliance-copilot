@@ -9,7 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { rtlLanguages } from "@/i18n/languages";
+import { supportedLocales, localeLabels, rtlLanguages } from "@/i18n/languages";
 
 export const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
@@ -45,16 +45,12 @@ export const LanguageSwitcher = () => {
           <span className="uppercase">{i18n.language}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setLocale('en')}>
-          English (EN)
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLocale('de')}>
-          Deutsch (DE)
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLocale('sv')}>
-          Svenska (SV)
-        </DropdownMenuItem>
+      <DropdownMenuContent align="end" className="max-h-[400px] overflow-y-auto">
+        {supportedLocales.map((locale) => (
+          <DropdownMenuItem key={locale} onClick={() => setLocale(locale)}>
+            {localeLabels[locale] || locale.toUpperCase()}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
