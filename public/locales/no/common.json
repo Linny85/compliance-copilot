@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Logg inn",
+    "signUp": "Registrer deg",
+    "signOut": "Logg ut",
+    "email": "E-post",
+    "password": "Passord"
+  },
+  "dashboard": {
+    "welcome": "Velkommen",
+    "nextSteps": "Neste steg"
+  },
+  "common": {
+    "save": "Lagre",
+    "cancel": "Avbryt",
+    "loading": "Laster..."
+  }
+}

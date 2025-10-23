@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Kirjaudu sisään",
+    "signUp": "Rekisteröidy",
+    "signOut": "Kirjaudu ulos",
+    "email": "Sähköposti",
+    "password": "Salasana"
+  },
+  "dashboard": {
+    "welcome": "Tervetuloa",
+    "nextSteps": "Seuraavat vaiheet"
+  },
+  "common": {
+    "save": "Tallenna",
+    "cancel": "Peruuta",
+    "loading": "Ladataan..."
+  }
+}

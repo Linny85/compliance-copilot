@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Pieteikties",
+    "signUp": "Reģistrēties",
+    "signOut": "Iziet",
+    "email": "E-pasts",
+    "password": "Parole"
+  },
+  "dashboard": {
+    "welcome": "Laipni lūdzam",
+    "nextSteps": "Nākamie soļi"
+  },
+  "common": {
+    "save": "Saglabāt",
+    "cancel": "Atcelt",
+    "loading": "Ielādē..."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Iniciar sessió",
+    "signUp": "Registrar-se",
+    "signOut": "Tancar sessió",
+    "email": "Correu electrònic",
+    "password": "Contrasenya"
+  },
+  "dashboard": {
+    "welcome": "Benvingut",
+    "nextSteps": "Propers passos"
+  },
+  "common": {
+    "save": "Desar",
+    "cancel": "Cancel·lar",
+    "loading": "Carregant..."
+  }
+}

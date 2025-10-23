@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Prijava",
+    "signUp": "Registracija",
+    "signOut": "Odjava",
+    "email": "E-pošta",
+    "password": "Geslo"
+  },
+  "dashboard": {
+    "welcome": "Dobrodošli",
+    "nextSteps": "Naslednji koraki"
+  },
+  "common": {
+    "save": "Shrani",
+    "cancel": "Prekliči",
+    "loading": "Nalaganje..."
+  }
+}

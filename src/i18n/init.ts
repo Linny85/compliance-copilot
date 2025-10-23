@@ -12,10 +12,12 @@ i18n
     supportedLngs: supportedLocales,
     fallbackLng,
     load: 'languageOnly', // 'de-AT' → 'de'
+    lowerCaseLng: true,
+    nonExplicitSupportedLngs: true,
     ns: ['common'],
     defaultNS: 'common',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
     },
     detection: {
       order: ['querystring', 'localStorage', 'cookie', 'navigator', 'htmlTag'],
@@ -28,6 +30,15 @@ i18n
     react: {
       useSuspense: true,
     },
+    returnEmptyString: false,
   });
+
+// Normalize language codes (nb/nn -> no, etc.)
+const normalize = (lng: string) => ({
+  'nb': 'no', 'nn': 'no',
+}[lng] ?? lng);
+
+const origChange = i18n.changeLanguage.bind(i18n);
+i18n.changeLanguage = (lng, ...rest) => origChange(normalize(lng), ...rest);
 
 export default i18n;

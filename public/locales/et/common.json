@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Logi sisse",
+    "signUp": "Registreeri",
+    "signOut": "Logi välja",
+    "email": "E-post",
+    "password": "Parool"
+  },
+  "dashboard": {
+    "welcome": "Tere tulemast",
+    "nextSteps": "Järgmised sammud"
+  },
+  "common": {
+    "save": "Salvesta",
+    "cancel": "Tühista",
+    "loading": "Laadimine..."
+  }
+}

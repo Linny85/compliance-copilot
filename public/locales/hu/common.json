@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Bejelentkezés",
+    "signUp": "Regisztráció",
+    "signOut": "Kijelentkezés",
+    "email": "E-mail",
+    "password": "Jelszó"
+  },
+  "dashboard": {
+    "welcome": "Üdvözöljük",
+    "nextSteps": "Következő lépések"
+  },
+  "common": {
+    "save": "Mentés",
+    "cancel": "Mégse",
+    "loading": "Betöltés..."
+  }
+}

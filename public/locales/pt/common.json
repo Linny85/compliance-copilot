@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Entrar",
+    "signUp": "Registar",
+    "signOut": "Sair",
+    "email": "E-mail",
+    "password": "Palavra-passe"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo",
+    "nextSteps": "Próximos passos"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "A carregar..."
+  }
+}

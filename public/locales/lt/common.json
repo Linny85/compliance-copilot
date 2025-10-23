@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Prisijungti",
+    "signUp": "Registruotis",
+    "signOut": "Atsijungti",
+    "email": "El. paštas",
+    "password": "Slaptažodis"
+  },
+  "dashboard": {
+    "welcome": "Sveiki atvykę",
+    "nextSteps": "Kiti žingsniai"
+  },
+  "common": {
+    "save": "Išsaugoti",
+    "cancel": "Atšaukti",
+    "loading": "Įkeliama..."
+  }
+}

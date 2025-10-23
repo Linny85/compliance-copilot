@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Вход",
+    "signUp": "Регистрация",
+    "signOut": "Изход",
+    "email": "Имейл",
+    "password": "Парола"
+  },
+  "dashboard": {
+    "welcome": "Добре дошли",
+    "nextSteps": "Следващи стъпки"
+  },
+  "common": {
+    "save": "Запази",
+    "cancel": "Отказ",
+    "loading": "Зареждане..."
+  }
+}

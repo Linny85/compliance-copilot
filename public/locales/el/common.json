@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Σύνδεση",
+    "signUp": "Εγγραφή",
+    "signOut": "Αποσύνδεση",
+    "email": "Email",
+    "password": "Κωδικός"
+  },
+  "dashboard": {
+    "welcome": "Καλώς ήρθατε",
+    "nextSteps": "Επόμενα βήματα"
+  },
+  "common": {
+    "save": "Αποθήκευση",
+    "cancel": "Ακύρωση",
+    "loading": "Φόρτωση..."
+  }
+}

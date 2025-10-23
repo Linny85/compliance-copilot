@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "signOut": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido",
+    "nextSteps": "Próximos pasos"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando..."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Idħol",
+    "signUp": "Irreġistra",
+    "signOut": "Oħroġ",
+    "email": "Email",
+    "password": "Password"
+  },
+  "dashboard": {
+    "welcome": "Merħba",
+    "nextSteps": "Passi li jmiss"
+  },
+  "common": {
+    "save": "Issejvja",
+    "cancel": "Ikkanċella",
+    "loading": "Qed jitgħabba..."
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Log ind",
+    "signUp": "Tilmeld",
+    "signOut": "Log ud",
+    "email": "E-mail",
+    "password": "Adgangskode"
+  },
+  "dashboard": {
+    "welcome": "Velkommen",
+    "nextSteps": "Næste trin"
+  },
+  "common": {
+    "save": "Gem",
+    "cancel": "Annuller",
+    "loading": "Indlæser..."
+  }
+}

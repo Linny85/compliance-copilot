@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Přihlásit se",
+    "signUp": "Registrovat se",
+    "signOut": "Odhlásit se",
+    "email": "E-mail",
+    "password": "Heslo"
+  },
+  "dashboard": {
+    "welcome": "Vítejte",
+    "nextSteps": "Další kroky"
+  },
+  "common": {
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "loading": "Načítání..."
+  }
+}

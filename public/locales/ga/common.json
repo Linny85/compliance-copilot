@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Logáil isteach",
+    "signUp": "Cláraigh",
+    "signOut": "Logáil amach",
+    "email": "Ríomhphost",
+    "password": "Pasfhocal"
+  },
+  "dashboard": {
+    "welcome": "Fáilte",
+    "nextSteps": "Céad chéimeanna eile"
+  },
+  "common": {
+    "save": "Sábháil",
+    "cancel": "Cealaigh",
+    "loading": "Ag lódáil..."
+  }
+}

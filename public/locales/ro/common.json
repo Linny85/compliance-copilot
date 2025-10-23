@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Autentificare",
+    "signUp": "Înregistrare",
+    "signOut": "Deconectare",
+    "email": "E-mail",
+    "password": "Parolă"
+  },
+  "dashboard": {
+    "welcome": "Bun venit",
+    "nextSteps": "Pașii următori"
+  },
+  "common": {
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "loading": "Se încarcă..."
+  }
+}

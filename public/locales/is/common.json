@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Skrá inn",
+    "signUp": "Nýskrá",
+    "signOut": "Skrá út",
+    "email": "Netfang",
+    "password": "Lykilorð"
+  },
+  "dashboard": {
+    "welcome": "Velkomin",
+    "nextSteps": "Næstu skref"
+  },
+  "common": {
+    "save": "Vista",
+    "cancel": "Hætta við",
+    "loading": "Hleð..."
+  }
+}

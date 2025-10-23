@@ -1,0 +1,18 @@
+{
+  "auth": {
+    "signIn": "Inloggen",
+    "signUp": "Registreren",
+    "signOut": "Uitloggen",
+    "email": "E-mail",
+    "password": "Wachtwoord"
+  },
+  "dashboard": {
+    "welcome": "Welkom",
+    "nextSteps": "Volgende stappen"
+  },
+  "common": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "loading": "Laden..."
+  }
+}
