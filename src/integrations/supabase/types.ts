@@ -594,6 +594,84 @@ export type Database = {
           },
         ]
       }
+      explainability_feedback: {
+        Row: {
+          context: Json | null
+          id: string
+          noted_at: string
+          noted_by: string | null
+          signal_feature: string
+          signal_key: string
+          signal_metric: string
+          tenant_id: string
+          verdict: string
+          weight: number
+        }
+        Insert: {
+          context?: Json | null
+          id?: string
+          noted_at?: string
+          noted_by?: string | null
+          signal_feature: string
+          signal_key: string
+          signal_metric: string
+          tenant_id: string
+          verdict: string
+          weight?: number
+        }
+        Update: {
+          context?: Json | null
+          id?: string
+          noted_at?: string
+          noted_by?: string | null
+          signal_feature?: string
+          signal_key?: string
+          signal_metric?: string
+          tenant_id?: string
+          verdict?: string
+          weight?: number
+        }
+        Relationships: []
+      }
+      explainability_signal_weights: {
+        Row: {
+          confidence: number
+          feature: string
+          id: string
+          key: string
+          mae_impact: number | null
+          metric: string
+          sample: number
+          tenant_id: string
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          confidence?: number
+          feature: string
+          id?: string
+          key: string
+          mae_impact?: number | null
+          metric: string
+          sample?: number
+          tenant_id: string
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          confidence?: number
+          feature?: string
+          id?: string
+          key?: string
+          mae_impact?: number | null
+          metric?: string
+          sample?: number
+          tenant_id?: string
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
       explainability_signals: {
         Row: {
           created_at: string
@@ -1519,6 +1597,14 @@ export type Database = {
           computed_at: string | null
           tenant_id: string | null
           top_signals: Json | null
+        }
+        Relationships: []
+      }
+      v_explainability_top_weighted: {
+        Row: {
+          computed_at: string | null
+          tenant_id: string | null
+          top_signals_weighted: Json | null
         }
         Relationships: []
       }

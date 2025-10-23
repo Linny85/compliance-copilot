@@ -33,6 +33,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [experiment, setExperiment] = useState<any>(null);
   const [rootCause, setRootCause] = useState<any>(null);
   const [explainability, setExplainability] = useState<any>(null);
+  const [feedbackLoading, setFeedbackLoading] = useState<string | null>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -156,13 +157,73 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const loadExplainability = async () => {
     try {
       const { data } = await supabase
-        .from('v_explainability_top_30d' as any)
+        .from('v_explainability_top_weighted' as any)
         .select('*')
         .eq('tenant_id', companyId)
         .maybeSingle();
       if (data) setExplainability(data);
     } catch (err) {
       console.error('[ForecastCard] loadExplainability error:', err);
+    }
+  };
+
+  const handleFeedback = async (signal: any, verdict: 'useful' | 'not_useful' | 'irrelevant') => {
+    const feedbackKey = `${signal.feature}:${signal.key}:${signal.metric}`;
+    setFeedbackLoading(feedbackKey);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('post-explainability-feedback', {
+        body: {
+          tenant_id: companyId,
+          feature: signal.feature,
+          key: signal.key,
+          metric: signal.metric,
+          verdict
+        }
+      });
+
+      if (error) throw error;
+
+      // Optimistic update: adjust weight locally and re-sort
+      if (explainability?.top_signals_weighted) {
+        const updatedSignals = explainability.top_signals_weighted.map((s: any) => {
+          if (s.feature === signal.feature && s.key === signal.key && s.metric === signal.metric) {
+            return {
+              ...s,
+              weight: data.weight,
+              confidence: data.confidence
+            };
+          }
+          return s;
+        }).sort((a: any, b: any) => {
+          const scoreA = Math.abs(a.value) * (a.weight || 1.0);
+          const scoreB = Math.abs(b.value) * (b.weight || 1.0);
+          return scoreB - scoreA;
+        });
+
+        setExplainability({
+          ...explainability,
+          top_signals_weighted: updatedSignals
+        });
+      }
+
+      toast({
+        title: 'Feedback gespeichert',
+        description: `Gewicht aktualisiert: ${data.weight?.toFixed(2)} (Konfidenz: ${data.confidence?.toFixed(0)}%)`,
+      });
+
+      // Reload after a moment
+      setTimeout(loadExplainability, 1000);
+
+    } catch (err: any) {
+      console.error('[ForecastCard] handleFeedback error:', err);
+      toast({
+        title: 'Feedback-Fehler',
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setFeedbackLoading(null);
     }
   };
 
@@ -485,37 +546,75 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
         </div>
       )}
 
-      {explainability?.top_signals?.length > 0 && (
+      {explainability?.top_signals_weighted?.length > 0 && (
         <div className="mt-4 border-t pt-3">
           <div className="flex items-center gap-2 mb-2">
-            <h4 className="text-sm font-semibold">Erklärungen</h4>
-            <Badge variant="outline" className="text-xs">Beta</Badge>
+            <h4 className="text-sm font-semibold">🧠 Erklärungen</h4>
+            <Badge variant="outline" className="text-xs">Beta • Lernt aus Feedback</Badge>
           </div>
-          <ul className="space-y-2">
-            {explainability.top_signals.slice(0, 3).map((signal: any, i: number) => {
+          <ul className="space-y-3">
+            {explainability.top_signals_weighted.slice(0, 3).map((signal: any, i: number) => {
               const icon = signal.value > 0 ? '📈' : signal.value < 0 ? '📉' : '🕒';
               const metricLabel = {
                 'fail_share': 'Fail-Share',
                 'sr_delta': 'SR-Delta',
                 'lag1_corr': 'Lag1-Korr'
               }[signal.metric] || signal.metric;
+              const feedbackKey = `${signal.feature}:${signal.key}:${signal.metric}`;
+              const isLoading = feedbackLoading === feedbackKey;
               
               return (
-                <li key={i} className="flex items-start gap-2 text-sm">
+                <li key={i} className="flex items-start gap-2 text-sm border-b pb-2 last:border-b-0">
                   <span className="text-lg">{icon}</span>
-                  <div className="flex-1">
-                    <span className="font-medium">{signal.feature}: {signal.key}</span>
-                    <span className="text-muted-foreground"> — {metricLabel} {Number(signal.value).toFixed(2)}</span>
-                    {signal.p_value && (
-                      <span className="text-xs text-muted-foreground"> (p={Number(signal.p_value).toFixed(3)})</span>
-                    )}
-                    <span className="text-xs text-muted-foreground"> • n={signal.sample}</span>
+                  <div className="flex-1 space-y-1">
+                    <div>
+                      <span className="font-medium">{signal.feature}: {signal.key}</span>
+                      <span className="text-muted-foreground"> — {metricLabel} {Number(signal.value).toFixed(2)}</span>
+                      {signal.p_value && (
+                        <span className="text-xs text-muted-foreground"> (p={Number(signal.p_value).toFixed(3)})</span>
+                      )}
+                      <span className="text-xs text-muted-foreground"> • n={signal.sample}</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Badge variant="secondary" className="text-xs">
+                        ×{Number(signal.weight || 1.0).toFixed(2)} • {Number(signal.confidence || 50).toFixed(0)}%
+                      </Badge>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => handleFeedback(signal, 'useful')}
+                          disabled={isLoading}
+                        >
+                          👍 Hilfreich
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => handleFeedback(signal, 'not_useful')}
+                          disabled={isLoading}
+                        >
+                          👎 Nicht hilfreich
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 px-2 text-xs"
+                          onClick={() => handleFeedback(signal, 'irrelevant')}
+                          disabled={isLoading}
+                        >
+                          🚫 Irrelevant
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </li>
               );
             })}
           </ul>
-          {explainability.top_signals.length === 0 && (
+          {explainability.top_signals_weighted.length === 0 && (
             <p className="text-sm text-muted-foreground">Noch keine Erklärungen verfügbar</p>
           )}
         </div>
