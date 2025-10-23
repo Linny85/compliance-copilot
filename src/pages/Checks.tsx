@@ -113,9 +113,7 @@ export default function ChecksPage() {
     critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
   };
 
-  const getSeverityColor = (severity: Severity): string => {
-    return severityColors[severity] || severityColors.medium;
-  };
+  const getSeverityColor = (s: Severity): string => severityColors[s];
 
   const getOutcomeIcon = (outcome: Outcome) => {
     switch (outcome) {
@@ -136,9 +134,7 @@ export default function ChecksPage() {
     warn: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
   };
 
-  const getOutcomeColor = (outcome: Outcome): string => {
-    return outcomeColors[outcome] || outcomeColors.pass;
-  };
+  const getOutcomeColor = (o: Outcome): string => outcomeColors[o];
 
   const getRunStatusIcon = (status: RunStatus) => {
     switch (status) {
@@ -274,9 +270,14 @@ export default function ChecksPage() {
                         )}
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                           <span>{new Date(result.created_at).toLocaleString()}</span>
-                          <Badge className={getSeverityColor(result.check_rules.severity)} variant="outline">
-                            {t(`common:severity.${result.check_rules.severity}`)}
-                          </Badge>
+                          {(() => {
+                            const sev = (result.check_rules?.severity ?? 'medium') as Severity;
+                            return (
+                              <Badge className={getSeverityColor(sev)} variant="outline">
+                                {t(`common:severity.${sev}`)}
+                              </Badge>
+                            );
+                          })()}
                           {(() => {
                             const runStatus = (result.check_runs?.status ?? 'success') as RunStatus;
                             return (

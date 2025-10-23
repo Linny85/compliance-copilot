@@ -187,7 +187,7 @@ Deno.serve(async (req) => {
         if (outcome === 'fail') anyFail = true;
         if (outcome === 'warn') anyWarn = true;
 
-        results.push({ rule_id: rule.id, code: rule.code, outcome, message });
+        results.push({ run_id: runId, rule_id: rule.id, code: rule.code, outcome, message });
       } catch (execErr: any) {
         console.error('[run-checks] Execution failed for rule', rule.code, execErr);
 
@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
         });
 
         anyFail = true;
-        results.push({ rule_id: rule.id, code: rule.code, outcome: 'fail', message: execErr.message });
+        results.push({ run_id: runId, rule_id: rule.id, code: rule.code, outcome: 'fail', message: execErr.message });
       }
     }
 
@@ -211,26 +211,13 @@ Deno.serve(async (req) => {
     else if (anyWarn) finalStatus = 'partial';
 
     // Update all runs with final status (only open runs to avoid race conditions)
-    if (results.length > 0) {
-      const runIds = results.map(r => r.rule_id);
-      const { data: runsToUpdate } = await sb
+    const runIds = Array.from(new Set(results.map((r: any) => r.run_id))).filter(Boolean);
+    if (runIds.length) {
+      await sb
         .from('check_runs')
-        .select('id, finished_at, status')
-        .eq('tenant_id', tenant_id)
-        .in('rule_id', runIds)
-        .eq('window_start', start.toISOString())
-        .eq('window_end', end.toISOString());
-
-      const openRunIds = (runsToUpdate || [])
-        .filter(r => !r.finished_at || r.status !== 'success')
-        .map(r => r.id);
-
-      if (openRunIds.length) {
-        await sb
-          .from('check_runs')
-          .update({ status: finalStatus, finished_at: new Date().toISOString() })
-          .in('id', openRunIds);
-      }
+        .update({ status: finalStatus, finished_at: new Date().toISOString() })
+        .in('id', runIds)
+        .is('finished_at', null);
     }
 
     return new Response(
