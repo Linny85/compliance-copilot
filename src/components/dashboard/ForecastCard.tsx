@@ -29,6 +29,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [metrics, setMetrics] = useState<any>(null);
   const [trend, setTrend] = useState<any[]>([]);
   const [ensemble, setEnsemble] = useState<any>(null);
+  const [weights, setWeights] = useState<any>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -88,12 +89,26 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadWeights = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-ensemble-weights', {
+        body: { tenant_id: companyId }
+      });
+      if (!error && data?.weights) {
+        setWeights(data.weights);
+      }
+    } catch (error) {
+      console.error('[ForecastCard] weights error:', error);
+    }
+  };
+
   useEffect(() => {
     if (companyId) {
       loadForecast();
       loadMetrics();
       loadTrend();
       loadEnsemble();
+      loadWeights();
     }
   }, [companyId]);
 
@@ -314,6 +329,31 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
                 <div>Bayesian: {Number(ensemble.weight_bayes * 100).toFixed(0)}%</div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {weights && (
+        <div className="mt-4 border-t pt-3">
+          <h4 className="text-sm font-semibold mb-2">🧠 Adaptive Model Weights</h4>
+          <div className="text-sm space-y-1">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">ARIMA (Trend-based):</span>
+              <span className="font-medium">{Number(weights.weight_arima * 100).toFixed(0)}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Gradient (Conservative):</span>
+              <span className="font-medium">{Number(weights.weight_gradient * 100).toFixed(0)}%</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Bayesian (Optimistic):</span>
+              <span className="font-medium">{Number(weights.weight_bayes * 100).toFixed(0)}%</span>
+            </div>
+          </div>
+          <div className="text-xs text-muted-foreground mt-2 pt-2 border-t">
+            Last tuned: {new Date(weights.adjusted_at).toLocaleString()} · 
+            Reliability: {Number(weights.reliability).toFixed(0)}% · 
+            MAE: {Number(weights.mae).toFixed(1)}
           </div>
         </div>
       )}

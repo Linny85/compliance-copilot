@@ -437,6 +437,39 @@ export type Database = {
           },
         ]
       }
+      ensemble_weight_history: {
+        Row: {
+          adjusted_at: string | null
+          id: string
+          mae: number | null
+          reliability: number | null
+          tenant_id: string
+          weight_arima: number | null
+          weight_bayes: number | null
+          weight_gradient: number | null
+        }
+        Insert: {
+          adjusted_at?: string | null
+          id?: string
+          mae?: number | null
+          reliability?: number | null
+          tenant_id: string
+          weight_arima?: number | null
+          weight_bayes?: number | null
+          weight_gradient?: number | null
+        }
+        Update: {
+          adjusted_at?: string | null
+          id?: string
+          mae?: number | null
+          reliability?: number | null
+          tenant_id?: string
+          weight_arima?: number | null
+          weight_bayes?: number | null
+          weight_gradient?: number | null
+        }
+        Relationships: []
+      }
       evidence_requests: {
         Row: {
           control_id: string
@@ -1373,6 +1406,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_ensemble_weight_latest: {
+        Row: {
+          adjusted_at: string | null
+          mae: number | null
+          reliability: number | null
+          tenant_id: string | null
+          weight_arima: number | null
+          weight_bayes: number | null
+          weight_gradient: number | null
+        }
+        Relationships: []
       }
       v_forecast_ensemble_latest: {
         Row: {
