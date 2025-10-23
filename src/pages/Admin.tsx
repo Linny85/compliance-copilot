@@ -15,6 +15,7 @@ import { Settings, Plus, UserMinus, Clock, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { QAMonitorCard } from "@/components/dashboard/QAMonitorCard";
 import { ComplianceStatusCard } from "@/components/dashboard/ComplianceStatusCard";
+import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
 
 interface User {
   id: string;
@@ -329,7 +330,10 @@ const Admin = () => {
               </TabsContent>
 
               <TabsContent value="compliance" className="space-y-4">
-                {companyId && <ComplianceStatusCard companyId={companyId} />}
+                <div className="grid gap-6 md:grid-cols-2">
+                  {companyId && <ComplianceStatusCard companyId={companyId} />}
+                  {companyId && <AIInsightsCard companyId={companyId} />}
+                </div>
               </TabsContent>
 
               <TabsContent value="qa-monitor" className="space-y-4">
