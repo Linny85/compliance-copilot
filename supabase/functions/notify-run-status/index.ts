@@ -173,6 +173,11 @@ Deno.serve(async (req) => {
     if (settings?.notification_webhook_url) {
       const startTime = Date.now();
       try {
+        // Validate HTTPS
+        if (!settings.notification_webhook_url.startsWith('https://')) {
+          throw new Error('Webhook must use HTTPS');
+        }
+
         // Validate domain allowlist
         const allowlist = settings.webhook_domain_allowlist || [];
         if (allowlist.length > 0 && !isAllowedDomain(settings.notification_webhook_url, allowlist)) {
@@ -193,6 +198,12 @@ Deno.serve(async (req) => {
         };
 
         const payloadStr = JSON.stringify(webhookPayload);
+        
+        // Validate payload size (max 128KB)
+        if (payloadStr.length > 128 * 1024) {
+          throw new Error('Webhook payload too large (max 128KB)');
+        }
+
         const signature = await signPayload(payloadStr, settings.webhook_secret || '');
 
         const webhookResponse = await fetch(settings.notification_webhook_url, {
@@ -200,6 +211,8 @@ Deno.serve(async (req) => {
           headers: { 
             'Content-Type': 'application/json',
             'X-Signature': signature,
+            'X-Signature-Version': 'v1',
+            'X-Signature-Alg': 'HMAC-SHA256',
             'X-Event-Type': 'check_run_status_changed'
           },
           body: payloadStr
@@ -219,10 +232,12 @@ Deno.serve(async (req) => {
           });
           notifications.push('webhook');
         } else {
-          throw new Error(`Webhook failed: ${webhookResponse.status}`);
+          const errorText = await webhookResponse.text().catch(() => '');
+          throw new Error(`Webhook failed: ${webhookResponse.status} - ${errorText.substring(0, 300)}`);
         }
       } catch (webhookErr: any) {
-        console.error('[notify-run-status] Webhook error:', webhookErr);
+        const errorMsg = String(webhookErr.message || webhookErr).substring(0, 300);
+        console.error('[notify-run-status] Webhook error:', errorMsg);
         await sbService.from('notification_deliveries').insert({
           tenant_id,
           run_id,
@@ -230,7 +245,7 @@ Deno.serve(async (req) => {
           status_code: 500,
           attempts: 1,
           duration_ms: Date.now() - startTime,
-          error_excerpt: String(webhookErr.message || webhookErr).substring(0, 500)
+          error_excerpt: errorMsg
         });
       }
     }

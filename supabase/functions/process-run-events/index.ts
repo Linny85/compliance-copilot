@@ -126,22 +126,39 @@ Deno.serve(async (req) => {
         const errorMsg = String(err.message || err).substring(0, 500);
         console.error(`[process-run-events] Error processing event ${ev.id}:`, errorMsg);
 
-        const update: Record<string, any> = {
-          attempts,
-          last_error: errorMsg,
-          next_attempt_at: nextAttempt.toISOString()
-        };
-
-        // Give up after max attempts
+        // Move to dead-letter queue after max attempts
         if (attempts >= MAX_ATTEMPTS) {
-          update.processed_at = new Date().toISOString();
-          console.error(`[process-run-events] Max attempts reached for event ${ev.id}`);
-        }
+          console.error(`[process-run-events] Max attempts reached for event ${ev.id}, moving to DLQ`);
+          
+          // Insert into dead-letter queue
+          await sb.from('run_events_deadletter').insert({
+            original_id: ev.id,
+            tenant_id: ev.tenant_id,
+            run_id: ev.run_id,
+            status: ev.status,
+            rule_code: ev.rule_code,
+            started_at: ev.started_at,
+            finished_at: ev.finished_at,
+            attempts,
+            last_error: errorMsg
+          });
 
-        await sb
-          .from('run_events_queue')
-          .update(update)
-          .eq('id', ev.id);
+          // Mark original as processed
+          await sb
+            .from('run_events_queue')
+            .update({ processed_at: new Date().toISOString() })
+            .eq('id', ev.id);
+        } else {
+          // Retry with backoff
+          await sb
+            .from('run_events_queue')
+            .update({
+              attempts,
+              last_error: errorMsg,
+              next_attempt_at: nextAttempt.toISOString()
+            })
+            .eq('id', ev.id);
+        }
       }
     }
 

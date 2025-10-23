@@ -36,6 +36,8 @@ export default function SettingsNotifications() {
     webhook_domain_allowlist: [] as string[],
   });
   const [allowlistInput, setAllowlistInput] = useState('');
+  const [recentDeliveries, setRecentDeliveries] = useState<any[]>([]);
+  const [stats, setStats] = useState({ sent: 0, failed: 0, medianMs: 0 });
 
   // Redirect non-admins
   useEffect(() => {
@@ -148,7 +150,11 @@ export default function SettingsNotifications() {
         .eq('tenant_id', profile.company_id)
         .maybeSingle();
 
-      if (data) setSettings(data as TenantSettings);
+      if (data) {
+        setSettings(data as TenantSettings);
+        // Reload deliveries after save
+        loadDeliveries(profile.company_id);
+      }
     } catch (err: any) {
       console.error('Failed to save settings:', err);
       toast({
@@ -158,6 +164,37 @@ export default function SettingsNotifications() {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const loadDeliveries = async (tenantId: string) => {
+    try {
+      // Recent deliveries (last 10)
+      const { data: deliveries } = await supabase
+        .from('notification_deliveries')
+        .select('*')
+        .eq('tenant_id', tenantId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      setRecentDeliveries(deliveries || []);
+
+      // Stats for last 24h
+      const { data: last24h } = await supabase
+        .from('notification_deliveries')
+        .select('status_code, duration_ms')
+        .eq('tenant_id', tenantId)
+        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+
+      if (last24h && last24h.length > 0) {
+        const sent = last24h.filter(d => d.status_code && d.status_code < 400).length;
+        const failed = last24h.length - sent;
+        const durations = last24h.map(d => d.duration_ms).filter(Boolean).sort((a, b) => a - b);
+        const medianMs = durations.length > 0 ? durations[Math.floor(durations.length / 2)] : 0;
+        setStats({ sent, failed, medianMs });
+      }
+    } catch (err) {
+      console.error('Failed to load deliveries:', err);
     }
   };
 
@@ -242,11 +279,38 @@ export default function SettingsNotifications() {
   const handleTestNotification = async () => {
     setTesting(true);
     try {
-      // This would trigger a test event through the queue
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (!profile?.company_id) return;
+
+      // Insert synthetic test event into queue
+      const { error } = await supabase
+        .from('run_events_queue')
+        .insert({
+          tenant_id: profile.company_id,
+          run_id: '00000000-0000-0000-0000-000000000000',
+          status: 'success',
+          rule_code: 'TEST',
+          started_at: new Date().toISOString(),
+          finished_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
       toast({
-        title: 'Test notification',
-        description: 'Test notification sent (implementation pending)',
+        title: 'Test notification dispatched',
+        description: 'Check your configured endpoints in a few moments',
       });
+
+      // Reload deliveries after a short delay
+      setTimeout(() => loadDeliveries(profile.company_id), 3000);
     } catch (err: any) {
       toast({
         title: t('common:error'),
@@ -276,6 +340,31 @@ export default function SettingsNotifications() {
       </div>
 
       <div className="space-y-6">
+        {/* Stats Card */}
+        {stats.sent > 0 || stats.failed > 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Last 24 Hours</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-green-600">{stats.sent}</div>
+                  <div className="text-sm text-muted-foreground">Sent</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-red-600">{stats.failed}</div>
+                  <div className="text-sm text-muted-foreground">Failed</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">{stats.medianMs}ms</div>
+                  <div className="text-sm text-muted-foreground">Median Latency</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
+
         {/* Email Notifications */}
         <Card>
           <CardHeader>
@@ -408,6 +497,46 @@ export default function SettingsNotifications() {
             Send Test Notification
           </Button>
         </div>
+
+        {/* Recent Deliveries */}
+        {recentDeliveries.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Deliveries</CardTitle>
+              <CardDescription>Last 10 notification attempts</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                {recentDeliveries.map((delivery) => (
+                  <div
+                    key={delivery.id}
+                    className="flex items-center justify-between border-b pb-2 last:border-0"
+                  >
+                    <div className="flex items-center gap-4 flex-1">
+                      <Badge variant={delivery.status_code < 400 ? 'default' : 'destructive'}>
+                        {delivery.channel}
+                      </Badge>
+                      <span className="text-sm text-muted-foreground font-mono">
+                        {delivery.run_id.substring(0, 8)}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(delivery.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      {delivery.duration_ms && (
+                        <span className="text-sm text-muted-foreground">{delivery.duration_ms}ms</span>
+                      )}
+                      <Badge variant={delivery.status_code < 400 ? 'outline' : 'destructive'}>
+                        {delivery.status_code || 'N/A'}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );

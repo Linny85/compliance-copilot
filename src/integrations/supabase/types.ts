@@ -192,6 +192,20 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "check_results_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "v_check_results_join"
+            referencedColumns: ["rule_id"]
+          },
+          {
+            foreignKeyName: "check_results_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "v_check_rules_active"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "check_results_run_id_fkey"
             columns: ["run_id"]
             isOneToOne: false
@@ -313,6 +327,20 @@ export type Database = {
             columns: ["rule_id"]
             isOneToOne: false
             referencedRelation: "check_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_runs_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "v_check_results_join"
+            referencedColumns: ["rule_id"]
+          },
+          {
+            foreignKeyName: "check_runs_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "v_check_rules_active"
             referencedColumns: ["id"]
           },
           {
@@ -738,6 +766,48 @@ export type Database = {
           },
         ]
       }
+      run_events_deadletter: {
+        Row: {
+          attempts: number
+          created_at: string
+          finished_at: string | null
+          id: number
+          last_error: string | null
+          original_id: number
+          rule_code: string | null
+          run_id: string
+          started_at: string | null
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          attempts: number
+          created_at?: string
+          finished_at?: string | null
+          id?: number
+          last_error?: string | null
+          original_id: number
+          rule_code?: string | null
+          run_id: string
+          started_at?: string | null
+          status: string
+          tenant_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          finished_at?: string | null
+          id?: number
+          last_error?: string | null
+          original_id?: number
+          rule_code?: string | null
+          run_id?: string
+          started_at?: string | null
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
       run_events_queue: {
         Row: {
           attempts: number
@@ -1056,9 +1126,118 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_check_results_join: {
+        Row: {
+          control_id: string | null
+          created_at: string | null
+          details: Json | null
+          id: string | null
+          message: string | null
+          outcome: string | null
+          rule_code: string | null
+          rule_id: string | null
+          rule_title: string | null
+          run_id: string | null
+          run_status: string | null
+          severity: string | null
+          tenant_id: string | null
+          window_end: string | null
+          window_start: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "check_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_rules_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_check_rules_active: {
+        Row: {
+          code: string | null
+          control_id: string | null
+          created_at: string | null
+          created_by: string | null
+          deleted_at: string | null
+          description: string | null
+          enabled: boolean | null
+          id: string | null
+          kind: string | null
+          schedule: string | null
+          severity: string | null
+          spec: Json | null
+          tenant_id: string | null
+          title: string | null
+        }
+        Insert: {
+          code?: string | null
+          control_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          id?: string | null
+          kind?: string | null
+          schedule?: string | null
+          severity?: string | null
+          spec?: Json | null
+          tenant_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          code?: string | null
+          control_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          deleted_at?: string | null
+          description?: string | null
+          enabled?: boolean | null
+          id?: string | null
+          kind?: string | null
+          schedule?: string | null
+          severity?: string | null
+          spec?: Json | null
+          tenant_id?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_rules_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      cleanup_notification_deliveries: { Args: never; Returns: undefined }
+      cleanup_run_events: { Args: never; Returns: undefined }
       create_audit_log: {
         Args: {
           _action: string
@@ -1079,6 +1258,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       app_role: "master_admin" | "admin" | "member" | "editor"
