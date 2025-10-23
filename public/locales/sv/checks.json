@@ -94,5 +94,15 @@
       "updated": "Regeln uppdaterades.",
       "deleted": "Regeln togs bort."
     }
+  },
+  "specEditor": {
+    "form": "Formulär",
+    "json": "JSON",
+    "metric": "Mått",
+    "metricPlaceholder": "t.ex. password_rotation_days",
+    "value": "Värde",
+    "operator": "Operator",
+    "threshold": "Tröskelvärde",
+    "table": "Tabell"
   }
 }
