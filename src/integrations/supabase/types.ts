@@ -64,6 +64,59 @@ export type Database = {
           },
         ]
       }
+      approvals: {
+        Row: {
+          action: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          expires_at: string | null
+          id: string
+          reason: string | null
+          requested_by: string
+          resource_id: string
+          resource_type: string
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+          requested_by: string
+          resource_id: string
+          resource_type: string
+          status?: string
+          tenant_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          expires_at?: string | null
+          id?: string
+          reason?: string | null
+          requested_by?: string
+          resource_id?: string
+          resource_type?: string
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -818,6 +871,98 @@ export type Database = {
         }
         Relationships: []
       }
+      integration_dlq: {
+        Row: {
+          attempts: number
+          channel: string
+          created_at: string
+          dedupe_key: string | null
+          event_type: string
+          failed_at: string
+          id: string
+          last_error: string | null
+          payload: Json
+          tenant_id: string
+        }
+        Insert: {
+          attempts: number
+          channel: string
+          created_at: string
+          dedupe_key?: string | null
+          event_type: string
+          failed_at?: string
+          id: string
+          last_error?: string | null
+          payload: Json
+          tenant_id: string
+        }
+        Update: {
+          attempts?: number
+          channel?: string
+          created_at?: string
+          dedupe_key?: string | null
+          event_type?: string
+          failed_at?: string
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          tenant_id?: string
+        }
+        Relationships: []
+      }
+      integration_outbox: {
+        Row: {
+          attempts: number
+          channel: string
+          created_at: string
+          dedupe_key: string | null
+          delivered_at: string | null
+          event_type: string
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          attempts?: number
+          channel: string
+          created_at?: string
+          dedupe_key?: string | null
+          delivered_at?: string | null
+          event_type: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload: Json
+          status?: string
+          tenant_id: string
+        }
+        Update: {
+          attempts?: number
+          channel?: string
+          created_at?: string
+          dedupe_key?: string | null
+          delivered_at?: string | null
+          event_type?: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_outbox_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nis2_risks: {
         Row: {
           company_id: string
@@ -1297,9 +1442,15 @@ export type Database = {
       }
       tenant_settings: {
         Row: {
+          approval_required_for_untrusted: boolean | null
           created_at: string
           explainability_enabled: boolean | null
           id: string
+          integration_jira_base_url: string | null
+          integration_jira_enabled: boolean | null
+          integration_jira_project_key: string | null
+          integration_slack_enabled: boolean | null
+          integration_slack_webhook_url: string | null
           notification_email: string | null
           notification_webhook_url: string | null
           tenant_id: string
@@ -1308,9 +1459,15 @@ export type Database = {
           webhook_secret: string | null
         }
         Insert: {
+          approval_required_for_untrusted?: boolean | null
           created_at?: string
           explainability_enabled?: boolean | null
           id?: string
+          integration_jira_base_url?: string | null
+          integration_jira_enabled?: boolean | null
+          integration_jira_project_key?: string | null
+          integration_slack_enabled?: boolean | null
+          integration_slack_webhook_url?: string | null
           notification_email?: string | null
           notification_webhook_url?: string | null
           tenant_id: string
@@ -1319,9 +1476,15 @@ export type Database = {
           webhook_secret?: string | null
         }
         Update: {
+          approval_required_for_untrusted?: boolean | null
           created_at?: string
           explainability_enabled?: boolean | null
           id?: string
+          integration_jira_base_url?: string | null
+          integration_jira_enabled?: boolean | null
+          integration_jira_project_key?: string | null
+          integration_slack_enabled?: boolean | null
+          integration_slack_webhook_url?: string | null
           notification_email?: string | null
           notification_webhook_url?: string | null
           tenant_id?: string
@@ -1434,6 +1597,33 @@ export type Database = {
       }
     }
     Views: {
+      v_approvals_pending: {
+        Row: {
+          action: string | null
+          created_at: string | null
+          decided_at: string | null
+          decided_by: string | null
+          expires_at: string | null
+          id: string | null
+          reason: string | null
+          requested_by: string | null
+          requester_email: string | null
+          requester_name: string | null
+          resource_id: string | null
+          resource_type: string | null
+          status: string | null
+          tenant_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_check_results_join: {
         Row: {
           control_id: string | null
@@ -1620,6 +1810,31 @@ export type Database = {
           weight_gradient: number | null
         }
         Relationships: []
+      }
+      v_integration_pending: {
+        Row: {
+          attempts: number | null
+          channel: string | null
+          created_at: string | null
+          dedupe_key: string | null
+          delivered_at: string | null
+          event_type: string | null
+          id: string | null
+          last_error: string | null
+          next_attempt_at: string | null
+          payload: Json | null
+          status: string | null
+          tenant_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_outbox_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       v_rc_factors: {
         Row: {

@@ -23,6 +23,8 @@ import ChecksNewRule from "./pages/ChecksNewRule";
 import ControlsMapping from "./pages/ControlsMapping";
 import SettingsNotifications from "./pages/SettingsNotifications";
 import RemediationEngine from "./pages/RemediationEngine";
+import Integrations from "./pages/Integrations";
+import Approvals from "./pages/Approvals";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 
@@ -57,7 +59,9 @@ const App = () => (
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/audit" element={<AuditLog />} />
                 <Route path="/admin/noc" element={<NOC />} />
-                <Route path="/admin/remediation" element={<RemediationEngine />} />
+          <Route path="/admin/remediation" element={<RemediationEngine />} />
+          <Route path="/admin/integrations" element={<Integrations />} />
+          <Route path="/admin/approvals" element={<Approvals />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
