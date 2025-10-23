@@ -6,6 +6,7 @@ import {
   FileText,
   Settings,
   LogOut,
+  Network,
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,6 +34,8 @@ export function AppSidebar() {
     { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
     { title: t.nav.risks, url: "/nis2", icon: Shield },
     { title: t.nav.ai, url: "/ai-act", icon: Brain },
+    { title: t.nav.controls, url: "/controls", icon: Shield },
+    { title: t.nav.scope, url: "/scope", icon: Network },
     { title: t.nav.docs, url: "/documents", icon: FileText },
     { title: t.nav.admin, url: "/admin", icon: Settings },
   ];

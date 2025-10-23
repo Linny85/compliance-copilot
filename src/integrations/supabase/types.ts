@@ -406,6 +406,93 @@ export type Database = {
           },
         ]
       }
+      scope_assignments: {
+        Row: {
+          control_id: string
+          created_at: string
+          id: string
+          note: string | null
+          status: string
+          tenant_id: string
+          unit_id: string
+        }
+        Insert: {
+          control_id: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          status: string
+          tenant_id: string
+          unit_id: string
+        }
+        Update: {
+          control_id?: string
+          created_at?: string
+          id?: string
+          note?: string | null
+          status?: string
+          tenant_id?: string
+          unit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scope_assignments_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scope_assignments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scope_assignments_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "scope_units"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scope_units: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          owner_id: string | null
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          name: string
+          owner_id?: string | null
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          owner_id?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scope_units_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           company_id: string

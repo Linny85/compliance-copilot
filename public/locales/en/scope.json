@@ -1,0 +1,53 @@
+{
+  "title": "Scope Matrix",
+  "subtitle": "Define and manage compliance scope across your organization",
+  "empty_state": "No scope units found",
+  "kinds": {
+    "business_unit": "Business Unit",
+    "process": "Process",
+    "system": "System",
+    "vendor": "Vendor"
+  },
+  "filters": {
+    "title": "Filter Units",
+    "all": "All Types"
+  },
+  "fields": {
+    "kind": "Type",
+    "name": "Name",
+    "name_placeholder": "Enter unit name",
+    "control": "Control",
+    "control_search_placeholder": "Search by code or title...",
+    "status": "Status",
+    "note": "Note",
+    "note_placeholder": "Optional note or exception reason"
+  },
+  "status": {
+    "in_scope": "In Scope",
+    "out_of_scope": "Out of Scope",
+    "exception": "Exception"
+  },
+  "actions": {
+    "new_unit": "New Unit",
+    "create": "Create Unit",
+    "assign_control": "Assign Control",
+    "assign": "Assign"
+  },
+  "dialogs": {
+    "create_unit": {
+      "title": "Create Scope Unit"
+    },
+    "assign_control": {
+      "title": "Assign Control to Unit"
+    }
+  },
+  "success": {
+    "unit_created": "Scope unit created successfully",
+    "control_assigned": "Control assigned successfully"
+  },
+  "errors": {
+    "load_failed": "Failed to load scope units",
+    "create_failed": "Failed to create unit",
+    "assign_failed": "Failed to assign control"
+  }
+}

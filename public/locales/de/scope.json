@@ -1,0 +1,53 @@
+{
+  "title": "Scope-Matrix",
+  "subtitle": "Definieren und verwalten Sie den Compliance-Umfang in Ihrer Organisation",
+  "empty_state": "Keine Scope-Einheiten gefunden",
+  "kinds": {
+    "business_unit": "Geschäftsbereich",
+    "process": "Prozess",
+    "system": "System",
+    "vendor": "Lieferant"
+  },
+  "filters": {
+    "title": "Einheiten filtern",
+    "all": "Alle Typen"
+  },
+  "fields": {
+    "kind": "Typ",
+    "name": "Name",
+    "name_placeholder": "Einheitenname eingeben",
+    "control": "Kontrolle",
+    "control_search_placeholder": "Nach Code oder Titel suchen...",
+    "status": "Status",
+    "note": "Notiz",
+    "note_placeholder": "Optional: Notiz oder Ausnahmegründe"
+  },
+  "status": {
+    "in_scope": "Im Umfang",
+    "out_of_scope": "Außerhalb des Umfangs",
+    "exception": "Ausnahme"
+  },
+  "actions": {
+    "new_unit": "Neue Einheit",
+    "create": "Einheit erstellen",
+    "assign_control": "Kontrolle zuweisen",
+    "assign": "Zuweisen"
+  },
+  "dialogs": {
+    "create_unit": {
+      "title": "Scope-Einheit erstellen"
+    },
+    "assign_control": {
+      "title": "Kontrolle zu Einheit zuweisen"
+    }
+  },
+  "success": {
+    "unit_created": "Scope-Einheit erfolgreich erstellt",
+    "control_assigned": "Kontrolle erfolgreich zugewiesen"
+  },
+  "errors": {
+    "load_failed": "Laden der Scope-Einheiten fehlgeschlagen",
+    "create_failed": "Erstellen der Einheit fehlgeschlagen",
+    "assign_failed": "Zuweisung der Kontrolle fehlgeschlagen"
+  }
+}
