@@ -124,7 +124,18 @@
     "entityId": "ID",
     "actor": "Actor",
     "details": "Details",
-    "showPayload": "Show payload"
+    "showPayload": "Show payload",
+    "controls": "Controls",
+    "controlsDesc": "Framework controls and requirements",
+    "availableControls": "Available Controls",
+    "availableControlsDesc": "Compliance controls from frameworks like NIS2, ISO 27001, and DORA",
+    "code": "Code",
+    "title": "Title",
+    "framework": "Framework",
+    "severity": "Severity",
+    "evidenceTypes": "Evidence Types",
+    "actions": "Actions",
+    "createPolicy": "Create Policy"
   },
   "sectors": {
     "it": "IT / Software",

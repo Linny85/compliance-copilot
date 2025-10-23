@@ -14,6 +14,7 @@ import AIAct from "./pages/AIAct";
 import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
 import AuditLog from "./pages/AuditLog";
+import Controls from "./pages/Controls";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 
@@ -38,6 +39,7 @@ const App = () => (
                 <Route path="/nis2" element={<NIS2 />} />
                 <Route path="/ai-act" element={<AIAct />} />
                 <Route path="/documents" element={<Documents />} />
+                <Route path="/controls" element={<Controls />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/audit" element={<AuditLog />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

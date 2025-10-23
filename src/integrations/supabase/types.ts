@@ -152,6 +152,47 @@ export type Database = {
           },
         ]
       }
+      controls: {
+        Row: {
+          code: string
+          created_at: string
+          evidence_types: string[] | null
+          framework_id: string
+          id: string
+          objective: string | null
+          severity: string | null
+          title: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          evidence_types?: string[] | null
+          framework_id: string
+          id?: string
+          objective?: string | null
+          severity?: string | null
+          title: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          evidence_types?: string[] | null
+          framework_id?: string
+          id?: string
+          objective?: string | null
+          severity?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "controls_framework_id_fkey"
+            columns: ["framework_id"]
+            isOneToOne: false
+            referencedRelation: "frameworks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           company_id: string
@@ -196,6 +237,33 @@ export type Database = {
           },
         ]
       }
+      frameworks: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+          version: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+          version?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+          version?: string | null
+        }
+        Relationships: []
+      }
       nis2_risks: {
         Row: {
           company_id: string
@@ -237,6 +305,63 @@ export type Database = {
           {
             foreignKeyName: "nis2_risks_company_id_fkey"
             columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      policy_templates: {
+        Row: {
+          body_md: string
+          control_id: string
+          created_at: string
+          created_by: string
+          id: string
+          tenant_id: string
+          title: string
+          updated_at: string
+          valid_from: string
+          valid_to: string | null
+          version: number
+        }
+        Insert: {
+          body_md: string
+          control_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+          valid_from?: string
+          valid_to?: string | null
+          version?: number
+        }
+        Update: {
+          body_md?: string
+          control_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          valid_from?: string
+          valid_to?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_templates_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "policy_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
