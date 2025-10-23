@@ -213,6 +213,7 @@ export type Database = {
           control_id: string
           created_at: string
           created_by: string
+          deleted_at: string | null
           description: string | null
           enabled: boolean
           id: string
@@ -228,6 +229,7 @@ export type Database = {
           control_id: string
           created_at?: string
           created_by: string
+          deleted_at?: string | null
           description?: string | null
           enabled?: boolean
           id?: string
@@ -243,6 +245,7 @@ export type Database = {
           control_id?: string
           created_at?: string
           created_by?: string
+          deleted_at?: string | null
           description?: string | null
           enabled?: boolean
           id?: string
@@ -669,7 +672,6 @@ export type Database = {
           full_name: string | null
           id: string
           language: string | null
-          role: string
           updated_at: string | null
         }
         Insert: {
@@ -679,7 +681,6 @@ export type Database = {
           full_name?: string | null
           id: string
           language?: string | null
-          role?: string
           updated_at?: string | null
         }
         Update: {
@@ -689,7 +690,6 @@ export type Database = {
           full_name?: string | null
           id?: string
           language?: string | null
-          role?: string
           updated_at?: string | null
         }
         Relationships: [

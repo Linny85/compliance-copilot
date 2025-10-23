@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { z } from 'https://esm.sh/zod@3';
 import { corsHeaders } from '../_shared/cors.ts';
+import { logEvent } from '../_shared/audit.ts';
 
 const url = Deno.env.get('SUPABASE_URL')!;
 const anon = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -60,13 +61,14 @@ Deno.serve(async (req) => {
     }
 
     // Admin check
-    const { data: roleProfile, error: roleErr } = await sbAuth
-      .from('profiles')
+    const { data: roles } = await sb
+      .from('user_roles')
       .select('role')
-      .eq('id', user.id)
-      .maybeSingle();
+      .eq('user_id', user.id)
+      .eq('company_id', tenant_id)
+      .in('role', ['admin', 'master_admin']);
 
-    if (roleErr || roleProfile?.role !== 'admin') {
+    if (!roles || roles.length === 0) {
       return new Response(JSON.stringify({ error: 'FORBIDDEN_ADMIN_ONLY' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -140,6 +142,16 @@ Deno.serve(async (req) => {
         }
       );
     }
+
+    // Audit log
+    await logEvent(sb, {
+      tenant_id,
+      actor_id: user.id,
+      action: 'update',
+      entity: 'check_rule',
+      entity_id: rule.id,
+      payload: updatePayload,
+    }).catch(e => console.error('[update-rule] audit error:', e));
 
     console.log('[update-rule] Updated rule', rule.id, 'for tenant', tenant_id);
     return new Response(JSON.stringify({ rule }), {

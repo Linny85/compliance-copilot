@@ -118,7 +118,12 @@
     "settings": "Inställningar",
     "previous": "Föregående",
     "next": "Nästa",
-    "forbidden": "Åtkomst nekad (endast admin)."
+    "forbidden": "Åtkomst nekad (endast admin).",
+    "tooltips": {
+      "adminOnly": "Endast admin",
+      "noRules": "Inga aktiva regler"
+    },
+    "none": "—"
   },
   "status": {
     "running": "Pågår",

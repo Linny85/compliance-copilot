@@ -44,6 +44,7 @@ Deno.serve(async (req) => {
       .from('check_rules')
       .select('*, controls(code, title)')
       .eq('tenant_id', tenant_id)
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     if (error) throw error;

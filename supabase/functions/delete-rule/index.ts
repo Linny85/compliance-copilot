@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { z } from 'https://esm.sh/zod@3';
 import { corsHeaders } from '../_shared/cors.ts';
+import { logEvent } from '../_shared/audit.ts';
 
 const url = Deno.env.get('SUPABASE_URL')!;
 const anon = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -52,23 +53,24 @@ Deno.serve(async (req) => {
     }
 
     // Admin check
-    const { data: roleProfile, error: roleErr } = await sbAuth
-      .from('profiles')
+    const { data: roles } = await sb
+      .from('user_roles')
       .select('role')
-      .eq('id', user.id)
-      .maybeSingle();
+      .eq('user_id', user.id)
+      .eq('company_id', tenant_id)
+      .in('role', ['admin', 'master_admin']);
 
-    if (roleErr || roleProfile?.role !== 'admin') {
+    if (!roles || roles.length === 0) {
       return new Response(JSON.stringify({ error: 'FORBIDDEN_ADMIN_ONLY' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Delete rule (only if belongs to tenant)
+    // Soft-delete rule (only if belongs to tenant)
     const { error: delErr } = await sb
       .from('check_rules')
-      .delete()
+      .update({ deleted_at: new Date().toISOString(), enabled: false })
       .eq('tenant_id', tenant_id)
       .eq('id', body.id);
 
@@ -83,7 +85,17 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('[delete-rule] Deleted rule', body.id, 'for tenant', tenant_id);
+    // Audit log
+    await logEvent(sb, {
+      tenant_id,
+      actor_id: user.id,
+      action: 'delete',
+      entity: 'check_rule',
+      entity_id: body.id,
+      payload: { id: body.id },
+    }).catch(e => console.error('[delete-rule] audit error:', e));
+
+    console.log('[delete-rule] Soft-deleted rule', body.id, 'for tenant', tenant_id);
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

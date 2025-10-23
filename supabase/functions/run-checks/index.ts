@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
     console.log('[run-checks]', { tenant_id: tenant_id.substring(0, 8) + '...', period, window: { start, end }, ruleCount: onlyRuleIds?.length });
 
     // Load enabled rules
-    let q = sb.from('check_rules').select('*').eq('tenant_id', tenant_id).eq('enabled', true);
+    let q = sb.from('check_rules').select('*').eq('tenant_id', tenant_id).eq('enabled', true).is('deleted_at', null);
     if (onlyRuleIds?.length) q = q.in('id', onlyRuleIds);
     const { data: rules, error: rerr } = await q;
     if (rerr) throw rerr;

@@ -140,7 +140,12 @@
     "disabled": "Disabled",
     "previous": "Previous",
     "next": "Next",
-    "forbidden": "Access denied (admins only)."
+    "forbidden": "Access denied (admins only).",
+    "tooltips": {
+      "adminOnly": "Admins only",
+      "noRules": "No active rules"
+    },
+    "none": "—"
   },
   "status": {
     "running": "Running",

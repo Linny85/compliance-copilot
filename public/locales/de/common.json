@@ -140,7 +140,12 @@
     "disabled": "Deaktiviert",
     "previous": "Zurück",
     "next": "Weiter",
-    "forbidden": "Zugriff verweigert (nur Admin)."
+    "forbidden": "Zugriff verweigert (nur Admin).",
+    "tooltips": {
+      "adminOnly": "Nur Admins",
+      "noRules": "Keine aktiven Regeln"
+    },
+    "none": "—"
   },
   "status": {
     "running": "Laufend",

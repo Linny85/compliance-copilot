@@ -14,14 +14,28 @@ export function useIsAdmin() {
         return;
       }
       
-      const { data, error } = await supabase
+      // Get user's company
+      const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('company_id')
         .eq('id', user.id)
         .maybeSingle();
       
+      if (!profile?.company_id) {
+        if (active) setIsAdmin(false);
+        return;
+      }
+      
+      // Check if user has admin or master_admin role
+      const { data: roles, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('company_id', profile.company_id)
+        .in('role', ['admin', 'master_admin']);
+      
       if (active) {
-        setIsAdmin(!error && data?.role === 'admin');
+        setIsAdmin(!error && roles && roles.length > 0);
       }
     })();
     

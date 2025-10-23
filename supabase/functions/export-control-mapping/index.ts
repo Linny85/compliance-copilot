@@ -43,13 +43,14 @@ Deno.serve(async (req) => {
     }
 
     // Admin check
-    const { data: roleProfile, error: roleErr } = await sbAuth
-      .from('profiles')
+    const { data: roles } = await sbAuth
+      .from('user_roles')
       .select('role')
-      .eq('id', user.id)
-      .maybeSingle();
+      .eq('user_id', user.id)
+      .eq('company_id', tenant_id)
+      .in('role', ['admin', 'master_admin']);
 
-    if (roleErr || roleProfile?.role !== 'admin') {
+    if (!roles || roles.length === 0) {
       return new Response(JSON.stringify({ error: 'FORBIDDEN_ADMIN_ONLY' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
