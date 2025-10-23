@@ -137,6 +137,12 @@
     "actions": "Actions",
     "createPolicy": "Create Policy"
   },
+  "severity": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Finance",

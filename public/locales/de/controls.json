@@ -1,0 +1,19 @@
+{
+  "title": "Kontrollbibliothek",
+  "subtitle": "Compliance-Kontrollen durchsuchen und Policy-Vorlagen erstellen",
+  "filters": {
+    "title": "Kontrollen filtern",
+    "allFrameworks": "Alle Rahmenwerke"
+  },
+  "labels": {
+    "objective": "Zielsetzung",
+    "evidenceTypes": "Evidenzarten",
+    "severity": "Schweregrad"
+  },
+  "actions": {
+    "createPolicy": "Policy erstellen"
+  },
+  "empty": {
+    "noControls": "Keine Kontrollen gefunden"
+  }
+}

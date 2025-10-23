@@ -1,0 +1,19 @@
+{
+  "title": "Controls Library",
+  "subtitle": "Browse compliance controls and create policy templates",
+  "filters": {
+    "title": "Filter Controls",
+    "allFrameworks": "All Frameworks"
+  },
+  "labels": {
+    "objective": "Objective",
+    "evidenceTypes": "Evidence Types",
+    "severity": "Severity"
+  },
+  "actions": {
+    "createPolicy": "Create Policy"
+  },
+  "empty": {
+    "noControls": "No controls found"
+  }
+}
