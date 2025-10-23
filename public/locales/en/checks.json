@@ -55,6 +55,9 @@
   "form": {
     "new_rule_title": "Create New Rule",
     "new_rule_nav": "New Rule",
+    "edit_rule_title": "Edit Rule",
+    "delete_confirm_title": "Delete rule?",
+    "delete_confirm_text": "Do you really want to delete rule \"{{code}}\"?",
     "fields": {
       "title": "Title",
       "code": "Code",
@@ -82,10 +85,14 @@
       "invalid_json": "Spec is not valid JSON.",
       "invalid_spec": "Spec does not match expected schema.",
       "save_failed": "Failed to save rule.",
-      "duplicate_code": "Code already exists for this tenant."
+      "duplicate_code": "Code already exists for this tenant.",
+      "update_failed": "Failed to update rule.",
+      "delete_failed": "Failed to delete rule."
     },
     "success": {
-      "saved": "Rule saved successfully."
+      "saved": "Rule saved successfully.",
+      "updated": "Rule updated.",
+      "deleted": "Rule deleted."
     }
   }
 }

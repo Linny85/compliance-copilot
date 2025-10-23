@@ -7,7 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle, Plus } from "lucide-react";
+import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle, Plus, Pencil, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
@@ -45,6 +52,9 @@ export default function ChecksPage() {
   const [results, setResults] = useState<CheckResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editingRule, setEditingRule] = useState<CheckRule | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -105,6 +115,79 @@ export default function ChecksPage() {
       });
     } finally {
       setRunning(false);
+    }
+  };
+
+  const openEditModal = (rule: CheckRule) => {
+    setEditingRule(rule);
+    setEditOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("delete-rule", {
+        body: { id },
+      });
+
+      if (error || data?.error) {
+        throw new Error(data?.error || error?.message || 'DELETE_FAILED');
+      }
+
+      toast({ title: t("checks:form.success.deleted") });
+      loadData();
+    } catch (e: any) {
+      console.error('[Checks] Delete failed:', e);
+      toast({
+        title: t("checks:form.errors.delete_failed"),
+        description: e.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const saveEdit = async () => {
+    if (!editingRule) return;
+    setSubmitting(true);
+    try {
+      const payload = {
+        id: editingRule.id,
+        title: editingRule.title,
+        description: editingRule.description,
+        severity: editingRule.severity,
+        enabled: editingRule.enabled,
+        kind: editingRule.kind,
+        spec: editingRule.spec,
+        control_id: editingRule.control_id || null,
+      };
+
+      const { data, error } = await supabase.functions.invoke("update-rule", {
+        body: payload,
+      });
+
+      if (error || data?.error) {
+        const errorCode = data?.error;
+        if (errorCode === 'DUPLICATE_CODE') {
+          toast({
+            title: t("checks:form.errors.duplicate_code"),
+            variant: "destructive",
+          });
+          return;
+        }
+        throw new Error(data?.error || error?.message || 'UPDATE_FAILED');
+      }
+
+      toast({ title: t("checks:form.success.updated") });
+      setEditOpen(false);
+      loadData();
+    } catch (e: any) {
+      console.error('[Checks] Update failed:', e);
+      toast({
+        title: t("checks:form.errors.update_failed"),
+        description: e.message,
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -224,15 +307,50 @@ export default function ChecksPage() {
                           )}
                         </div>
                       </div>
-                      <Button
-                        onClick={() => runChecks([rule.id])}
-                        disabled={running || !rule.enabled}
-                        size="sm"
-                        variant="outline"
-                      >
-                        <PlayCircle className="h-4 w-4 mr-2" />
-                        {t("checks:actions.runSelected")}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => openEditModal(rule)}
+                          size="sm"
+                          variant="ghost"
+                        >
+                          <Pencil className="h-4 w-4 mr-1" />
+                          {t("common:edit")}
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                              <Trash2 className="h-4 w-4 mr-1" />
+                              {t("common:delete")}
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>{t("checks:form.delete_confirm_title")}</AlertDialogTitle>
+                            </AlertDialogHeader>
+                            <p className="text-sm text-muted-foreground">
+                              {t("checks:form.delete_confirm_text", { code: rule.code })}
+                            </p>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>{t("common:cancel")}</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(rule.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                {t("common:delete")}
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                        <Button
+                          onClick={() => runChecks([rule.id])}
+                          disabled={running || !rule.enabled}
+                          size="sm"
+                          variant="outline"
+                        >
+                          <PlayCircle className="h-4 w-4 mr-2" />
+                          {t("checks:actions.runSelected")}
+                        </Button>
+                      </div>
                     </div>
                   </CardHeader>
                 </Card>
@@ -303,6 +421,106 @@ export default function ChecksPage() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Edit Rule Modal */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{t("checks:form.edit_rule_title")}</DialogTitle>
+          </DialogHeader>
+
+          {editingRule && (
+            <div className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>{t("checks:form.fields.title")}</Label>
+                  <Input
+                    value={editingRule.title}
+                    onChange={(e) => setEditingRule({ ...editingRule, title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label>{t("checks:form.fields.severity")}</Label>
+                  <Select
+                    value={editingRule.severity}
+                    onValueChange={(v) => setEditingRule({ ...editingRule, severity: v as Severity })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="low">{t("common:severity.low")}</SelectItem>
+                      <SelectItem value="medium">{t("common:severity.medium")}</SelectItem>
+                      <SelectItem value="high">{t("common:severity.high")}</SelectItem>
+                      <SelectItem value="critical">{t("common:severity.critical")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>{t("checks:form.fields.kind")}</Label>
+                  <Select
+                    value={editingRule.kind}
+                    onValueChange={(v) => setEditingRule({ ...editingRule, kind: v as RuleKind })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="static">{t("checks:kind.static")}</SelectItem>
+                      <SelectItem value="query">{t("checks:kind.query")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2 pt-6">
+                  <Switch
+                    checked={editingRule.enabled}
+                    onCheckedChange={(checked) => setEditingRule({ ...editingRule, enabled: checked })}
+                  />
+                  <Label>{t("checks:form.fields.enabled")}</Label>
+                </div>
+              </div>
+
+              <div>
+                <Label>{t("checks:form.fields.description")}</Label>
+                <Textarea
+                  rows={3}
+                  value={editingRule.description || ''}
+                  onChange={(e) => setEditingRule({ ...editingRule, description: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <Label>{t("checks:form.fields.spec")}</Label>
+                <Textarea
+                  rows={8}
+                  className="font-mono text-sm"
+                  value={JSON.stringify(editingRule.spec, null, 2)}
+                  onChange={(e) => {
+                    try {
+                      const parsed = JSON.parse(e.target.value);
+                      setEditingRule({ ...editingRule, spec: parsed });
+                    } catch {
+                      // Invalid JSON, don't update
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setEditOpen(false)}>
+              {t("common:cancel")}
+            </Button>
+            <Button onClick={saveEdit} disabled={submitting}>
+              {submitting ? t("common:saving") : t("common:save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

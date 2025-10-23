@@ -55,6 +55,9 @@
   "form": {
     "new_rule_title": "Skapa ny regel",
     "new_rule_nav": "Ny regel",
+    "edit_rule_title": "Redigera regel",
+    "delete_confirm_title": "Ta bort regel?",
+    "delete_confirm_text": "Vill du verkligen ta bort regeln \"{{code}}\"?",
     "fields": {
       "title": "Titel",
       "code": "Kod",
@@ -82,10 +85,14 @@
       "invalid_json": "Spec är inte giltig JSON.",
       "invalid_spec": "Spec matchar inte förväntat schema.",
       "save_failed": "Misslyckades att spara regel.",
-      "duplicate_code": "Koden finns redan för denna klient."
+      "duplicate_code": "Koden finns redan för denna klient.",
+      "update_failed": "Det gick inte att uppdatera regeln.",
+      "delete_failed": "Det gick inte att ta bort regeln."
     },
     "success": {
-      "saved": "Regel sparad framgångsrikt."
+      "saved": "Regel sparad framgångsrikt.",
+      "updated": "Regeln uppdaterades.",
+      "deleted": "Regeln togs bort."
     }
   }
 }

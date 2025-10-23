@@ -55,6 +55,9 @@
   "form": {
     "new_rule_title": "Neue Regel anlegen",
     "new_rule_nav": "Neue Regel",
+    "edit_rule_title": "Regel bearbeiten",
+    "delete_confirm_title": "Regel löschen?",
+    "delete_confirm_text": "Möchtest du die Regel „{{code}}" wirklich löschen?",
     "fields": {
       "title": "Titel",
       "code": "Code",
@@ -82,10 +85,14 @@
       "invalid_json": "Spec ist kein gültiges JSON.",
       "invalid_spec": "Spec entspricht nicht dem erwarteten Schema.",
       "save_failed": "Regel konnte nicht gespeichert werden.",
-      "duplicate_code": "Code existiert bereits für diesen Mandanten."
+      "duplicate_code": "Code existiert bereits für diesen Mandanten.",
+      "update_failed": "Regel konnte nicht aktualisiert werden.",
+      "delete_failed": "Regel konnte nicht gelöscht werden."
     },
     "success": {
-      "saved": "Regel wurde gespeichert."
+      "saved": "Regel wurde gespeichert.",
+      "updated": "Regel aktualisiert.",
+      "deleted": "Regel gelöscht."
     }
   }
 }
