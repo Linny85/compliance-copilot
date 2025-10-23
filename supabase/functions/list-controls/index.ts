@@ -12,74 +12,79 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const authHeader = req.headers.get('Authorization')!;
 
-    const supabase = createClient(supabaseUrl, supabaseKey, {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
 
-    // Verify authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
+    // Parse query parameters
     const url = new URL(req.url);
     const frameworkCode = url.searchParams.get('framework');
     const severity = url.searchParams.get('severity');
     const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = parseInt(url.searchParams.get('limit') || '50');
-    const offset = (page - 1) * limit;
+    const pageSize = parseInt(url.searchParams.get('pageSize') || '50');
+
+    console.log('[list-controls] Query params:', { frameworkCode, severity, page, pageSize });
 
     // Build query
     let query = supabase
       .from('controls')
       .select(`
         *,
-        frameworks:framework_id(code, title, version)
-      `, { count: 'exact' })
-      .order('code', { ascending: true })
-      .range(offset, offset + limit - 1);
+        framework:frameworks(code, title, version)
+      `, { count: 'exact' });
 
-    // Apply filters
+    // Filter by framework if provided
     if (frameworkCode) {
-      query = query.eq('frameworks.code', frameworkCode);
+      const { data: framework } = await supabase
+        .from('frameworks')
+        .select('id')
+        .eq('code', frameworkCode)
+        .maybeSingle();
+      
+      if (framework) {
+        query = query.eq('framework_id', framework.id);
+      }
     }
+
+    // Filter by severity if provided
     if (severity) {
       query = query.eq('severity', severity);
     }
 
-    const { data, error, count } = await query;
+    // Apply pagination
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+    query = query.range(from, to);
+
+    const { data, error, count } = await query.order('code');
 
     if (error) {
-      console.error('Error fetching controls:', error);
-      return new Response(
-        JSON.stringify({ error: 'Failed to fetch controls' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      console.error('[list-controls] Query error:', error);
+      throw error;
     }
 
+    console.log('[list-controls] Success:', { count, returned: data?.length });
+
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         controls: data,
         pagination: {
           page,
-          limit,
-          total: count || 0,
-          totalPages: Math.ceil((count || 0) / limit),
-        }
+          pageSize,
+          total: count,
+          totalPages: Math.ceil((count || 0) / pageSize),
+        },
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error: any) {
-    console.error('Unexpected error:', error);
+    console.error('[list-controls] Error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ error: error.message || 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

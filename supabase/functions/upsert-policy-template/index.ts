@@ -7,11 +7,11 @@ const corsHeaders = {
 };
 
 interface PolicyTemplateRequest {
-  control_id: string;
+  controlId: string;
   title: string;
-  body_md: string;
-  valid_from?: string;
-  valid_to?: string;
+  bodyMd: string;
+  validFrom?: string;
+  validTo?: string;
 }
 
 Deno.serve(async (req) => {
@@ -21,8 +21,8 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const authHeader = req.headers.get('Authorization')!;
 
     const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
@@ -34,13 +34,14 @@ Deno.serve(async (req) => {
     // Verify authentication
     const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
     if (authError || !user) {
+      console.error('[upsert-policy-template] Auth failed:', authError);
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Get user's company
+    // Get user's tenant
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('company_id')
@@ -48,84 +49,107 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (!profile?.company_id) {
+      console.error('[upsert-policy-template] No tenant found for user');
       return new Response(
         JSON.stringify({ error: 'No company associated with user' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    const tenantId = profile.company_id;
+
     const body: PolicyTemplateRequest = await req.json();
-    const { control_id, title, body_md, valid_from, valid_to } = body;
+    const { controlId, title, bodyMd, validFrom, validTo } = body;
 
-    if (!control_id || !title || !body_md) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields: control_id, title, body_md' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    console.log('[upsert-policy-template] Request:', { tenantId, controlId, title });
 
-    // Check for existing policy template (tenant + control)
-    const { data: existing } = await supabaseAdmin
+    // Check if policy template already exists for this tenant and control
+    const { data: existingTemplate } = await supabaseAdmin
       .from('policy_templates')
       .select('id, version')
-      .eq('tenant_id', profile.company_id)
-      .eq('control_id', control_id)
+      .eq('tenant_id', tenantId)
+      .eq('control_id', controlId)
       .order('version', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    const newVersion = existing ? existing.version + 1 : 1;
+    let result;
+    let action: string;
 
-    // Create new version
-    const { data: newPolicy, error: insertError } = await supabaseAdmin
-      .from('policy_templates')
-      .insert({
-        tenant_id: profile.company_id,
-        control_id,
-        version: newVersion,
-        title,
-        body_md,
-        valid_from: valid_from || new Date().toISOString().split('T')[0],
-        valid_to: valid_to || null,
-        created_by: user.id,
-      })
-      .select()
-      .single();
+    if (existingTemplate) {
+      // Create new version
+      const newVersion = existingTemplate.version + 1;
+      console.log('[upsert-policy-template] Creating new version:', newVersion);
 
-    if (insertError) {
-      console.error('Error creating policy template:', insertError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to create policy template' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      const { data, error } = await supabaseAdmin
+        .from('policy_templates')
+        .insert({
+          tenant_id: tenantId,
+          control_id: controlId,
+          version: newVersion,
+          title,
+          body_md: bodyMd,
+          valid_from: validFrom || new Date().toISOString().split('T')[0],
+          valid_to: validTo,
+          created_by: user.id,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      result = data;
+      action = 'policy_template.create_version';
+    } else {
+      // Create first version
+      console.log('[upsert-policy-template] Creating first version');
+
+      const { data, error } = await supabaseAdmin
+        .from('policy_templates')
+        .insert({
+          tenant_id: tenantId,
+          control_id: controlId,
+          version: 1,
+          title,
+          body_md: bodyMd,
+          valid_from: validFrom || new Date().toISOString().split('T')[0],
+          valid_to: validTo,
+          created_by: user.id,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      result = data;
+      action = 'policy_template.create';
     }
 
-    // Audit log
+    // Log audit event
     await logEvent(supabaseAdmin, {
-      tenant_id: profile.company_id,
+      tenant_id: tenantId,
       actor_id: user.id,
-      action: 'policy.create',
+      action,
       entity: 'policy_template',
-      entity_id: newPolicy.id,
+      entity_id: result.id,
       payload: {
-        control_id,
-        version: newVersion,
+        controlId,
+        version: result.version,
         title,
       },
+      ip: req.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
+      user_agent: req.headers.get('user-agent') || undefined,
     });
 
+    console.log('[upsert-policy-template] Success:', { id: result.id, version: result.version });
+
     return new Response(
-      JSON.stringify({ 
-        policy: newPolicy,
-        message: existing ? 'New version created' : 'Policy template created'
-      }),
+      JSON.stringify(result),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error: any) {
-    console.error('Unexpected error:', error);
+    console.error('[upsert-policy-template] Error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ error: error.message || 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

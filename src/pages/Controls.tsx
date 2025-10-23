@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, AlertCircle, AlertTriangle, Info } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Shield, FileText, AlertTriangle } from "lucide-react";
+
+interface Framework {
+  code: string;
+  title: string;
+  version: string;
+}
 
 interface Control {
   id: string;
@@ -21,31 +20,48 @@ interface Control {
   objective: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   evidence_types: string[];
-  frameworks: {
-    code: string;
-    title: string;
-    version: string;
-  };
+  framework: Framework;
 }
 
 export default function Controls() {
   const { t } = useTranslation(["common"]);
   const [controls, setControls] = useState<Control[]>([]);
+  const [frameworks, setFrameworks] = useState<Framework[]>([]);
+  const [selectedFramework, setSelectedFramework] = useState<string>("all");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    loadFrameworks();
     loadControls();
-  }, []);
+  }, [selectedFramework]);
+
+  const loadFrameworks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("frameworks")
+        .select("code, title, version")
+        .order("code");
+
+      if (error) throw error;
+      setFrameworks(data || []);
+    } catch (error) {
+      console.error("Failed to load frameworks:", error);
+    }
+  };
 
   const loadControls = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke('list-controls', {
-        body: {},
+      const { data, error } = await supabase.functions.invoke("list-controls", {
+        body: {
+          framework: selectedFramework === "all" ? undefined : selectedFramework,
+          page: 1,
+          pageSize: 100,
+        },
       });
 
       if (error) throw error;
-      setControls(data.controls || []);
+      setControls(data?.controls || []);
     } catch (error) {
       console.error("Failed to load controls:", error);
     } finally {
@@ -53,114 +69,119 @@ export default function Controls() {
     }
   };
 
-  const getSeverityVariant = (severity: string): "default" | "secondary" | "destructive" | "outline" => {
-    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
-      low: "outline",
-      medium: "secondary",
-      high: "default",
-      critical: "destructive",
+  const getSeverityColor = (severity: string) => {
+    const colors: Record<string, string> = {
+      low: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
+      medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
+      high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
+      critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
     };
-    return variants[severity] || "outline";
+    return colors[severity] || colors.low;
   };
 
   const getSeverityIcon = (severity: string) => {
-    const icons: Record<string, JSX.Element> = {
-      low: <Info className="h-4 w-4" />,
-      medium: <AlertCircle className="h-4 w-4" />,
-      high: <AlertTriangle className="h-4 w-4" />,
-      critical: <AlertTriangle className="h-4 w-4" />,
-    };
-    return icons[severity] || null;
+    if (severity === 'critical' || severity === 'high') {
+      return <AlertTriangle className="h-4 w-4" />;
+    }
+    return <Shield className="h-4 w-4" />;
   };
 
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("common.controls", "Controls")}</h1>
-          <p className="text-muted-foreground">
-            {t("common.controlsDesc", "Framework controls and requirements")}
+          <h1 className="text-3xl font-bold">Controls Library</h1>
+          <p className="text-muted-foreground mt-2">
+            Browse compliance controls and create policy templates
           </p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t("common.availableControls", "Available Controls")}</CardTitle>
-          <CardDescription>
-            {t("common.availableControlsDesc", "Compliance controls from frameworks like NIS2, ISO 27001, and DORA")}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <CardTitle>Filter Controls</CardTitle>
+            <Select value={selectedFramework} onValueChange={setSelectedFramework}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Select framework" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Frameworks</SelectItem>
+                {frameworks.map((fw) => (
+                  <SelectItem key={fw.code} value={fw.code}>
+                    {fw.code} - {fw.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </CardHeader>
-        <CardContent>
-          {loading ? (
-            <p>{t("common.loading")}</p>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t("common.code", "Code")}</TableHead>
-                  <TableHead>{t("common.title", "Title")}</TableHead>
-                  <TableHead>{t("common.framework", "Framework")}</TableHead>
-                  <TableHead>{t("common.severity", "Severity")}</TableHead>
-                  <TableHead>{t("common.evidenceTypes", "Evidence Types")}</TableHead>
-                  <TableHead>{t("common.actions", "Actions")}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {controls.map((control) => (
-                  <TableRow key={control.id}>
-                    <TableCell className="font-mono text-sm font-medium">
-                      {control.code}
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="font-medium">{control.title}</div>
-                        <div className="text-sm text-muted-foreground line-clamp-2">
-                          {control.objective}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {control.frameworks.code} {control.frameworks.version}
+      </Card>
+
+      {loading ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">{t("common.loading")}</p>
+        </div>
+      ) : controls.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No controls found</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4">
+          {controls.map((control) => (
+            <Card key={control.id}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2 flex-1">
+                    <div className="flex items-center gap-3">
+                      <Badge variant="outline" className="font-mono text-xs">
+                        {control.code}
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={getSeverityVariant(control.severity)}
-                        className="gap-1"
-                      >
-                        {getSeverityIcon(control.severity)}
-                        {control.severity}
+                      <Badge className={getSeverityColor(control.severity)}>
+                        <span className="flex items-center gap-1">
+                          {getSeverityIcon(control.severity)}
+                          {control.severity}
+                        </span>
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {control.evidence_types.slice(0, 3).map((type) => (
+                    </div>
+                    <CardTitle className="text-xl">{control.title}</CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      {control.framework.code} - {control.framework.title} ({control.framework.version})
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Create Policy
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-semibold mb-2">Objective</h4>
+                    <p className="text-sm text-muted-foreground">{control.objective}</p>
+                  </div>
+                  {control.evidence_types && control.evidence_types.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold mb-2">Evidence Types</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {control.evidence_types.map((type) => (
                           <Badge key={type} variant="secondary" className="text-xs">
                             {type}
                           </Badge>
                         ))}
-                        {control.evidence_types.length > 3 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{control.evidence_types.length - 3}
-                          </Badge>
-                        )}
                       </div>
-                    </TableCell>
-                    <TableCell>
-                      <Button size="sm" variant="outline">
-                        <FileText className="h-4 w-4 mr-2" />
-                        {t("common.createPolicy", "Create Policy")}
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
