@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
+import { z } from 'https://esm.sh/zod@3';
 
 type Rule = {
   id: string;
@@ -11,6 +12,12 @@ type Rule = {
   enabled: boolean;
   severity: string;
 };
+
+const BodySchema = z.object({
+  period: z.enum(['hourly', 'daily', 'weekly', 'ad-hoc']).default('ad-hoc'),
+  rule_ids: z.array(z.string().uuid()).optional(),
+  tenant_id: z.string().uuid().optional(),
+});
 
 function windowFor(period: 'hourly' | 'daily' | 'weekly' | 'ad-hoc'): { start: Date; end: Date } {
   const now = new Date();
@@ -52,31 +59,32 @@ Deno.serve(async (req) => {
     const url = Deno.env.get('SUPABASE_URL')!;
     const anon = Deno.env.get('SUPABASE_ANON_KEY')!;
     const service = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const authHeader = req.headers.get('Authorization') || '';
+    const authHeader = (req.headers.get('Authorization') || '').trim();
 
     const sbAuth = createClient(url, anon, { global: { headers: { Authorization: authHeader } } });
     const sb = createClient(url, service);
 
-    // Parse request body
-    const body = await req.json().catch(() => ({}));
-    const period = (body.period ?? 'ad-hoc') as 'hourly' | 'daily' | 'weekly' | 'ad-hoc';
-    const onlyRuleIds: string[] | undefined = body.rule_ids;
+    // Parse and validate request body
+    const bodyRaw = await req.json().catch(() => ({}));
+    const body = BodySchema.parse(bodyRaw);
+    const period = body.period;
+    const onlyRuleIds = body.rule_ids;
 
-    // Check if this is an internal service call
-    const isServiceCall = authHeader === `Bearer ${service}`;
+    // Check if this is an internal service call (case-insensitive, trimmed comparison)
+    const isServiceCall = authHeader.toLowerCase() === `bearer ${service}`.toLowerCase();
 
     let tenant_id: string;
     let userId: string | null = null;
 
     if (isServiceCall) {
       // Internal call from scheduler: expect tenant_id in body
-      tenant_id = body.tenant_id;
-      if (!tenant_id) {
+      if (!body.tenant_id) {
         return new Response(
           JSON.stringify({ error: 'Missing tenant_id for internal call' }),
           { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
+      tenant_id = body.tenant_id;
       console.log('[run-checks] Internal service call for tenant:', tenant_id);
     } else {
       // Regular user call: authenticate and get tenant from profile
@@ -107,7 +115,7 @@ Deno.serve(async (req) => {
     }
     const { start, end } = windowFor(period);
 
-    console.log('[run-checks]', { tenant_id, period, window: { start, end }, onlyRuleIds });
+    console.log('[run-checks]', { tenant_id: tenant_id.substring(0, 8) + '...', period, window: { start, end }, ruleCount: onlyRuleIds?.length });
 
     // Load enabled rules
     let q = sb.from('check_rules').select('*').eq('tenant_id', tenant_id).eq('enabled', true);

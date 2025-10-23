@@ -15,10 +15,11 @@ Deno.serve(async (req) => {
   try {
     console.log('[scheduler] Starting scheduled check runs')
 
-    // Fetch all active tenants
+    // Fetch all active tenants (filter by subscription_status if needed)
     const { data: tenants, error: tenantsError } = await sb
       .from('Unternehmen')
       .select('id')
+      .in('subscription_status', ['trial', 'active', 'paid']); // Only active tenants
 
     if (tenantsError) {
       console.error('[scheduler:error] Failed to fetch tenants:', tenantsError)
