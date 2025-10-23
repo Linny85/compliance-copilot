@@ -594,6 +594,38 @@ export type Database = {
           },
         ]
       }
+      feature_attribution: {
+        Row: {
+          computed_at: string
+          factors: Json
+          id: string
+          tenant_id: string
+          time_window: string
+        }
+        Insert: {
+          computed_at?: string
+          factors?: Json
+          id?: string
+          tenant_id: string
+          time_window: string
+        }
+        Update: {
+          computed_at?: string
+          factors?: Json
+          id?: string
+          tenant_id?: string
+          time_window?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feature_attribution_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forecast_ensemble: {
         Row: {
           forecast_sr_90d: number | null
@@ -1431,6 +1463,44 @@ export type Database = {
           weight_gradient: number | null
         }
         Relationships: []
+      }
+      v_rc_factors: {
+        Row: {
+          check_type: string | null
+          fail_rate: number | null
+          fails: number | null
+          r_fail: number | null
+          r_rate: number | null
+          region: string | null
+          rule_group: string | null
+          tenant_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_root_cause_top: {
+        Row: {
+          computed_at: string | null
+          tenant_id: string | null
+          top_fails: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {

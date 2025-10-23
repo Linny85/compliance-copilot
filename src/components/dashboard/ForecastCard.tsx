@@ -31,6 +31,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [ensemble, setEnsemble] = useState<any>(null);
   const [weights, setWeights] = useState<any>(null);
   const [experiment, setExperiment] = useState<any>(null);
+  const [rootCause, setRootCause] = useState<any>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -138,6 +139,19 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadRootCause = async () => {
+    try {
+      const { data } = await supabase
+        .from('v_root_cause_top' as any)
+        .select('*')
+        .eq('tenant_id', companyId)
+        .maybeSingle();
+      if (data) setRootCause(data);
+    } catch (err) {
+      console.error('[ForecastCard] loadRootCause error:', err);
+    }
+  };
+
   useEffect(() => {
     if (companyId) {
       loadForecast();
@@ -146,6 +160,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
       loadEnsemble();
       loadWeights();
       loadExperiment();
+      loadRootCause();
     }
   }, [companyId]);
 
@@ -429,6 +444,29 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {rootCause?.top_fails?.length > 0 && (
+        <div className="mt-4 border-t pt-3">
+          <div className="flex items-center gap-2 mb-2">
+            <h4 className="text-sm font-semibold">🧭 Root-Cause-Hinweise</h4>
+            <Badge variant="secondary" className="text-xs">30d</Badge>
+          </div>
+          <ul className="space-y-2">
+            {rootCause.top_fails.slice(0, 5).map((f: any, i: number) => (
+              <li key={i} className="flex justify-between items-center text-sm">
+                <span className="flex-1 text-muted-foreground">
+                  {f.rule_group !== "(none)" ? f.rule_group : "Allgemein"}
+                  {f.region !== "(none)" && ` • ${f.region}`}
+                  {f.check_type !== "(none)" && ` • ${f.check_type}`}
+                </span>
+                <span className="tabular-nums text-xs font-medium ml-2">
+                  {f.fails} • {Number(f.fail_rate).toFixed(1)}%
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
