@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
         runId = existing.id;
         console.log('[run-checks] Reusing existing run', runId, 'status:', existing.status);
         if (existing.status === 'success') {
-          results.push({ rule_id: rule.id, code: rule.code, outcome: 'pass', message: 'Run already completed for window' });
+          results.push({ run_id: existing.id, rule_id: rule.id, code: rule.code, outcome: 'pass', message: 'Run already completed for window' });
           continue;
         }
       } else {
