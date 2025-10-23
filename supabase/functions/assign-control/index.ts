@@ -34,6 +34,15 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate status enum
+    const allowedStatus = ['in_scope', 'out_of_scope', 'exception'];
+    if (status && !allowedStatus.includes(status)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid status. Must be one of: in_scope, out_of_scope, exception' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { data: profile } = await sb
       .from('profiles')
       .select('company_id')

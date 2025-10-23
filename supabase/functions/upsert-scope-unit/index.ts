@@ -35,6 +35,15 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate kind enum
+    const allowedKinds = ['business_unit', 'process', 'system', 'vendor'];
+    if (!allowedKinds.includes(kind)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid kind. Must be one of: business_unit, process, system, vendor' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Resolve tenant
     const { data: profile } = await sb
       .from('profiles')
