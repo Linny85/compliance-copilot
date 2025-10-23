@@ -116,7 +116,15 @@
     "language": "Language",
     "settings": "Settings",
     "orContinueWith": "or continue with",
-    "fullName": "Full Name"
+    "fullName": "Full Name",
+    "auditLog": "Audit Log",
+    "time": "Time",
+    "action": "Action",
+    "entity": "Entity",
+    "entityId": "ID",
+    "actor": "Actor",
+    "details": "Details",
+    "showPayload": "Show payload"
   },
   "sectors": {
     "it": "IT / Software",

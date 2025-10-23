@@ -116,7 +116,15 @@
     "language": "Sprache",
     "settings": "Einstellungen",
     "orContinueWith": "oder fortfahren mit",
-    "fullName": "Vollständiger Name"
+    "fullName": "Vollständiger Name",
+    "auditLog": "Audit-Protokoll",
+    "time": "Zeit",
+    "action": "Aktion",
+    "entity": "Entität",
+    "entityId": "ID",
+    "actor": "Akteur",
+    "details": "Details",
+    "showPayload": "Nutzlast anzeigen"
   },
   "sectors": {
     "it": "IT / Software",

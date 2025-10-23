@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
+import { logEvent } from '../_shared/audit.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -354,27 +355,23 @@ Deno.serve(async (req) => {
       // Subscription setup handled by company defaults
       tenantLog.info('Subscription setup handled by company defaults');
 
-      // Log audit entry
-      const { error: auditError } = await supabaseAdmin
-        .from('audit_logs')
-        .insert({
-          company_id: newCompany.id,
-          actor_user_id: user.id,
-          action: 'onboarding_completed',
-          target: 'tenant',
-          meta_json: {
-            companyName: company.name,
-            sector: normalizedSector,
-            country: company.country,
-          },
-          ip_address: ip,
-        });
-
-      if (auditError) {
-        tenantLog.warn('Audit log creation failed (non-critical)', { error: auditError.message });
-      } else {
-        tenantLog.info('Audit log created');
-      }
+      // Log audit entry using shared helper
+      await logEvent(supabaseAdmin, {
+        tenant_id: newCompany.id,
+        actor_id: user.id,
+        action: 'tenant.create',
+        entity: 'tenant',
+        entity_id: newCompany.id,
+        payload: {
+          companyName: company.name,
+          sector: normalizedSector,
+          country: company.country,
+        },
+        ip: ip,
+        user_agent: req.headers.get('user-agent') || undefined,
+      });
+      
+      tenantLog.info('Audit log created');
     } catch (txError: any) {
       userLog.error('Transaction failed, rolling back', { 
         error: txError instanceof Error ? txError.message : String(txError),

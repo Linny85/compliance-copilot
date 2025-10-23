@@ -64,6 +64,53 @@ export type Database = {
           },
         ]
       }
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          entity: string
+          entity_id: string
+          id: number
+          ip: unknown
+          payload: Json
+          tenant_id: string
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          entity: string
+          entity_id: string
+          id?: number
+          ip?: unknown
+          payload?: Json
+          tenant_id: string
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          entity?: string
+          entity_id?: string
+          id?: number
+          ip?: unknown
+          payload?: Json
+          tenant_id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action: string
