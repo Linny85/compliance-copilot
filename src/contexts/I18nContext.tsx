@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocaleHydration } from "@/hooks/useLocaleHydration";
 import { translations } from "@/lib/i18n";
@@ -21,13 +21,26 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
     await i18n.changeLanguage(lang);
   };
 
-  // Provide both i18next and legacy translation structure
-  const currentLang = (i18n.language === 'de' || i18n.language === 'sv') ? i18n.language : 'en';
-  
+  // Provide legacy object-style t powered by i18next for ALL languages
+  const buildTObject = (template: any, prefix = ''): any => {
+    const out: any = Array.isArray(template) ? [] : {};
+    for (const key in template) {
+      const path = prefix ? `${prefix}.${key}` : key;
+      if (template[key] && typeof template[key] === 'object') {
+        out[key] = buildTObject(template[key], path);
+      } else {
+        out[key] = i18n.t(path);
+      }
+    }
+    return out;
+  };
+
+  const tObj = useMemo(() => buildTObject(translations.en), [i18n.language]);
+
   const value: I18nContextType = {
     language: i18n.language,
     setLanguage,
-    t: translations[currentLang as keyof typeof translations],
+    t: tObj as typeof translations.en,
   };
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

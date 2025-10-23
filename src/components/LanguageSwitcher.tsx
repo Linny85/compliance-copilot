@@ -45,7 +45,7 @@ export const LanguageSwitcher = () => {
           <span className="uppercase">{i18n.language}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="max-h-[400px] overflow-y-auto">
+      <DropdownMenuContent align="end" className="z-50 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border shadow-md">
         {supportedLocales.map((locale) => (
           <DropdownMenuItem key={locale} onClick={() => setLocale(locale)}>
             {localeLabels[locale] || locale.toUpperCase()}
