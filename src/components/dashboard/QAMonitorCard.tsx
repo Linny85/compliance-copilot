@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Clock, AlertTriangle, CheckCircle, PlayCircle, FileText } from "lucide-react";
+import { Activity, Clock, AlertTriangle, CheckCircle, PlayCircle, FileText, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface QAMonitor {
@@ -11,12 +11,14 @@ interface QAMonitor {
   last_run_at: string | null;
   avg_latency_ms: number | null;
   failed_24h: number;
+  updated_at: string | null;
 }
 
 export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
   const [monitor, setMonitor] = useState<QAMonitor | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     loadMonitorData();
@@ -49,46 +51,59 @@ export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
       
       if (error) throw error;
 
-      toast.success("QA test suite started successfully");
+      toast.success("QA test suite started - processing events...");
       
-      // Reload monitor data after a short delay
+      // Reload monitor data after processing time (5-8s for queue + notify)
       setTimeout(() => {
         loadMonitorData();
-      }, 2000);
+        toast.success("QA monitor updated");
+      }, 6000);
     } catch (err: any) {
       toast.error(`Failed to run QA suite: ${err.message}`);
-    } finally {
       setRunning(false);
     }
   };
 
   const handleGenerateReport = async () => {
+    setGenerating(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-qa-report');
       
       if (error) throw error;
 
+      if (!data?.path) {
+        toast.warning("Report generated but file path not returned");
+        setGenerating(false);
+        return;
+      }
+
       toast.success("QA report generated successfully");
       
-      if (data?.path) {
-        // Download the PDF
-        const { data: blob } = await supabase.storage
-          .from('qa-reports')
-          .download(data.path);
-        
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'qa-report.pdf';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }
+      // Download the PDF
+      const { data: blob, error: downloadError } = await supabase.storage
+        .from('qa-reports')
+        .download(data.path);
+      
+      if (downloadError) {
+        toast.error(`Failed to download report: ${downloadError.message}`);
+        setGenerating(false);
+        return;
+      }
+      
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'qa-report.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       }
     } catch (err: any) {
       toast.error(`Failed to generate report: ${err.message}`);
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -125,10 +140,17 @@ export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
         <CardDescription>System health and notification delivery status</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!monitor ? (
-          <div className="text-center py-4 text-muted-foreground">
-            <p>No QA data available yet</p>
-            <p className="text-sm mt-2">Run your first QA test suite to get started</p>
+        {!monitor || (!monitor.last_run_status && !monitor.last_run_at) ? (
+          <div className="text-center py-8 space-y-4">
+            <div className="text-muted-foreground">
+              <Activity className="h-12 w-12 mx-auto mb-2 opacity-50" />
+              <p className="font-medium">No QA data available yet</p>
+              <p className="text-sm mt-2">Run your first QA test suite to get started</p>
+            </div>
+            <Button onClick={handleRunQA} disabled={running}>
+              <PlayCircle className="h-4 w-4 mr-2" />
+              {running ? "Starting..." : "Run First QA Suite"}
+            </Button>
           </div>
         ) : (
           <>
@@ -186,24 +208,51 @@ export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
               </div>
             </div>
 
-            <div className="flex gap-2 pt-2">
-              <Button 
-                onClick={handleRunQA} 
-                disabled={running}
-                className="flex-1"
-              >
-                <PlayCircle className="h-4 w-4 mr-2" />
-                {running ? "Running..." : "Run QA Suite"}
-              </Button>
+            <div className="space-y-2 pt-2">
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleRunQA} 
+                  disabled={running}
+                  className="flex-1"
+                >
+                  {running ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Running...
+                    </>
+                  ) : (
+                    <>
+                      <PlayCircle className="h-4 w-4 mr-2" />
+                      Run QA Suite
+                    </>
+                  )}
+                </Button>
+                
+                <Button 
+                  onClick={handleGenerateReport}
+                  variant="outline"
+                  className="flex-1"
+                  disabled={generating}
+                >
+                  {generating ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <FileText className="h-4 w-4 mr-2" />
+                      Generate Report
+                    </>
+                  )}
+                </Button>
+              </div>
               
-              <Button 
-                onClick={handleGenerateReport}
-                variant="outline"
-                className="flex-1"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                Generate Report
-              </Button>
+              {monitor.updated_at && (
+                <p className="text-xs text-muted-foreground text-center">
+                  Last updated: {new Date(monitor.updated_at).toLocaleString()}
+                </p>
+              )}
             </div>
           </>
         )}

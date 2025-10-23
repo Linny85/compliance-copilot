@@ -44,9 +44,10 @@ Deno.serve(async (req) => {
       : 0;
 
     const failed = (deliveries || []).filter(d => (d.status_code ?? 0) >= 400).length;
+    const totalDeliveries = deliveries?.length || 0;
 
     // Upsert monitor data
-    await sb.from("qa_monitor")
+    const { error: upsertError } = await sb.from("qa_monitor")
       .upsert({
         tenant_id,
         last_run_id: qa?.id ?? null,
@@ -57,9 +58,20 @@ Deno.serve(async (req) => {
         updated_at: new Date().toISOString(),
       }, { onConflict: "tenant_id" });
 
+    if (upsertError) {
+      console.error("[update-qa-monitor] Upsert failed:", upsertError);
+      throw upsertError;
+    }
+
     return new Response(JSON.stringify({ 
       ok: true, 
-      stats: { avgLatency, failed, qaStatus: `${qa?.passed ?? 0}/${qa?.total ?? 0}` }
+      stats: { 
+        avgLatency: Math.round(avgLatency),
+        failed, 
+        qaStatus: `${qa?.passed ?? 0}/${qa?.total ?? 0}`,
+        deliveries: totalDeliveries,
+      },
+      updated_at: new Date().toISOString(),
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
