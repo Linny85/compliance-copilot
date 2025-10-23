@@ -594,6 +594,48 @@ export type Database = {
           },
         ]
       }
+      explainability_signals: {
+        Row: {
+          created_at: string
+          day: string
+          direction: string | null
+          feature: string
+          id: string
+          key: string
+          metric: string
+          p_value: number | null
+          sample_size: number
+          tenant_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          day: string
+          direction?: string | null
+          feature: string
+          id?: string
+          key: string
+          metric: string
+          p_value?: number | null
+          sample_size?: number
+          tenant_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          direction?: string | null
+          feature?: string
+          id?: string
+          key?: string
+          metric?: string
+          p_value?: number | null
+          sample_size?: number
+          tenant_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
       feature_attribution: {
         Row: {
           computed_at: string
@@ -1178,6 +1220,7 @@ export type Database = {
       tenant_settings: {
         Row: {
           created_at: string
+          explainability_enabled: boolean | null
           id: string
           notification_email: string | null
           notification_webhook_url: string | null
@@ -1188,6 +1231,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          explainability_enabled?: boolean | null
           id?: string
           notification_email?: string | null
           notification_webhook_url?: string | null
@@ -1198,6 +1242,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          explainability_enabled?: boolean | null
           id?: string
           notification_email?: string | null
           notification_webhook_url?: string | null
@@ -1439,6 +1484,24 @@ export type Database = {
           },
         ]
       }
+      v_daily_sr_30d: {
+        Row: {
+          day: string | null
+          passed: number | null
+          sr: number | null
+          tenant_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_ensemble_weight_latest: {
         Row: {
           adjusted_at: string | null
@@ -1448,6 +1511,14 @@ export type Database = {
           weight_arima: number | null
           weight_bayes: number | null
           weight_gradient: number | null
+        }
+        Relationships: []
+      }
+      v_explainability_top_30d: {
+        Row: {
+          computed_at: string | null
+          tenant_id: string | null
+          top_signals: Json | null
         }
         Relationships: []
       }

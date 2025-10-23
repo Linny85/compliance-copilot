@@ -32,6 +32,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [weights, setWeights] = useState<any>(null);
   const [experiment, setExperiment] = useState<any>(null);
   const [rootCause, setRootCause] = useState<any>(null);
+  const [explainability, setExplainability] = useState<any>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -152,6 +153,19 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadExplainability = async () => {
+    try {
+      const { data } = await supabase
+        .from('v_explainability_top_30d' as any)
+        .select('*')
+        .eq('tenant_id', companyId)
+        .maybeSingle();
+      if (data) setExplainability(data);
+    } catch (err) {
+      console.error('[ForecastCard] loadExplainability error:', err);
+    }
+  };
+
   useEffect(() => {
     if (companyId) {
       loadForecast();
@@ -161,6 +175,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
       loadWeights();
       loadExperiment();
       loadRootCause();
+      loadExplainability();
     }
   }, [companyId]);
 
@@ -467,6 +482,42 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {explainability?.top_signals?.length > 0 && (
+        <div className="mt-4 border-t pt-3">
+          <div className="flex items-center gap-2 mb-2">
+            <h4 className="text-sm font-semibold">Erklärungen</h4>
+            <Badge variant="outline" className="text-xs">Beta</Badge>
+          </div>
+          <ul className="space-y-2">
+            {explainability.top_signals.slice(0, 3).map((signal: any, i: number) => {
+              const icon = signal.value > 0 ? '📈' : signal.value < 0 ? '📉' : '🕒';
+              const metricLabel = {
+                'fail_share': 'Fail-Share',
+                'sr_delta': 'SR-Delta',
+                'lag1_corr': 'Lag1-Korr'
+              }[signal.metric] || signal.metric;
+              
+              return (
+                <li key={i} className="flex items-start gap-2 text-sm">
+                  <span className="text-lg">{icon}</span>
+                  <div className="flex-1">
+                    <span className="font-medium">{signal.feature}: {signal.key}</span>
+                    <span className="text-muted-foreground"> — {metricLabel} {Number(signal.value).toFixed(2)}</span>
+                    {signal.p_value && (
+                      <span className="text-xs text-muted-foreground"> (p={Number(signal.p_value).toFixed(3)})</span>
+                    )}
+                    <span className="text-xs text-muted-foreground"> • n={signal.sample}</span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          {explainability.top_signals.length === 0 && (
+            <p className="text-sm text-muted-foreground">Noch keine Erklärungen verfügbar</p>
+          )}
         </div>
       )}
 
