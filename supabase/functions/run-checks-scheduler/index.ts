@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
           console.log(`[scheduler] Executing ${period} checks for tenant ${tenant.id}`)
 
           const { error: invokeError } = await sb.functions.invoke('run-checks', {
-            body: { period },
+            body: { period, tenant_id: tenant.id },
             headers: {
               Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
             },

@@ -52,39 +52,59 @@ Deno.serve(async (req) => {
     const url = Deno.env.get('SUPABASE_URL')!;
     const anon = Deno.env.get('SUPABASE_ANON_KEY')!;
     const service = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const auth = req.headers.get('Authorization') || '';
+    const authHeader = req.headers.get('Authorization') || '';
 
-    const sbAuth = createClient(url, anon, {
-      global: { headers: { Authorization: auth } },
-    });
+    const sbAuth = createClient(url, anon, { global: { headers: { Authorization: authHeader } } });
     const sb = createClient(url, service);
 
-    const { data: { user } } = await sbAuth.auth.getUser();
-    if (!user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const { data: profile } = await sb
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    if (!profile?.company_id) {
-      return new Response(
-        JSON.stringify({ error: 'No tenant' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const tenant_id = profile.company_id;
-
+    // Parse request body
     const body = await req.json().catch(() => ({}));
     const period = (body.period ?? 'ad-hoc') as 'hourly' | 'daily' | 'weekly' | 'ad-hoc';
     const onlyRuleIds: string[] | undefined = body.rule_ids;
+
+    // Check if this is an internal service call
+    const isServiceCall = authHeader === `Bearer ${service}`;
+
+    let tenant_id: string;
+    let userId: string | null = null;
+
+    if (isServiceCall) {
+      // Internal call from scheduler: expect tenant_id in body
+      tenant_id = body.tenant_id;
+      if (!tenant_id) {
+        return new Response(
+          JSON.stringify({ error: 'Missing tenant_id for internal call' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      console.log('[run-checks] Internal service call for tenant:', tenant_id);
+    } else {
+      // Regular user call: authenticate and get tenant from profile
+      const { data: { user }, error: userError } = await sbAuth.auth.getUser();
+      if (userError || !user) {
+        return new Response(
+          JSON.stringify({ error: 'Unauthorized' }),
+          { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const { data: profile, error: profileError } = await sb
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profileError || !profile?.company_id) {
+        return new Response(
+          JSON.stringify({ error: 'No tenant found for user' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      tenant_id = profile.company_id;
+      userId = user.id;
+      console.log('[run-checks] User call for tenant:', tenant_id);
+    }
     const { start, end } = windowFor(period);
 
     console.log('[run-checks]', { tenant_id, period, window: { start, end }, onlyRuleIds });
@@ -124,7 +144,7 @@ Deno.serve(async (req) => {
           .insert({
             tenant_id,
             rule_id: rule.id,
-            requested_by: user.id,
+            requested_by: userId,
             window_start: start.toISOString(),
             window_end: end.toISOString(),
           })
