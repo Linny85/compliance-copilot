@@ -22,6 +22,7 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
   const [query, setQuery] = React.useState("");
   const [items, setItems] = React.useState<Control[]>([]);
   const [loading, setLoading] = React.useState(false);
+  const [selected, setSelected] = React.useState<Control | null>(null);
 
   const fetchItems = React.useCallback(async (q: string) => {
     setLoading(true);
@@ -39,15 +40,42 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
     }
   }, []);
 
-  // Debounce search
+  // Hydrate selected control by id on mount or value change
   React.useEffect(() => {
+    let active = true;
+    (async () => {
+      if (!value) { 
+        setSelected(null); 
+        return; 
+      }
+      try {
+        const { data, error } = await supabase.functions.invoke("search-controls", { 
+          body: { id: value } 
+        });
+        if (!active) return;
+        if (error) throw error;
+        const item = (data?.items || [])[0] || null;
+        setSelected(item);
+        // Enrich items list if not already present
+        if (item && !items.find(i => i.id === item.id)) {
+          setItems(prev => [item, ...prev]);
+        }
+      } catch (e) {
+        console.error('[ControlSelect] Hydrate error:', e);
+        if (active) setSelected(null);
+      }
+    })();
+    return () => { active = false; };
+  }, [value]);
+
+  // Debounce search (min 2 chars)
+  React.useEffect(() => {
+    const effectiveQ = query.length >= 2 ? query : "";
     const timer = setTimeout(() => {
-      fetchItems(query);
+      fetchItems(effectiveQ);
     }, 250);
     return () => clearTimeout(timer);
   }, [query, fetchItems]);
-
-  const selected = items.find(i => i.id === value) || null;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -74,13 +102,18 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
             className="border-0 focus-visible:ring-0"
           />
           <CommandList>
-            {loading ? null : <CommandEmpty>{t("checks:empty.noResults") || "No results"}</CommandEmpty>}
+            {loading ? (
+              <CommandEmpty>{t("common:loading") || "Loading..."}</CommandEmpty>
+            ) : (
+              <CommandEmpty>{t("checks:empty.noResults") || "No results"}</CommandEmpty>
+            )}
             <CommandGroup>
               {items.map((it) => (
                 <CommandItem
                   key={it.id}
                   onSelect={() => {
                     onChange(it.id, it);
+                    setSelected(it);
                     setOpen(false);
                   }}
                 >
