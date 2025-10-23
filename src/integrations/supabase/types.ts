@@ -607,6 +607,42 @@ export type Database = {
           },
         ]
       }
+      notification_deliveries: {
+        Row: {
+          attempts: number
+          channel: string
+          created_at: string
+          duration_ms: number | null
+          error_excerpt: string | null
+          id: number
+          run_id: string
+          status_code: number | null
+          tenant_id: string
+        }
+        Insert: {
+          attempts?: number
+          channel: string
+          created_at?: string
+          duration_ms?: number | null
+          error_excerpt?: string | null
+          id?: number
+          run_id: string
+          status_code?: number | null
+          tenant_id: string
+        }
+        Update: {
+          attempts?: number
+          channel?: string
+          created_at?: string
+          duration_ms?: number | null
+          error_excerpt?: string | null
+          id?: number
+          run_id?: string
+          status_code?: number | null
+          tenant_id?: string
+        }
+        Relationships: []
+      }
       policy_templates: {
         Row: {
           body_md: string
@@ -701,6 +737,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      run_events_queue: {
+        Row: {
+          attempts: number
+          created_at: string
+          finished_at: string | null
+          id: number
+          last_error: string | null
+          next_attempt_at: string
+          processed_at: string | null
+          rule_code: string | null
+          run_id: string
+          started_at: string | null
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          finished_at?: string | null
+          id?: number
+          last_error?: string | null
+          next_attempt_at?: string
+          processed_at?: string | null
+          rule_code?: string | null
+          run_id: string
+          started_at?: string | null
+          status: string
+          tenant_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          finished_at?: string | null
+          id?: number
+          last_error?: string | null
+          next_attempt_at?: string
+          processed_at?: string | null
+          rule_code?: string | null
+          run_id?: string
+          started_at?: string | null
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: []
       }
       scope_assignments: {
         Row: {
@@ -847,6 +928,8 @@ export type Database = {
           notification_webhook_url: string | null
           tenant_id: string
           updated_at: string
+          webhook_domain_allowlist: string[] | null
+          webhook_secret: string | null
         }
         Insert: {
           created_at?: string
@@ -855,6 +938,8 @@ export type Database = {
           notification_webhook_url?: string | null
           tenant_id: string
           updated_at?: string
+          webhook_domain_allowlist?: string[] | null
+          webhook_secret?: string | null
         }
         Update: {
           created_at?: string
@@ -863,6 +948,8 @@ export type Database = {
           notification_webhook_url?: string | null
           tenant_id?: string
           updated_at?: string
+          webhook_domain_allowlist?: string[] | null
+          webhook_secret?: string | null
         }
         Relationships: []
       }

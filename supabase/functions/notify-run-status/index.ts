@@ -14,6 +14,36 @@ interface NotificationPayload {
   finished_at?: string;
 }
 
+// HMAC-SHA256 signing
+async function signPayload(payload: string, secret: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
+  return Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+// Domain validation
+function isAllowedDomain(url: string, allowlist: string[]): boolean {
+  if (!allowlist || allowlist.length === 0) return true; // No restriction if empty
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    return allowlist.some(domain => 
+      hostname === domain.toLowerCase() || hostname.endsWith('.' + domain.toLowerCase())
+    );
+  } catch {
+    return false;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -89,10 +119,11 @@ Deno.serve(async (req) => {
 
     console.log('[notify-run-status]', { run_id, tenant_id, status });
 
-    // Fetch tenant settings
-    const { data: settings } = await sb
+    // Fetch tenant settings (use service client for consistency)
+    const sbService = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: settings } = await sbService
       .from('tenant_settings')
-      .select('notification_email, notification_webhook_url')
+      .select('notification_email, notification_webhook_url, webhook_secret, webhook_domain_allowlist')
       .eq('tenant_id', tenant_id)
       .maybeSingle();
 
@@ -100,9 +131,10 @@ Deno.serve(async (req) => {
 
     // Send email notification if configured
     if (settings?.notification_email) {
+      const startTime = Date.now();
       try {
-        // Note: Email sending would require additional setup (e.g., SendGrid, AWS SES)
-        // For now, we log it
+        // Note: Email sending requires Resend setup
+        // For now, we log it and track delivery
         console.log('[notify-run-status] Email notification to:', settings.notification_email);
         console.log('[notify-run-status] Email content:', {
           run_id,
@@ -111,15 +143,42 @@ Deno.serve(async (req) => {
           started_at,
           finished_at
         });
+        
+        // Log delivery
+        await sbService.from('notification_deliveries').insert({
+          tenant_id,
+          run_id,
+          channel: 'email',
+          status_code: 200,
+          attempts: 1,
+          duration_ms: Date.now() - startTime
+        });
+        
         notifications.push('email');
-      } catch (emailErr) {
+      } catch (emailErr: any) {
         console.error('[notify-run-status] Email error:', emailErr);
+        await sbService.from('notification_deliveries').insert({
+          tenant_id,
+          run_id,
+          channel: 'email',
+          status_code: 500,
+          attempts: 1,
+          duration_ms: Date.now() - startTime,
+          error_excerpt: String(emailErr.message || emailErr).substring(0, 500)
+        });
       }
     }
 
     // Send webhook notification if configured
     if (settings?.notification_webhook_url) {
+      const startTime = Date.now();
       try {
+        // Validate domain allowlist
+        const allowlist = settings.webhook_domain_allowlist || [];
+        if (allowlist.length > 0 && !isAllowedDomain(settings.notification_webhook_url, allowlist)) {
+          throw new Error('Webhook domain not in allowlist');
+        }
+
         const webhookPayload = {
           event: 'check_run_status_changed',
           data: {
@@ -133,20 +192,46 @@ Deno.serve(async (req) => {
           }
         };
 
+        const payloadStr = JSON.stringify(webhookPayload);
+        const signature = await signPayload(payloadStr, settings.webhook_secret || '');
+
         const webhookResponse = await fetch(settings.notification_webhook_url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(webhookPayload)
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Signature': signature,
+            'X-Event-Type': 'check_run_status_changed'
+          },
+          body: payloadStr
         });
+
+        const duration = Date.now() - startTime;
 
         if (webhookResponse.ok) {
           console.log('[notify-run-status] Webhook sent successfully');
+          await sbService.from('notification_deliveries').insert({
+            tenant_id,
+            run_id,
+            channel: 'webhook',
+            status_code: webhookResponse.status,
+            attempts: 1,
+            duration_ms: duration
+          });
           notifications.push('webhook');
         } else {
-          console.error('[notify-run-status] Webhook failed:', webhookResponse.status);
+          throw new Error(`Webhook failed: ${webhookResponse.status}`);
         }
-      } catch (webhookErr) {
+      } catch (webhookErr: any) {
         console.error('[notify-run-status] Webhook error:', webhookErr);
+        await sbService.from('notification_deliveries').insert({
+          tenant_id,
+          run_id,
+          channel: 'webhook',
+          status_code: 500,
+          attempts: 1,
+          duration_ms: Date.now() - startTime,
+          error_excerpt: String(webhookErr.message || webhookErr).substring(0, 500)
+        });
       }
     }
 
