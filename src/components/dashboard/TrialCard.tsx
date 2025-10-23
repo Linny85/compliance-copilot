@@ -47,7 +47,7 @@ export function TrialCard({ trialEnd, subscriptionStatus }: TrialCardProps) {
           <div>
             <div className="text-2xl font-bold">{daysLeft}</div>
             <div className="text-sm text-muted-foreground">
-              {daysLeft === 1 ? t('dashboard.dayRemaining') : t('dashboard.daysRemaining')}
+              {t('dashboard.daysRemaining', { count: daysLeft })}
             </div>
           </div>
         </div>

@@ -14,7 +14,7 @@ i18n
     load: 'languageOnly', // 'de-AT' → 'de'
     lowerCaseLng: true,
     nonExplicitSupportedLngs: true,
-    ns: ['common'],
+    ns: ['common', 'dashboard', 'documents', 'nav', 'sectors'],
     defaultNS: 'common',
     backend: {
       loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
@@ -31,6 +31,7 @@ i18n
       useSuspense: true,
     },
     returnEmptyString: false,
+    saveMissing: false,
   });
 
 // Normalize language codes (nb/nn -> no, etc.)
