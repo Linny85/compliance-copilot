@@ -101,10 +101,11 @@ function createLogger(req: Request, extra: LogData): Logger {
   };
 }
 
-// Simple hash function using Web Crypto API (SHA-256)
-async function hashCode(code: string): Promise<string> {
+// Hash function with user-specific salt to prevent collisions
+async function hashCode(code: string, userId: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(code);
+  // Combine code with userId to make hash user-specific
+  const data = encoder.encode(`${userId}:${code}`);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -237,10 +238,10 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Hash codes server-side
+    // Hash codes server-side with user-specific salt
     userLog.info('Hashing security codes');
-    const masterCodeHash = await hashCode(masterCode);
-    const deleteCodeHash = await hashCode(deleteCode);
+    const masterCodeHash = await hashCode(masterCode, user.id);
+    const deleteCodeHash = await hashCode(deleteCode, user.id);
 
     userLog.info('Starting database transaction');
     
