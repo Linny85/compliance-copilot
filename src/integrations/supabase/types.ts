@@ -766,6 +766,45 @@ export type Database = {
           },
         ]
       }
+      qa_results: {
+        Row: {
+          created_by: string | null
+          failed: number
+          finished_at: string | null
+          id: string
+          notes: string | null
+          passed: number
+          started_at: string
+          suite: string
+          tenant_id: string
+          total: number
+        }
+        Insert: {
+          created_by?: string | null
+          failed?: number
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          passed?: number
+          started_at?: string
+          suite?: string
+          tenant_id: string
+          total?: number
+        }
+        Update: {
+          created_by?: string | null
+          failed?: number
+          finished_at?: string | null
+          id?: string
+          notes?: string | null
+          passed?: number
+          started_at?: string
+          suite?: string
+          tenant_id?: string
+          total?: number
+        }
+        Relationships: []
+      }
       run_events_deadletter: {
         Row: {
           attempts: number

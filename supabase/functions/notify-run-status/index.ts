@@ -133,39 +133,48 @@ Deno.serve(async (req) => {
     if (settings?.notification_email) {
       const startTime = Date.now();
       try {
-        // Note: Email sending requires Resend setup
-        // For now, we log it and track delivery
-        console.log('[notify-run-status] Email notification to:', settings.notification_email);
-        console.log('[notify-run-status] Email content:', {
-          run_id,
-          status,
-          rule_code,
-          started_at,
-          finished_at
-        });
-        
-        // Log delivery
-        await sbService.from('notification_deliveries').insert({
-          tenant_id,
-          run_id,
-          channel: 'email',
-          status_code: 200,
-          attempts: 1,
-          duration_ms: Date.now() - startTime
-        });
-        
-        notifications.push('email');
+        const recipients = String(settings.notification_email)
+          .split(',')
+          .map(e => e.trim())
+          .filter(Boolean);
+
+        if (recipients.length > 0) {
+          const subject = `[Checks] Run ${status.toUpperCase()} – ${rule_code ?? run_id}`;
+          const bodyHtml = `
+            <h3>Check Run Status</h3>
+            <p><b>Status:</b> ${status}</p>
+            <p><b>Rule:</b> ${rule_code ?? '-'}</p>
+            <p><b>Run:</b> ${run_id}</p>
+            <p><b>Started:</b> ${started_at ?? '-'}</p>
+            <p><b>Finished:</b> ${finished_at ?? '-'}</p>
+          `;
+          
+          const emailUrl = `${SUPABASE_URL}/functions/v1/send-email`;
+          const emailRes = await fetch(emailUrl, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              tenant_id,
+              to: recipients,
+              subject,
+              html: bodyHtml,
+            }),
+          });
+
+          if (emailRes.ok) {
+            console.log('[notify-run-status] Email sent via send-email function');
+            notifications.push('email');
+          } else {
+            const errText = await emailRes.text().catch(() => '');
+            throw new Error(`Email function failed: ${emailRes.status} - ${errText.substring(0, 300)}`);
+          }
+        }
       } catch (emailErr: any) {
         console.error('[notify-run-status] Email error:', emailErr);
-        await sbService.from('notification_deliveries').insert({
-          tenant_id,
-          run_id,
-          channel: 'email',
-          status_code: 500,
-          attempts: 1,
-          duration_ms: Date.now() - startTime,
-          error_excerpt: String(emailErr.message || emailErr).substring(0, 500)
-        });
+        // send-email function already logs to notification_deliveries
       }
     }
 
