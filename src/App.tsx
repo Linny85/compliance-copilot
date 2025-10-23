@@ -19,6 +19,7 @@ import Scope from "./pages/Scope";
 import Evidence from "./pages/Evidence";
 import Checks from "./pages/Checks";
 import ChecksNewRule from "./pages/ChecksNewRule";
+import ControlsMapping from "./pages/ControlsMapping";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/evidence" element={<Evidence />} />
             <Route path="/checks" element={<Checks />} />
             <Route path="/checks/new" element={<ChecksNewRule />} />
+            <Route path="/controls/mapping" element={<ControlsMapping />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/audit" element={<AuditLog />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

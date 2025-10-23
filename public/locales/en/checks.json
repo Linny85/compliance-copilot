@@ -143,5 +143,25 @@
     "control": "Control",
     "details": "Details",
     "rerun": "Re-run this rule"
+  },
+  "mapping": {
+    "title": "Compliance Mapping",
+    "subtitle": "Controls ↔ Rules with latest results",
+    "filters": {
+      "search": "Search controls",
+      "severity": "Severity",
+      "outcome": "Outcome",
+      "withRulesOnly": "Only controls with rules"
+    },
+    "columns": {
+      "control": "Control",
+      "rulesCount": "Rules",
+      "lastStatus": "Last status",
+      "rule": "Rule",
+      "lastOutcome": "Last outcome",
+      "lastAt": "Time"
+    },
+    "export": "Export CSV",
+    "empty": "No controls match your filters"
   }
 }

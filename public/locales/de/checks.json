@@ -143,5 +143,25 @@
     "control": "Kontrolle",
     "details": "Details",
     "rerun": "Diese Regel erneut ausführen"
+  },
+  "mapping": {
+    "title": "Compliance-Mapping",
+    "subtitle": "Kontrollen ↔ Regeln mit letzten Ergebnissen",
+    "filters": {
+      "search": "Kontrollen durchsuchen",
+      "severity": "Schweregrad",
+      "outcome": "Ergebnis",
+      "withRulesOnly": "Nur Kontrollen mit Regeln"
+    },
+    "columns": {
+      "control": "Kontrolle",
+      "rulesCount": "Regeln",
+      "lastStatus": "Letzter Status",
+      "rule": "Regel",
+      "lastOutcome": "Letztes Ergebnis",
+      "lastAt": "Zeitpunkt"
+    },
+    "export": "CSV exportieren",
+    "empty": "Keine Kontrollen entsprechen Ihren Filtern"
   }
 }

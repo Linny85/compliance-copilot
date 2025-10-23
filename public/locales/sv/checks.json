@@ -143,5 +143,25 @@
     "control": "Kontroll",
     "details": "Detaljer",
     "rerun": "Kör om denna regel"
+  },
+  "mapping": {
+    "title": "Compliance-mappning",
+    "subtitle": "Kontroller ↔ Regler med senaste resultat",
+    "filters": {
+      "search": "Sök kontroller",
+      "severity": "Allvarlighetsgrad",
+      "outcome": "Resultat",
+      "withRulesOnly": "Endast kontroller med regler"
+    },
+    "columns": {
+      "control": "Kontroll",
+      "rulesCount": "Regler",
+      "lastStatus": "Senaste status",
+      "rule": "Regel",
+      "lastOutcome": "Senaste resultat",
+      "lastAt": "Tid"
+    },
+    "export": "Exportera CSV",
+    "empty": "Inga kontroller matchar dina filter"
   }
 }

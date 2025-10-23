@@ -37,6 +37,7 @@ export function AppSidebar() {
     { title: t.nav.risks, url: "/nis2", icon: Shield },
     { title: t.nav.ai, url: "/ai-act", icon: Brain },
     { title: t.nav.controls, url: "/controls", icon: Shield },
+    { title: "Mapping", url: "/controls/mapping", icon: Network },
     { title: t.nav.scope, url: "/scope", icon: Network },
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
     { title: t.nav.checks, url: "/checks", icon: PlayCircle },
