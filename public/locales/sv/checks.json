@@ -104,5 +104,40 @@
     "operator": "Operator",
     "threshold": "Tröskelvärde",
     "table": "Tabell"
+  },
+  "filters": {
+    "title": "Filtrera resultat",
+    "reset": "Återställ",
+    "dateRange": "Datumintervall",
+    "from": "Från",
+    "to": "Till",
+    "search": "Sök",
+    "searchPlaceholder": "Sök efter kod eller titel...",
+    "control": "Kontroll",
+    "allControls": "Alla kontroller",
+    "severity": "Allvarlighetsgrad",
+    "outcome": "Resultat",
+    "status": "Status"
+  },
+  "results": {
+    "time": "Tid",
+    "rule": "Regel",
+    "outcome": "Resultat",
+    "runStatus": "Körningsstatus",
+    "severity": "Allvarlighetsgrad",
+    "message": "Meddelande",
+    "actions": "Åtgärder",
+    "viewDetails": "Visa detaljer",
+    "export": "Exportera CSV"
+  },
+  "drilldown": {
+    "title": "Körningsdetaljer",
+    "noData": "Inga data tillgängliga",
+    "runId": "Körnings-ID",
+    "windowStart": "Fönster start",
+    "windowEnd": "Fönster slut",
+    "control": "Kontroll",
+    "details": "Detaljer",
+    "rerun": "Kör om denna regel"
   }
 }

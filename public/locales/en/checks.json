@@ -104,5 +104,40 @@
     "operator": "Operator",
     "threshold": "Threshold",
     "table": "Table"
+  },
+  "filters": {
+    "title": "Filter Results",
+    "reset": "Reset",
+    "dateRange": "Date Range",
+    "from": "From",
+    "to": "To",
+    "search": "Search",
+    "searchPlaceholder": "Search by code or title...",
+    "control": "Control",
+    "allControls": "All Controls",
+    "severity": "Severity",
+    "outcome": "Outcome",
+    "status": "Status"
+  },
+  "results": {
+    "time": "Time",
+    "rule": "Rule",
+    "outcome": "Outcome",
+    "runStatus": "Run Status",
+    "severity": "Severity",
+    "message": "Message",
+    "actions": "Actions",
+    "viewDetails": "View Details",
+    "export": "Export CSV"
+  },
+  "drilldown": {
+    "title": "Run Details",
+    "noData": "No data available",
+    "runId": "Run ID",
+    "windowStart": "Window Start",
+    "windowEnd": "Window End",
+    "control": "Control",
+    "details": "Details",
+    "rerun": "Re-run this rule"
   }
 }

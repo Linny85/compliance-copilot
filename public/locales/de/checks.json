@@ -104,5 +104,40 @@
     "operator": "Operator",
     "threshold": "Schwellenwert",
     "table": "Tabelle"
+  },
+  "filters": {
+    "title": "Ergebnisse filtern",
+    "reset": "Zurücksetzen",
+    "dateRange": "Zeitraum",
+    "from": "Von",
+    "to": "Bis",
+    "search": "Suche",
+    "searchPlaceholder": "Nach Code oder Titel suchen...",
+    "control": "Kontrolle",
+    "allControls": "Alle Kontrollen",
+    "severity": "Schweregrad",
+    "outcome": "Ergebnis",
+    "status": "Status"
+  },
+  "results": {
+    "time": "Zeit",
+    "rule": "Regel",
+    "outcome": "Ergebnis",
+    "runStatus": "Run-Status",
+    "severity": "Schweregrad",
+    "message": "Nachricht",
+    "actions": "Aktionen",
+    "viewDetails": "Details anzeigen",
+    "export": "CSV exportieren"
+  },
+  "drilldown": {
+    "title": "Run-Details",
+    "noData": "Keine Daten verfügbar",
+    "runId": "Run-ID",
+    "windowStart": "Fenster Start",
+    "windowEnd": "Fenster Ende",
+    "control": "Kontrolle",
+    "details": "Details",
+    "rerun": "Diese Regel erneut ausführen"
   }
 }

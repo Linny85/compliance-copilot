@@ -46,12 +46,72 @@ Deno.serve(async (req) => {
     const from = (safePage - 1) * safePageSize;
     const to = from + safePageSize - 1;
 
-    console.log('[list-results]', { tenant_id, page: safePage, pageSize: safePageSize });
+    // Extract filters
+    const filters = body.filters || {};
+    const { 
+      from: dateFrom, 
+      to: dateTo, 
+      severity = [], 
+      outcome = [], 
+      status = [], 
+      control_id, 
+      q 
+    } = filters;
 
-    const { data, error, count } = await sb
+    console.log('[list-results]', { tenant_id, page: safePage, pageSize: safePageSize, filters });
+
+    // Build query with filters
+    let query = sb
       .from('check_results')
       .select('*, check_runs!inner(status, window_start, window_end), check_rules!inner(code, title, severity, control_id)', { count: 'exact' })
-      .eq('tenant_id', tenant_id)
+      .eq('tenant_id', tenant_id);
+
+    // Date range filter
+    if (dateFrom) {
+      try {
+        const fromDate = new Date(dateFrom);
+        if (!isNaN(fromDate.getTime())) {
+          query = query.gte('created_at', fromDate.toISOString());
+        }
+      } catch {}
+    }
+    if (dateTo) {
+      try {
+        const toDate = new Date(dateTo);
+        if (!isNaN(toDate.getTime())) {
+          toDate.setHours(23, 59, 59, 999);
+          query = query.lte('created_at', toDate.toISOString());
+        }
+      } catch {}
+    }
+
+    // Outcome filter
+    if (Array.isArray(outcome) && outcome.length > 0) {
+      query = query.in('outcome', outcome);
+    }
+
+    // Severity filter (via joined check_rules)
+    if (Array.isArray(severity) && severity.length > 0) {
+      query = query.in('check_rules.severity', severity);
+    }
+
+    // Status filter (via joined check_runs)
+    if (Array.isArray(status) && status.length > 0) {
+      query = query.in('check_runs.status', status);
+    }
+
+    // Control filter
+    if (control_id) {
+      query = query.eq('check_rules.control_id', control_id);
+    }
+
+    // Text search (code or title)
+    if (q && q.trim().length >= 2) {
+      const qClean = q.trim().replaceAll('%', '').replaceAll('_', '');
+      query = query.or(`(check_rules.code.ilike.%${qClean}%,check_rules.title.ilike.%${qClean}%)`);
+    }
+
+    const { data, error, count } = await query
       .order('created_at', { ascending: false })
       .range(from, to);
 
