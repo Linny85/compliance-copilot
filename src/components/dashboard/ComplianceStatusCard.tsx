@@ -5,29 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, CheckCircle, XCircle, AlertTriangle, FileDown, RefreshCw, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
 
 interface ComplianceSummary {
   passed: number;
@@ -188,43 +165,6 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
     return "text-destructive";
   };
 
-  const chartData = {
-    labels: historicalData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
-    datasets: [
-      {
-        label: 'Success Rate (%)',
-        data: historicalData.map(d => d.success_rate),
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        mode: 'index' as const,
-        intersect: false,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-        ticks: {
-          callback: (value: number | string) => `${value}%`,
-        },
-      },
-    },
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -257,13 +197,33 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
               </div>
 
               {historicalData.length > 0 && (
-                <div className="mt-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-medium text-muted-foreground">7-Day Trend</span>
+                <div className="mt-4 p-3 rounded-lg border bg-muted/30">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">7-Day Trend</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {historicalData.length} data points
+                    </span>
                   </div>
-                  <div className="h-32">
-                    <Line data={chartData} options={chartOptions} />
+                  <div className="space-y-1">
+                    {historicalData.slice(-7).map((point, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs">
+                        <span className="w-16 text-muted-foreground">
+                          {new Date(point.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                        <div className="flex-1 bg-muted rounded-full h-2 overflow-hidden">
+                          <div 
+                            className="h-full bg-primary transition-all"
+                            style={{ width: `${point.success_rate}%` }}
+                          />
+                        </div>
+                        <span className="w-12 text-right font-medium">
+                          {Math.round(point.success_rate)}%
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
