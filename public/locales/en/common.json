@@ -139,7 +139,8 @@
     "createPolicy": "Create Policy",
     "disabled": "Disabled",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "forbidden": "Access denied (admins only)."
   },
   "status": {
     "running": "Running",

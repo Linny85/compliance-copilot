@@ -117,7 +117,8 @@
     "language": "Språk",
     "settings": "Inställningar",
     "previous": "Föregående",
-    "next": "Nästa"
+    "next": "Nästa",
+    "forbidden": "Åtkomst nekad (endast admin)."
   },
   "status": {
     "running": "Pågår",

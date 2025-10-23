@@ -58,6 +58,20 @@ Deno.serve(async (req) => {
     }
     const tenant_id = profile.company_id as string;
 
+    // Admin check
+    const { data: roleProfile, error: roleErr } = await sbAuth
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (roleErr || roleProfile?.role !== 'admin') {
+      return new Response(JSON.stringify({ error: 'FORBIDDEN_ADMIN_ONLY' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // 3) Validate spec based on kind
     if (body.kind === 'static') {
       const StaticSpec = z.object({

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle, Circle, Plus, Pencil, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -58,6 +59,7 @@ export default function ChecksPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const isAdmin = useIsAdmin();
   const [rules, setRules] = useState<CheckRule[]>([]);
   const [results, setResults] = useState<CheckResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -335,7 +337,7 @@ export default function ChecksPage() {
           <p className="text-muted-foreground mt-2">{t("checks:subtitle")}</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={() => navigate("/checks/new")} variant="outline">
+          <Button onClick={() => navigate("/checks/new")} variant="outline" disabled={isAdmin !== true}>
             <Plus className="h-4 w-4 mr-2" />
             {t("checks:actions.newRule")}
           </Button>
@@ -399,39 +401,43 @@ export default function ChecksPage() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button
-                          onClick={() => openEditModal(rule)}
-                          size="sm"
-                          variant="ghost"
-                        >
-                          <Pencil className="h-4 w-4 mr-1" />
-                          {t("common:edit")}
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
-                              <Trash2 className="h-4 w-4 mr-1" />
-                              {t("common:delete")}
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>{t("checks:form.delete_confirm_title")}</AlertDialogTitle>
-                            </AlertDialogHeader>
-                            <p className="text-sm text-muted-foreground">
-                              {t("checks:form.delete_confirm_text", { code: rule.code })}
-                            </p>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>{t("common:cancel")}</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => handleDelete(rule.id)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
+                        {isAdmin === true && (
+                          <Button
+                            onClick={() => openEditModal(rule)}
+                            size="sm"
+                            variant="ghost"
+                          >
+                            <Pencil className="h-4 w-4 mr-1" />
+                            {t("common:edit")}
+                          </Button>
+                        )}
+                        {isAdmin === true && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
+                                <Trash2 className="h-4 w-4 mr-1" />
                                 {t("common:delete")}
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>{t("checks:form.delete_confirm_title")}</AlertDialogTitle>
+                              </AlertDialogHeader>
+                              <p className="text-sm text-muted-foreground">
+                                {t("checks:form.delete_confirm_text", { code: rule.code })}
+                              </p>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>{t("common:cancel")}</AlertDialogCancel>
+                                <AlertDialogAction
+                                  onClick={() => handleDelete(rule.id)}
+                                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                >
+                                  {t("common:delete")}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
                         <Button
                           onClick={() => runChecks([rule.id])}
                           disabled={running || !rule.enabled}
@@ -463,7 +469,7 @@ export default function ChecksPage() {
             <Button
               variant="outline"
               size="sm"
-              disabled={results.length === 0 || exporting || resultsLoading}
+              disabled={isAdmin !== true || results.length === 0 || exporting || resultsLoading}
               onClick={async () => {
                 setExporting(true);
                 try {

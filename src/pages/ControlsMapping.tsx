@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { format } from "date-fns";
 import { Download, Loader2 } from "lucide-react";
 
@@ -32,6 +33,7 @@ type ControlMappingItem = {
 export default function ControlsMapping() {
   const { t } = useTranslation(["checks", "common"]);
   const { toast } = useToast();
+  const isAdmin = useIsAdmin();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Filters (URL-persistiert)
@@ -104,7 +106,7 @@ export default function ControlsMapping() {
           <p className="text-muted-foreground mt-2">{t("checks:mapping.subtitle")}</p>
         </div>
         <Button
-          disabled={exporting || loading || !items.length}
+          disabled={isAdmin !== true || exporting || loading || !items.length}
           onClick={async () => {
             setExporting(true);
             try {

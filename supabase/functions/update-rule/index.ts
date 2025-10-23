@@ -59,6 +59,20 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Admin check
+    const { data: roleProfile, error: roleErr } = await sbAuth
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (roleErr || roleProfile?.role !== 'admin') {
+      return new Response(JSON.stringify({ error: 'FORBIDDEN_ADMIN_ONLY' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { data: existing, error: exErr } = await sb
       .from('check_rules')
       .select('*')

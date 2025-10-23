@@ -139,7 +139,8 @@
     "createPolicy": "Richtlinie erstellen",
     "disabled": "Deaktiviert",
     "previous": "Zurück",
-    "next": "Weiter"
+    "next": "Weiter",
+    "forbidden": "Zugriff verweigert (nur Admin)."
   },
   "status": {
     "running": "Laufend",

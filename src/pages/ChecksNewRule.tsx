@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,19 @@ export default function ChecksNewRule() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isAdmin = useIsAdmin();
   const [submitting, setSubmitting] = useState(false);
+
+  // Redirect if not admin
+  useEffect(() => {
+    if (isAdmin === false) {
+      toast({ 
+        title: t("common:forbidden") || "Access denied (admins only).", 
+        variant: "destructive" 
+      });
+      navigate("/checks");
+    }
+  }, [isAdmin, navigate, toast, t]);
 
   const {
     register,
