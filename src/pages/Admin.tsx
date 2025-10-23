@@ -17,6 +17,7 @@ import { QAMonitorCard } from "@/components/dashboard/QAMonitorCard";
 import { ComplianceStatusCard } from "@/components/dashboard/ComplianceStatusCard";
 import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
+import { OpsDashboardCard } from "@/components/dashboard/OpsDashboardCard";
 
 interface User {
   id: string;
@@ -331,6 +332,7 @@ const Admin = () => {
               </TabsContent>
 
               <TabsContent value="compliance" className="space-y-6">
+                {companyId && <OpsDashboardCard companyId={companyId} />}
                 <div className="grid gap-6 md:grid-cols-2">
                   {companyId && <ComplianceStatusCard companyId={companyId} />}
                   {companyId && <AIInsightsCard companyId={companyId} />}
