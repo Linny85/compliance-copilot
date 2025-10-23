@@ -1,13 +1,9 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { I18nextProvider } from "react-i18next";
-import i18n from "./i18n/init";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { I18nProvider } from "./contexts/I18nContext";
-import { installDomGuards } from "./lib/dom-guards";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
@@ -18,23 +14,12 @@ import AIAct from "./pages/AIAct";
 import Documents from "./pages/Documents";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import { installDomGuards } from "./lib/dom-guards";
 
-// Install DOM guards once before any rendering
-if (typeof window !== 'undefined') {
-  // @ts-ignore
-  if (!window.__domGuardsInstalled) {
-    // @ts-ignore
-    window.__domGuardsInstalled = true;
-    installDomGuards();
-  }
-}
-
-const queryClient = new QueryClient();
+installDomGuards();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <I18nextProvider i18n={i18n}>
-      <I18nProvider>
+  <I18nProvider>
         <TooltipProvider>
           <Toaster position="top-right" richColors closeButton expand duration={3500} />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -60,8 +45,6 @@ const App = () => (
           </BrowserRouter>
         </TooltipProvider>
       </I18nProvider>
-    </I18nextProvider>
-  </QueryClientProvider>
 );
 
 export default App;
