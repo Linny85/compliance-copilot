@@ -15,34 +15,32 @@ type Rule = {
 function windowFor(period: 'hourly' | 'daily' | 'weekly' | 'ad-hoc'): { start: Date; end: Date } {
   const now = new Date();
   if (period === 'hourly') {
-    const s = new Date(now);
-    s.setMinutes(0, 0, 0);
-    const e = new Date(s);
-    e.setHours(s.getHours() + 1);
-    return { start: s, end: e };
+    const start = new Date(now);
+    start.setMinutes(0, 0, 0);
+    const end = new Date(start);
+    end.setHours(start.getHours() + 1);
+    return { start, end };
   }
   if (period === 'daily') {
-    const s = new Date(now);
-    s.setUTCHours(0, 0, 0, 0);
-    const e = new Date(s);
-    e.setUTCDate(s.getUTCDate() + 1);
-    return { start: s, end: e };
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 1);
+    return { start, end };
   }
   if (period === 'weekly') {
-    const s = new Date(now);
-    const day = (s.getUTCDay() + 6) % 7;
-    s.setUTCDate(s.getUTCDate() - day);
-    s.setUTCHours(0, 0, 0, 0);
-    const e = new Date(s);
-    e.setUTCDate(s.getUTCDate() + 7);
-    return { start: s, end: e };
+    const start = new Date(now);
+    const day = (start.getDay() + 6) % 7; // Monday = 0
+    start.setDate(start.getDate() - day);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 7);
+    return { start, end };
   }
   // ad-hoc: 5-minute window for idempotency
-  const s = new Date(now);
-  s.setUTCMinutes(Math.floor(s.getUTCMinutes() / 5) * 5, 0, 0);
-  const e = new Date(s);
-  e.setUTCMinutes(s.getUTCMinutes() + 5);
-  return { start: s, end: e };
+  const start = new Date(now.getTime() - 5 * 60 * 1000);
+  const end = now;
+  return { start, end };
 }
 
 Deno.serve(async (req) => {
@@ -113,7 +111,11 @@ Deno.serve(async (req) => {
       let runId: string;
       if (existing?.id) {
         runId = existing.id;
-        console.log('[run-checks] Reusing existing run', runId);
+        console.log('[run-checks] Reusing existing run', runId, 'status:', existing.status);
+        if (existing.status === 'success') {
+          results.push({ rule_id: rule.id, code: rule.code, outcome: 'pass', message: 'Run already completed for window' });
+          continue;
+        }
       } else {
         const { data: run } = await sb
           .from('check_runs')
@@ -152,8 +154,8 @@ Deno.serve(async (req) => {
         if (rule.kind === 'query') {
           // Simplified query execution (count-based for now)
           // In production, use predefined views or stored procedures
-          const { table, count_field, threshold } = rule.spec || {};
-          const { data: rows, error: qerr } = await sb
+          const { table, threshold } = rule.spec || {};
+          const { count, error: qerr } = await sb
             .from(table || 'evidences')
             .select('*', { count: 'exact', head: true })
             .eq('tenant_id', tenant_id)
@@ -161,11 +163,12 @@ Deno.serve(async (req) => {
 
           if (qerr) throw qerr;
 
-          const count = rows || 0;
-          const ok = count >= (threshold || 1);
+          const c = typeof count === 'number' ? count : 0;
+          const min = typeof threshold === 'number' ? threshold : 1;
+          const ok = c >= min;
           outcome = ok ? 'pass' : rule.severity === 'high' || rule.severity === 'critical' ? 'fail' : 'warn';
-          message = ok ? `Query passed: ${count} records found` : `Query failed: ${count} records (expected >= ${threshold})`;
-          details = { count, threshold };
+          message = ok ? `Query passed: ${c} records found` : `Query failed: ${c} records (expected >= ${min})`;
+          details = { count: c, threshold: min, table: table || 'evidences' };
         }
 
         // Save result

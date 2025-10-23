@@ -8,25 +8,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock } from "lucide-react";
 
+type Severity = 'low' | 'medium' | 'high' | 'critical';
+type Outcome = 'pass' | 'fail' | 'warn';
+type RuleKind = 'static' | 'query' | 'http' | 'script';
+
 interface CheckRule {
   id: string;
   code: string;
   title: string;
   description?: string;
-  kind: string;
-  severity: string;
+  kind: RuleKind;
+  severity: Severity;
   enabled: boolean;
   schedule?: string;
   control_id: string;
-  controls?: { code: string; title: string };
+  controls?: { code: string; title: string } | null;
+  spec?: any;
 }
 
 interface CheckResult {
   id: string;
-  outcome: string;
-  message?: string;
+  outcome: Outcome;
+  message?: string | null;
   created_at: string;
-  check_rules: { code: string; title: string; severity: string; control_id: string };
+  check_rules: { code: string; title: string; severity: Severity; control_id: string | null };
   check_runs: { status: string; window_start: string; window_end: string };
 }
 
@@ -53,14 +58,15 @@ export default function ChecksPage() {
       ]);
 
       if (rulesRes.error) throw rulesRes.error;
-      if (resultsRes.error) throw resultsRes.error;
+      if (resultsRes.error) throw new Error(resultsRes.error.message || String(resultsRes.error));
 
       setRules(rulesRes.data?.checks || []);
       setResults(resultsRes.data?.results || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to load checks:", error);
       toast({
         title: t("checks:errors.load_failed"),
+        description: error?.message,
         variant: "destructive",
       });
     } finally {
@@ -94,8 +100,8 @@ export default function ChecksPage() {
     }
   };
 
-  const getSeverityColor = (severity: string) => {
-    const colors: Record<string, string> = {
+  const getSeverityColor = (severity: Severity): string => {
+    const colors: Record<Severity, string> = {
       low: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
       medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
       high: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
@@ -104,21 +110,21 @@ export default function ChecksPage() {
     return colors[severity] || colors.medium;
   };
 
-  const getOutcomeIcon = (outcome: string) => {
+  const getOutcomeIcon = (outcome: Outcome) => {
     switch (outcome) {
       case "pass":
-        return <CheckCircle2 className="h-4 w-4" />;
+        return <CheckCircle2 className="h-4 w-4" aria-hidden="true" />;
       case "fail":
-        return <XCircle className="h-4 w-4" />;
+        return <XCircle className="h-4 w-4" aria-hidden="true" />;
       case "warn":
-        return <AlertCircle className="h-4 w-4" />;
+        return <AlertCircle className="h-4 w-4" aria-hidden="true" />;
       default:
-        return <Clock className="h-4 w-4" />;
+        return <Clock className="h-4 w-4" aria-hidden="true" />;
     }
   };
 
-  const getOutcomeColor = (outcome: string) => {
-    const colors: Record<string, string> = {
+  const getOutcomeColor = (outcome: Outcome): string => {
+    const colors: Record<Outcome, string> = {
       pass: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
       fail: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
       warn: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",

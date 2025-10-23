@@ -135,7 +135,8 @@
     "severity": "Schweregrad",
     "evidenceTypes": "Evidenztypen",
     "actions": "Aktionen",
-    "createPolicy": "Richtlinie erstellen"
+    "createPolicy": "Richtlinie erstellen",
+    "disabled": "Deaktiviert"
   },
   "severity": {
     "low": "Niedrig",

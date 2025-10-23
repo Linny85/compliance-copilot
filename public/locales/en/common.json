@@ -135,7 +135,8 @@
     "severity": "Severity",
     "evidenceTypes": "Evidence Types",
     "actions": "Actions",
-    "createPolicy": "Create Policy"
+    "createPolicy": "Create Policy",
+    "disabled": "Disabled"
   },
   "severity": {
     "low": "Low",

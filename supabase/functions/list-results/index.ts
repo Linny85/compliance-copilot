@@ -39,12 +39,14 @@ Deno.serve(async (req) => {
     const tenant_id = profile.company_id;
 
     const body = await req.json().catch(() => ({}));
-    const page = Number(body.page ?? 1);
-    const pageSize = Number(body.pageSize ?? 50);
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
+    const page = Number.isFinite(Number(body.page)) ? Number(body.page) : 1;
+    const pageSize = Number.isFinite(Number(body.pageSize)) ? Number(body.pageSize) : 50;
+    const safePage = Math.max(1, page);
+    const safePageSize = Math.min(200, Math.max(1, pageSize));
+    const from = (safePage - 1) * safePageSize;
+    const to = from + safePageSize - 1;
 
-    console.log('[list-results]', { tenant_id, page, pageSize });
+    console.log('[list-results]', { tenant_id, page: safePage, pageSize: safePageSize });
 
     const { data, error, count } = await sb
       .from('check_results')
@@ -59,10 +61,10 @@ Deno.serve(async (req) => {
       JSON.stringify({
         results: data,
         pagination: {
-          page,
-          pageSize,
+          page: safePage,
+          pageSize: safePageSize,
           total: count,
-          totalPages: Math.ceil((count || 0) / pageSize),
+          totalPages: Math.ceil((count || 0) / safePageSize),
         },
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
