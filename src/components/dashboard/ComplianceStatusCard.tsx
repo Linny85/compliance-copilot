@@ -3,8 +3,31 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, CheckCircle, XCircle, AlertTriangle, FileDown, RefreshCw } from "lucide-react";
+import { ShieldCheck, CheckCircle, XCircle, AlertTriangle, FileDown, RefreshCw, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
 interface ComplianceSummary {
   passed: number;
@@ -15,13 +38,20 @@ interface ComplianceSummary {
   last_run_at: string | null;
 }
 
+interface HistoricalData {
+  date: string;
+  success_rate: number;
+}
+
 export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
   const [compliance, setCompliance] = useState<ComplianceSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [historicalData, setHistoricalData] = useState<HistoricalData[]>([]);
 
   useEffect(() => {
     loadComplianceData();
+    loadHistoricalData();
   }, [companyId]);
 
   const loadComplianceData = async () => {
@@ -41,6 +71,45 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
       console.error("Failed to load compliance summary:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadHistoricalData = async () => {
+    try {
+      // Get last 7 days of data
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const { data } = await supabase
+        .from("check_results")
+        .select("created_at, outcome")
+        .eq("tenant_id", companyId)
+        .gte("created_at", sevenDaysAgo.toISOString())
+        .order("created_at", { ascending: true });
+
+      if (data) {
+        // Group by date and calculate success rate
+        const groupedByDate = data.reduce((acc: Record<string, { passed: number; total: number }>, result) => {
+          const date = new Date(result.created_at).toISOString().split('T')[0];
+          if (!acc[date]) {
+            acc[date] = { passed: 0, total: 0 };
+          }
+          acc[date].total++;
+          if (result.outcome === 'pass') {
+            acc[date].passed++;
+          }
+          return acc;
+        }, {});
+
+        const historical = Object.entries(groupedByDate).map(([date, stats]) => ({
+          date,
+          success_rate: (stats.passed / stats.total) * 100,
+        }));
+
+        setHistoricalData(historical);
+      }
+    } catch (err) {
+      console.error("Failed to load historical data:", err);
     }
   };
 
@@ -113,6 +182,49 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
       ? "secondary"
       : "destructive";
 
+  const getHealthColor = () => {
+    if (successRate >= 80) return "text-success";
+    if (successRate >= 60) return "text-warning";
+    return "text-destructive";
+  };
+
+  const chartData = {
+    labels: historicalData.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
+    datasets: [
+      {
+        label: 'Success Rate (%)',
+        data: historicalData.map(d => d.success_rate),
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        mode: 'index' as const,
+        intersect: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        ticks: {
+          callback: (value: number | string) => `${value}%`,
+        },
+      },
+    },
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -136,10 +248,25 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">Overall Success Rate</span>
-                <Badge variant={statusVariant} className="text-lg px-3 py-1">
-                  {successRate}%
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${getHealthColor()} animate-pulse`} />
+                  <Badge variant={statusVariant} className="text-lg px-3 py-1">
+                    {successRate}%
+                  </Badge>
+                </div>
               </div>
+
+              {historicalData.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-medium text-muted-foreground">7-Day Trend</span>
+                  </div>
+                  <div className="h-32">
+                    <Line data={chartData} options={chartOptions} />
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-3 rounded-lg bg-success/10">
@@ -154,7 +281,7 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
                   <div className="text-xs text-muted-foreground">Failed</div>
                 </div>
 
-                <div className="text-center p-3 rounded-lg bg-warning/10">
+                <div className="text-center p-3 rounded-lg bg-warning/10" title="AI Act control mapping may require review">
                   <AlertTriangle className="h-5 w-5 mx-auto mb-1 text-warning" />
                   <div className="text-2xl font-bold">{compliance.warnings}</div>
                   <div className="text-xs text-muted-foreground">Warnings</div>

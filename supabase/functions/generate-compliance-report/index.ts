@@ -289,7 +289,21 @@ Deno.serve(async (req) => {
           html: emailHtml,
         }),
       });
+      
+      console.log("[generate-compliance-report] Email sent to admins:", adminEmails.length);
     }
+
+    // Enhanced structured logging for monitoring
+    console.log("[generate-compliance-report] Metrics =>", {
+      tenant_id,
+      passed: compliance?.passed ?? 0,
+      failed: compliance?.failed ?? 0,
+      warnings: compliance?.warnings ?? 0,
+      qa_failed: qa?.failed_24h ?? 0,
+      success_rate: compliance?.success_rate ?? 0,
+      emailsSent: adminEmails.length,
+      timestamp: new Date().toISOString(),
+    });
 
     return new Response(JSON.stringify({ 
       ok: true, 
