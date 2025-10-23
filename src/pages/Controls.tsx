@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, FileText, AlertTriangle } from "lucide-react";
+import { Shield, FileText, AlertTriangle, ShieldCheck } from "lucide-react";
 
 interface Framework {
   code: string;
@@ -69,7 +69,7 @@ export default function Controls() {
     }
   };
 
-  const getSeverityColor = (severity: string) => {
+  const getSeverityColor = (severity: string): string => {
     const colors: Record<string, string> = {
       low: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
       medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
@@ -83,7 +83,7 @@ export default function Controls() {
     if (severity === 'critical' || severity === 'high') {
       return <AlertTriangle className="h-4 w-4" />;
     }
-    return <Shield className="h-4 w-4" />;
+    return <ShieldCheck className="h-4 w-4" />;
   };
 
   return (

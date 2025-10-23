@@ -61,6 +61,28 @@ Deno.serve(async (req) => {
     const body: PolicyTemplateRequest = await req.json();
     const { controlId, title, bodyMd, validFrom, validTo } = body;
 
+    // Validate required fields
+    if (!controlId || !title || !bodyMd) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: controlId, title, bodyMd' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Verify control exists
+    const { data: ctrl } = await supabaseAdmin
+      .from('controls')
+      .select('id')
+      .eq('id', controlId)
+      .maybeSingle();
+
+    if (!ctrl) {
+      return new Response(
+        JSON.stringify({ error: 'Control not found' }),
+        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     console.log('[upsert-policy-template] Request:', { tenantId, controlId, title });
 
     // Check if policy template already exists for this tenant and control
