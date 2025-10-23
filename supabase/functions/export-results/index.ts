@@ -84,10 +84,11 @@ Deno.serve(async (req) => {
         message, 
         created_at,
         check_runs!inner(id, status, window_start, window_end),
-        check_rules!inner(id, code, title, severity, control_id),
+        check_rules!inner(id, code, title, severity, control_id, deleted_at),
         controls(code, title)
       `)
-      .eq('tenant_id', tenant_id);
+      .eq('tenant_id', tenant_id)
+      .is('check_rules.deleted_at', null);
 
     // Date range filter
     if (dateFrom) {
