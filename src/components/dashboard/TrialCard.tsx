@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Clock } from "lucide-react";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 
 interface TrialCardProps {
   trialEnd: string | null;
@@ -10,7 +10,7 @@ interface TrialCardProps {
 }
 
 export function TrialCard({ trialEnd, subscriptionStatus }: TrialCardProps) {
-  const { t } = useI18n();
+  const { t } = useTranslation(['common', 'dashboard']);
 
   // Calculate days left
   // Step 1: Get milliseconds difference
@@ -34,12 +34,12 @@ export function TrialCard({ trialEnd, subscriptionStatus }: TrialCardProps) {
     <Card className="shadow-lg">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>{t.dashboard.trialStatus}</CardTitle>
+          <CardTitle>{t('dashboard.trialStatus')}</CardTitle>
           <Badge variant={isActive ? "default" : "destructive"}>
-            {isActive ? t.dashboard.active : t.dashboard.expired}
+            {isActive ? t('dashboard.active') : t('dashboard.expired')}
           </Badge>
         </div>
-        <CardDescription>{t.dashboard.trialStatusDesc}</CardDescription>
+        <CardDescription>{t('dashboard.trialStatusDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center space-x-3">
@@ -47,17 +47,17 @@ export function TrialCard({ trialEnd, subscriptionStatus }: TrialCardProps) {
           <div>
             <div className="text-2xl font-bold">{daysLeft}</div>
             <div className="text-sm text-muted-foreground">
-              {daysLeft === 1 ? t.dashboard.dayRemaining : t.dashboard.daysRemaining}
+              {daysLeft === 1 ? t('dashboard.dayRemaining') : t('dashboard.daysRemaining')}
             </div>
           </div>
         </div>
 
         <Button className="w-full" variant="default">
-          {t.dashboard.upgradePlan}
+          {t('dashboard.upgradePlan')}
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          {t.dashboard.trialNote}
+          {t('dashboard.trialNote')}
         </p>
       </CardContent>
     </Card>

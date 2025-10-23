@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, MapPin, Briefcase } from "lucide-react";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 
 interface OrganizationCardProps {
   companyName: string;
@@ -12,26 +12,26 @@ interface OrganizationCardProps {
 
 export function OrganizationCard({ companyName, country, sector }: OrganizationCardProps) {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t } = useTranslation(['common', 'dashboard']);
 
   const getSectorLabel = (sectorValue: string) => {
-    const normalized = sectorValue?.toLowerCase() || "other";
-    const sectorKey = `sectors.${normalized}` as keyof typeof t;
-    return (t as any).sectors?.[normalized] || sectorValue;
+    const normalized = (sectorValue ?? 'other').toLowerCase().replace(/\s+/g, '_');
+    // Use t() with fallback to original value if translation key doesn't exist
+    return t(`sectors.${normalized}`, { defaultValue: sectorValue });
   };
 
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>{t.dashboard.organization}</CardTitle>
-        <CardDescription>{t.dashboard.organizationDesc}</CardDescription>
+        <CardTitle>{t('dashboard.organization')}</CardTitle>
+        <CardDescription>{t('dashboard.organizationDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <Building2 className="h-5 w-5 text-muted-foreground" />
             <div>
-              <div className="text-sm text-muted-foreground">{t.dashboard.companyName}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.companyName')}</div>
               <div className="font-medium">{companyName}</div>
             </div>
           </div>
@@ -39,7 +39,7 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
           <div className="flex items-center space-x-3">
             <MapPin className="h-5 w-5 text-muted-foreground" />
             <div>
-              <div className="text-sm text-muted-foreground">{t.dashboard.country}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.country')}</div>
               <div className="font-medium">{country}</div>
             </div>
           </div>
@@ -47,7 +47,7 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
           <div className="flex items-center space-x-3">
             <Briefcase className="h-5 w-5 text-muted-foreground" />
             <div>
-              <div className="text-sm text-muted-foreground">{t.dashboard.sector}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard.sector')}</div>
               <div className="font-medium">{getSectorLabel(sector)}</div>
             </div>
           </div>
@@ -58,7 +58,7 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
           className="w-full"
           onClick={() => navigate("/company-profile")}
         >
-          {t.dashboard.editOrganization}
+          {t('dashboard.editOrganization')}
         </Button>
       </CardContent>
     </Card>

@@ -7,7 +7,7 @@ import { NextStepsCard } from "@/components/dashboard/NextStepsCard";
 import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 
 interface CompanyData {
   name: string;
@@ -22,7 +22,7 @@ interface SubscriptionData {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t } = useTranslation(['common', 'dashboard']);
   const [loading, setLoading] = useState(true);
   const [companyData, setCompanyData] = useState<CompanyData>({
     name: "",
@@ -95,7 +95,7 @@ const Dashboard = () => {
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">{t.common.loading}</p>
+          <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -111,7 +111,7 @@ const Dashboard = () => {
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1 flex-1">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                  {t.dashboard.welcome}
+                  {t('dashboard.welcome')}
                 </h1>
                 <p className="text-muted-foreground">
                   {companyData.name}
