@@ -1,6 +1,15 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
 
+// Allowed file extensions and MIME types
+const ALLOWED_EXTENSIONS = ['pdf', 'csv', 'txt', 'log', 'json', 'zip', 'png', 'jpg', 'jpeg', 'doc', 'docx', 'xls', 'xlsx'];
+const ALLOWED_MIMES = [
+  'application/pdf', 'text/csv', 'text/plain', 'application/json',
+  'application/zip', 'image/png', 'image/jpeg',
+  'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+];
+
 // Simple UUID v4 generator
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -42,6 +51,15 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate file extension
+    const ext = filename.includes('.') ? filename.split('.').pop()?.toLowerCase() : '';
+    if (!ext || !ALLOWED_EXTENSIONS.includes(ext)) {
+      return new Response(
+        JSON.stringify({ error: `File type not allowed. Allowed: ${ALLOWED_EXTENSIONS.join(', ')}` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { data: profile } = await sb
       .from('profiles')
       .select('company_id')
@@ -57,16 +75,17 @@ Deno.serve(async (req) => {
 
     const tenant_id = profile.company_id;
 
-    // Generate target path
-    const ext = filename.includes('.') ? filename.split('.').pop() : 'bin';
+    // Generate target path (ext already validated above)
     const objectName = `evidence/${tenant_id}/${uuidv4()}.${ext}`;
 
-    console.log('[get-upload-url]', { tenant_id, objectName });
+    console.log('[get-upload-url]', { tenant_id, objectName, extension: ext });
 
-    // Create presigned upload URL
+    // Create presigned upload URL (short TTL, no upsert)
     const { data, error } = await sb.storage
       .from('evidence')
-      .createSignedUploadUrl(objectName);
+      .createSignedUploadUrl(objectName, {
+        upsert: false
+      });
 
     if (error) throw error;
 

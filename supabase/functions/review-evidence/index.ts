@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
+import { logEvent } from '../_shared/audit.ts';
 
 const ALLOWED_VERDICTS = ['pass', 'fail', 'warn'];
 
@@ -68,6 +69,18 @@ Deno.serve(async (req) => {
     if (error) throw error;
 
     console.log('[review-evidence] Updated', data.id);
+
+    // Audit log
+    await logEvent(sb, {
+      tenant_id: ev.tenant_id,
+      actor_id: user.id,
+      action: 'evidence.review',
+      entity: 'evidence',
+      entity_id: evidence_id,
+      payload: { verdict, note },
+      ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || undefined,
+      user_agent: req.headers.get('user-agent') || undefined,
+    });
 
     return new Response(
       JSON.stringify(data),

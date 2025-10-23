@@ -125,6 +125,17 @@ export default function EvidencePage() {
   const handleUpload = async () => {
     if (!uploadFile || !uploadControlId) return;
 
+    // Validate file size (25 MB max)
+    const MAX_SIZE = 25 * 1024 * 1024;
+    if (uploadFile.size > MAX_SIZE) {
+      toast({
+        title: t("evidence:errors.upload_failed"),
+        description: `File too large. Maximum size: ${MAX_SIZE / (1024 * 1024)} MB`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
     try {
       // 1. Get presigned upload URL

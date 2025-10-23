@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
+import { logEvent } from '../_shared/audit.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -80,6 +81,18 @@ Deno.serve(async (req) => {
     if (error) throw error;
 
     console.log('[create-evidence-request] Created', data.id);
+
+    // Audit log
+    await logEvent(sb, {
+      tenant_id,
+      actor_id: user.id,
+      action: 'evidence_request.create',
+      entity: 'evidence_request',
+      entity_id: data.id,
+      payload: { control_id, title },
+      ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || undefined,
+      user_agent: req.headers.get('user-agent') || undefined,
+    });
 
     return new Response(
       JSON.stringify(data),

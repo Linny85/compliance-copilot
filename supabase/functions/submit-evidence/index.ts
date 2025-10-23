@@ -1,5 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
+import { logEvent } from '../_shared/audit.ts';
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -34,6 +37,22 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Validate file size
+    if (file_size > MAX_FILE_SIZE) {
+      return new Response(
+        JSON.stringify({ error: `File too large. Maximum size: ${MAX_FILE_SIZE / (1024 * 1024)} MB` }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate path format (must start with evidence/<tenant_id>/)
+    if (!file_path.startsWith('evidence/')) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid file path format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const { data: profile } = await sb
       .from('profiles')
       .select('company_id')
@@ -51,8 +70,9 @@ Deno.serve(async (req) => {
 
     console.log('[submit-evidence]', { tenant_id, control_id, file_path, hash_sha256 });
 
-    // Insert evidence (append only)
-    const { data: ev, error } = await sb
+    // Insert evidence (append only) - handle duplicates idempotently
+    let ev;
+    const { data: inserted, error } = await sb
       .from('evidences')
       .insert({
         tenant_id,
@@ -67,9 +87,42 @@ Deno.serve(async (req) => {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      // Handle duplicate hash (unique constraint violation)
+      if (error.code === '23505') {
+        console.log('[submit-evidence] Duplicate hash detected, returning existing record');
+        const { data: existing } = await sb
+          .from('evidences')
+          .select()
+          .eq('tenant_id', tenant_id)
+          .eq('hash_sha256', hash_sha256)
+          .single();
+        
+        if (existing) {
+          ev = existing;
+        } else {
+          throw error;
+        }
+      } else {
+        throw error;
+      }
+    } else {
+      ev = inserted;
+    }
 
-    console.log('[submit-evidence] Created', ev.id);
+    console.log('[submit-evidence] Created/Retrieved', ev.id);
+
+    // Audit log
+    await logEvent(sb, {
+      tenant_id,
+      actor_id: user.id,
+      action: 'evidence.submit',
+      entity: 'evidence',
+      entity_id: ev.id,
+      payload: { control_id, file_size, hash_sha256 },
+      ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || undefined,
+      user_agent: req.headers.get('user-agent') || undefined,
+    });
 
     // Auto-fulfill request if provided
     if (request_id) {
