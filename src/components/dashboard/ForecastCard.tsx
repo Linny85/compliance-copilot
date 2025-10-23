@@ -34,6 +34,8 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [rootCause, setRootCause] = useState<any>(null);
   const [explainability, setExplainability] = useState<any>(null);
   const [feedbackLoading, setFeedbackLoading] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [recommendationLoading, setRecommendationLoading] = useState<string | null>(null);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -167,6 +169,59 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadRecommendations = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-recommendations', {
+        body: { tenant_id: companyId, status: 'open', limit: 5 }
+      });
+      if (!error && data?.recommendations) {
+        setRecommendations(data.recommendations);
+      }
+    } catch (err) {
+      console.error('[ForecastCard] loadRecommendations error:', err);
+    }
+  };
+
+  const handleRecommendationAction = async (
+    rec: any,
+    action: 'apply' | 'dismiss' | 'snooze',
+    until?: string
+  ) => {
+    setRecommendationLoading(rec.id);
+    
+    // Optimistic update
+    const prevRecs = recommendations;
+    setRecommendations(recommendations.filter((r) => r.id !== rec.id));
+    
+    try {
+      const { error } = await supabase.functions.invoke('act-on-recommendation', {
+        body: { tenant_id: companyId, recommendation_id: rec.id, action, until }
+      });
+
+      if (error) throw error;
+
+      const actionText = action === 'apply' ? 'Angewendet' : action === 'dismiss' ? 'Verworfen' : 'Pausiert';
+      toast({
+        title: actionText,
+        description: rec.title,
+      });
+
+      // Reload after a moment
+      setTimeout(loadRecommendations, 1000);
+
+    } catch (err: any) {
+      console.error('[ForecastCard] handleRecommendationAction error:', err);
+      setRecommendations(prevRecs); // Revert
+      toast({
+        title: 'Aktion fehlgeschlagen',
+        description: err.message,
+        variant: 'destructive'
+      });
+    } finally {
+      setRecommendationLoading(null);
+    }
+  };
+
   const handleFeedback = async (signal: any, verdict: 'useful' | 'not_useful' | 'irrelevant') => {
     const feedbackKey = `${signal.feature}:${signal.key}:${signal.metric}`;
     setFeedbackLoading(feedbackKey);
@@ -237,6 +292,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
       loadExperiment();
       loadRootCause();
       loadExplainability();
+      loadRecommendations();
     }
   }, [companyId]);
 
@@ -617,6 +673,91 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
           {explainability.top_signals_weighted.length === 0 && (
             <p className="text-sm text-muted-foreground">Noch keine Erklärungen verfügbar</p>
           )}
+        </div>
+      )}
+
+      {recommendations.length > 0 && (
+        <div className="mt-4 border-t pt-3">
+          <div className="flex items-center gap-2 mb-2">
+            <h4 className="text-sm font-semibold">💡 Empfehlungen</h4>
+            <Badge variant="outline" className="text-xs">AI-powered</Badge>
+          </div>
+          <ul className="space-y-3">
+            {recommendations.map((rec) => {
+              const isLoading = recommendationLoading === rec.id;
+              const priorityColor = {
+                1: 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300',
+                2: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300',
+                3: 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+              }[rec.priority] || 'bg-muted';
+              
+              const severityEmoji = {
+                critical: '🔴',
+                high: '🟠',
+                medium: '🟡',
+                low: '🟢'
+              }[rec.severity] || '⚪';
+
+              return (
+                <li key={rec.id} className="p-3 border rounded bg-muted/30 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-base">{severityEmoji}</span>
+                        <span className="font-medium text-sm">{rec.title}</span>
+                        <Badge className={`text-xs ${priorityColor}`}>
+                          P{rec.priority}
+                        </Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Impact: {Number(rec.expected_impact).toFixed(1)}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-2">{rec.description}</p>
+                      <div className="text-xs text-muted-foreground">
+                        <span className="font-medium">{rec.signal.feature}: {rec.signal.key}</span>
+                        <span> • {rec.signal.metric} {Number(rec.signal.value).toFixed(2)}</span>
+                        <span> • ×{Number(rec.weight).toFixed(2)}</span>
+                        <span> • {Number(rec.confidence).toFixed(0)}%</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="default"
+                      className="h-7 px-3 text-xs"
+                      onClick={() => handleRecommendationAction(rec, 'apply')}
+                      disabled={isLoading}
+                    >
+                      ✓ Anwenden
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-7 px-3 text-xs"
+                      onClick={() => {
+                        const until = new Date();
+                        until.setDate(until.getDate() + 7);
+                        handleRecommendationAction(rec, 'snooze', until.toISOString());
+                      }}
+                      disabled={isLoading}
+                    >
+                      ⏰ 7 Tage
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-7 px-3 text-xs"
+                      onClick={() => handleRecommendationAction(rec, 'dismiss')}
+                      disabled={isLoading}
+                    >
+                      ✕ Verwerfen
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       )}
 
