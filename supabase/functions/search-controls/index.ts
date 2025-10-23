@@ -80,8 +80,8 @@ Deno.serve(async (req) => {
       .eq('tenant_id', tenant_id);
 
     if (q) {
-      // ILIKE search on code/title
-      query = query.or(`code.ilike.%${q}%,title.ilike.%${q}%`);
+      // ILIKE search on code/title (properly scoped disjunction)
+      query = query.or(`(code.ilike.%${q}%,title.ilike.%${q}%)`);
     }
 
     const { data, error, count } = await query
