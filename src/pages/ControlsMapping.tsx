@@ -236,7 +236,12 @@ export default function ControlsMapping() {
           {loading ? (
             <div className="p-6 space-y-2">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
+                <div key={i} className="grid grid-cols-6 gap-3 items-center border-b py-3">
+                  <Skeleton className="h-4 w-32 col-span-2" />
+                  <Skeleton className="h-4 w-48 col-span-2" />
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-4 w-24" />
+                </div>
               ))}
             </div>
           ) : !items.length ? (

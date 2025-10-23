@@ -521,6 +521,7 @@ export default function ChecksPage() {
               <Button
                 variant="ghost"
                 size="sm"
+                data-testid="copy-view-link"
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
                   toast({
@@ -597,7 +598,13 @@ export default function ChecksPage() {
           {resultsLoading ? (
             <div className="space-y-2">
               {Array.from({ length: 8 }).map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
+                <div key={i} className="grid grid-cols-7 gap-3 items-center border-b py-3">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-4 w-64 col-span-2" />
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-4 w-72 col-span-2" />
+                </div>
               ))}
             </div>
           ) : results.length === 0 ? (

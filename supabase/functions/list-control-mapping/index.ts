@@ -88,7 +88,8 @@ Deno.serve(async (req) => {
       .from('check_rules')
       .select('id, code, title, severity, control_id')
       .eq('tenant_id', tenant_id)
-      .in('control_id', controlIds);
+      .in('control_id', controlIds)
+      .is('deleted_at', null);
 
     if (Array.isArray(severity) && severity.length > 0) {
       rulesQuery = rulesQuery.in('severity', severity);

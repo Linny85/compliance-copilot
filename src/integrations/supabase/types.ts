@@ -839,6 +839,33 @@ export type Database = {
           },
         ]
       }
+      tenant_settings: {
+        Row: {
+          created_at: string
+          id: string
+          notification_email: string | null
+          notification_webhook_url: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notification_email?: string | null
+          notification_webhook_url?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notification_email?: string | null
+          notification_webhook_url?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       Unternehmen: {
         Row: {
           address: string | null

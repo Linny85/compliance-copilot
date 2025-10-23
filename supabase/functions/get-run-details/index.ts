@@ -87,11 +87,13 @@ Deno.serve(async (req) => {
           severity,
           kind,
           control_id,
+          deleted_at,
           controls(code, title)
         )
       `)
       .eq('tenant_id', tenant_id)
-      .eq('run_id', run_id);
+      .eq('run_id', run_id)
+      .is('check_rules.deleted_at', null);
 
     if (resultsErr) throw resultsErr;
 
