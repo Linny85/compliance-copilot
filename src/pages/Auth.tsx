@@ -160,7 +160,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? t.auth.loading : t.auth.signInButton}
+                  {loading ? t.common.loading : t.auth.signIn}
                 </Button>
               </form>
               
@@ -219,7 +219,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? t.auth.loading : t.auth.signUpButton}
+                  {loading ? t.common.loading : t.auth.signUp}
                 </Button>
               </form>
               

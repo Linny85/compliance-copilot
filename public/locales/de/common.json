@@ -114,7 +114,9 @@
     "error": "Fehler",
     "success": "Erfolg",
     "language": "Sprache",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "orContinueWith": "oder fortfahren mit",
+    "fullName": "Vollständiger Name"
   },
   "sectors": {
     "it": "IT / Software",
