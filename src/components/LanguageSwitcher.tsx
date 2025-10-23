@@ -23,6 +23,9 @@ export const LanguageSwitcher = () => {
   const setLocale = async (lng: string) => {
     await i18n.changeLanguage(lng);
     
+    // Persist to localStorage first (instant fallback)
+    localStorage.setItem('i18nextLng', lng);
+    
     // Persist to user profile (best effort)
     try {
       const { data: { user } } = await supabase.auth.getUser();

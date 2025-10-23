@@ -21,6 +21,14 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      // Warn against hard-coded UI strings in JSX
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector: "JSXText[value=/\\S/]",
+          message: "Hard-coded UI string in JSX. Please use i18n t('key') instead."
+        }
+      ]
     },
   },
 );
