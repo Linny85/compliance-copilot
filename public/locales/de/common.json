@@ -138,6 +138,12 @@
     "createPolicy": "Richtlinie erstellen",
     "disabled": "Deaktiviert"
   },
+  "status": {
+    "running": "Laufend",
+    "success": "Erfolgreich",
+    "failed": "Fehlgeschlagen",
+    "partial": "Teilweise erfolgreich"
+  },
   "severity": {
     "low": "Niedrig",
     "medium": "Mittel",

@@ -138,6 +138,12 @@
     "createPolicy": "Create Policy",
     "disabled": "Disabled"
   },
+  "status": {
+    "running": "Running",
+    "success": "Success",
+    "failed": "Failed",
+    "partial": "Partial"
+  },
   "severity": {
     "low": "Low",
     "medium": "Medium",

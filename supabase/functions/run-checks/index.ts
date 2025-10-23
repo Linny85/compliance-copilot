@@ -96,6 +96,8 @@ Deno.serve(async (req) => {
     if (rerr) throw rerr;
 
     const results: any[] = [];
+    let anyFail = false;
+    let anyWarn = false;
 
     for (const rule of (rules as Rule[])) {
       // Idempotency: find or create run record
@@ -181,11 +183,9 @@ Deno.serve(async (req) => {
           details,
         });
 
-        // Update run status
-        await sb
-          .from('check_runs')
-          .update({ status: 'success', finished_at: new Date().toISOString() })
-          .eq('id', runId);
+        // Track overall outcome
+        if (outcome === 'fail') anyFail = true;
+        if (outcome === 'warn') anyWarn = true;
 
         results.push({ rule_id: rule.id, code: rule.code, outcome, message });
       } catch (execErr: any) {
@@ -200,12 +200,32 @@ Deno.serve(async (req) => {
           details: { error: execErr.message },
         });
 
+        anyFail = true;
+        results.push({ rule_id: rule.id, code: rule.code, outcome: 'fail', message: execErr.message });
+      }
+    }
+
+    // Determine final aggregated status for all runs
+    let finalStatus: 'success' | 'failed' | 'partial' = 'success';
+    if (anyFail) finalStatus = 'failed';
+    else if (anyWarn) finalStatus = 'partial';
+
+    // Update all runs with final status
+    if (rules && rules.length > 0) {
+      const runIds = results.map(r => r.rule_id);
+      const { data: runsToUpdate } = await sb
+        .from('check_runs')
+        .select('id')
+        .eq('tenant_id', tenant_id)
+        .in('rule_id', runIds)
+        .eq('window_start', start.toISOString())
+        .eq('window_end', end.toISOString());
+
+      if (runsToUpdate) {
         await sb
           .from('check_runs')
-          .update({ status: 'failed', finished_at: new Date().toISOString() })
-          .eq('id', runId);
-
-        results.push({ rule_id: rule.id, code: rule.code, outcome: 'fail', message: execErr.message });
+          .update({ status: finalStatus, finished_at: new Date().toISOString() })
+          .in('id', runsToUpdate.map(r => r.id));
       }
     }
 

@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock } from "lucide-react";
+import { PlayCircle, RefreshCw, CheckCircle2, XCircle, AlertCircle, Clock, LoaderCircle } from "lucide-react";
 
 type Severity = 'low' | 'medium' | 'high' | 'critical';
 type Outcome = 'pass' | 'fail' | 'warn';
 type RuleKind = 'static' | 'query' | 'http' | 'script';
+type RunStatus = 'running' | 'success' | 'failed' | 'partial';
 
 interface CheckRule {
   id: string;
@@ -32,7 +33,7 @@ interface CheckResult {
   message?: string | null;
   created_at: string;
   check_rules: { code: string; title: string; severity: Severity; control_id: string | null };
-  check_runs: { status: string; window_start: string; window_end: string };
+  check_runs: { status: RunStatus; window_start: string; window_end: string };
 }
 
 export default function ChecksPage() {
@@ -132,6 +133,21 @@ export default function ChecksPage() {
     return colors[outcome] || colors.pass;
   };
 
+  const getRunStatusIcon = (status: RunStatus) => {
+    switch (status) {
+      case "running":
+        return <LoaderCircle className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />;
+      case "success":
+        return <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />;
+      case "failed":
+        return <XCircle className="h-3.5 w-3.5" aria-hidden="true" />;
+      case "partial":
+        return <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />;
+      default:
+        return <Clock className="h-3.5 w-3.5" aria-hidden="true" />;
+    }
+  };
+
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
@@ -177,7 +193,11 @@ export default function ChecksPage() {
                       <div className="space-y-2 flex-1">
                         <div className="flex items-center gap-2">
                           <CardTitle className="text-xl">{rule.title}</CardTitle>
-                          {!rule.enabled && <Badge variant="outline">{t("common:disabled")}</Badge>}
+                          {!rule.enabled && (
+                            <Badge variant="outline" className="bg-gray-100 dark:bg-gray-800">
+                              {t("common:disabled")}
+                            </Badge>
+                          )}
                         </div>
                         {rule.description && (
                           <p className="text-sm text-muted-foreground">{rule.description}</p>
@@ -250,6 +270,10 @@ export default function ChecksPage() {
                           <Badge className={getSeverityColor(result.check_rules.severity)} variant="outline">
                             {t(`common:severity.${result.check_rules.severity}`)}
                           </Badge>
+                          <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 border">
+                            {getRunStatusIcon(result.check_runs.status)}
+                            {t(`common:status.${result.check_runs.status}`)}
+                          </span>
                         </div>
                       </div>
                     </div>

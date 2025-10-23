@@ -116,6 +116,18 @@
     "language": "Språk",
     "settings": "Inställningar"
   },
+  "status": {
+    "running": "Pågår",
+    "success": "Klart",
+    "failed": "Misslyckades",
+    "partial": "Delvis klart"
+  },
+  "severity": {
+    "low": "Låg",
+    "medium": "Medel",
+    "high": "Hög",
+    "critical": "Kritisk"
+  },
   "sectors": {
     "it": "IT / Programvara",
     "finance": "Finans",
