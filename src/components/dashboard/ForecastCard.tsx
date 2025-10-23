@@ -27,6 +27,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
   const [metrics, setMetrics] = useState<any>(null);
+  const [trend, setTrend] = useState<any[]>([]);
 
   const loadForecast = async () => {
     setLoading(true);
@@ -60,10 +61,24 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     }
   };
 
+  const loadTrend = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('get-reliability-trend', {
+        body: { tenant_id: companyId }
+      });
+      if (!error && data?.trend) {
+        setTrend(data.trend);
+      }
+    } catch (error) {
+      console.error('[ForecastCard] trend error:', error);
+    }
+  };
+
   useEffect(() => {
     if (companyId) {
       loadForecast();
       loadMetrics();
+      loadTrend();
     }
   }, [companyId]);
 
@@ -154,6 +169,35 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
                  R {Number(metrics.recall_breached).toFixed(0)}% ·
                  MAE {Number(metrics.mae_sr).toFixed(1)}%)
               </span>
+              {trend.length > 0 && (
+                <div className="mt-2">
+                  <svg viewBox="0 0 200 40" className="w-full h-10">
+                    {trend.map((t, i) => {
+                      if (i === 0) return null;
+                      const prev = trend[i - 1];
+                      const x1 = (i - 1) * (200 / trend.length);
+                      const x2 = i * (200 / trend.length);
+                      const y1 = 40 - (prev.avg_reliability || 0) * 0.4;
+                      const y2 = 40 - (t.avg_reliability || 0) * 0.4;
+                      return (
+                        <line
+                          key={i}
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          className="text-blue-500 dark:text-blue-400"
+                        />
+                      );
+                    })}
+                  </svg>
+                  <div className="text-xs text-muted-foreground text-center mt-1">
+                    30-Day Reliability Trend
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
