@@ -12,7 +12,7 @@ const API_KEY = PROVIDER === "openai"
 
 const BASE_URL = PROVIDER === "openai"
   ? Deno.env.get("OPENAI_BASE_URL") ?? "https://api.openai.com/v1"
-  : Deno.env.get("LOVABLE_BASE_URL") ?? "https://api.lovable.dev/v1";
+  : Deno.env.get("LOVABLE_BASE_URL") ?? "https://ai.gateway.lovable.dev/v1";
 
 const CHAT_MODEL = Deno.env.get("MODEL") ?? "google/gemini-2.5-flash";
 const EMB_MODEL = Deno.env.get("EMB_MODEL") ?? "text-embedding-3-small";
