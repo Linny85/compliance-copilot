@@ -44,10 +44,10 @@ export default function OpsDashboard() {
   useEffect(() => { load(); }, [sinceHours, tick]);
 
   const cards = useMemo(() => ([
-    { label: "Pending", value: data?.pending ?? 0, description: "Jobs waiting to be processed" },
-    { label: "Dead (24h)", value: data?.dead24h ?? 0, description: "Failed jobs in last 24h" },
-    { label: "Delivered (24h)", value: data?.delivered24h ?? 0, description: "Successfully delivered" },
-    { label: "Avg Attempts (7d)", value: data?.avgAttempts7d ?? 0, description: "Average retries needed" }
+    { label: "Pending", value: data?.pending ?? 0, description: "Jobs waiting to be processed", href: "/admin/integrations?tab=pending" },
+    { label: "Dead (24h)", value: data?.dead24h ?? 0, description: "Failed jobs in last 24h", href: "/admin/integrations?tab=dead" },
+    { label: "Delivered (24h)", value: data?.delivered24h ?? 0, description: "Successfully delivered", href: "/admin/integrations?tab=delivered" },
+    { label: "Avg Attempts (7d)", value: data?.avgAttempts7d ?? 0, description: "Average retries needed", href: undefined }
   ]), [data]);
 
   return (
@@ -82,7 +82,11 @@ export default function OpsDashboard() {
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {cards.map((c) => (
-              <Card key={c.label}>
+              <Card 
+                key={c.label} 
+                className={c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}
+                onClick={() => c.href && (window.location.href = c.href)}
+              >
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium text-muted-foreground">{c.label}</CardTitle>
                 </CardHeader>
@@ -114,7 +118,14 @@ export default function OpsDashboard() {
                     <tbody>
                       {data.topErrors24h.map((e, i) => (
                         <tr key={i} className="border-b last:border-0">
-                          <td className="py-3 pr-4 font-mono text-xs">{e.error}</td>
+                          <td className="py-3 pr-4 font-mono text-xs">
+                            <a 
+                              href={`/admin/integrations?tab=dead&q=${encodeURIComponent(e.error)}`}
+                              className="underline hover:text-primary"
+                            >
+                              {e.error}
+                            </a>
+                          </td>
                           <td className="py-3 text-right font-semibold">{e.cnt}</td>
                         </tr>
                       ))}
