@@ -2,7 +2,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
 import { embed, getLovableBaseUrl } from "../_shared/lovableClient.ts";
 
-console.log(`[helpbot-memory-eval boot] Using Lovable AI Gateway: ${getLovableBaseUrl()}`);
+console.log('[helpbot-memory-eval boot]', {
+  base: getLovableBaseUrl(),
+  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
+});
 
 const MAX_CONTEXT_MESSAGES = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "10");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;

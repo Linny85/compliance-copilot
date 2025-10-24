@@ -8,35 +8,62 @@ Deno.serve(async (req) => {
 
   try {
     const base = getLovableBaseUrl();
-    
-    // Test with a minimal embedding request
-    const res = await lovableFetch('/embeddings', {
-      method: 'POST',
-      body: JSON.stringify({
-        model: 'text-embedding-3-small',
-        input: 'test',
-        dimensions: 512
-      })
-    });
-    
-    const body = await res.text();
-    
+    const keySet = Boolean(Deno.env.get("LOVABLE_API_KEY"));
+
+    // 1) TLS/Reachability test
+    let tlsOk = true, tlsStatus = 0, tlsBody = "";
+    try {
+      const headRes = await fetch(base, { method: "HEAD" });
+      tlsStatus = headRes.status;
+      tlsBody = `${headRes.status} ${headRes.statusText}`;
+    } catch (e) {
+      tlsOk = false;
+      tlsBody = String(e);
+    }
+
+    // 2) Models endpoint (if available)
+    let modelsStatus = 0, modelsBody = "";
+    try {
+      const mRes = await lovableFetch("/models", { method: "GET" });
+      modelsStatus = mRes.status;
+      modelsBody = (await mRes.text()).slice(0, 500);
+    } catch (e) {
+      modelsStatus = -1;
+      modelsBody = String(e);
+    }
+
+    // 3) Minimal embedding test (without dimensions)
+    let embStatus = 0, embBody = "";
+    try {
+      const embRes = await lovableFetch("/embeddings", {
+        method: "POST",
+        body: JSON.stringify({
+          model: Deno.env.get("EMB_MODEL") ?? "text-embedding-3-small",
+          input: "health-check"
+        }),
+      });
+      embStatus = embRes.status;
+      embBody = (await embRes.text()).slice(0, 500);
+    } catch (e) {
+      embStatus = -1;
+      embBody = String(e);
+    }
+
     return new Response(JSON.stringify({
-      ok: res.ok,
-      status: res.status,
       base,
-      timestamp: new Date().toISOString(),
-      body: body.slice(0, 300)
+      keySet,
+      tls: { ok: tlsOk, status: tlsStatus, body: tlsBody },
+      models: { status: modelsStatus, body: modelsBody },
+      embeddings: { status: embStatus, body: embBody },
+      ts: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
   } catch (e: any) {
     console.error('[helpbot-health] Error:', e);
     return new Response(JSON.stringify({
-      ok: false,
-      error: e?.message ?? String(e),
-      base: getLovableBaseUrl(),
-      timestamp: new Date().toISOString()
+      error: String(e),
+      base: getLovableBaseUrl()
     }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" }

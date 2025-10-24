@@ -2,7 +2,10 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
 import { embed, chat, getLovableBaseUrl } from "../_shared/lovableClient.ts";
 
-console.log(`[helpbot-graph-query boot] Using Lovable AI Gateway: ${getLovableBaseUrl()}`);
+console.log('[helpbot-graph-query boot]', {
+  base: getLovableBaseUrl(),
+  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
+});
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

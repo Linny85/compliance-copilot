@@ -1,7 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { embed, chat, getLovableBaseUrl } from "../_shared/lovableClient.ts";
 
-console.log(`[helpbot-query boot] Using Lovable AI Gateway: ${getLovableBaseUrl()}`);
+console.log('[helpbot-query boot]', {
+  base: getLovableBaseUrl(),
+  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
+});
 
 const TOP_K = Number(Deno.env.get("HELPBOT_TOP_K") ?? "6");
 const THRESH = Number(Deno.env.get("HELPBOT_SIM_THRESHOLD") ?? "0.35");

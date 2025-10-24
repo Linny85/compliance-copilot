@@ -1,7 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { lovableFetch, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { embedBatch, getLovableBaseUrl } from "../_shared/lovableClient.ts";
 
-console.log(`[helpbot-ingest boot] Using Lovable AI Gateway: ${getLovableBaseUrl()}`);
+console.log('[helpbot-ingest boot]', {
+  base: getLovableBaseUrl(),
+  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
+});
 
 type IngestReq = {
   title: string;
@@ -79,15 +82,3 @@ function chunkText(text: string, maxLen = 1500) {
   return out;
 }
 
-async function embedBatch(chunks: string[]) {
-  const embModel = Deno.env.get("EMB_MODEL") ?? "text-embedding-3-small";
-  const embDimensions = Number(Deno.env.get("EMB_DIMENSIONS") ?? "1536");
-  
-  const res = await lovableFetch('/embeddings', {
-    method: "POST",
-    body: JSON.stringify({ model: embModel, input: chunks, dimensions: embDimensions })
-  });
-  const j = await res.json();
-  if (!res.ok) throw new Error(j?.error?.message ?? "Embedding failed");
-  return j.data.map((d: any) => d.embedding);
-}

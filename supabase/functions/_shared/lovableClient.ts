@@ -32,29 +32,56 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
   return res;
 }
 
-export async function embed(text: string, dimensions: number = 1536): Promise<number[]> {
-  const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-large';
+export async function embed(text: string): Promise<number[]> {
+  const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-small';
+  
+  console.log('[embed] Calling embeddings API', { model, textLength: text.length });
   
   const res = await lovableFetch('/embeddings', {
     method: 'POST',
     body: JSON.stringify({
       model,
-      input: text,
-      dimensions
+      input: text
     })
   });
 
   const data = await res.json();
   
   if (!res.ok) {
-    throw new Error(data?.error?.message ?? 'Embedding failed');
+    console.error('[embed] Failed:', data);
+    throw new Error(data?.error?.message ?? `Embedding failed (${res.status})`);
   }
 
   return data.data[0].embedding as number[];
 }
 
+export async function embedBatch(chunks: string[]): Promise<number[][]> {
+  const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-small';
+  
+  console.log('[embedBatch] Calling embeddings API', { model, count: chunks.length });
+  
+  const res = await lovableFetch('/embeddings', {
+    method: 'POST',
+    body: JSON.stringify({
+      model,
+      input: chunks
+    })
+  });
+  
+  const data = await res.json();
+  
+  if (!res.ok) {
+    console.error('[embedBatch] Failed:', data);
+    throw new Error(data?.error?.message ?? `Embedding failed (${res.status})`);
+  }
+  
+  return data.data.map((d: any) => d.embedding);
+}
+
 export async function chat(messages: Array<{role: string; content: string}>, model?: string, temperature: number = 0.2): Promise<string> {
   const chatModel = model ?? Deno.env.get('MODEL') ?? 'google/gemini-2.5-flash';
+  
+  console.log('[chat] Calling chat completions', { model: chatModel, messageCount: messages.length });
   
   const res = await lovableFetch('/chat/completions', {
     method: 'POST',
@@ -68,7 +95,8 @@ export async function chat(messages: Array<{role: string; content: string}>, mod
   const data = await res.json();
   
   if (!res.ok) {
-    throw new Error(data?.error?.message ?? 'Chat failed');
+    console.error('[chat] Failed:', data);
+    throw new Error(data?.error?.message ?? `Chat failed (${res.status})`);
   }
 
   return data.choices?.[0]?.message?.content ?? '';
