@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Plus, FileText } from "lucide-react";
+import { format } from "date-fns";
 
 interface DPIARecord {
   id: string;
@@ -224,7 +225,18 @@ export default function DPIAList() {
                       <TableCell>{getRiskBadge(rec.risk_level)}</TableCell>
                       <TableCell>{rec.process_name || "-"}</TableCell>
                       <TableCell>{rec.vendor_name || "-"}</TableCell>
-                      <TableCell>{rec.due_at ? new Date(rec.due_at).toLocaleDateString() : "-"}</TableCell>
+                      <TableCell>
+                        {rec.due_at ? (
+                          <div className="flex items-center gap-2">
+                            {format(new Date(rec.due_at), 'PPP')}
+                            {new Date(rec.due_at) < new Date() && rec.status !== "approved" && rec.status !== "archived" && (
+                              <Badge variant="destructive" className="text-xs">Overdue</Badge>
+                            )}
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))
                 )}

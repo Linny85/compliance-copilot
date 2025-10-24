@@ -637,6 +637,27 @@ export type Database = {
             referencedRelation: "Unternehmen"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_answers_question"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_answers_record"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_answers_record"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "v_dpia_overview"
+            referencedColumns: ["id"]
+          },
         ]
       }
       dpia_questionnaires: {
@@ -832,6 +853,13 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_dpia_questionnaire"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questionnaires"
             referencedColumns: ["id"]
           },
         ]
@@ -3333,6 +3361,27 @@ export type Database = {
             referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_answers_question"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_answers_record"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_answers_record"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "v_dpia_overview"
+            referencedColumns: ["id"]
+          },
         ]
       }
       v_dpia_overview: {
@@ -3392,6 +3441,13 @@ export type Database = {
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_dpia_questionnaire"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questionnaires"
             referencedColumns: ["id"]
           },
         ]

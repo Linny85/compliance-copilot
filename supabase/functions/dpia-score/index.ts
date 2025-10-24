@@ -98,7 +98,8 @@ Deno.serve(async (req) => {
         case 'number': {
           const val = Number(ans.value || 0);
           const scale = q.options?.scale || { min: 0, max: 10 };
-          norm = (val - scale.min) / (scale.max - scale.min);
+          const range = scale.max - scale.min;
+          norm = range > 0 ? (val - scale.min) / range : 0;
           break;
         }
         case 'single': {
