@@ -159,6 +159,58 @@
     "high": "High",
     "critical": "Critical"
   },
+  "vendors": {
+    "title": "Vendor Risk Management",
+    "subtitle": "Manage third-party risks and assessments",
+    "action": {
+      "onboard": "Onboard Vendor",
+      "save": "Save"
+    },
+    "dialog": {
+      "onboard_title": "Onboard New Vendor"
+    },
+    "field": {
+      "name": "Vendor Name",
+      "name_placeholder": "Enter vendor name",
+      "category": "Category",
+      "criticality": "Criticality",
+      "status": "Status",
+      "risk": "Risk Level",
+      "score": "Score"
+    },
+    "filter": {
+      "status": "Status",
+      "risk": "Risk",
+      "all": "All"
+    },
+    "search_placeholder": "Search vendors...",
+    "empty": "No vendors found",
+    "status": {
+      "new": "New",
+      "in_review": "In Review",
+      "approved": "Approved",
+      "restricted": "Restricted",
+      "offboarded": "Offboarded"
+    },
+    "risk": {
+      "low": "Low",
+      "med": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "criticality": {
+      "low": "Low",
+      "med": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "success": {
+      "onboarded": "Vendor onboarded successfully"
+    },
+    "error": {
+      "name_required": "Vendor name is required"
+    }
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Finance",

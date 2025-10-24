@@ -159,6 +159,58 @@
     "high": "Hoch",
     "critical": "Kritisch"
   },
+  "vendors": {
+    "title": "Lieferantenrisiko-Management",
+    "subtitle": "Drittpartei-Risiken und Bewertungen verwalten",
+    "action": {
+      "onboard": "Lieferant anlegen",
+      "save": "Speichern"
+    },
+    "dialog": {
+      "onboard_title": "Neuen Lieferanten anlegen"
+    },
+    "field": {
+      "name": "Lieferantenname",
+      "name_placeholder": "Lieferantenname eingeben",
+      "category": "Kategorie",
+      "criticality": "Kritikalität",
+      "status": "Status",
+      "risk": "Risikostufe",
+      "score": "Score"
+    },
+    "filter": {
+      "status": "Status",
+      "risk": "Risiko",
+      "all": "Alle"
+    },
+    "search_placeholder": "Lieferanten suchen...",
+    "empty": "Keine Lieferanten gefunden",
+    "status": {
+      "new": "Neu",
+      "in_review": "In Prüfung",
+      "approved": "Freigegeben",
+      "restricted": "Eingeschränkt",
+      "offboarded": "Beendet"
+    },
+    "risk": {
+      "low": "Niedrig",
+      "med": "Mittel",
+      "high": "Hoch",
+      "critical": "Kritisch"
+    },
+    "criticality": {
+      "low": "Niedrig",
+      "med": "Mittel",
+      "high": "Hoch",
+      "critical": "Kritisch"
+    },
+    "success": {
+      "onboarded": "Lieferant erfolgreich angelegt"
+    },
+    "error": {
+      "name_required": "Lieferantenname ist erforderlich"
+    }
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Finanzen",

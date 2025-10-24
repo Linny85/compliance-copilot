@@ -2403,6 +2403,305 @@ export type Database = {
           },
         ]
       }
+      vendor_answers: {
+        Row: {
+          assessment_id: string
+          created_at: string | null
+          evidence_id: string | null
+          id: string
+          question_id: string
+          tenant_id: string
+          updated_at: string | null
+          value: Json | null
+        }
+        Insert: {
+          assessment_id: string
+          created_at?: string | null
+          evidence_id?: string | null
+          id?: string
+          question_id: string
+          tenant_id: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Update: {
+          assessment_id?: string
+          created_at?: string | null
+          evidence_id?: string | null
+          id?: string
+          question_id?: string
+          tenant_id?: string
+          updated_at?: string | null
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_answers_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_assessments: {
+        Row: {
+          assigned_to: string | null
+          created_at: string | null
+          due_at: string | null
+          id: string
+          questionnaire_id: string
+          risk_level: string | null
+          score: Json | null
+          scored_at: string | null
+          status: string | null
+          submitted_at: string | null
+          tenant_id: string
+          updated_at: string | null
+          vendor_id: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string | null
+          due_at?: string | null
+          id?: string
+          questionnaire_id: string
+          risk_level?: string | null
+          score?: Json | null
+          scored_at?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          tenant_id: string
+          updated_at?: string | null
+          vendor_id: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string | null
+          due_at?: string | null
+          id?: string
+          questionnaire_id?: string
+          risk_level?: string | null
+          score?: Json | null
+          scored_at?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+          vendor_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_assessments_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_questionnaires"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_assessments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "v_vendor_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_assessments_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendor_profiles: {
+        Row: {
+          code: string
+          id: string
+          questionnaire_id: string | null
+          tenant_id: string
+          title: string
+          weighting: Json
+        }
+        Insert: {
+          code: string
+          id?: string
+          questionnaire_id?: string | null
+          tenant_id: string
+          title: string
+          weighting?: Json
+        }
+        Update: {
+          code?: string
+          id?: string
+          questionnaire_id?: string | null
+          tenant_id?: string
+          title?: string
+          weighting?: Json
+        }
+        Relationships: []
+      }
+      vendor_questionnaires: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          sections: Json
+          status: string | null
+          tenant_id: string
+          title: string
+          updated_at: string | null
+          version: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          sections?: Json
+          status?: string | null
+          tenant_id: string
+          title: string
+          updated_at?: string | null
+          version?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          sections?: Json
+          status?: string | null
+          tenant_id?: string
+          title?: string
+          updated_at?: string | null
+          version?: string
+        }
+        Relationships: []
+      }
+      vendor_questions: {
+        Row: {
+          code: string
+          control_id: string | null
+          id: string
+          options: Json | null
+          prompt: string
+          questionnaire_id: string
+          required: boolean | null
+          section_code: string
+          tenant_id: string
+          type: string
+          weight: number
+        }
+        Insert: {
+          code: string
+          control_id?: string | null
+          id?: string
+          options?: Json | null
+          prompt: string
+          questionnaire_id: string
+          required?: boolean | null
+          section_code: string
+          tenant_id: string
+          type: string
+          weight?: number
+        }
+        Update: {
+          code?: string
+          control_id?: string | null
+          id?: string
+          options?: Json | null
+          prompt?: string
+          questionnaire_id?: string
+          required?: boolean | null
+          section_code?: string
+          tenant_id?: string
+          type?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_questions_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_questionnaires"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          criticality: string | null
+          data_classes: string[] | null
+          id: string
+          name: string
+          owner_id: string | null
+          status: string | null
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          criticality?: string | null
+          data_classes?: string[] | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          status?: string | null
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          criticality?: string | null
+          data_classes?: string[] | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          status?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       evidences_current: {
@@ -2946,6 +3245,114 @@ export type Database = {
           tenant_id: string | null
         }
         Relationships: []
+      }
+      v_vendor_answers_export: {
+        Row: {
+          assessment_id: string | null
+          control_id: string | null
+          created_at: string | null
+          evidence_id: string | null
+          id: string | null
+          question_code: string | null
+          question_id: string | null
+          tenant_id: string | null
+          updated_at: string | null
+          value: Json | null
+          vendor_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendor_answers_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "vendor_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_vendor_overview: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          criticality: string | null
+          data_classes: string[] | null
+          id: string | null
+          latest_risk: string | null
+          latest_score: string | null
+          latest_status: string | null
+          name: string | null
+          owner_id: string | null
+          status: string | null
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          criticality?: string | null
+          data_classes?: string[] | null
+          id?: string | null
+          latest_risk?: never
+          latest_score?: never
+          latest_status?: never
+          name?: string | null
+          owner_id?: string | null
+          status?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          criticality?: string | null
+          data_classes?: string[] | null
+          id?: string | null
+          latest_risk?: never
+          latest_score?: never
+          latest_status?: never
+          name?: string | null
+          owner_id?: string | null
+          status?: string | null
+          tenant_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
