@@ -108,7 +108,45 @@ Deno.serve(async (req) => {
       .maybeSingle();
     
     if (existing) {
-      return json({ ok: true, dedup: true, doc_id: existing.id });
+      // Check if chunks exist for this document
+      const { count } = await sb
+        .from("helpbot_chunks")
+        .select("*", { count: "exact", head: true })
+        .eq("doc_id", existing.id);
+
+      // If no chunks exist, force re-ingest
+      if (!count || count === 0) {
+        console.log(`[Re-ingest] Doc ${existing.id} has no chunks, forcing ingest`);
+        const text = await extractTextFromPDF(arrayBuffer);
+        
+        const { data: ingestData, error: ingestErr } = await sb.functions.invoke("helpbot-ingest", {
+          body: {
+            title: file.name.replace(/\.pdf$/i, ""),
+            text,
+            source_uri: null,
+            jurisdiction,
+            doc_type,
+            lang,
+            version: new Date().toISOString().slice(0, 10),
+            file_sha256,
+          },
+        });
+
+        if (ingestErr) {
+          console.error("[Re-ingest error]", ingestErr);
+          throw new Error(`Re-ingest failed: ${ingestErr.message}`);
+        }
+
+        return json({ 
+          ok: true, 
+          dedup: true, 
+          reingest: true,
+          doc_id: existing.id,
+          ingested: ingestData
+        });
+      }
+
+      return json({ ok: true, dedup: true, doc_id: existing.id, chunks_ok: true });
     }
     
     const text = await extractTextFromPDF(arrayBuffer);
