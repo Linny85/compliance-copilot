@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const MAX_MB = Number(Deno.env.get("HELPBOT_MAX_UPLOAD_MB") ?? "20");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -41,6 +42,11 @@ async function extractTextFromPDF(buffer: ArrayBuffer): Promise<string> {
 }
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
     if (req.method !== "POST") {
       return json({ error: "Method Not Allowed" }, 405);
@@ -136,6 +142,6 @@ Deno.serve(async (req) => {
 function json(b: any, status = 200) {
   return new Response(JSON.stringify(b), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
 }
