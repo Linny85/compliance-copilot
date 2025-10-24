@@ -1,7 +1,26 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")!;
-const EMB_MODEL = Deno.env.get("HELPBOT_EMBED_MODEL") ?? "text-embedding-3-small";
+// =========================================================
+// 🌐 Dual-Provider Configuration (Lovable + OpenAI Fallback)
+// =========================================================
+
+const PROVIDER = Deno.env.get("AI_PROVIDER") ?? "lovable";
+
+const API_KEY = PROVIDER === "openai"
+  ? Deno.env.get("OPENAI_API_KEY")
+  : Deno.env.get("LOVABLE_API_KEY");
+
+const BASE_URL = PROVIDER === "openai"
+  ? Deno.env.get("OPENAI_BASE_URL") ?? "https://api.openai.com/v1"
+  : Deno.env.get("LOVABLE_BASE_URL") ?? "https://ai.gateway.lovable.dev/v1";
+
+const EMB_MODEL = Deno.env.get("EMB_MODEL") ?? "text-embedding-3-small";
+const EMB_DIMENSIONS = Number(Deno.env.get("EMB_DIMENSIONS") ?? "1536");
+
+function logProvider() {
+  console.log(`[AI Provider] ${PROVIDER.toUpperCase()} → ${BASE_URL}`);
+}
+logProvider();
 
 type IngestReq = {
   title: string;
@@ -80,10 +99,10 @@ function chunkText(text: string, maxLen = 1500) {
 }
 
 async function embedBatch(chunks: string[]) {
-  const res = await fetch("https://api.openai.com/v1/embeddings", {
+  const res = await fetch(`${BASE_URL}/embeddings`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${OPENAI_API_KEY}` },
-    body: JSON.stringify({ model: EMB_MODEL, input: chunks })
+    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${API_KEY}` },
+    body: JSON.stringify({ model: EMB_MODEL, input: chunks, dimensions: EMB_DIMENSIONS })
   });
   const j = await res.json();
   if (!res.ok) throw new Error(j?.error?.message ?? "Embedding failed");
