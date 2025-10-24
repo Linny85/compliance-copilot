@@ -1,14 +1,17 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Shield,
   Brain,
-  FileText,
-  Settings,
-  LogOut,
-  Network,
   FileCheck,
   PlayCircle,
+  FileText,
+  BarChart3,
+  Building2,
+  Plug,
+  Settings,
+  HelpCircle,
+  LogOut,
 } from "lucide-react";
 import {
   Sidebar,
@@ -23,27 +26,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useI18n } from "@/contexts/I18nContext";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const navigate = useNavigate();
   const { t } = useI18n();
-
-  const navigationItems = [
-    { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
-    { title: t.nav.risks, url: "/nis2", icon: Shield },
-    { title: t.nav.ai, url: "/ai-act", icon: Brain },
-    { title: t.nav.controls, url: "/controls", icon: Shield },
-    { title: "Mapping", url: "/controls/mapping", icon: Network },
-    { title: t.nav.scope, url: "/scope", icon: Network },
-    { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
-    { title: t.nav.checks, url: "/checks", icon: PlayCircle },
-    { title: t.nav.docs, url: "/documents", icon: FileText },
-    { title: t.nav.admin, url: "/admin", icon: Settings },
-  ];
+  const isAdmin = useIsAdmin();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -53,16 +44,66 @@ export function AppSidebar() {
 
   const isCollapsed = state === "collapsed";
 
+  // Main Navigation Items
+  const mainNavItems = [
+    { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
+    { title: t.nav.risks, url: "/nis2", icon: Shield },
+    { title: t.nav.ai, url: "/ai-act", icon: Brain },
+    { title: t.nav.controls, url: "/controls", icon: Shield },
+    { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
+    { title: t.nav.checks, url: "/checks", icon: PlayCircle },
+    { title: t.nav.docs, url: "/documents", icon: FileText },
+    { title: "Berichte", url: "/admin/ops", icon: BarChart3, adminOnly: true },
+  ];
+
+  // System Items
+  const systemNavItems = [
+    { title: "Organisation", url: "/company-profile", icon: Building2 },
+    { title: "Integrationen", url: "/admin/integrations", icon: Plug, adminOnly: true },
+    ...(isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Settings }] : []),
+  ];
+
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon">
       <SidebarTrigger className="m-2 self-end" />
 
       <SidebarContent>
+        {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel>Compliance</SidebarGroupLabel>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navigationItems.map((item) => (
+              {mainNavItems
+                .filter(item => !item.adminOnly || isAdmin)
+                .map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to={item.url}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                            : ""
+                        }
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {!isCollapsed && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* System Navigation */}
+        <SidebarGroup>
+          <SidebarGroupLabel>System</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {systemNavItems
+                .filter(item => !item.adminOnly || isAdmin)
+                .map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
@@ -79,10 +120,19 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+              
+              {/* Help Button (opens guide drawer) */}
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => {}}>
+                  <HelpCircle className="h-4 w-4" />
+                  {!isCollapsed && <span>Hilfe</span>}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Logout */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>

@@ -28,6 +28,7 @@ import Approvals from "./pages/Approvals";
 import OpsDashboard from "./pages/OpsDashboard";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
+import { NorrlandGuide } from "./components/NorrlandGuide";
 
 installDomGuards();
 
@@ -35,6 +36,7 @@ const App = () => (
   <I18nProvider>
         <TooltipProvider>
           <Toaster position="top-right" richColors closeButton expand duration={3500} />
+          <NorrlandGuide />
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AuthGuard>
               <Routes>

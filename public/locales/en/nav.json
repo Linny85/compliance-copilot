@@ -1,12 +1,15 @@
 {
-  "dashboard": "Dashboard",
-  "risks": "NIS2 Risks",
-  "ai": "AI Systems",
+  "dashboard": "Overview",
+  "risks": "Risks",
+  "ai_systems": "AI Systems",
   "controls": "Controls",
-  "scope": "Scope",
   "evidence": "Evidence",
-  "checks": "Checks",
-  "docs": "Documents",
+  "audits": "Audits",
+  "documents": "Documents",
+  "reports": "Reports",
+  "organization": "Organization",
+  "integrations": "Integrations",
   "admin": "Admin",
+  "help": "Help",
   "logout": "Logout"
 }

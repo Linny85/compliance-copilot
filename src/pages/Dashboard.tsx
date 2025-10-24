@@ -103,9 +103,9 @@ const Dashboard = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="flex flex-col h-[100dvh] w-full bg-background">
         <AppSidebar />
-        <main className="flex-1 p-6 lg:p-8">
+        <main className="flex-1 min-h-0 overflow-auto p-6 lg:p-8">
           <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
             {/* Header with Language Switcher */}
             <div className="flex items-start justify-between gap-4">

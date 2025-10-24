@@ -1,0 +1,123 @@
+/* Norrland Innovate AB - Design System */
+/* Brand Colors, Dark UI Theme, Typography & Spacing */
+
+:root {
+  /* Brand Colors (Norrland Blue) */
+  --brand-50: 238 246 255;
+  --brand-100: 216 236 255;
+  --brand-200: 191 224 255;
+  --brand-300: 149 200 255;
+  --brand-400: 99 169 255;
+  --brand-500: 47 132 255;
+  --brand-600: 30 102 230;
+  --brand-700: 24 79 180;
+  --brand-800: 21 63 140;
+  --brand-900: 17 47 102;
+
+  /* Semantic Tokens - Dark UI */
+  --bg: 11 13 19;
+  --surface: 18 22 33;
+  --border: 35 40 53;
+  --text: 231 236 242;
+  --muted: 154 166 178;
+
+  /* States */
+  --success: 22 163 74;
+  --warning: 234 179 8;
+  --danger: 239 68 68;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Radius */
+  --radius: 10px;
+}
+
+/* Global Layout */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: hsl(var(--bg));
+  color: hsl(var(--text));
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Scale */
+h1 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+h2 {
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Responsive Container */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: 0 var(--space-6);
+  }
+}
+
+/* Focus States (Accessibility) */
+*:focus-visible {
+  outline: 2px solid hsl(var(--brand-500));
+  outline-offset: 2px;
+}
+
+/* Scrollbar Styling (Dark Theme) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--bg));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted));
+}
+
+/* Utility: Prevent layout shift on viewport changes */
+.layout-stable {
+  min-height: 0;
+  min-width: 0;
+}
