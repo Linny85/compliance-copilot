@@ -939,6 +939,41 @@ export type Database = {
         }
         Relationships: []
       }
+      helpbot_feedback: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          message_id: string | null
+          rating: number | null
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          message_id?: string | null
+          rating?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          message_id?: string | null
+          rating?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_feedback_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "helpbot_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       helpbot_messages: {
         Row: {
           content: string
@@ -1003,6 +1038,41 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      helpbot_summaries: {
+        Row: {
+          created_at: string | null
+          id: string
+          lang: string | null
+          session_id: string | null
+          summary: string
+          tokens: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          lang?: string | null
+          session_id?: string | null
+          summary: string
+          tokens?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          lang?: string | null
+          session_id?: string | null
+          summary?: string
+          tokens?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_summaries_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "helpbot_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       integration_dlq: {
         Row: {
@@ -2080,6 +2150,10 @@ export type Database = {
       }
     }
     Functions: {
+      adjust_relevance: {
+        Args: { p_delta: number; p_message_id: string }
+        Returns: undefined
+      }
       cleanup_notification_deliveries: { Args: never; Returns: undefined }
       cleanup_run_events: { Args: never; Returns: undefined }
       create_audit_log: {

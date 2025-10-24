@@ -116,8 +116,8 @@ Deno.serve(async (req) => {
     const questionEmb = await embed(question);
     const answerEmb = await embed(answer);
 
-    // 5️⃣ Save messages with embeddings
-    const { error: insertErr } = await sb.from("helpbot_messages").insert([
+    // 5️⃣ Save messages with embeddings and get IDs
+    const { data: insertedMsgs, error: insertErr } = await sb.from("helpbot_messages").insert([
       { 
         session_id: sid, 
         role: "user", 
@@ -132,11 +132,14 @@ Deno.serve(async (req) => {
         embedding: answerEmb,
         relevance: 1.0
       },
-    ]);
+    ]).select("id, role");
 
     if (insertErr) {
       console.error("[helpbot-chat] Failed to save messages:", insertErr);
     }
+
+    // Extract the assistant message ID for feedback
+    const assistantMsgId = insertedMsgs?.find(m => m.role === "assistant")?.id;
 
     return json({
       ok: true,
@@ -144,7 +147,11 @@ Deno.serve(async (req) => {
       answer,
       sources,
       disclaimer,
-      history: [...contextMsgs, { role: "user", content: question }, { role: "assistant", content: answer }],
+      history: [
+        ...contextMsgs, 
+        { role: "user", content: question }, 
+        { role: "assistant", content: answer, id: assistantMsgId }
+      ],
     });
   } catch (e: any) {
     console.error("[helpbot-chat]", e);

@@ -6,6 +6,7 @@ import { RotateCcw } from "lucide-react";
 interface Message {
   role: "user" | "assistant" | "system";
   content: string;
+  id?: string;
 }
 
 export function NorrlandGuideDrawer({ 
@@ -85,6 +86,29 @@ export function NorrlandGuideDrawer({
     setQ("");
   }
 
+  async function sendFeedback(messageId: string, rating: number) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { error } = await supabase.functions.invoke("helpbot-feedback", {
+        body: {
+          message_id: messageId,
+          user_id: user?.id ?? null,
+          rating,
+          comment: null
+        }
+      });
+
+      if (error) {
+        console.error("[NorrlandGuide] Feedback error:", error);
+      } else {
+        console.log("[NorrlandGuide] Feedback sent successfully");
+      }
+    } catch (err) {
+      console.error("[NorrlandGuide] Failed to send feedback:", err);
+    }
+  }
+
   if (!open) return null;
 
   return (
@@ -133,7 +157,7 @@ export function NorrlandGuideDrawer({
             </div>
           ) : (
             messages.map((msg, i) => (
-              <div key={i} className={msg.role === "user" ? "flex justify-end" : "flex justify-start"}>
+              <div key={i} className={msg.role === "user" ? "flex justify-end" : "flex flex-col items-start"}>
                 <div 
                   className={
                     msg.role === "user" 
@@ -143,6 +167,24 @@ export function NorrlandGuideDrawer({
                 >
                   <div className="whitespace-pre-wrap text-sm">{msg.content}</div>
                 </div>
+                {msg.role === "assistant" && msg.id && (
+                  <div className="flex gap-2 mt-2 text-xs">
+                    <button
+                      onClick={() => sendFeedback(msg.id!, 1)}
+                      className="hover:opacity-70 transition-opacity px-2 py-1 rounded"
+                      title="Hilfreich"
+                    >
+                      👍
+                    </button>
+                    <button
+                      onClick={() => sendFeedback(msg.id!, -1)}
+                      className="hover:opacity-70 transition-opacity px-2 py-1 rounded"
+                      title="Nicht hilfreich"
+                    >
+                      👎
+                    </button>
+                  </div>
+                )}
               </div>
             ))
           )}

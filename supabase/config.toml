@@ -40,6 +40,14 @@ verify_jwt = false
 name = "helpbot-memory-train"
 verify_jwt = false
 
+[[functions]]
+name = "helpbot-summary"
+verify_jwt = false
+
+[[functions]]
+name = "helpbot-feedback"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "integration-dispatcher"
 schedule = "*/2 * * * *"
