@@ -17,5 +17,17 @@ jobs:
           node-version: '20'
       - name: Install
         run: npm ci || npm i
-      - name: Check Locales
+      - name: Check Locales (strict)
         run: node scripts/check-locales.js --ref en
+
+      - name: Show diffs if any (non-fatal)
+        if: failure()
+        run: |
+          echo "::group::Locale diffs"
+          node scripts/check-locales.js --ref en --diff || true
+          echo "::endgroup::"
+
+      - name: Annotate missing/extra DPIA keys
+        if: failure()
+        run: |
+          node scripts/check-dpia-keys.js || true
