@@ -1088,6 +1088,60 @@ export type Database = {
           },
         ]
       }
+      helpbot_logs: {
+        Row: {
+          base_url: string | null
+          details: Json | null
+          error_code: string | null
+          func: string
+          id: number
+          latency_ms: number | null
+          level: string
+          message: string | null
+          method: string | null
+          path: string | null
+          session_id: string | null
+          status: number | null
+          tenant_id: string | null
+          ts: string
+          using_proxy: boolean | null
+        }
+        Insert: {
+          base_url?: string | null
+          details?: Json | null
+          error_code?: string | null
+          func: string
+          id?: number
+          latency_ms?: number | null
+          level: string
+          message?: string | null
+          method?: string | null
+          path?: string | null
+          session_id?: string | null
+          status?: number | null
+          tenant_id?: string | null
+          ts?: string
+          using_proxy?: boolean | null
+        }
+        Update: {
+          base_url?: string | null
+          details?: Json | null
+          error_code?: string | null
+          func?: string
+          id?: number
+          latency_ms?: number | null
+          level?: string
+          message?: string | null
+          method?: string | null
+          path?: string | null
+          session_id?: string | null
+          status?: number | null
+          tenant_id?: string | null
+          ts?: string
+          using_proxy?: boolean | null
+        }
+        Relationships: []
+      }
       helpbot_messages: {
         Row: {
           content: string

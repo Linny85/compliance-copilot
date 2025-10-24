@@ -1,6 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
 import { chat } from "../_shared/lovableClient.ts";
+import { logInfo, logError } from "../_shared/logger.ts";
 
 const MODEL = Deno.env.get("MODEL") ?? "google/gemini-2.5-flash";
 
@@ -12,8 +13,12 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const t0 = performance.now();
+  let status = 200;
+
   try {
     if (req.method !== "POST") {
+      status = 405;
       return json({ error: "Method Not Allowed" }, 405);
     }
 
@@ -76,10 +81,38 @@ Deno.serve(async (req) => {
 
     console.log(`[helpbot-summary] Summary created successfully (${tokens} tokens)`);
 
+    // Strukturiertes Logging
+    await logInfo({
+      func: "helpbot-summary",
+      message: "summary created successfully",
+      tenant_id: null,
+      session_id,
+      using_proxy: null,
+      base_url: null,
+      path: "/v1/chat",
+      method: "POST",
+      status,
+      latency_ms: Math.round(performance.now() - t0),
+      error_code: null,
+      details: { tokens, lang }
+    });
+
     return json({ ok: true, summary, tokens });
   } catch (e: any) {
+    status = 500;
+    const errMsg = e?.message ?? "Internal error";
+
+    await logError({
+      func: "helpbot-summary",
+      message: "unhandled exception",
+      status,
+      latency_ms: Math.round(performance.now() - t0),
+      error_code: "UNHANDLED",
+      details: { error: errMsg }
+    });
+
     console.error("[helpbot-summary] Error:", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+    return json({ error: errMsg }, 500);
   }
 });
 
