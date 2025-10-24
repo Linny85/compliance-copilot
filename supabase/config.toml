@@ -24,6 +24,10 @@ verify_jwt = false
 name = "helpbot-query"
 verify_jwt = false
 
+[[functions]]
+name = "helpbot-upload"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "integration-dispatcher"
 schedule = "*/2 * * * *"
