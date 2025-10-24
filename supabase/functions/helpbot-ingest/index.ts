@@ -11,6 +11,7 @@ type IngestReq = {
   doc_type?: "law" | "guideline" | "product-doc";
   version?: string;
   lang?: "de" | "en" | "sv";
+  file_sha256?: string;
 };
 
 Deno.serve(async (req) => {
@@ -32,6 +33,7 @@ Deno.serve(async (req) => {
         doc_type: body.doc_type ?? "product-doc",
         version: body.version ?? null,
         lang: body.lang ?? "de",
+        file_sha256: body.file_sha256 ?? null,
       })
       .select("*").single();
     if (docErr) throw docErr;
@@ -42,7 +44,7 @@ Deno.serve(async (req) => {
     // 3) Embeddings abrufen
     const embeddings = await embedBatch(chunks);
 
-    // 4) Speichern
+    // 4) Speichern (mit upsert für Chunk-Dedupe)
     const rows = chunks.map((c, i) => ({
       doc_id: doc.id,
       chunk_no: i,
@@ -50,7 +52,8 @@ Deno.serve(async (req) => {
       tokens: null,
       embedding: embeddings[i] as any
     }));
-    const { error: insErr } = await sb.from("helpbot_chunks").insert(rows);
+    const { error: insErr } = await sb.from("helpbot_chunks")
+      .upsert(rows, { onConflict: 'doc_id,chunk_no' });
     if (insErr) throw insErr;
 
     return json({ ok: true, doc_id: doc.id, chunks: rows.length });

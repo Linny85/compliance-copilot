@@ -910,6 +910,7 @@ export type Database = {
         Row: {
           created_at: string | null
           doc_type: string | null
+          file_sha256: string | null
           id: string
           jurisdiction: string | null
           lang: string | null
@@ -920,6 +921,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           doc_type?: string | null
+          file_sha256?: string | null
           id?: string
           jurisdiction?: string | null
           lang?: string | null
@@ -930,6 +932,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           doc_type?: string | null
+          file_sha256?: string | null
           id?: string
           jurisdiction?: string | null
           lang?: string | null

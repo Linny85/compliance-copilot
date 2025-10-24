@@ -109,10 +109,13 @@ export default function HelpbotManager() {
       const data = await res.json();
 
       toast({
-        title: "Upload erfolgreich",
-        description: data.ingested?.chunks 
-          ? `${file.name} – ${data.ingested.chunks} Chunks angelegt`
-          : `${file.name} hochgeladen`,
+        title: data.dedup ? "Dokument bereits vorhanden" : "Upload erfolgreich",
+        description: data.dedup
+          ? `${file.name} – bereits in der Datenbank`
+          : data.ingested?.chunks 
+            ? `${file.name} – ${data.ingested.chunks} Chunks angelegt`
+            : `${file.name} hochgeladen`,
+        variant: data.dedup ? "default" : "default",
       });
 
       setFile(null);

@@ -93,6 +93,24 @@ Deno.serve(async (req) => {
     
     // Extract text from PDF
     const arrayBuffer = await file.arrayBuffer();
+    
+    // Compute SHA-256 checksum
+    const hashBuf = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const file_sha256 = Array.from(new Uint8Array(hashBuf))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+    
+    // Check if file already exists
+    const { data: existing } = await sb
+      .from("helpbot_docs")
+      .select("id")
+      .eq("file_sha256", file_sha256)
+      .maybeSingle();
+    
+    if (existing) {
+      return json({ ok: true, dedup: true, doc_id: existing.id });
+    }
+    
     const text = await extractTextFromPDF(arrayBuffer);
 
     // Upload to storage
@@ -119,6 +137,7 @@ Deno.serve(async (req) => {
         doc_type,
         lang,
         version: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+        file_sha256,
       },
     });
     
