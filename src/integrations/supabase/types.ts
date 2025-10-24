@@ -594,9 +594,12 @@ export type Database = {
           file_size: number
           hash_sha256: string
           id: string
+          locked: boolean | null
           mime_type: string | null
           note: string | null
           request_id: string | null
+          review_due_at: string | null
+          review_status: string | null
           reviewed_at: string | null
           reviewer_id: string | null
           supersedes: string | null
@@ -613,9 +616,12 @@ export type Database = {
           file_size: number
           hash_sha256: string
           id?: string
+          locked?: boolean | null
           mime_type?: string | null
           note?: string | null
           request_id?: string | null
+          review_due_at?: string | null
+          review_status?: string | null
           reviewed_at?: string | null
           reviewer_id?: string | null
           supersedes?: string | null
@@ -632,9 +638,12 @@ export type Database = {
           file_size?: number
           hash_sha256?: string
           id?: string
+          locked?: boolean | null
           mime_type?: string | null
           note?: string | null
           request_id?: string | null
+          review_due_at?: string | null
+          review_status?: string | null
           reviewed_at?: string | null
           reviewer_id?: string | null
           supersedes?: string | null
@@ -1942,6 +1951,48 @@ export type Database = {
           },
         ]
       }
+      tasks: {
+        Row: {
+          assignee_id: string | null
+          created_at: string
+          due_at: string | null
+          id: string
+          kind: string
+          payload: Json | null
+          ref_id: string
+          ref_table: string
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          kind: string
+          payload?: Json | null
+          ref_id: string
+          ref_table: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          kind?: string
+          payload?: Json | null
+          ref_id?: string
+          ref_table?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tenant_settings: {
         Row: {
           approval_required_for_untrusted: boolean | null
@@ -2597,6 +2648,7 @@ export type Database = {
       set_default_flags: { Args: { _tenant: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      svc_evidence_bulk_update: { Args: { p_updates: Json }; Returns: number }
     }
     Enums: {
       app_role: "master_admin" | "admin" | "member" | "editor"
