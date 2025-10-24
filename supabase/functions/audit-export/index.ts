@@ -1,16 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
-
-// Canonical JSON serialization for bundle hash
-function canonicalJSON(obj: any): string {
-  if (obj === null) return 'null';
-  if (typeof obj !== 'object') return JSON.stringify(obj);
-  if (Array.isArray(obj)) {
-    return '[' + obj.map(canonicalJSON).join(',') + ']';
-  }
-  const keys = Object.keys(obj).sort();
-  return '{' + keys.map(k => `"${k}":${canonicalJSON(obj[k])}`).join(',') + '}';
-}
+import { canonicalJSON, sha256Hex, signBundleHashEd25519 } from '../_shared/crypto.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -71,7 +61,9 @@ Deno.serve(async (req) => {
 
     const tenant_id = profile.company_id;
 
-    // Verify chain first
+    console.log(`[audit-export] Generating bundle for tenant ${tenant_id}, ${from} to ${to}`);
+
+    // 1) Verify chain integrity first
     const { data: verification } = await supabaseClient.rpc('audit_verify_chain', {
       p_tenant: tenant_id,
       p_from: from,
@@ -80,9 +72,10 @@ Deno.serve(async (req) => {
 
     const verifyResult = Array.isArray(verification) ? verification[0] : verification;
     const chain_ok = verifyResult?.ok || false;
+    const first_break_at = verifyResult?.first_break_at || null;
 
-    // Fetch audit events
-    const { data: events, error: fetchError } = await supabaseClient
+    // 2) Fetch audit events
+    const { data: events, error: eventsError } = await supabaseClient
       .from('audit_log')
       .select('*')
       .eq('tenant_id', tenant_id)
@@ -90,26 +83,51 @@ Deno.serve(async (req) => {
       .lte('created_at', to)
       .order('chain_order', { ascending: true });
 
-    if (fetchError) {
-      console.error('[audit-export] Fetch failed:', fetchError);
-      return new Response(
-        JSON.stringify({ error: 'Failed to fetch events', details: fetchError.message }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+    if (eventsError) {
+      console.error('[audit-export] Failed to fetch events:', eventsError);
+      throw eventsError;
     }
 
-    // Compute bundle hash
-    const eventsCanonical = canonicalJSON(events || []);
-    const encoder = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(eventsCanonical));
-    const bundle_hash = Array.from(new Uint8Array(hashBuffer))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
+    // 3) Fetch evidence index (uploaded, reviewed, or expiring in time range)
+    const { data: evidenceIndex, error: evidenceError } = await supabaseClient
+      .from('v_evidence_index')
+      .select('*')
+      .eq('tenant_id', tenant_id)
+      .or(`uploaded_at.gte.${from},uploaded_at.lte.${to},reviewed_at.gte.${from},reviewed_at.lte.${to},expires_at.gte.${from},expires_at.lte.${to}`)
+      .order('uploaded_at', { ascending: true });
 
-    // Create bundle
+    if (evidenceError) {
+      console.error('[audit-export] Failed to fetch evidence:', evidenceError);
+      // Non-fatal, continue with empty array
+    }
+
+    // 4) Fetch deviations (created, updated, or valid in time range)
+    const { data: deviations, error: deviationsError } = await supabaseClient
+      .from('v_deviations_export')
+      .select('*')
+      .eq('tenant_id', tenant_id)
+      .or(`created_at.gte.${from},created_at.lte.${to},updated_at.gte.${from},updated_at.lte.${to},valid_to.gte.${from},valid_to.lte.${to}`)
+      .order('created_at', { ascending: true });
+
+    if (deviationsError) {
+      console.error('[audit-export] Failed to fetch deviations:', deviationsError);
+      // Non-fatal, continue with empty array
+    }
+
+    // 5) Compute bundle hash from canonical JSON of all data
+    const bundleData = {
+      events: events || [],
+      evidence_index: evidenceIndex || [],
+      deviations: deviations || [],
+    };
+    
+    const canonical = canonicalJSON(bundleData);
+    const bundle_hash = await sha256Hex(canonical);
+
+    // 6) Sign the bundle hash
+    const signature = await signBundleHashEd25519(bundle_hash);
+
+    // 7) Create complete bundle
     const bundle = {
       meta: {
         tenant_id,
@@ -118,40 +136,30 @@ Deno.serve(async (req) => {
         generated_at: new Date().toISOString(),
         generated_by: user.id,
         chain_ok,
-        first_break_at: verifyResult?.first_break_at || null,
+        first_break_at,
         event_count: events?.length || 0,
+        evidence_count: evidenceIndex?.length || 0,
+        deviation_count: deviations?.length || 0,
         bundle_hash,
       },
       events: events || [],
-      signature: {
-        alg: 'SHA-256',
-        note: 'Bundle integrity hash - full signature requires AUDIT_SIGN_PRIV_BASE64',
-      },
+      evidence_index: evidenceIndex || [],
+      deviations: deviations || [],
+      signature,
     };
 
-    // Optional: Sign bundle if signing key is configured
-    const signKey = Deno.env.get('AUDIT_SIGN_PRIV_BASE64');
-    if (signKey) {
-      try {
-        // Ed25519 signing would go here
-        // For now, just indicate signature capability
-        bundle.signature = {
-          alg: 'Ed25519',
-          note: 'Signing not yet implemented - placeholder',
-        };
-      } catch (signError) {
-        console.warn('[audit-export] Signing failed:', signError);
-      }
-    }
-
-    console.log(`[audit-export] Exported ${events?.length || 0} events, chain_ok=${chain_ok}`);
+    console.log(
+      `[audit-export] Bundle generated: ${bundle.meta.event_count} events, ` +
+      `${bundle.meta.evidence_count} evidence, ${bundle.meta.deviation_count} deviations, ` +
+      `chain_ok=${chain_ok}`
+    );
 
     return new Response(JSON.stringify(bundle), {
       status: 200,
       headers: {
         ...corsHeaders,
         'Content-Type': 'application/json',
-        'Content-Disposition': `attachment; filename="audit-export-${tenant_id}-${Date.now()}.json"`,
+        'Content-Disposition': `attachment; filename="audit-bundle-${tenant_id}-${Date.now()}.json"`,
       },
     });
   } catch (error: any) {

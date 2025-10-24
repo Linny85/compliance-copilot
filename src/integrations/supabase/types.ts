@@ -683,6 +683,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "evidences_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -2203,6 +2210,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "evidences_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
@@ -2418,6 +2432,115 @@ export type Database = {
           weight_gradient: number | null
         }
         Relationships: []
+      }
+      v_evidence_index: {
+        Row: {
+          content_hash: string | null
+          control_id: string | null
+          expires_at: string | null
+          file_path: string | null
+          file_size: number | null
+          id: string | null
+          locked: boolean | null
+          mime_type: string | null
+          note: string | null
+          request_id: string | null
+          review_status: string | null
+          reviewed_at: string | null
+          reviewer_id: string | null
+          supersedes: string | null
+          tenant_id: string | null
+          uploaded_at: string | null
+          uploader_id: string | null
+          verdict: string | null
+          version_id: string | null
+        }
+        Insert: {
+          content_hash?: string | null
+          control_id?: string | null
+          expires_at?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string | null
+          locked?: boolean | null
+          mime_type?: string | null
+          note?: string | null
+          request_id?: string | null
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          supersedes?: string | null
+          tenant_id?: string | null
+          uploaded_at?: string | null
+          uploader_id?: string | null
+          verdict?: string | null
+          version_id?: string | null
+        }
+        Update: {
+          content_hash?: string | null
+          control_id?: string | null
+          expires_at?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          id?: string | null
+          locked?: boolean | null
+          mime_type?: string | null
+          note?: string | null
+          request_id?: string | null
+          review_status?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          supersedes?: string | null
+          tenant_id?: string | null
+          uploaded_at?: string | null
+          uploader_id?: string | null
+          verdict?: string | null
+          version_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidences_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       v_explainability_top_30d: {
         Row: {
