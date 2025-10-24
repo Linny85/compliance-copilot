@@ -871,6 +871,74 @@ export type Database = {
         }
         Relationships: []
       }
+      helpbot_chunks: {
+        Row: {
+          chunk_no: number
+          content: string
+          doc_id: string
+          embedding: string | null
+          id: number
+          tokens: number | null
+        }
+        Insert: {
+          chunk_no: number
+          content: string
+          doc_id: string
+          embedding?: string | null
+          id?: number
+          tokens?: number | null
+        }
+        Update: {
+          chunk_no?: number
+          content?: string
+          doc_id?: string
+          embedding?: string | null
+          id?: number
+          tokens?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_chunks_doc_id_fkey"
+            columns: ["doc_id"]
+            isOneToOne: false
+            referencedRelation: "helpbot_docs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      helpbot_docs: {
+        Row: {
+          created_at: string | null
+          doc_type: string | null
+          id: string
+          jurisdiction: string | null
+          lang: string | null
+          source_uri: string
+          title: string
+          version: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          doc_type?: string | null
+          id?: string
+          jurisdiction?: string | null
+          lang?: string | null
+          source_uri: string
+          title: string
+          version?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          doc_type?: string | null
+          id?: string
+          jurisdiction?: string | null
+          lang?: string | null
+          source_uri?: string
+          title?: string
+          version?: string | null
+        }
+        Relationships: []
+      }
       integration_dlq: {
         Row: {
           attempts: number
@@ -1996,6 +2064,16 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      helpbot_search_chunks: {
+        Args: { limit_k?: number; query_vec: string; where_sql?: string }
+        Returns: {
+          content: string
+          doc_id: string
+          sim: number
+          source_uri: string
+          title: string
+        }[]
       }
       ops_metrics: { Args: { p_lookback_hours?: number }; Returns: Json }
       outbox_archive_prune: { Args: { p_days?: number }; Returns: number }
