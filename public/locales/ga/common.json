@@ -99,5 +99,22 @@
     "success": "Rath",
     "language": "Teanga",
     "settings": "Socruithe"
+  },
+  "dpia": {
+    "title": "Measúnú Tionchair ar Chosaint Sonraí (DPIA)",
+    "status": "Stádas",
+    "risk_level": "Leibhéal riosca",
+    "due_date": "Dáta dlite",
+    "overdue": "Imithe thar téarma",
+    "submitted": "Curtha isteach",
+    "approved": "Ceadaithe",
+    "archived": "Cartlannaithe",
+    "save": "Sábháil",
+    "submit": "Cuir isteach",
+    "progress_saved": "Dul chun cinn sábháilte",
+    "dpia_submitted": "DPIA curtha isteach",
+    "error_loading": "Earráid agus DPIA á lódáil",
+    "error_saving": "Earráid agus sábháil á dhéanamh",
+    "error_submitting": "Earráid agus cur isteach á dhéanamh"
   }
 }

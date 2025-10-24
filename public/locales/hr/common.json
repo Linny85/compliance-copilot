@@ -25,5 +25,20 @@
   "common.delete": "Izbriši",
   "common.status": "Status",
   "common.createdAt": "Kreirano",
-  "common.actions": "Radnje"
+  "common.actions": "Radnje",
+  "dpia.title": "Procjena učinka na zaštitu podataka (DPIA)",
+  "dpia.status": "Status",
+  "dpia.risk_level": "Razina rizika",
+  "dpia.due_date": "Rok",
+  "dpia.overdue": "Istekao rok",
+  "dpia.submitted": "Predano",
+  "dpia.approved": "Odobreno",
+  "dpia.archived": "Arhivirano",
+  "dpia.save": "Spremi",
+  "dpia.submit": "Predaj",
+  "dpia.progress_saved": "Napredak spremljen",
+  "dpia.dpia_submitted": "DPIA predana",
+  "dpia.error_loading": "Greška pri učitavanju DPIA",
+  "dpia.error_saving": "Greška pri spremanju",
+  "dpia.error_submitting": "Greška pri predaji"
 }

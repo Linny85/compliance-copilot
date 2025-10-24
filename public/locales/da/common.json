@@ -25,5 +25,20 @@
   "common.delete": "Slet",
   "common.status": "Status",
   "common.createdAt": "Oprettet",
-  "common.actions": "Handlinger"
+  "common.actions": "Handlinger",
+  "dpia.title": "Konsekvensanalyse for databeskyttelse (DPIA)",
+  "dpia.status": "Status",
+  "dpia.risk_level": "Risikoniveau",
+  "dpia.due_date": "Forfaldsdato",
+  "dpia.overdue": "Forfalden",
+  "dpia.submitted": "Indsendt",
+  "dpia.approved": "Godkendt",
+  "dpia.archived": "Arkiveret",
+  "dpia.save": "Gem",
+  "dpia.submit": "Indsend",
+  "dpia.progress_saved": "Fremskridt gemt",
+  "dpia.dpia_submitted": "DPIA indsendt",
+  "dpia.error_loading": "Fejl ved indlæsning af DPIA",
+  "dpia.error_saving": "Fejl ved lagring",
+  "dpia.error_submitting": "Fejl ved indsendelse"
 }

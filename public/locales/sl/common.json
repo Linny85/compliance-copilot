@@ -25,5 +25,20 @@
   "common.delete": "Izbriši",
   "common.status": "Stanje",
   "common.createdAt": "Ustvarjeno",
-  "common.actions": "Dejanja"
+  "common.actions": "Dejanja",
+  "dpia.title": "Ocena učinka v zvezi z varstvom podatkov (DPIA)",
+  "dpia.status": "Stanje",
+  "dpia.risk_level": "Raven tveganja",
+  "dpia.due_date": "Rok",
+  "dpia.overdue": "Prekoračen rok",
+  "dpia.submitted": "Oddano",
+  "dpia.approved": "Odobreno",
+  "dpia.archived": "Arhivirano",
+  "dpia.save": "Shrani",
+  "dpia.submit": "Pošlji",
+  "dpia.progress_saved": "Napredek shranjen",
+  "dpia.dpia_submitted": "DPIA oddana",
+  "dpia.error_loading": "Napaka pri nalaganju DPIA",
+  "dpia.error_saving": "Napaka pri shranjevanju",
+  "dpia.error_submitting": "Napaka pri pošiljanju"
 }

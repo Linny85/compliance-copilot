@@ -25,5 +25,20 @@
   "common.delete": "Vymazať",
   "common.status": "Stav",
   "common.createdAt": "Vytvorené",
-  "common.actions": "Akcie"
+  "common.actions": "Akcie",
+  "dpia.title": "Posúdenie vplyvu na ochranu údajov (DPIA)",
+  "dpia.status": "Stav",
+  "dpia.risk_level": "Úroveň rizika",
+  "dpia.due_date": "Termín",
+  "dpia.overdue": "Po termíne",
+  "dpia.submitted": "Odoslané",
+  "dpia.approved": "Schválené",
+  "dpia.archived": "Archivované",
+  "dpia.save": "Uložiť",
+  "dpia.submit": "Odoslať",
+  "dpia.progress_saved": "Postup uložený",
+  "dpia.dpia_submitted": "DPIA odoslaná",
+  "dpia.error_loading": "Chyba pri načítaní DPIA",
+  "dpia.error_saving": "Chyba pri ukladaní",
+  "dpia.error_submitting": "Chyba pri odosielaní"
 }

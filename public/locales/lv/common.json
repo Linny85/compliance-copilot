@@ -25,5 +25,20 @@
   "common.delete": "Dzēst",
   "common.status": "Statuss",
   "common.createdAt": "Izveidots",
-  "common.actions": "Darbības"
+  "common.actions": "Darbības",
+  "dpia.title": "Datu aizsardzības ietekmes novērtējums (DPIA)",
+  "dpia.status": "Statuss",
+  "dpia.risk_level": "Riska līmenis",
+  "dpia.due_date": "Termiņš",
+  "dpia.overdue": "Nokavēts",
+  "dpia.submitted": "Iesniegts",
+  "dpia.approved": "Apstiprināts",
+  "dpia.archived": "Arhivēts",
+  "dpia.save": "Saglabāt",
+  "dpia.submit": "Iesniegt",
+  "dpia.progress_saved": "Progress ir saglabāts",
+  "dpia.dpia_submitted": "DPIA iesniegts",
+  "dpia.error_loading": "Kļūda ielādējot DPIA",
+  "dpia.error_saving": "Kļūda saglabājot",
+  "dpia.error_submitting": "Kļūda iesniedzot"
 }

@@ -25,5 +25,20 @@
   "common.delete": "Ištrinti",
   "common.status": "Būsena",
   "common.createdAt": "Sukurta",
-  "common.actions": "Veiksmai"
+  "common.actions": "Veiksmai",
+  "dpia.title": "Duomenų apsaugos poveikio vertinimas (DPIA)",
+  "dpia.status": "Būsena",
+  "dpia.risk_level": "Rizikos lygis",
+  "dpia.due_date": "Terminas",
+  "dpia.overdue": "Pradelsta",
+  "dpia.submitted": "Pateikta",
+  "dpia.approved": "Patvirtinta",
+  "dpia.archived": "Archyvuota",
+  "dpia.save": "Išsaugoti",
+  "dpia.submit": "Pateikti",
+  "dpia.progress_saved": "Pažanga išsaugota",
+  "dpia.dpia_submitted": "DPIA pateikta",
+  "dpia.error_loading": "Klaida įkeliant DPIA",
+  "dpia.error_saving": "Klaida išsaugant",
+  "dpia.error_submitting": "Klaida pateikiant"
 }

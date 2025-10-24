@@ -121,6 +121,23 @@
     "createdAt": "Luotu",
     "actions": "Toiminnot"
   },
+  "dpia": {
+    "title": "Tietosuojan vaikutustenarviointi (DPIA)",
+    "status": "Tila",
+    "risk_level": "Riskitaso",
+    "due_date": "Eräpäivä",
+    "overdue": "Myöhässä",
+    "submitted": "Lähetetty",
+    "approved": "Hyväksytty",
+    "archived": "Arkistoitu",
+    "save": "Tallenna",
+    "submit": "Lähetä",
+    "progress_saved": "Edistyminen tallennettu",
+    "dpia_submitted": "DPIA lähetetty",
+    "error_loading": "Virhe DPIA:n latauksessa",
+    "error_saving": "Virhe tallennuksessa",
+    "error_submitting": "Virhe lähetyksessä"
+  },
   "sectors": {
     "it": "IT / Ohjelmistot",
     "finance": "Rahoitus",

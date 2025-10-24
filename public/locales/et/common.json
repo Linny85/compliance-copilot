@@ -25,5 +25,20 @@
   "common.delete": "Kustuta",
   "common.status": "Olek",
   "common.createdAt": "Loodud",
-  "common.actions": "Toimingud"
+  "common.actions": "Toimingud",
+  "dpia.title": "Andmekaitsealane mõjuhinnang (DPIA)",
+  "dpia.status": "Olek",
+  "dpia.risk_level": "Riskitase",
+  "dpia.due_date": "Tähtaeg",
+  "dpia.overdue": "Tähtaeg ületatud",
+  "dpia.submitted": "Esitatud",
+  "dpia.approved": "Kinnitatud",
+  "dpia.archived": "Arhiveeritud",
+  "dpia.save": "Salvesta",
+  "dpia.submit": "Esita",
+  "dpia.progress_saved": "Edenemine salvestatud",
+  "dpia.dpia_submitted": "DPIA esitatud",
+  "dpia.error_loading": "Viga DPIA laadimisel",
+  "dpia.error_saving": "Viga salvestamisel",
+  "dpia.error_submitting": "Viga esitamisel"
 }

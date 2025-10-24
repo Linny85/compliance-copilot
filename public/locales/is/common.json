@@ -99,5 +99,22 @@
     "success": "Tókst",
     "language": "Tungumál",
     "settings": "Stillingar"
+  },
+  "dpia": {
+    "title": "Mat á áhrifum á persónuvernd (DPIA)",
+    "status": "Staða",
+    "risk_level": "Áhættustig",
+    "due_date": "Gjalddagi",
+    "overdue": "Útrunnið",
+    "submitted": "Sent inn",
+    "approved": "Samþykkt",
+    "archived": "Geymt",
+    "save": "Vista",
+    "submit": "Senda inn",
+    "progress_saved": "Framvinda vistuð",
+    "dpia_submitted": "DPIA sent inn",
+    "error_loading": "Villa við að hlaða inn DPIA",
+    "error_saving": "Villa við vistun",
+    "error_submitting": "Villa við innsendingu"
   }
 }

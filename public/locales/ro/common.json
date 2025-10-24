@@ -25,5 +25,20 @@
   "common.delete": "Șterge",
   "common.status": "Stare",
   "common.createdAt": "Creat la",
-  "common.actions": "Acțiuni"
+  "common.actions": "Acțiuni",
+  "dpia.title": "Evaluarea impactului asupra protecției datelor (DPIA)",
+  "dpia.status": "Stare",
+  "dpia.risk_level": "Nivel de risc",
+  "dpia.due_date": "Termen limită",
+  "dpia.overdue": "Întârziat",
+  "dpia.submitted": "Trimisă",
+  "dpia.approved": "Aprobată",
+  "dpia.archived": "Arhivată",
+  "dpia.save": "Salvează",
+  "dpia.submit": "Trimite",
+  "dpia.progress_saved": "Progres salvat",
+  "dpia.dpia_submitted": "DPIA trimisă",
+  "dpia.error_loading": "Eroare la încărcarea DPIA",
+  "dpia.error_saving": "Eroare la salvare",
+  "dpia.error_submitting": "Eroare la trimitere"
 }

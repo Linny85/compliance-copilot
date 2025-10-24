@@ -116,6 +116,23 @@
     "language": "Език",
     "settings": "Настройки"
   },
+  "dpia": {
+    "title": "Оценка на въздействието върху защитата на данните (DPIA)",
+    "status": "Статус",
+    "risk_level": "Ниво на риск",
+    "due_date": "Краен срок",
+    "overdue": "Просрочено",
+    "submitted": "Подадена",
+    "approved": "Одобрена",
+    "archived": "Архивирана",
+    "save": "Запази",
+    "submit": "Изпрати",
+    "progress_saved": "Напредъкът е запазен",
+    "dpia_submitted": "DPIA е подадена",
+    "error_loading": "Грешка при зареждане на DPIA",
+    "error_saving": "Грешка при запазване",
+    "error_submitting": "Грешка при изпращане"
+  },
   "sectors": {
     "it": "IT / Софтуер",
     "finance": "Финанси",

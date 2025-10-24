@@ -25,5 +25,20 @@
   "common.delete": "Eliminar",
   "common.status": "Estado",
   "common.createdAt": "Criado em",
-  "common.actions": "Ações"
+  "common.actions": "Ações",
+  "dpia.title": "Avaliação de Impacto sobre a Proteção de Dados (DPIA)",
+  "dpia.status": "Estado",
+  "dpia.risk_level": "Nível de risco",
+  "dpia.due_date": "Data limite",
+  "dpia.overdue": "Em atraso",
+  "dpia.submitted": "Submetida",
+  "dpia.approved": "Aprovada",
+  "dpia.archived": "Arquivada",
+  "dpia.save": "Guardar",
+  "dpia.submit": "Submeter",
+  "dpia.progress_saved": "Progresso guardado",
+  "dpia.dpia_submitted": "DPIA submetida",
+  "dpia.error_loading": "Erro ao carregar a DPIA",
+  "dpia.error_saving": "Erro ao guardar",
+  "dpia.error_submitting": "Erro ao submeter"
 }

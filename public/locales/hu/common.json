@@ -25,5 +25,20 @@
   "common.delete": "Törlés",
   "common.status": "Állapot",
   "common.createdAt": "Létrehozva",
-  "common.actions": "Műveletek"
+  "common.actions": "Műveletek",
+  "dpia.title": "Adatvédelmi hatásvizsgálat (DPIA)",
+  "dpia.status": "Állapot",
+  "dpia.risk_level": "Kockázati szint",
+  "dpia.due_date": "Határidő",
+  "dpia.overdue": "Lejárt",
+  "dpia.submitted": "Beküldve",
+  "dpia.approved": "Jóváhagyva",
+  "dpia.archived": "Archiválva",
+  "dpia.save": "Mentés",
+  "dpia.submit": "Beküldés",
+  "dpia.progress_saved": "Előrehaladás mentve",
+  "dpia.dpia_submitted": "DPIA beküldve",
+  "dpia.error_loading": "Hiba a DPIA betöltésekor",
+  "dpia.error_saving": "Hiba a mentéskor",
+  "dpia.error_submitting": "Hiba a beküldéskor"
 }

@@ -99,5 +99,22 @@
     "success": "Suksess",
     "language": "Språk",
     "settings": "Innstillinger"
+  },
+  "dpia": {
+    "title": "Vurdering av personvernkonsekvenser (DPIA)",
+    "status": "Status",
+    "risk_level": "Risikonivå",
+    "due_date": "Forfallsdato",
+    "overdue": "Forfalt",
+    "submitted": "Innsendt",
+    "approved": "Godkjent",
+    "archived": "Arkivert",
+    "save": "Lagre",
+    "submit": "Send inn",
+    "progress_saved": "Fremdrift lagret",
+    "dpia_submitted": "DPIA innsendt",
+    "error_loading": "Feil ved innlasting av DPIA",
+    "error_saving": "Feil ved lagring",
+    "error_submitting": "Feil ved innsending"
   }
 }

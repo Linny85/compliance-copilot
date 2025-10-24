@@ -25,5 +25,20 @@
   "common.delete": "Διαγραφή",
   "common.status": "Κατάσταση",
   "common.createdAt": "Δημιουργήθηκε στις",
-  "common.actions": "Ενέργειες"
+  "common.actions": "Ενέργειες",
+  "dpia.title": "Εκτίμηση αντικτύπου σχετικά με την προστασία δεδομένων (DPIA)",
+  "dpia.status": "Κατάσταση",
+  "dpia.risk_level": "Επίπεδο κινδύνου",
+  "dpia.due_date": "Ημερομηνία λήξης",
+  "dpia.overdue": "Εκπρόθεσμο",
+  "dpia.submitted": "Υποβλήθηκε",
+  "dpia.approved": "Εγκρίθηκε",
+  "dpia.archived": "Αρχειοθετημένο",
+  "dpia.save": "Αποθήκευση",
+  "dpia.submit": "Υποβολή",
+  "dpia.progress_saved": "Η πρόοδος αποθηκεύτηκε",
+  "dpia.dpia_submitted": "Υποβλήθηκε DPIA",
+  "dpia.error_loading": "Σφάλμα κατά τη φόρτωση των DPIA",
+  "dpia.error_saving": "Σφάλμα κατά την αποθήκευση",
+  "dpia.error_submitting": "Σφάλμα κατά την υποβολή"
 }

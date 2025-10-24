@@ -25,5 +25,20 @@
   "common.delete": "Ħassar",
   "common.status": "Status",
   "common.createdAt": "Maħluq",
-  "common.actions": "Azzjonijiet"
+  "common.actions": "Azzjonijiet",
+  "dpia.title": "Valutazzjoni tal-Impatt fuq il-Protezzjoni tad-Data (DPIA)",
+  "dpia.status": "Status",
+  "dpia.risk_level": "Livell ta' riskju",
+  "dpia.due_date": "Data ta' skadenza",
+  "dpia.overdue": "Skadut",
+  "dpia.submitted": "Sottomess",
+  "dpia.approved": "Approvata",
+  "dpia.archived": "Arkivjat",
+  "dpia.save": "Issejvja",
+  "dpia.submit": "Issottometti",
+  "dpia.progress_saved": "Progress issejvjat",
+  "dpia.dpia_submitted": "DPIA sottomessa",
+  "dpia.error_loading": "Żball waqt it-tagħbija tal-DPIA",
+  "dpia.error_saving": "Żball waqt is-sejv",
+  "dpia.error_submitting": "Żball waqt is-sottomissjoni"
 }

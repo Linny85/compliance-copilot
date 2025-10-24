@@ -99,5 +99,22 @@
     "success": "Èxit",
     "language": "Idioma",
     "settings": "Configuració"
+  },
+  "dpia": {
+    "title": "Avaluació d'impacte relativa a la protecció de dades (DPIA)",
+    "status": "Estat",
+    "risk_level": "Nivell de risc",
+    "due_date": "Data límit",
+    "overdue": "Vençut",
+    "submitted": "Enviada",
+    "approved": "Aprovada",
+    "archived": "Arxivada",
+    "save": "Desar",
+    "submit": "Enviar",
+    "progress_saved": "Progrés desat",
+    "dpia_submitted": "DPIA enviada",
+    "error_loading": "Error en carregar la DPIA",
+    "error_saving": "Error en desar",
+    "error_submitting": "Error en enviar"
   }
 }
