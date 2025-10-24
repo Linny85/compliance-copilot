@@ -77,8 +77,8 @@ Deno.serve(async (req) => {
 
     let totalWeight = 0;
     let totalScore = 0;
-    let impact = 0;
-    let likelihood = 0;
+    let impact: number | null = null;
+    let likelihood: number | null = null;
 
     for (const q of questions || []) {
       const ans = answerMap.get(q.id);
@@ -134,7 +134,9 @@ Deno.serve(async (req) => {
     else if (overall >= 0.7) risk_level = 'med';
     else if (overall >= 0.5) risk_level = 'high';
 
-    const score = { overall, impact, likelihood };
+    const score: Record<string, number> = { overall };
+    if (impact !== null) score.impact = impact;
+    if (likelihood !== null) score.likelihood = likelihood;
 
     // Update record
     const { error: updateError } = await supabaseClient

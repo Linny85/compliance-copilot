@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
     const search = params.search;
     const scope = params.scope; // 'process' or 'vendor'
     const scope_id = params.scope_id;
-    const page = parseInt(params.page || '1', 10);
-    const limit = parseInt(params.limit || '50', 10);
+    const page = Number(params.page ?? 1);
+    const limit = Number(params.limit ?? 50);
     const offset = (page - 1) * limit;
 
     let query = supabaseClient

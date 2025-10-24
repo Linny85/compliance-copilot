@@ -60,19 +60,48 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Update answer
-    const { error: updateError } = await supabaseClient
+    // Check if answer exists, create if not
+    const { data: existing } = await supabaseClient
       .from('dpia_answers')
-      .update({ evidence_id })
+      .select('record_id, question_id')
       .eq('record_id', record_id)
-      .eq('question_id', question_id);
+      .eq('question_id', question_id)
+      .single();
 
-    if (updateError) {
-      console.error('[dpia-link-evidence] Update error:', updateError);
-      return new Response(JSON.stringify({ error: updateError.message }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    if (!existing) {
+      // Create skeleton answer with evidence
+      const { error: insertError } = await supabaseClient
+        .from('dpia_answers')
+        .insert({
+          tenant_id,
+          record_id,
+          question_id,
+          value: null,
+          evidence_id,
+        });
+
+      if (insertError) {
+        console.error('[dpia-link-evidence] Insert error:', insertError);
+        return new Response(JSON.stringify({ error: insertError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    } else {
+      // Update existing answer with evidence
+      const { error: updateError } = await supabaseClient
+        .from('dpia_answers')
+        .update({ evidence_id })
+        .eq('record_id', record_id)
+        .eq('question_id', question_id);
+
+      if (updateError) {
+        console.error('[dpia-link-evidence] Update error:', updateError);
+        return new Response(JSON.stringify({ error: updateError.message }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     await logEvent(supabaseClient, {

@@ -61,18 +61,25 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Upsert answers (NO status change)
-    for (const ans of answers) {
-      const { question_id, value, evidence_id } = ans;
-      await supabaseClient
-        .from('dpia_answers')
-        .upsert({
-          tenant_id,
-          record_id,
-          question_id,
-          value: value ?? null,
-          evidence_id: evidence_id ?? null,
-        }, { onConflict: 'record_id,question_id' });
+    // Upsert answers in batch (more efficient and atomic)
+    const rows = answers.map((ans: any) => ({
+      tenant_id,
+      record_id,
+      question_id: ans.question_id,
+      value: ans.value ?? null,
+      evidence_id: ans.evidence_id ?? null,
+    }));
+
+    const { error: upsertError } = await supabaseClient
+      .from('dpia_answers')
+      .upsert(rows, { onConflict: 'record_id,question_id' });
+
+    if (upsertError) {
+      console.error('[dpia-save] Upsert error:', upsertError);
+      return new Response(JSON.stringify({ error: upsertError.message }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     await logEvent(supabaseClient, {
