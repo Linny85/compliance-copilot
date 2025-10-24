@@ -87,15 +87,32 @@ export default function HelpbotManager() {
       form.append("lang", lang);
       form.append("doc_type", docType);
 
-      const { data, error } = await supabase.functions.invoke("helpbot-upload", {
-        body: form,
-      });
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token ?? "";
 
-      if (error) throw error;
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/helpbot-upload`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: form,
+        }
+      );
+
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        throw new Error(errText || `Upload failed (${res.status})`);
+      }
+
+      const data = await res.json();
 
       toast({
         title: "Upload erfolgreich",
-        description: `${file.name} wurde erfolgreich hochgeladen und verarbeitet`,
+        description: data.ingested?.chunks 
+          ? `${file.name} – ${data.ingested.chunks} Chunks angelegt`
+          : `${file.name} hochgeladen`,
       });
 
       setFile(null);
