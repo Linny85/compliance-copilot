@@ -117,6 +117,60 @@ export type Database = {
           },
         ]
       }
+      assets: {
+        Row: {
+          created_at: string
+          criticality: string
+          id: string
+          metadata: Json | null
+          name: string
+          ou_id: string | null
+          owner_id: string | null
+          tenant_id: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          criticality?: string
+          id?: string
+          metadata?: Json | null
+          name: string
+          ou_id?: string | null
+          owner_id?: string | null
+          tenant_id: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          criticality?: string
+          id?: string
+          metadata?: Json | null
+          name?: string
+          ou_id?: string | null
+          owner_id?: string | null
+          tenant_id?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_ou_id_fkey"
+            columns: ["ou_id"]
+            isOneToOne: false
+            referencedRelation: "orgunits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -1564,6 +1618,102 @@ export type Database = {
         }
         Relationships: []
       }
+      orgunits: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          parent_id: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          parent_id?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          parent_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orgunits_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "orgunits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orgunits_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      policy_assignments: {
+        Row: {
+          control_id: string
+          created_at: string
+          exception_flag: boolean | null
+          exception_reason: string | null
+          id: string
+          inheritance_rule: string | null
+          owner_id: string | null
+          scope_ref: Json
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          control_id: string
+          created_at?: string
+          exception_flag?: boolean | null
+          exception_reason?: string | null
+          id?: string
+          inheritance_rule?: string | null
+          owner_id?: string | null
+          scope_ref: Json
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          control_id?: string
+          created_at?: string
+          exception_flag?: boolean | null
+          exception_reason?: string | null
+          id?: string
+          inheritance_rule?: string | null
+          owner_id?: string | null
+          scope_ref?: Json
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_assignments_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "policy_assignments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       policy_templates: {
         Row: {
           body_md: string
@@ -1614,6 +1764,57 @@ export type Database = {
           },
           {
             foreignKeyName: "policy_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processes: {
+        Row: {
+          created_at: string
+          criticality: string
+          id: string
+          metadata: Json | null
+          name: string
+          ou_id: string | null
+          owner_id: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          criticality?: string
+          id?: string
+          metadata?: Json | null
+          name: string
+          ou_id?: string | null
+          owner_id?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          criticality?: string
+          id?: string
+          metadata?: Json | null
+          name?: string
+          ou_id?: string | null
+          owner_id?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "processes_ou_id_fkey"
+            columns: ["ou_id"]
+            isOneToOne: false
+            referencedRelation: "orgunits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "processes_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "Unternehmen"
@@ -2000,6 +2201,32 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_frameworks: {
+        Row: {
+          activated_at: string
+          framework_code: string
+          tenant_id: string
+        }
+        Insert: {
+          activated_at?: string
+          framework_code: string
+          tenant_id: string
+        }
+        Update: {
+          activated_at?: string
+          framework_code?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_frameworks_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_settings: {
         Row: {
           approval_required_for_untrusted: boolean | null
@@ -2064,13 +2291,19 @@ export type Database = {
           company_size: string | null
           country: string | null
           created_at: string | null
+          criticality_profile: string | null
           default_locale: string | null
           delete_code_hash: string
           erstellt_von: string | null
+          headcount_band: string | null
           id: string
+          industry: string | null
           legal_name: string | null
           master_code_hash: string
           name: string
+          onboarding_completed_at: string | null
+          onboarding_done: boolean | null
+          onboarding_progress: number | null
           sector: string | null
           street: string | null
           subscription_status: string | null
@@ -2086,13 +2319,19 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string | null
+          criticality_profile?: string | null
           default_locale?: string | null
           delete_code_hash: string
           erstellt_von?: string | null
+          headcount_band?: string | null
           id?: string
+          industry?: string | null
           legal_name?: string | null
           master_code_hash: string
           name: string
+          onboarding_completed_at?: string | null
+          onboarding_done?: boolean | null
+          onboarding_progress?: number | null
           sector?: string | null
           street?: string | null
           subscription_status?: string | null
@@ -2108,13 +2347,19 @@ export type Database = {
           company_size?: string | null
           country?: string | null
           created_at?: string | null
+          criticality_profile?: string | null
           default_locale?: string | null
           delete_code_hash?: string
           erstellt_von?: string | null
+          headcount_band?: string | null
           id?: string
+          industry?: string | null
           legal_name?: string | null
           master_code_hash?: string
           name?: string
+          onboarding_completed_at?: string | null
+          onboarding_done?: boolean | null
+          onboarding_progress?: number | null
           sector?: string | null
           street?: string | null
           subscription_status?: string | null
