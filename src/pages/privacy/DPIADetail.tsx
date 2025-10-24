@@ -80,10 +80,28 @@ export default function DPIADetail() {
     }
   };
 
-  const handleSave = async (submit = false) => {
+  const handleSave = async () => {
     const answerArray = questions.map((q) => ({
       question_id: q.id,
-      value: answers[q.id] || null,
+      value: answers[q.id] ?? null,
+    }));
+
+    try {
+      const { error } = await supabase.functions.invoke("dpia-save", {
+        body: { record_id: id, answers: answerArray },
+      });
+
+      if (error) throw error;
+      toast({ title: "Progress saved" });
+    } catch (err: any) {
+      toast({ title: "Error saving", description: err.message, variant: "destructive" });
+    }
+  };
+
+  const handleSubmit = async () => {
+    const answerArray = questions.map((q) => ({
+      question_id: q.id,
+      value: answers[q.id] ?? null,
     }));
 
     try {
@@ -92,10 +110,10 @@ export default function DPIADetail() {
       });
 
       if (error) throw error;
-      toast({ title: submit ? "DPIA submitted" : "Progress saved" });
+      toast({ title: "DPIA submitted" });
       loadData();
     } catch (err: any) {
-      toast({ title: "Error saving", description: err.message, variant: "destructive" });
+      toast({ title: "Error submitting", description: err.message, variant: "destructive" });
     }
   };
 
@@ -187,12 +205,12 @@ export default function DPIADetail() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => handleSave(false)}>
+            <Button variant="outline" onClick={handleSave}>
               <Save className="w-4 h-4 mr-2" />
               Save
             </Button>
             {record.status === "open" && (
-              <Button onClick={() => handleSave(true)}>
+              <Button onClick={handleSubmit}>
                 <Send className="w-4 h-4 mr-2" />
                 Submit
               </Button>

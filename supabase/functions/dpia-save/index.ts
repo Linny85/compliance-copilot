@@ -1,5 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
 import { corsHeaders } from '../_shared/cors.ts';
+import { logEvent } from '../_shared/audit.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -35,81 +36,59 @@ Deno.serve(async (req) => {
     }
 
     const tenant_id = profile.company_id;
-    const url = new URL(req.url);
-    const record_id = url.searchParams.get('record_id');
+    const body = await req.json();
+    const { record_id, answers } = body;
 
-    if (!record_id) {
-      return new Response(JSON.stringify({ error: 'record_id required' }), {
+    if (!record_id || !Array.isArray(answers)) {
+      return new Response(JSON.stringify({ error: 'record_id and answers required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Load record
-    const { data: record } = await supabaseClient
+    // Verify record ownership
+    const { data: record, error: recordError } = await supabaseClient
       .from('dpia_records')
-      .select('id, questionnaire_id, due_at, status')
+      .select('id, tenant_id')
       .eq('id', record_id)
       .eq('tenant_id', tenant_id)
       .single();
 
-    if (!record) {
+    if (recordError || !record) {
       return new Response(JSON.stringify({ error: 'Record not found' }), {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    // Count required questions (two-step approach for robustness)
-    const { count: requiredTotal } = await supabaseClient
-      .from('dpia_questions')
-      .select('*', { count: 'exact', head: true })
-      .eq('questionnaire_id', record.questionnaire_id)
-      .eq('required', true);
-
-    // Get required question IDs
-    const { data: reqIds } = await supabaseClient
-      .from('dpia_questions')
-      .select('id')
-      .eq('questionnaire_id', record.questionnaire_id)
-      .eq('required', true);
-
-    const requiredIds = (reqIds || []).map((r: any) => r.id);
-
-    // Count answered required questions
-    let answeredRequired = 0;
-    if (requiredIds.length > 0) {
-      const { count } = await supabaseClient
+    // Upsert answers (NO status change)
+    for (const ans of answers) {
+      const { question_id, value, evidence_id } = ans;
+      await supabaseClient
         .from('dpia_answers')
-        .select('*', { count: 'exact', head: true })
-        .eq('record_id', record_id)
-        .in('question_id', requiredIds)
-        .not('value', 'is', null);
-      answeredRequired = count || 0;
+        .upsert({
+          tenant_id,
+          record_id,
+          question_id,
+          value: value ?? null,
+          evidence_id: evidence_id ?? null,
+        }, { onConflict: 'record_id,question_id' });
     }
 
-    // Count evidence links
-    const { count: evidenceCount } = await supabaseClient
-      .from('dpia_answers')
-      .select('*', { count: 'exact', head: true })
-      .eq('record_id', record_id)
-      .not('evidence_id', 'is', null);
+    await logEvent(supabaseClient, {
+      tenant_id,
+      actor_id: user.id,
+      action: 'dpia.saved',
+      entity: 'dpia_records',
+      entity_id: record_id,
+      payload: { answers_count: answers.length },
+    });
 
-    const isOverdue = record.due_at && new Date(record.due_at) < new Date();
-    const progress = requiredTotal ? (answeredRequired / requiredTotal) * 100 : 0;
-
-    return new Response(JSON.stringify({
-      progress,
-      required_total: requiredTotal || 0,
-      required_answered: answeredRequired,
-      evidence_links: evidenceCount || 0,
-      is_overdue: isOverdue,
-      status: record.status,
-    }), {
+    return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error: unknown) {
-    console.error('[dpia-status] Error:', error);
+    console.error('[dpia-save] Error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: message }), {
       status: 500,

@@ -35,14 +35,20 @@ Deno.serve(async (req) => {
     }
 
     const tenant_id = profile.company_id;
+    
+    // Support both query params and body params
     const url = new URL(req.url);
-    const status = url.searchParams.get('status');
-    const risk = url.searchParams.get('risk');
-    const search = url.searchParams.get('search');
-    const scope = url.searchParams.get('scope'); // 'process' or 'vendor'
-    const scope_id = url.searchParams.get('scope_id');
-    const page = parseInt(url.searchParams.get('page') || '1', 10);
-    const limit = parseInt(url.searchParams.get('limit') || '50', 10);
+    const qp = Object.fromEntries(url.searchParams.entries());
+    const bodyParams = req.method === 'POST' ? await req.json().catch(() => ({})) : {};
+    const params = { ...qp, ...bodyParams };
+    
+    const status = params.status;
+    const risk = params.risk;
+    const search = params.search;
+    const scope = params.scope; // 'process' or 'vendor'
+    const scope_id = params.scope_id;
+    const page = parseInt(params.page || '1', 10);
+    const limit = parseInt(params.limit || '50', 10);
     const offset = (page - 1) * limit;
 
     let query = supabaseClient

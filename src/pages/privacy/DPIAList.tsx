@@ -45,13 +45,13 @@ export default function DPIAList() {
   const loadRecords = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (statusFilter) params.set("status", statusFilter);
-      if (riskFilter) params.set("risk", riskFilter);
-      if (search) params.set("search", search);
+      const params: Record<string, string> = {};
+      if (statusFilter) params.status = statusFilter;
+      if (riskFilter) params.risk = riskFilter;
+      if (search) params.search = search;
 
       const { data, error } = await supabase.functions.invoke("dpia-list", {
-        body: Object.fromEntries(params),
+        body: params,
       });
 
       if (error) throw error;
@@ -88,7 +88,7 @@ export default function DPIAList() {
   };
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, any> = {
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
       open: "secondary",
       submitted: "default",
       in_review: "default",
@@ -97,18 +97,18 @@ export default function DPIAList() {
       rejected: "destructive",
       archived: "outline",
     };
-    return <Badge variant={variants[status] || "secondary"}>{status}</Badge>;
+    return <Badge variant={variants[status] || "outline"}>{status}</Badge>;
   };
 
   const getRiskBadge = (risk: string | null) => {
-    if (!risk) return null;
-    const variants: Record<string, any> = {
+    if (!risk) return <span className="text-muted-foreground">-</span>;
+    const variants: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
       low: "default",
       med: "secondary",
       high: "destructive",
       critical: "destructive",
     };
-    return <Badge variant={variants[risk] || "secondary"}>{risk}</Badge>;
+    return <Badge variant={variants[risk] || "outline"}>{risk}</Badge>;
   };
 
   return (
