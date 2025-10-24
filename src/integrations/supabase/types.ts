@@ -121,36 +121,48 @@ export type Database = {
         Row: {
           action: string
           actor_id: string
+          chain_ok: boolean | null
+          chain_order: number | null
           created_at: string
           entity: string
           entity_id: string
+          event_hash: string | null
           id: number
           ip: unknown
           payload: Json
+          prev_hash: string | null
           tenant_id: string
           user_agent: string | null
         }
         Insert: {
           action: string
           actor_id: string
+          chain_ok?: boolean | null
+          chain_order?: number | null
           created_at?: string
           entity: string
           entity_id: string
+          event_hash?: string | null
           id?: number
           ip?: unknown
           payload?: Json
+          prev_hash?: string | null
           tenant_id: string
           user_agent?: string | null
         }
         Update: {
           action?: string
           actor_id?: string
+          chain_ok?: boolean | null
+          chain_order?: number | null
           created_at?: string
           entity?: string
           entity_id?: string
+          event_hash?: string | null
           id?: number
           ip?: unknown
           payload?: Json
+          prev_hash?: string | null
           tenant_id?: string
           user_agent?: string | null
         }
@@ -2458,8 +2470,30 @@ export type Database = {
         Args: { p_delta: number; p_message_id: string }
         Returns: undefined
       }
+      audit_verify_chain: {
+        Args: { p_from: string; p_tenant: string; p_to: string }
+        Returns: {
+          checked_count: number
+          first_break_at: number
+          ok: boolean
+        }[]
+      }
       cleanup_notification_deliveries: { Args: never; Returns: undefined }
       cleanup_run_events: { Args: never; Returns: undefined }
+      compute_audit_hash: {
+        Args: {
+          p_action: string
+          p_actor: string
+          p_created_at: string
+          p_entity: string
+          p_entity_id: string
+          p_ip: unknown
+          p_payload: Json
+          p_prev_hash: string
+          p_tenant: string
+        }
+        Returns: string
+      }
       create_audit_log: {
         Args: {
           _action: string
@@ -2542,6 +2576,7 @@ export type Database = {
           title: string
         }[]
       }
+      jsonb_canon: { Args: { j: Json }; Returns: string }
       match_helpbot_entities: {
         Args: { match_count?: number; query_vec: string }
         Returns: {

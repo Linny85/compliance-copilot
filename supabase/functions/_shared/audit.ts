@@ -12,8 +12,10 @@ export interface AuditLogParams {
 }
 
 /**
- * Logs an audit event to the audit_log table
+ * Logs an audit event to the audit_log table with automatic hash chaining
  * Fire-and-forget: errors are logged but don't block the main flow
+ * 
+ * IMPORTANT: Hash chain (prev_hash, event_hash) is computed automatically by DB trigger
  */
 export async function logEvent(
   supabase: SupabaseClient,
