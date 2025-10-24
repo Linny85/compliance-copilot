@@ -1,31 +1,11 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
+import { embed, chat, getLovableBaseUrl } from "../_shared/lovableClient.ts";
 
-// =========================================================
-// 🌐 Dual-Provider Configuration (Lovable + OpenAI Fallback)
-// =========================================================
-
-const PROVIDER = Deno.env.get("AI_PROVIDER") ?? "lovable";
-
-const API_KEY = PROVIDER === "openai"
-  ? Deno.env.get("OPENAI_API_KEY")
-  : Deno.env.get("LOVABLE_API_KEY");
-
-const BASE_URL = PROVIDER === "openai"
-  ? Deno.env.get("OPENAI_BASE_URL") ?? "https://api.openai.com/v1"
-  : Deno.env.get("LOVABLE_BASE_URL") ?? "https://ai.gateway.lovable.dev/v1";
-
-const MODEL = Deno.env.get("MODEL") ?? "google/gemini-2.5-flash";
-const EMB_MODEL = Deno.env.get("EMB_MODEL") ?? "text-embedding-3-large";
-const EMB_DIMENSIONS = Number(Deno.env.get("EMB_DIMENSIONS") ?? "1536");
+console.log(`[helpbot-graph-query boot] Using Lovable AI Gateway: ${getLovableBaseUrl()}`);
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
-function logProvider() {
-  console.log(`[AI Provider] ${PROVIDER.toUpperCase()} → ${BASE_URL}`);
-}
-logProvider();
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -137,30 +117,10 @@ Deno.serve(async (req) => {
       : "Du bist ein Compliance-Assistent für rechtliche Beratung. Nutze sowohl Dokumentfragmente als auch semantische Relationen aus dem Wissensgraphen, um eine präzise, fundierte Antwort zu formulieren. Antworte immer auf Deutsch. Du bist kein Anwalt und gibst keine Rechtsberatung.";
 
     // 7️⃣ Generate answer using AI
-    const response = await fetch(`${BASE_URL}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: `Frage:\n${query}\n\nKontext:\n${context}` }
-        ],
-        max_tokens: 500
-      })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("[helpbot-graph-query] AI error:", data);
-      throw new Error(data?.error?.message ?? "AI request failed");
-    }
-
-    const answer = data.choices[0].message.content;
+    const answer = await chat([
+      { role: "system", content: systemPrompt },
+      { role: "user", content: `Frage:\n${query}\n\nKontext:\n${context}` }
+    ]);
 
     // 8️⃣ Extract sources from hybrid context
     const sources = hybridCtx
@@ -182,29 +142,6 @@ Deno.serve(async (req) => {
     return json({ error: e?.message ?? "Internal error" }, 500);
   }
 });
-
-async function embed(text: string): Promise<number[]> {
-  const response = await fetch(`${BASE_URL}/embeddings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`
-    },
-    body: JSON.stringify({
-      model: EMB_MODEL,
-      input: text,
-      dimensions: EMB_DIMENSIONS
-    })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.error?.message ?? "Embedding failed");
-  }
-
-  return data.data[0].embedding as number[];
-}
 
 function getDisclaimer(lang: string): string {
   if (lang === "en") {
