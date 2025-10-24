@@ -211,6 +211,26 @@
       "name_required": "Lieferantenname ist erforderlich"
     }
   },
+  "dpia": {
+    "title": "Datenschutz-Folgenabschätzungen",
+    "subtitle": "Datenschutz-Folgenabschätzungen verwalten",
+    "overdue": "Überfällig",
+    "status": {
+      "open": "Offen",
+      "submitted": "Eingereicht",
+      "in_review": "In Prüfung",
+      "scored": "Bewertet",
+      "approved": "Genehmigt",
+      "rejected": "Abgelehnt",
+      "archived": "Archiviert"
+    },
+    "risk": {
+      "low": "Niedrig",
+      "med": "Mittel",
+      "high": "Hoch",
+      "critical": "Kritisch"
+    }
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Finanzen",

@@ -211,6 +211,26 @@
       "name_required": "Vendor name is required"
     }
   },
+  "dpia": {
+    "title": "Data Protection Impact Assessments",
+    "subtitle": "Manage privacy impact assessments",
+    "overdue": "Overdue",
+    "status": {
+      "open": "Open",
+      "submitted": "Submitted",
+      "in_review": "In Review",
+      "scored": "Scored",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "archived": "Archived"
+    },
+    "risk": {
+      "low": "Low",
+      "med": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    }
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Finance",
