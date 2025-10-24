@@ -1,0 +1,19 @@
+{
+  "dashboard": "Yleiskatsaus",
+  "risks": "Riskit",
+  "ai": "AI-järjestelmät",
+  "ai_systems": "AI-järjestelmät",
+  "controls": "Kontrollit",
+  "scope": "Laajuus",
+  "evidence": "Todisteet",
+  "checks": "Tarkastukset",
+  "audits": "Tarkastukset",
+  "docs": "Asiakirjat",
+  "documents": "Asiakirjat",
+  "reports": "Raportit",
+  "organization": "Organisaatio",
+  "integrations": "Integraatiot",
+  "admin": "Ylläpito",
+  "help": "Ohje",
+  "logout": "Kirjaudu ulos"
+}

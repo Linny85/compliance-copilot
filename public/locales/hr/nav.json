@@ -1,0 +1,19 @@
+{
+  "dashboard": "Pregled",
+  "risks": "Rizici",
+  "ai": "AI sustavi",
+  "ai_systems": "AI sustavi",
+  "controls": "Kontrole",
+  "scope": "Opseg",
+  "evidence": "Dokazi",
+  "checks": "Revizije",
+  "audits": "Revizije",
+  "docs": "Dokumenti",
+  "documents": "Dokumenti",
+  "reports": "Izvješća",
+  "organization": "Organizacija",
+  "integrations": "Integracije",
+  "admin": "Admin",
+  "help": "Pomoć",
+  "logout": "Odjava"
+}

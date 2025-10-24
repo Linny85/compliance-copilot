@@ -1,0 +1,19 @@
+{
+  "dashboard": "Ülevaade",
+  "risks": "Riskid",
+  "ai": "AI süsteemid",
+  "ai_systems": "AI süsteemid",
+  "controls": "Kontrollid",
+  "scope": "Ulatus",
+  "evidence": "Tõendid",
+  "checks": "Auditid",
+  "audits": "Auditid",
+  "docs": "Dokumendid",
+  "documents": "Dokumendid",
+  "reports": "Aruanded",
+  "organization": "Organisatsioon",
+  "integrations": "Integratsioonid",
+  "admin": "Admin",
+  "help": "Abi",
+  "logout": "Logi välja"
+}

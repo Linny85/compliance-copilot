@@ -1,0 +1,19 @@
+{
+  "dashboard": "Πίνακας",
+  "risks": "Κίνδυνοι",
+  "ai": "Συστήματα AI",
+  "ai_systems": "Συστήματα AI",
+  "controls": "Έλεγχοι",
+  "scope": "Εύρος",
+  "evidence": "Στοιχεία",
+  "checks": "Ελεγκτικοί έλεγχοι",
+  "audits": "Ελεγκτικοί έλεγχοι",
+  "docs": "Έγγραφα",
+  "documents": "Έγγραφα",
+  "reports": "Αναφορές",
+  "organization": "Οργανισμός",
+  "integrations": "Ενσωματώσεις",
+  "admin": "Admin",
+  "help": "Βοήθεια",
+  "logout": "Αποσύνδεση"
+}

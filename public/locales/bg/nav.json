@@ -1,0 +1,19 @@
+{
+  "dashboard": "Табло",
+  "risks": "Рискове",
+  "ai": "AI системи",
+  "ai_systems": "AI системи",
+  "controls": "Контроли",
+  "scope": "Обхват",
+  "evidence": "Доказателства",
+  "checks": "Проверки",
+  "audits": "Проверки",
+  "docs": "Документи",
+  "documents": "Документи",
+  "reports": "Отчети",
+  "organization": "Организация",
+  "integrations": "Интеграции",
+  "admin": "Админ",
+  "help": "Помощ",
+  "logout": "Изход"
+}

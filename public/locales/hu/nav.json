@@ -1,0 +1,19 @@
+{
+  "dashboard": "Áttekintés",
+  "risks": "Kockázatok",
+  "ai": "AI rendszerek",
+  "ai_systems": "AI rendszerek",
+  "controls": "Kontrollok",
+  "scope": "Hatókör",
+  "evidence": "Bizonyítékok",
+  "checks": "Ellenőrzések",
+  "audits": "Ellenőrzések",
+  "docs": "Dokumentumok",
+  "documents": "Dokumentumok",
+  "reports": "Jelentések",
+  "organization": "Szervezet",
+  "integrations": "Integrációk",
+  "admin": "Admin",
+  "help": "Súgó",
+  "logout": "Kijelentkezés"
+}

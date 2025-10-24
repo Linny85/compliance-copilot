@@ -1,0 +1,19 @@
+{
+  "dashboard": "Tauler",
+  "risks": "Riscos",
+  "ai": "Sistemes IA",
+  "ai_systems": "Sistemes IA",
+  "controls": "Controls",
+  "scope": "Àmbit",
+  "evidence": "Evidència",
+  "checks": "Auditories",
+  "audits": "Auditories",
+  "docs": "Documents",
+  "documents": "Documents",
+  "reports": "Informes",
+  "organization": "Organització",
+  "integrations": "Integracions",
+  "admin": "Admin",
+  "help": "Ajuda",
+  "logout": "Sortir"
+}

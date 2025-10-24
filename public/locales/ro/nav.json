@@ -1,0 +1,19 @@
+{
+  "dashboard": "Prezentare generală",
+  "risks": "Riscuri",
+  "ai": "Sisteme AI",
+  "ai_systems": "Sisteme AI",
+  "controls": "Controale",
+  "scope": "Domeniu",
+  "evidence": "Dovezi",
+  "checks": "Audituri",
+  "audits": "Audituri",
+  "docs": "Documente",
+  "documents": "Documente",
+  "reports": "Rapoarte",
+  "organization": "Organizație",
+  "integrations": "Integrări",
+  "admin": "Admin",
+  "help": "Ajutor",
+  "logout": "Deconectare"
+}

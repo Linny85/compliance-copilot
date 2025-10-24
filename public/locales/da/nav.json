@@ -1,0 +1,19 @@
+{
+  "dashboard": "Oversigt",
+  "risks": "Risici",
+  "ai": "AI-systemer",
+  "ai_systems": "AI-systemer",
+  "controls": "Kontroller",
+  "scope": "Omfang",
+  "evidence": "Beviser",
+  "checks": "Revisioner",
+  "audits": "Revisioner",
+  "docs": "Dokumenter",
+  "documents": "Dokumenter",
+  "reports": "Rapporter",
+  "organization": "Organisation",
+  "integrations": "Integrationer",
+  "admin": "Admin",
+  "help": "Hjælp",
+  "logout": "Log ud"
+}

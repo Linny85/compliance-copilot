@@ -1,0 +1,19 @@
+{
+  "dashboard": "Overzicht",
+  "risks": "Risico's",
+  "ai": "AI-systemen",
+  "ai_systems": "AI-systemen",
+  "controls": "Controles",
+  "scope": "Bereik",
+  "evidence": "Bewijs",
+  "checks": "Audits",
+  "audits": "Audits",
+  "docs": "Documenten",
+  "documents": "Documenten",
+  "reports": "Rapporten",
+  "organization": "Organisatie",
+  "integrations": "Integraties",
+  "admin": "Admin",
+  "help": "Help",
+  "logout": "Uitloggen"
+}

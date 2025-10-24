@@ -1,0 +1,19 @@
+{
+  "dashboard": "Panoramica",
+  "risks": "Rischi",
+  "ai": "Sistemi IA",
+  "ai_systems": "Sistemi IA",
+  "controls": "Controlli",
+  "scope": "Ambito",
+  "evidence": "Prove",
+  "checks": "Audit",
+  "audits": "Audit",
+  "docs": "Documenti",
+  "documents": "Documenti",
+  "reports": "Rapporti",
+  "organization": "Organizzazione",
+  "integrations": "Integrazioni",
+  "admin": "Admin",
+  "help": "Aiuto",
+  "logout": "Esci"
+}

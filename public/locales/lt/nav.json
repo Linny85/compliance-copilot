@@ -1,0 +1,19 @@
+{
+  "dashboard": "Apžvalga",
+  "risks": "Rizikos",
+  "ai": "AI sistemos",
+  "ai_systems": "AI sistemos",
+  "controls": "Kontrolė",
+  "scope": "Aprėptis",
+  "evidence": "Įrodymai",
+  "checks": "Auditai",
+  "audits": "Auditai",
+  "docs": "Dokumentai",
+  "documents": "Dokumentai",
+  "reports": "Ataskaitos",
+  "organization": "Organizacija",
+  "integrations": "Integracijos",
+  "admin": "Admin",
+  "help": "Pagalba",
+  "logout": "Atsijungti"
+}

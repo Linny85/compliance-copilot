@@ -1,0 +1,19 @@
+{
+  "dashboard": "Pārskats",
+  "risks": "Riski",
+  "ai": "AI sistēmas",
+  "ai_systems": "AI sistēmas",
+  "controls": "Kontroles",
+  "scope": "Darbības joma",
+  "evidence": "Pierādījumi",
+  "checks": "Auditi",
+  "audits": "Auditi",
+  "docs": "Dokumenti",
+  "documents": "Dokumenti",
+  "reports": "Ziņojumi",
+  "organization": "Organizācija",
+  "integrations": "Integrācijas",
+  "admin": "Admin",
+  "help": "Palīdzība",
+  "logout": "Iziet"
+}

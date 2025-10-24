@@ -1,0 +1,19 @@
+{
+  "dashboard": "Przegląd",
+  "risks": "Ryzyka",
+  "ai": "Systemy AI",
+  "ai_systems": "Systemy AI",
+  "controls": "Kontrole",
+  "scope": "Zakres",
+  "evidence": "Dowody",
+  "checks": "Audyty",
+  "audits": "Audyty",
+  "docs": "Dokumenty",
+  "documents": "Dokumenty",
+  "reports": "Raporty",
+  "organization": "Organizacja",
+  "integrations": "Integracje",
+  "admin": "Admin",
+  "help": "Pomoc",
+  "logout": "Wyloguj"
+}

@@ -1,0 +1,19 @@
+{
+  "dashboard": "Přehled",
+  "risks": "Rizika",
+  "ai": "AI systémy",
+  "ai_systems": "AI systémy",
+  "controls": "Kontroly",
+  "scope": "Rozsah",
+  "evidence": "Důkazy",
+  "checks": "Audity",
+  "audits": "Audity",
+  "docs": "Dokumenty",
+  "documents": "Dokumenty",
+  "reports": "Zprávy",
+  "organization": "Organizace",
+  "integrations": "Integrace",
+  "admin": "Admin",
+  "help": "Nápověda",
+  "logout": "Odhlásit"
+}

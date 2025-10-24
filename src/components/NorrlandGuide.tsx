@@ -17,16 +17,18 @@ export function NorrlandGuide() {
       {/* Floating Button */}
       <Button
         size="lg"
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all z-50"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg hover:shadow-xl transition-all z-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background"
         onClick={() => setOpen(true)}
         aria-label="Norrland Guide"
+        aria-haspopup="dialog"
+        aria-expanded={open}
       >
         <HelpCircle className="h-6 w-6" />
       </Button>
 
       {/* Placeholder Drawer */}
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent side="right" className="w-full sm:max-w-md">
+        <SheetContent side="right" className="w-full sm:max-w-md" role="dialog" aria-modal="true">
           <SheetHeader>
             <SheetTitle>Norrland Guide</SheetTitle>
             <SheetDescription>

@@ -1,8 +1,9 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
-  Shield,
+  ShieldAlert,
   Brain,
+  Wrench,
   FileCheck,
   PlayCircle,
   FileText,
@@ -47,19 +48,19 @@ export function AppSidebar() {
   // Main Navigation Items
   const mainNavItems = [
     { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
-    { title: t.nav.risks, url: "/nis2", icon: Shield },
+    { title: t.nav.risks, url: "/nis2", icon: ShieldAlert },
     { title: t.nav.ai, url: "/ai-act", icon: Brain },
-    { title: t.nav.controls, url: "/controls", icon: Shield },
+    { title: t.nav.controls, url: "/controls", icon: Wrench },
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
     { title: t.nav.checks, url: "/checks", icon: PlayCircle },
     { title: t.nav.docs, url: "/documents", icon: FileText },
-    { title: "Berichte", url: "/admin/ops", icon: BarChart3, adminOnly: true },
+    { title: t.nav.reports, url: "/admin/ops", icon: BarChart3, adminOnly: true },
   ];
 
   // System Items
   const systemNavItems = [
-    { title: "Organisation", url: "/company-profile", icon: Building2 },
-    { title: "Integrationen", url: "/admin/integrations", icon: Plug, adminOnly: true },
+    { title: t.nav.organization, url: "/company-profile", icon: Building2 },
+    { title: t.nav.integrations, url: "/admin/integrations", icon: Plug, adminOnly: true },
     ...(isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Settings }] : []),
   ];
 
@@ -125,7 +126,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => {}}>
                   <HelpCircle className="h-4 w-4" />
-                  {!isCollapsed && <span>Hilfe</span>}
+                  {!isCollapsed && <span>{t.nav.help}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
