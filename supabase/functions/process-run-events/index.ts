@@ -70,6 +70,84 @@ Deno.serve(async (req) => {
           .eq('tenant_id', ev.tenant_id)
           .maybeSingle();
 
+        // Auto-create deviation for critical failures
+        if (ev.status === 'failed' || ev.status === 'error') {
+          // Get check run details
+          const { data: run } = await sb
+            .from('check_runs')
+            .select('rule_id')
+            .eq('id', ev.run_id)
+            .single();
+
+          if (run?.rule_id) {
+            // Get rule severity
+            const { data: rule } = await sb
+              .from('check_rules')
+              .select('severity, control_id, title')
+              .eq('id', run.rule_id)
+              .single();
+
+            // Create deviation for high/critical severity
+            if (rule && (rule.severity === 'high' || rule.severity === 'critical')) {
+              // Check for existing open deviation
+              const { data: existingDeviation } = await sb
+                .from('deviations')
+                .select('id')
+                .eq('tenant_id', ev.tenant_id)
+                .eq('control_id', rule.control_id)
+                .in('status', ['draft', 'in_review', 'approved', 'active'])
+                .maybeSingle();
+
+              if (!existingDeviation) {
+                // Create auto-deviation
+                const now = new Date();
+                const sla_due_at = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                const valid_to = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
+                const recert_at = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+                const { error: deviationError } = await sb
+                  .from('deviations')
+                  .insert({
+                    tenant_id: ev.tenant_id,
+                    control_id: rule.control_id,
+                    title: `Auto-deviation: ${rule.title || 'Check failure'}`,
+                    description: `Automatically created from check run ${ev.run_id} due to ${rule.severity} severity failure.`,
+                    severity: rule.severity,
+                    status: 'in_review',
+                    requested_by: '00000000-0000-0000-0000-000000000000', // System user placeholder
+                    valid_from: now.toISOString(),
+                    valid_to: valid_to.toISOString(),
+                    sla_due_at: sla_due_at.toISOString(),
+                    recert_at: recert_at.toISOString(),
+                    source: {
+                      type: 'auto',
+                      check_run_id: ev.run_id,
+                      rule_id: run.rule_id,
+                      trigger: 'critical_fail'
+                    }
+                  });
+
+                if (!deviationError) {
+                  console.log(`[process-run-events] Created auto-deviation for control ${rule.control_id}`);
+                } else {
+                  console.error('[process-run-events] Failed to create auto-deviation:', deviationError);
+                }
+              } else {
+                // Log suppressed duplicate
+                console.log(`[process-run-events] Suppressed duplicate deviation for control ${rule.control_id}`);
+                await sb.from('audit_log').insert({
+                  tenant_id: ev.tenant_id,
+                  actor_id: '00000000-0000-0000-0000-000000000000',
+                  action: 'deviation.duplicate_suppressed',
+                  entity: 'deviation',
+                  entity_id: existingDeviation.id,
+                  payload: { check_run_id: ev.run_id, rule_id: run.rule_id }
+                });
+              }
+            }
+          }
+        }
+
         // Skip if no notification configured
         if (!settings?.notification_email && !settings?.notification_webhook_url) {
           await sb
