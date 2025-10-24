@@ -1,11 +1,17 @@
-// Central Lovable AI Gateway Client
+// Central Lovable AI Gateway Client (supports direct or proxy mode)
 export function getLovableBaseUrl(): string {
-  const url =
-    (Deno.env.get('LOVABLE_API_BASE_URL') ?? 
-     Deno.env.get('LOVABLE_BASE_URL') ?? 
-     'https://ai.gateway.lovable.dev/v1').trim();
-
-  console.log(`[lovableClient] BASE_URL=${url}`);
+  // Prioritize PROXY_URL if set (for Cloudflare Worker proxy)
+  const proxyUrl = Deno.env.get('PROXY_URL')?.trim();
+  if (proxyUrl) {
+    console.log(`[lovableClient] Using PROXY_URL=${proxyUrl}`);
+    return proxyUrl.endsWith('/') ? proxyUrl.slice(0, -1) : proxyUrl;
+  }
+  
+  // Fallback to direct Lovable AI Gateway
+  const url = (Deno.env.get('LOVABLE_API_BASE_URL') ?? 
+               Deno.env.get('LOVABLE_BASE_URL') ?? 
+               'https://ai.gateway.lovable.dev/v1').trim();
+  console.log(`[lovableClient] Using direct BASE_URL=${url}`);
   return url.endsWith('/') ? url.slice(0, -1) : url;
 }
 
@@ -25,10 +31,15 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
     headers.set('Connection', 'close');
   }
 
-  // Auth
-  const key = (Deno.env.get('LOVABLE_API_KEY') ?? '').trim();
-  if (key && !headers.get('Authorization')) {
-    headers.set('Authorization', `Bearer ${key}`);
+  // Auth: Use proxy secret if available, otherwise Lovable API key
+  const proxySecret = Deno.env.get('PROXY_SHARED_SECRET')?.trim();
+  if (proxySecret && !headers.get('x-proxy-secret')) {
+    headers.set('x-proxy-secret', proxySecret);
+  } else {
+    const key = (Deno.env.get('LOVABLE_API_KEY') ?? '').trim();
+    if (key && !headers.get('Authorization')) {
+      headers.set('Authorization', `Bearer ${key}`);
+    }
   }
 
   // Debug logging with request ID
