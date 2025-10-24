@@ -1,6 +1,4 @@
 // Central Lovable AI Gateway Client (supports direct or proxy mode)
-import { logError, logInfo } from "./logger.ts";
-
 export function getLovableBaseUrl(): string {
   // Prioritize PROXY_URL if set (for Cloudflare Worker proxy)
   const proxyUrl = Deno.env.get('PROXY_URL')?.trim();
@@ -18,13 +16,8 @@ export function getLovableBaseUrl(): string {
 }
 
 export async function lovableFetch(path: string, init: RequestInit = {}): Promise<Response> {
-  const start = performance.now();
   const base = getLovableBaseUrl();
   const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
-  const method = (init.method || 'GET').toUpperCase();
-  const usingProxy = !!Deno.env.get('PROXY_URL');
-  let status = -1;
-  
   const headers = new Headers(init.headers || {});
   
   if (!headers.get('Content-Type')) {
@@ -51,7 +44,7 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
 
   // Debug logging with request ID
   const reqId = crypto.randomUUID();
-  console.log(`[lovableFetch:${reqId}] ${method} ${url}`);
+  console.log(`[lovableFetch:${reqId}] ${init.method ?? 'GET'} ${url}`);
 
   // Timeout + simple retry on network errors
   const controller = new AbortController();
@@ -65,23 +58,6 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
         signal: controller.signal, 
         redirect: 'follow' 
       });
-      status = res.status;
-      const latency = Math.round(performance.now() - start);
-
-      // Log erfolgreiche/degradierte Requests
-      await logInfo({
-        func: 'lovableClient',
-        message: 'lovableFetch completed',
-        using_proxy: usingProxy,
-        base_url: base,
-        path,
-        method,
-        status,
-        latency_ms: latency,
-        error_code: (status >= 500 ? 'HTTP_5XX' : status >= 400 ? 'HTTP_4XX' : null),
-        details: { headers: Array.from(res.headers.entries()).slice(0, 10) }
-      });
-
       return res;
     } catch (e) {
       console.warn(`[lovableFetch:${reqId}] first attempt failed:`, String(e));
@@ -91,39 +67,8 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
         headers, 
         redirect: 'follow' 
       });
-      status = res.status;
-      const latency = Math.round(performance.now() - start);
-
-      await logInfo({
-        func: 'lovableClient',
-        message: 'lovableFetch completed (retry)',
-        using_proxy: usingProxy,
-        base_url: base,
-        path,
-        method,
-        status,
-        latency_ms: latency,
-        error_code: (status >= 500 ? 'HTTP_5XX' : status >= 400 ? 'HTTP_4XX' : null),
-        details: { retry: true }
-      });
-
       return res;
     }
-  } catch (err) {
-    const latency = Math.round(performance.now() - start);
-    await logError({
-      func: 'lovableClient',
-      message: 'lovableFetch failed',
-      using_proxy: usingProxy,
-      base_url: base,
-      path,
-      method,
-      status: -1,
-      latency_ms: latency,
-      error_code: 'FETCH_ERROR',
-      details: { error: String(err) }
-    });
-    throw err;
   } finally {
     clearTimeout(t);
   }

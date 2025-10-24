@@ -1,94 +1,82 @@
 import { corsHeaders } from "../_shared/cors.ts";
 import { getLovableBaseUrl, lovableFetch } from "../_shared/lovableClient.ts";
-import { logInfo, logError } from "../_shared/logger.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   
-  const t0 = performance.now();
-  let status = 200;
-  let body: any;
-
   try {
-    const { tenant_id, session_id } = await req.json().catch(() => ({ tenant_id: "demo", session_id: "healthcheck" }));
-    
     const base = getLovableBaseUrl();
-    const proxyUrl = Deno.env.get('PROXY_URL')?.trim();
-    const usingProxy = !!proxyUrl;
+    const key = (Deno.env.get("LOVABLE_API_KEY") ?? "").trim();
+    const keySet = key.length > 0;
 
-    // Simple ping test via proxy or direct
-    let pingStatus = "unknown";
-    let pingError = null;
-    
+    // 0) DNS resolution from Edge Runtime
+    let dns: any = { a: [], aaaa: [], err: null };
     try {
-      // Try a minimal embeddings call as health check
+      dns.a = await Deno.resolveDns(new URL(base).hostname, "A");
+      try { dns.aaaa = await Deno.resolveDns(new URL(base).hostname, "AAAA"); } catch { dns.aaaa = []; }
+    } catch (e) { dns.err = String(e); }
+
+    // 1) TLS/Reachability via HEAD
+    let tlsOk = true, tlsStatus = 0, tlsBody = "";
+    try {
+      const headRes = await fetch(base, { method: "HEAD" });
+      tlsStatus = headRes.status;
+      tlsBody = `${headRes.status} ${headRes.statusText}`;
+    } catch (e) {
+      tlsOk = false;
+      tlsBody = String(e);
+    }
+
+    // 2) /models endpoint (if available)
+    let modelsStatus = 0, modelsBody = "";
+    try {
+      const mRes = await lovableFetch("/models", {
+        method: "GET",
+        headers: { "Accept": "application/json", "Connection": "close" }
+      });
+      modelsStatus = mRes.status;
+      modelsBody = (await mRes.text()).slice(0, 600);
+    } catch (e) {
+      modelsStatus = -1;
+      modelsBody = String(e);
+    }
+
+    // 3) Minimal embedding test (without dimensions)
+    let embStatus = 0, embBody = "";
+    try {
       const embRes = await lovableFetch("/embeddings", {
         method: "POST",
+        headers: { "Accept": "application/json", "Connection": "close" },
         body: JSON.stringify({
           model: Deno.env.get("EMB_MODEL") ?? "text-embedding-3-small",
           input: "health-check"
         }),
       });
-      
-      if (embRes.ok) {
-        pingStatus = "up";
-      } else {
-        pingStatus = "degraded";
-        pingError = `HTTP ${embRes.status}`;
-      }
+      embStatus = embRes.status;
+      embBody = (await embRes.text()).slice(0, 600);
     } catch (e) {
-      pingStatus = "down";
-      pingError = String(e);
+      embStatus = -1;
+      embBody = String(e);
     }
 
-    body = {
-      ok: true,
-      pong: {
-        status: pingStatus,
-        error: pingError,
-        base,
-        usingProxy,
-        tenant_id,
-        session_id,
-        ts: new Date().toISOString()
-      }
-    };
-
-    // Strukturiertes Logging
-    await logInfo({
-      func: "helpbot-health",
-      message: "health check completed",
-      tenant_id,
-      session_id,
-      using_proxy: usingProxy,
-      base_url: base,
-      path: "/embeddings",
-      method: "POST",
-      status,
-      latency_ms: Math.round(performance.now() - t0),
-      error_code: pingError ? "DEGRADED_OR_DOWN" : null,
-      details: { pingStatus, pingError }
-    });
-
-    return new Response(JSON.stringify(body), { headers: { ...corsHeaders, "Content-Type": "application/json" }});
-
+    return new Response(JSON.stringify({
+      base,
+      keySet,
+      keyPreview: keySet ? (key.slice(0, 4) + "…" + key.slice(-4)) : null,
+      dns,
+      tls: { ok: tlsOk, status: tlsStatus, body: tlsBody },
+      models: { status: modelsStatus, body: modelsBody },
+      embeddings: { status: embStatus, body: embBody },
+      ts: new Date().toISOString()
+    }), { headers: { ...corsHeaders, "Content-Type": "application/json" }});
   } catch (e: any) {
-    status = 500;
-    const errMsg = String(e);
-    body = { ok: false, error: errMsg, ts: new Date().toISOString() };
-
-    await logError({
-      func: "helpbot-health",
-      message: "unhandled exception",
-      status,
-      latency_ms: Math.round(performance.now() - t0),
-      error_code: "UNHANDLED",
-      details: { error: errMsg }
-    });
-
     console.error('[helpbot-health] Error:', e);
-    return new Response(JSON.stringify(body), {
-      status, 
+    return new Response(JSON.stringify({ 
+      error: String(e), 
+      base: getLovableBaseUrl(),
+      ts: new Date().toISOString()
+    }), {
+      status: 500, 
       headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
   }
