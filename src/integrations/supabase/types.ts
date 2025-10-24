@@ -2306,6 +2306,30 @@ export type Database = {
         Args: { _fallback?: boolean; _path: string[]; _tenant: string }
         Returns: boolean
       }
+      get_graph_context: {
+        Args: { p_entity_labels: string[]; p_limit: number }
+        Returns: {
+          entity: string
+          lang: string
+          neighbor: string
+          relation: string
+          type: string
+          weight: number
+        }[]
+      }
+      get_hybrid_rag_context: {
+        Args: {
+          p_chunk_limit?: number
+          p_entity_limit?: number
+          p_query_vec: string
+        }
+        Returns: {
+          content: string
+          lang: string
+          relevance: number
+          source_type: string
+        }[]
+      }
       get_user_company: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -2323,6 +2347,17 @@ export type Database = {
           sim: number
           source_uri: string
           title: string
+        }[]
+      }
+      match_helpbot_entities: {
+        Args: { match_count?: number; query_vec: string }
+        Returns: {
+          description: string
+          id: string
+          label: string
+          lang: string
+          similarity: number
+          type: string
         }[]
       }
       ops_metrics: { Args: { p_lookback_hours?: number }; Returns: Json }
