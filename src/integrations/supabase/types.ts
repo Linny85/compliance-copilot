@@ -556,6 +556,286 @@ export type Database = {
           },
         ]
       }
+      dpia_answers: {
+        Row: {
+          created_at: string
+          evidence_id: string | null
+          id: string
+          question_id: string
+          record_id: string
+          tenant_id: string
+          updated_at: string
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string
+          evidence_id?: string | null
+          id?: string
+          question_id: string
+          record_id: string
+          tenant_id: string
+          updated_at?: string
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string
+          evidence_id?: string | null
+          id?: string
+          question_id?: string
+          record_id?: string
+          tenant_id?: string
+          updated_at?: string
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "v_dpia_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dpia_questionnaires: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_questionnaires_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dpia_questions: {
+        Row: {
+          code: string
+          control_id: string | null
+          created_at: string
+          id: string
+          options: Json | null
+          questionnaire_id: string
+          required: boolean | null
+          section: string | null
+          tenant_id: string
+          text: string
+          type: string
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          code: string
+          control_id?: string | null
+          created_at?: string
+          id?: string
+          options?: Json | null
+          questionnaire_id: string
+          required?: boolean | null
+          section?: string | null
+          tenant_id: string
+          text: string
+          type: string
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          code?: string
+          control_id?: string | null
+          created_at?: string
+          id?: string
+          options?: Json | null
+          questionnaire_id?: string
+          required?: boolean | null
+          section?: string | null
+          tenant_id?: string
+          text?: string
+          type?: string
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_questions_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questionnaires"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_questions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dpia_records: {
+        Row: {
+          approved_at: string | null
+          created_at: string
+          due_at: string | null
+          id: string
+          mitigation: Json | null
+          owner_id: string | null
+          process_id: string | null
+          questionnaire_id: string
+          risk_level: string | null
+          score: Json | null
+          scored_at: string | null
+          status: string
+          submitted_at: string | null
+          tenant_id: string
+          title: string
+          updated_at: string
+          vendor_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          mitigation?: Json | null
+          owner_id?: string | null
+          process_id?: string | null
+          questionnaire_id: string
+          risk_level?: string | null
+          score?: Json | null
+          scored_at?: string | null
+          status?: string
+          submitted_at?: string | null
+          tenant_id: string
+          title: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          mitigation?: Json | null
+          owner_id?: string | null
+          process_id?: string | null
+          questionnaire_id?: string
+          risk_level?: string | null
+          score?: Json | null
+          scored_at?: string | null
+          status?: string
+          submitted_at?: string | null
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          vendor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_records_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "processes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questionnaires"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "v_vendor_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ensemble_weight_history: {
         Row: {
           adjusted_at: string | null
@@ -2961,6 +3241,157 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_dpia_answers_export: {
+        Row: {
+          control_id: string | null
+          created_at: string | null
+          dpia_title: string | null
+          evidence_id: string | null
+          id: string | null
+          process_id: string | null
+          question_code: string | null
+          question_id: string | null
+          question_text: string | null
+          record_id: string | null
+          tenant_id: string | null
+          updated_at: string | null
+          value: Json | null
+          vendor_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_evidence_id_fkey"
+            columns: ["evidence_id"]
+            isOneToOne: false
+            referencedRelation: "v_evidence_index"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_records"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_record_id_fkey"
+            columns: ["record_id"]
+            isOneToOne: false
+            referencedRelation: "v_dpia_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_answers_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "processes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "v_vendor_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_dpia_overview: {
+        Row: {
+          answers_count: number | null
+          approved_at: string | null
+          created_at: string | null
+          due_at: string | null
+          id: string | null
+          mitigation: Json | null
+          owner_id: string | null
+          process_id: string | null
+          process_name: string | null
+          questionnaire_id: string | null
+          risk_level: string | null
+          score: Json | null
+          scored_at: string | null
+          status: string | null
+          submitted_at: string | null
+          tenant_id: string | null
+          title: string | null
+          updated_at: string | null
+          vendor_id: string | null
+          vendor_name: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_records_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "processes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_questionnaire_id_fkey"
+            columns: ["questionnaire_id"]
+            isOneToOne: false
+            referencedRelation: "dpia_questionnaires"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "v_vendor_overview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dpia_records_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "vendors"
             referencedColumns: ["id"]
           },
         ]
