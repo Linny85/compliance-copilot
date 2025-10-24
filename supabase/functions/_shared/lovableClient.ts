@@ -1,12 +1,10 @@
 // Central Lovable AI Gateway Client
 export function getLovableBaseUrl(): string {
-  // 1) Supabase Secret → 2) Function-Env → 3) Fallback (correct)
   const url =
-    Deno.env.get('LOVABLE_API_BASE_URL') ??
-    Deno.env.get('LOVABLE_BASE_URL') ?? // legacy fallback
-    'https://ai.gateway.lovable.dev/v1';
+    (Deno.env.get('LOVABLE_API_BASE_URL') ?? 
+     Deno.env.get('LOVABLE_BASE_URL') ?? 
+     'https://ai.gateway.lovable.dev/v1').trim();
 
-  // Visible logging for verification in logs
   console.log(`[lovableClient] BASE_URL=${url}`);
   return url.endsWith('/') ? url.slice(0, -1) : url;
 }
@@ -19,17 +17,50 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
   if (!headers.get('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
+  if (!headers.get('Accept')) {
+    headers.set('Accept', 'application/json');
+  }
+  // HTTP/2 issues workaround: some gateways are more stable with H1
+  if (!headers.get('Connection')) {
+    headers.set('Connection', 'close');
+  }
 
-  // Add API key if available
-  const key = Deno.env.get('LOVABLE_API_KEY');
+  // Auth
+  const key = (Deno.env.get('LOVABLE_API_KEY') ?? '').trim();
   if (key && !headers.get('Authorization')) {
     headers.set('Authorization', `Bearer ${key}`);
   }
 
-  console.log(`[lovableFetch] Calling: ${url}`);
+  // Debug logging with request ID
+  const reqId = crypto.randomUUID();
+  console.log(`[lovableFetch:${reqId}] ${init.method ?? 'GET'} ${url}`);
+
+  // Timeout + simple retry on network errors
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), 15000);
   
-  const res = await fetch(url, { ...init, headers });
-  return res;
+  try {
+    try {
+      const res = await fetch(url, { 
+        ...init, 
+        headers, 
+        signal: controller.signal, 
+        redirect: 'follow' 
+      });
+      return res;
+    } catch (e) {
+      console.warn(`[lovableFetch:${reqId}] first attempt failed:`, String(e));
+      // One short retry on network/TLS error
+      const res = await fetch(url, { 
+        ...init, 
+        headers, 
+        redirect: 'follow' 
+      });
+      return res;
+    }
+  } finally {
+    clearTimeout(t);
+  }
 }
 
 export async function embed(text: string): Promise<number[]> {
