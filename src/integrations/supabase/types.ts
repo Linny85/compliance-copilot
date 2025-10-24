@@ -943,21 +943,27 @@ export type Database = {
         Row: {
           content: string
           created_at: string | null
+          embedding: string | null
           id: string
+          relevance: number | null
           role: string | null
           session_id: string | null
         }
         Insert: {
           content: string
           created_at?: string | null
+          embedding?: string | null
           id?: string
+          relevance?: number | null
           role?: string | null
           session_id?: string | null
         }
         Update: {
           content?: string
           created_at?: string | null
+          embedding?: string | null
           id?: string
+          relevance?: number | null
           role?: string | null
           session_id?: string | null
         }

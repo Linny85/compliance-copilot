@@ -32,6 +32,14 @@ verify_jwt = false
 name = "helpbot-chat"
 verify_jwt = false
 
+[[functions]]
+name = "helpbot-memory-eval"
+verify_jwt = false
+
+[[functions]]
+name = "helpbot-memory-train"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "integration-dispatcher"
 schedule = "*/2 * * * *"
@@ -51,3 +59,8 @@ endpoint = "/functions/v1/outbox-archive-prune"
 name = "dead-reporter-daily"
 schedule = "0 6 * * *"
 endpoint = "/functions/v1/dead-reporter"
+
+[[cron.jobs]]
+name = "helpbot-memory-train-daily"
+schedule = "0 6 * * *"
+endpoint = "/functions/v1/helpbot-memory-train"
