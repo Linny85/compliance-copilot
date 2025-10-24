@@ -25,6 +25,7 @@ import SettingsNotifications from "./pages/SettingsNotifications";
 import RemediationEngine from "./pages/RemediationEngine";
 import Integrations from "./pages/Integrations";
 import Approvals from "./pages/Approvals";
+import OpsDashboard from "./pages/OpsDashboard";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/admin/remediation" element={<RemediationEngine />} />
           <Route path="/admin/integrations" element={<Integrations />} />
           <Route path="/admin/approvals" element={<Approvals />} />
+          <Route path="/admin/ops" element={<OpsDashboard />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

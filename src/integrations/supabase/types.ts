@@ -1997,6 +1997,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      ops_metrics: { Args: { p_lookback_hours?: number }; Returns: Json }
       outbox_archive_prune: { Args: { p_days?: number }; Returns: number }
       outbox_cleanup: {
         Args: { p_batch_limit?: number; p_retention_days?: number }
