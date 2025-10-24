@@ -1915,6 +1915,20 @@ export type Database = {
         }
         Returns: string
       }
+      deadjobs_by_tenant: {
+        Args: { since_ts: string }
+        Returns: {
+          cnt: number
+          tenant_id: string
+        }[]
+      }
+      deadjobs_top_errors: {
+        Args: { since_ts: string; top_n?: number }
+        Returns: {
+          cnt: number
+          err: string
+        }[]
+      }
       enqueue_integration_event: {
         Args: {
           _channel: string
