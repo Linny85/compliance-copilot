@@ -941,6 +941,7 @@ export type Database = {
       }
       helpbot_entities: {
         Row: {
+          confidence: number | null
           created_at: string | null
           description: string | null
           embedding: string | null
@@ -950,6 +951,7 @@ export type Database = {
           type: string | null
         }
         Insert: {
+          confidence?: number | null
           created_at?: string | null
           description?: string | null
           embedding?: string | null
@@ -959,6 +961,7 @@ export type Database = {
           type?: string | null
         }
         Update: {
+          confidence?: number | null
           created_at?: string | null
           description?: string | null
           embedding?: string | null
@@ -1043,6 +1046,45 @@ export type Database = {
           },
         ]
       }
+      helpbot_inference_logs: {
+        Row: {
+          created_at: string | null
+          entity_source: string | null
+          entity_target: string | null
+          id: string
+          reasoning: string
+        }
+        Insert: {
+          created_at?: string | null
+          entity_source?: string | null
+          entity_target?: string | null
+          id?: string
+          reasoning: string
+        }
+        Update: {
+          created_at?: string | null
+          entity_source?: string | null
+          entity_target?: string | null
+          id?: string
+          reasoning?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_inference_logs_entity_source_fkey"
+            columns: ["entity_source"]
+            isOneToOne: false
+            referencedRelation: "helpbot_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "helpbot_inference_logs_entity_target_fkey"
+            columns: ["entity_target"]
+            isOneToOne: false
+            referencedRelation: "helpbot_entities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       helpbot_messages: {
         Row: {
           content: string
@@ -1085,24 +1127,33 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
+          inferred: boolean | null
+          last_feedback: string | null
           relation: string | null
           source: string | null
+          support_count: number | null
           target: string | null
           weight: number | null
         }
         Insert: {
           created_at?: string | null
           id?: string
+          inferred?: boolean | null
+          last_feedback?: string | null
           relation?: string | null
           source?: string | null
+          support_count?: number | null
           target?: string | null
           weight?: number | null
         }
         Update: {
           created_at?: string | null
           id?: string
+          inferred?: boolean | null
+          last_feedback?: string | null
           relation?: string | null
           source?: string | null
+          support_count?: number | null
           target?: string | null
           weight?: number | null
         }
@@ -2261,6 +2312,10 @@ export type Database = {
       }
     }
     Functions: {
+      adjust_relation_weight: {
+        Args: { p_delta: number; p_relation_id: string }
+        Returns: undefined
+      }
       adjust_relevance: {
         Args: { p_delta: number; p_message_id: string }
         Returns: undefined
