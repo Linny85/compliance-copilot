@@ -19,6 +19,7 @@ import { AIInsightsCard } from "@/components/dashboard/AIInsightsCard";
 import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { OpsDashboardCard } from "@/components/dashboard/OpsDashboardCard";
 import { ForecastCard } from "@/components/dashboard/ForecastCard";
+import GraphManager from "@/pages/admin/GraphManager";
 
 interface User {
   id: string;
@@ -188,6 +189,7 @@ const Admin = () => {
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
                 <TabsTrigger value="compliance">Compliance</TabsTrigger>
                 <TabsTrigger value="qa-monitor">QA Monitor</TabsTrigger>
+                <TabsTrigger value="graph">Knowledge Graph</TabsTrigger>
               </TabsList>
 
               <TabsContent value="users" className="space-y-4">
@@ -344,6 +346,10 @@ const Admin = () => {
 
               <TabsContent value="qa-monitor" className="space-y-4">
                 {companyId && <QAMonitorCard companyId={companyId} />}
+              </TabsContent>
+
+              <TabsContent value="graph" className="space-y-4">
+                <GraphManager />
               </TabsContent>
             </Tabs>
 
