@@ -1,1 +1,10 @@
 project_id = "eadjoqlyjxwqjfvukvqx"
+
+[[functions]]
+name = "integration-dispatcher"
+verify_jwt = false
+
+[[cron.jobs]]
+name = "integration-dispatcher"
+schedule = "*/2 * * * *"
+endpoint = "/functions/v1/integration-dispatcher"
