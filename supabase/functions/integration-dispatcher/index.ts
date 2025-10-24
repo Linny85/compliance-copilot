@@ -8,6 +8,7 @@ interface OutboxJob {
   event_type: string;
   payload: any;
   attempts: number;
+  dedupe_key?: string;
 }
 
 function calculateBackoff(attempt: number): number {
@@ -115,6 +116,30 @@ Deno.serve(async (req) => {
 
     for (const job of jobs as OutboxJob[]) {
       console.log(`[integration-dispatcher] Processing job ${job.id}, channel: ${job.channel}, attempt: ${job.attempts + 1}`);
+
+      // Dedupe-Check: Wurde ein Job mit gleichem dedupe_key schon delivered?
+      if (job.dedupe_key) {
+        const { data: dup } = await supabase
+          .from('integration_outbox')
+          .select('id,status')
+          .eq('dedupe_key', job.dedupe_key)
+          .eq('status', 'delivered')
+          .limit(1);
+
+        if (dup && dup.length > 0) {
+          console.log(`[integration-dispatcher] Job ${job.id} dedupe_key=${job.dedupe_key} already delivered, marking as delivered`);
+          await supabase
+            .from('integration_outbox')
+            .update({ 
+              status: 'delivered', 
+              delivered_at: new Date().toISOString(), 
+              last_error: null 
+            })
+            .eq('id', job.id);
+          successCount++;
+          continue;
+        }
+      }
 
       // Get tenant settings
       const { data: settings } = await supabase

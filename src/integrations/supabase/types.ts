@@ -1453,6 +1453,7 @@ export type Database = {
           integration_slack_webhook_url: string | null
           notification_email: string | null
           notification_webhook_url: string | null
+          settings: Json
           tenant_id: string
           updated_at: string
           webhook_domain_allowlist: string[] | null
@@ -1470,6 +1471,7 @@ export type Database = {
           integration_slack_webhook_url?: string | null
           notification_email?: string | null
           notification_webhook_url?: string | null
+          settings?: Json
           tenant_id: string
           updated_at?: string
           webhook_domain_allowlist?: string[] | null
@@ -1487,6 +1489,7 @@ export type Database = {
           integration_slack_webhook_url?: string | null
           notification_email?: string | null
           notification_webhook_url?: string | null
+          settings?: Json
           tenant_id?: string
           updated_at?: string
           webhook_domain_allowlist?: string[] | null
@@ -1752,6 +1755,29 @@ export type Database = {
           },
         ]
       }
+      v_current_tenant: {
+        Row: {
+          tenant_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          tenant_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          tenant_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_daily_sr_30d: {
         Row: {
           day: string | null
@@ -1889,6 +1915,20 @@ export type Database = {
         }
         Returns: string
       }
+      enqueue_integration_event: {
+        Args: {
+          _channel: string
+          _dedupe_key?: string
+          _event_type: string
+          _payload: Json
+          _tenant: string
+        }
+        Returns: string
+      }
+      feature_enabled: {
+        Args: { _fallback?: boolean; _path: string[]; _tenant: string }
+        Returns: boolean
+      }
       get_user_company: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
@@ -1898,6 +1938,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      set_default_flags: { Args: { _tenant: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
