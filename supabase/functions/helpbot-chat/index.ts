@@ -138,8 +138,23 @@ Deno.serve(async (req) => {
       console.error("[helpbot-chat] Failed to save messages:", insertErr);
     }
 
-    // Extract the assistant message ID for feedback
+    // Extract message IDs for graph extraction
+    const userMsgId = insertedMsgs?.find(m => m.role === "user")?.id;
     const assistantMsgId = insertedMsgs?.find(m => m.role === "assistant")?.id;
+
+    // 6️⃣ Extract entities and relations from both messages (background)
+    // Fire and forget - don't block the response
+    if (userMsgId) {
+      sb.functions.invoke("helpbot-graph-extract", {
+        body: { message_id: userMsgId, content: question, lang }
+      }).catch(err => console.error("[helpbot-chat] Graph extraction failed (user):", err));
+    }
+
+    if (assistantMsgId) {
+      sb.functions.invoke("helpbot-graph-extract", {
+        body: { message_id: assistantMsgId, content: answer, lang }
+      }).catch(err => console.error("[helpbot-chat] Graph extraction failed (assistant):", err));
+    }
 
     return json({
       ok: true,

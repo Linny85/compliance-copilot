@@ -939,6 +939,75 @@ export type Database = {
         }
         Relationships: []
       }
+      helpbot_entities: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          embedding: string | null
+          id: string
+          label: string
+          lang: string | null
+          type: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          embedding?: string | null
+          id?: string
+          label: string
+          lang?: string | null
+          type?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          embedding?: string | null
+          id?: string
+          label?: string
+          lang?: string | null
+          type?: string | null
+        }
+        Relationships: []
+      }
+      helpbot_entity_links: {
+        Row: {
+          confidence: number | null
+          created_at: string | null
+          entity_id: string | null
+          id: string
+          message_id: string | null
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string | null
+          entity_id?: string | null
+          id?: string
+          message_id?: string | null
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string | null
+          entity_id?: string | null
+          id?: string
+          message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_entity_links_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "helpbot_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "helpbot_entity_links_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "helpbot_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       helpbot_feedback: {
         Row: {
           comment: string | null
@@ -1008,6 +1077,48 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "helpbot_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      helpbot_relations: {
+        Row: {
+          created_at: string | null
+          id: string
+          relation: string | null
+          source: string | null
+          target: string | null
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          relation?: string | null
+          source?: string | null
+          target?: string | null
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          relation?: string | null
+          source?: string | null
+          target?: string | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_relations_source_fkey"
+            columns: ["source"]
+            isOneToOne: false
+            referencedRelation: "helpbot_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "helpbot_relations_target_fkey"
+            columns: ["target"]
+            isOneToOne: false
+            referencedRelation: "helpbot_entities"
             referencedColumns: ["id"]
           },
         ]

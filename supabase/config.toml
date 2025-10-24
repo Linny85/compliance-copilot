@@ -48,6 +48,10 @@ verify_jwt = false
 name = "helpbot-feedback"
 verify_jwt = false
 
+[[functions]]
+name = "helpbot-graph-extract"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "integration-dispatcher"
 schedule = "*/2 * * * *"
