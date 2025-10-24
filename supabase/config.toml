@@ -12,6 +12,10 @@ verify_jwt = false
 name = "outbox-cleanup"
 verify_jwt = false
 
+[[functions]]
+name = "outbox-archive-prune"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "integration-dispatcher"
 schedule = "*/2 * * * *"
@@ -21,6 +25,11 @@ endpoint = "/functions/v1/integration-dispatcher"
 name = "outbox-cleanup-daily"
 schedule = "30 3 * * *"
 endpoint = "/functions/v1/outbox-cleanup"
+
+[[cron.jobs]]
+name = "outbox-archive-prune-monthly"
+schedule = "0 4 1 * *"
+endpoint = "/functions/v1/outbox-archive-prune"
 
 [[cron.jobs]]
 name = "dead-reporter-daily"
