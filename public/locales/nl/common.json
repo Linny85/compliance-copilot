@@ -116,6 +116,26 @@
     "language": "Taal",
     "settings": "Instellingen"
   },
+  "dpia": {
+    "title": "Gegevensbeschermingseffectbeoordeling (DPIA)",
+    "subtitle": "Gegevensbeschermingseffectbeoordelingen beheren",
+    "overdue": "Verlopen",
+    "status": {
+      "open": "Open",
+      "submitted": "Ingediend",
+      "in_review": "In beoordeling",
+      "scored": "Beoordeeld",
+      "approved": "Goedgekeurd",
+      "rejected": "Afgewezen",
+      "archived": "Gearchiveerd"
+    },
+    "risk": {
+      "low": "Laag",
+      "med": "Gemiddeld",
+      "high": "Hoog",
+      "critical": "Kritiek"
+    }
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Financiën",

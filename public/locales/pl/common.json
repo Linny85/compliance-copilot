@@ -116,6 +116,26 @@
     "language": "Język",
     "settings": "Ustawienia"
   },
+  "dpia": {
+    "title": "Ocena skutków dla ochrony danych (DPIA)",
+    "subtitle": "Zarządzaj ocenami skutków dla ochrony danych",
+    "overdue": "Po terminie",
+    "status": {
+      "open": "Otwarta",
+      "submitted": "Złożona",
+      "in_review": "W trakcie przeglądu",
+      "scored": "Oceniona",
+      "approved": "Zatwierdzona",
+      "rejected": "Odrzucona",
+      "archived": "Zarchiwizowana"
+    },
+    "risk": {
+      "low": "Niskie",
+      "med": "Średnie",
+      "high": "Wysokie",
+      "critical": "Krytyczne"
+    }
+  },
   "sectors": {
     "it": "IT / Oprogramowanie",
     "finance": "Finanse",

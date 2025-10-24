@@ -116,6 +116,26 @@
     "language": "Langue",
     "settings": "Paramètres"
   },
+  "dpia": {
+    "title": "Analyse d'impact relative à la protection des données (AIPD)",
+    "subtitle": "Gérer les analyses d'impact sur la protection des données",
+    "overdue": "En retard",
+    "status": {
+      "open": "Ouvert",
+      "submitted": "Soumise",
+      "in_review": "En révision",
+      "scored": "Évaluée",
+      "approved": "Approuvée",
+      "rejected": "Rejetée",
+      "archived": "Archivée"
+    },
+    "risk": {
+      "low": "Faible",
+      "med": "Moyen",
+      "high": "Élevé",
+      "critical": "Critique"
+    }
+  },
   "sectors": {
     "it": "IT / Logiciel",
     "finance": "Finance",

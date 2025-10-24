@@ -25,5 +25,19 @@
   "common.delete": "Smazat",
   "common.status": "Stav",
   "common.createdAt": "Vytvořeno dne",
-  "common.actions": "Akce"
+  "common.actions": "Akce",
+  "dpia.title": "Posouzení vlivu na ochranu osobních údajů (DPIA)",
+  "dpia.subtitle": "Spravovat posouzení vlivu na ochranu dat",
+  "dpia.overdue": "Po termínu",
+  "dpia.status.open": "Otevřeno",
+  "dpia.status.submitted": "Odesláno",
+  "dpia.status.in_review": "V kontrole",
+  "dpia.status.scored": "Ohodnoceno",
+  "dpia.status.approved": "Schváleno",
+  "dpia.status.rejected": "Zamítnuto",
+  "dpia.status.archived": "Archivováno",
+  "dpia.risk.low": "Nízké",
+  "dpia.risk.med": "Střední",
+  "dpia.risk.high": "Vysoké",
+  "dpia.risk.critical": "Kritické"
 }

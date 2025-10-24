@@ -116,6 +116,26 @@
     "language": "Idioma",
     "settings": "Configuración"
   },
+  "dpia": {
+    "title": "Evaluación de impacto relativa a la protección de datos (EIPD)",
+    "subtitle": "Gestionar evaluaciones de impacto en la protección de datos",
+    "overdue": "Vencido",
+    "status": {
+      "open": "Abierta",
+      "submitted": "Enviada",
+      "in_review": "En revisión",
+      "scored": "Evaluada",
+      "approved": "Aprobada",
+      "rejected": "Rechazada",
+      "archived": "Archivada"
+    },
+    "risk": {
+      "low": "Bajo",
+      "med": "Medio",
+      "high": "Alto",
+      "critical": "Crítico"
+    }
+  },
   "sectors": {
     "it": "TI / Software",
     "finance": "Finanzas",

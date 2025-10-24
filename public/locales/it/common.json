@@ -116,6 +116,26 @@
     "language": "Lingua",
     "settings": "Impostazioni"
   },
+  "dpia": {
+    "title": "Valutazione d'impatto sulla protezione dei dati (DPIA)",
+    "subtitle": "Gestire le valutazioni d'impatto sulla protezione dei dati",
+    "overdue": "Scaduto",
+    "status": {
+      "open": "Aperta",
+      "submitted": "Inviata",
+      "in_review": "In revisione",
+      "scored": "Valutata",
+      "approved": "Approvata",
+      "rejected": "Rifiutata",
+      "archived": "Archiviata"
+    },
+    "risk": {
+      "low": "Basso",
+      "med": "Medio",
+      "high": "Alto",
+      "critical": "Critico"
+    }
+  },
   "sectors": {
     "it": "IT / Software",
     "finance": "Finanza",

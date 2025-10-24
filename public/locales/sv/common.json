@@ -137,6 +137,26 @@
     "high": "Hög",
     "critical": "Kritisk"
   },
+  "dpia": {
+    "title": "Konsekvensbedömning av dataskydd",
+    "subtitle": "Hantera konsekvensbedömningar för dataskydd",
+    "overdue": "Förfallen",
+    "status": {
+      "open": "Öppen",
+      "submitted": "Inlämnad",
+      "in_review": "Under granskning",
+      "scored": "Bedömd",
+      "approved": "Godkänd",
+      "rejected": "Avvisad",
+      "archived": "Arkiverad"
+    },
+    "risk": {
+      "low": "Låg",
+      "med": "Medel",
+      "high": "Hög",
+      "critical": "Kritisk"
+    }
+  },
   "sectors": {
     "it": "IT / Programvara",
     "finance": "Finans",
