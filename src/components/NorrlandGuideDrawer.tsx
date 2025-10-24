@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
+
+interface Message {
+  role: "user" | "assistant" | "system";
+  content: string;
+}
 
 export function NorrlandGuideDrawer({ 
   open, 
@@ -11,109 +18,210 @@ export function NorrlandGuideDrawer({
   const [q, setQ] = useState("");
   const [lang, setLang] = useState<"de" | "en" | "sv">("de");
   const [loading, setLoading] = useState(false);
-  const [answer, setAnswer] = useState("");
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
   const [disc, setDisc] = useState("");
   const first = useRef<HTMLTextAreaElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (open && first.current) first.current.focus();
   }, [open]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   async function ask() {
     if (!q.trim()) return;
+    
+    const currentQuestion = q.trim();
+    setQ(""); // Clear input immediately
     setLoading(true);
-    setAnswer("");
-    setSources([]);
     
     try {
-      const { data, error } = await supabase.functions.invoke("helpbot-query", {
-        body: { question: q.trim(), lang }
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const { data, error } = await supabase.functions.invoke("helpbot-chat", {
+        body: { 
+          question: currentQuestion, 
+          session_id: sessionId,
+          lang,
+          jurisdiction: "EU",
+          user_id: user?.id ?? null
+        }
       });
 
       if (error) throw error;
       
-      setAnswer(data?.answer ?? "");
+      if (data?.session_id && !sessionId) {
+        setSessionId(data.session_id);
+      }
+
+      // Update messages with the full history from response
+      if (data?.history) {
+        setMessages(data.history);
+      }
+      
       setSources(data?.sources ?? []);
       setDisc(data?.disclaimer ?? "");
     } catch (err: any) {
-      setAnswer(`Fehler: ${err?.message ?? "Unbekannter Fehler"}`);
+      console.error("[NorrlandGuide] Chat error:", err);
+      setMessages(prev => [...prev, 
+        { role: "user", content: currentQuestion },
+        { role: "assistant", content: `Fehler: ${err?.message ?? "Unbekannter Fehler"}` }
+      ]);
     } finally {
       setLoading(false);
     }
+  }
+
+  function resetSession() {
+    setSessionId(null);
+    setMessages([]);
+    setSources([]);
+    setDisc("");
+    setQ("");
   }
 
   if (!open) return null;
 
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 bg-black/40">
-      <div className="absolute right-0 top-0 h-full w-full max-w-lg bg-background border-l border-border p-4 overflow-auto">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-foreground">Norrland Guide</h2>
-          <button 
-            onClick={() => setOpen(false)} 
-            aria-label="Close"
-            className="text-foreground hover:text-muted-foreground"
-          >
-            ✕
-          </button>
-        </div>
-
-        <div className="space-y-3">
-          <textarea 
-            ref={first} 
-            value={q} 
-            onChange={e => setQ(e.target.value)}
-            className="w-full h-28 rounded border border-border bg-background text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="Frage eingeben…" 
-          />
+      <div className="absolute right-0 top-0 h-full w-full max-w-lg bg-background border-l border-border flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex-1">
+            <h2 className="text-lg font-semibold text-foreground">Norrland Guide</h2>
+            <p className="text-xs text-muted-foreground">
+              {sessionId ? `Session aktiv` : "Neue Session"}
+            </p>
+          </div>
           <div className="flex gap-2">
-            <select 
-              value={lang} 
-              onChange={e => setLang(e.target.value as any)}
-              className="border border-border rounded bg-background text-foreground p-2"
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={resetSession}
+              title="Neue Session"
+              className="text-muted-foreground hover:text-foreground"
             >
-              <option value="de">DE</option>
-              <option value="en">EN</option>
-              <option value="sv">SV</option>
-            </select>
+              <RotateCcw className="h-4 w-4" />
+            </Button>
             <button 
-              onClick={ask} 
-              disabled={loading}
-              className="ml-auto px-4 py-2 rounded bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+              onClick={() => setOpen(false)} 
+              aria-label="Close"
+              className="text-foreground hover:text-muted-foreground"
             >
-              {loading ? "Lädt…" : "Fragen"}
+              ✕
             </button>
           </div>
+        </div>
 
-          {!!answer && (
-            <div className="space-y-2">
-              <div className="prose prose-invert max-w-none whitespace-pre-wrap text-foreground">
-                {answer}
+        {/* Messages Area */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.length === 0 ? (
+            <div className="flex items-center justify-center h-full text-center">
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Stellen Sie Ihre erste Frage
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Der Verlauf wird automatisch gespeichert
+                </p>
               </div>
-              {sources?.length ? (
-                <div className="text-sm text-muted-foreground">
-                  Quellen:{" "}
-                  {sources.map((s, i) => (
-                    <a 
-                      key={i} 
-                      href={s.uri} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="underline mr-2 hover:text-foreground"
-                    >
-                      {s.title}
-                    </a>
-                  ))}
+            </div>
+          ) : (
+            messages.map((msg, i) => (
+              <div key={i} className={msg.role === "user" ? "flex justify-end" : "flex justify-start"}>
+                <div 
+                  className={
+                    msg.role === "user" 
+                      ? "bg-primary text-primary-foreground px-4 py-2 rounded-lg max-w-[80%]"
+                      : "bg-muted text-foreground px-4 py-2 rounded-lg max-w-[80%]"
+                  }
+                >
+                  <div className="whitespace-pre-wrap text-sm">{msg.content}</div>
                 </div>
-              ) : null}
-              {disc ? (
-                <div className="text-xs text-muted-foreground italic">
-                  {disc}
+              </div>
+            ))
+          )}
+          {loading && (
+            <div className="flex justify-start">
+              <div className="bg-muted text-foreground px-4 py-2 rounded-lg">
+                <div className="flex items-center gap-2">
+                  <div className="animate-pulse">●</div>
+                  <div className="animate-pulse delay-100">●</div>
+                  <div className="animate-pulse delay-200">●</div>
                 </div>
-              ) : null}
+              </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Sources & Disclaimer */}
+        {sources.length > 0 && (
+          <div className="px-4 py-2 border-t border-border bg-muted/50">
+            <div className="text-xs text-muted-foreground">
+              <strong>Quellen:</strong>{" "}
+              {sources.map((s, i) => (
+                <a 
+                  key={i} 
+                  href={s.uri} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="underline mr-2 hover:text-foreground"
+                >
+                  {s.title}
+                </a>
+              ))}
+            </div>
+            {disc && (
+              <div className="text-xs text-muted-foreground italic mt-1">
+                {disc}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Input Area */}
+        <div className="p-4 border-t border-border bg-background">
+          <div className="space-y-3">
+            <textarea 
+              ref={first} 
+              value={q} 
+              onChange={e => setQ(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  ask();
+                }
+              }}
+              className="w-full h-20 rounded border border-border bg-background text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              placeholder="Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…"
+              disabled={loading}
+            />
+            <div className="flex gap-2">
+              <select 
+                value={lang} 
+                onChange={e => setLang(e.target.value as any)}
+                className="border border-border rounded bg-background text-foreground p-2 text-sm"
+                disabled={loading}
+              >
+                <option value="de">DE</option>
+                <option value="en">EN</option>
+                <option value="sv">SV</option>
+              </select>
+              <Button 
+                onClick={ask} 
+                disabled={loading || !q.trim()}
+                className="ml-auto px-4 py-2"
+              >
+                {loading ? "Lädt…" : "Fragen"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

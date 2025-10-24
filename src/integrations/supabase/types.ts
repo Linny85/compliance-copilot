@@ -939,6 +939,65 @@ export type Database = {
         }
         Relationships: []
       }
+      helpbot_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          role: string | null
+          session_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          role?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          role?: string | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "helpbot_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "helpbot_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      helpbot_sessions: {
+        Row: {
+          id: string
+          jurisdiction: string | null
+          lang: string | null
+          last_activity: string | null
+          started_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          jurisdiction?: string | null
+          lang?: string | null
+          last_activity?: string | null
+          started_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          jurisdiction?: string | null
+          lang?: string | null
+          last_activity?: string | null
+          started_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       integration_dlq: {
         Row: {
           attempts: number
