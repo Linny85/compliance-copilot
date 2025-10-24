@@ -16,6 +16,14 @@ verify_jwt = false
 name = "outbox-archive-prune"
 verify_jwt = false
 
+[[functions]]
+name = "helpbot-ingest"
+verify_jwt = false
+
+[[functions]]
+name = "helpbot-query"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "integration-dispatcher"
 schedule = "*/2 * * * *"
