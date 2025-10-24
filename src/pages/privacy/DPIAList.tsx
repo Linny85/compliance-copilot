@@ -11,7 +11,18 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Search, Plus, FileText } from "lucide-react";
-import { format } from "date-fns";
+import { format, startOfDay, isBefore } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
+
+const TZ = "Europe/Stockholm";
+
+const isOverdue = (iso?: string | null, status?: string) => {
+  if (!iso) return false;
+  if (status === "approved" || status === "archived") return false;
+  const dueLocal = startOfDay(toZonedTime(iso, TZ));
+  const nowLocal = startOfDay(toZonedTime(new Date(), TZ));
+  return isBefore(dueLocal, nowLocal);
+};
 
 interface DPIARecord {
   id: string;
@@ -229,7 +240,7 @@ export default function DPIAList() {
                         {rec.due_at ? (
                           <div className="flex items-center gap-2">
                             {format(new Date(rec.due_at), 'PPP')}
-                            {new Date(rec.due_at) < new Date() && rec.status !== "approved" && rec.status !== "archived" && (
+                            {isOverdue(rec.due_at, rec.status) && (
                               <Badge variant="destructive" className="text-xs">Overdue</Badge>
                             )}
                           </div>

@@ -96,10 +96,12 @@ Deno.serve(async (req) => {
           norm = ans.evidence_id ? 1 : 0;
           break;
         case 'number': {
-          const val = Number(ans.value || 0);
-          const scale = q.options?.scale || { min: 0, max: 10 };
-          const range = scale.max - scale.min;
-          norm = range > 0 ? (val - scale.min) / range : 0;
+          const val = Number(ans.value ?? 0);
+          const scale = q.options?.scale ?? { min: 0, max: 10 };
+          const range = Number(scale.max) - Number(scale.min);
+          norm = range > 0 ? (val - Number(scale.min)) / range : 0;
+          // Clamp to [0,1] for safety
+          norm = Math.max(0, Math.min(1, norm));
           break;
         }
         case 'single': {
