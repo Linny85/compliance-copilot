@@ -48,6 +48,46 @@
   "errors": {
     "load_failed": "Laden der Scope-Einheiten fehlgeschlagen",
     "create_failed": "Erstellen der Einheit fehlgeschlagen",
-    "assign_failed": "Zuweisung der Kontrolle fehlgeschlagen"
+    "assign_failed": "Zuweisung der Kontrolle fehlgeschlagen",
+    "exception_reason_required": "Ausnahmegründung ist erforderlich"
+  },
+  "matrix": {
+    "title": "Scope-Matrix",
+    "subtitle": "Kontrollen über Scopes verwalten",
+    "control": "Kontrolle",
+    "framework": "Framework",
+    "owner": "Verantwortlicher",
+    "mode": "Modus",
+    "actions": "Aktionen",
+    "search_controls": "Kontrollen suchen...",
+    "show_conflicts_only": "Nur Konflikte",
+    "no_assignments": "Keine Zuweisungen gefunden",
+    "badge": {
+      "direct": "Direkt",
+      "override": "Override",
+      "exception": "Ausnahme",
+      "conflict": "Konflikt"
+    },
+    "mode": {
+      "inherit": "Vererben",
+      "override": "Überschreiben"
+    },
+    "action": {
+      "assign": "Zuweisen",
+      "save": "Speichern",
+      "set_exception": "Ausnahme setzen",
+      "fix_conflicts": "Konflikte beheben"
+    },
+    "dialog": {
+      "assign_title": "Kontrolle zuweisen",
+      "exception_title": "Ausnahme setzen"
+    },
+    "exception_reason_placeholder": "Begründung für die Ausnahme...",
+    "success": {
+      "assigned": "Zuweisung erfolgreich",
+      "unassigned": "Zuweisung entfernt",
+      "exception_set": "Ausnahme gesetzt",
+      "conflicts_fixed": "{{count}} Konflikte behoben"
+    }
   }
 }

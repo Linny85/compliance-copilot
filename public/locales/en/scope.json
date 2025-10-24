@@ -48,6 +48,46 @@
   "errors": {
     "load_failed": "Failed to load scope units",
     "create_failed": "Failed to create unit",
-    "assign_failed": "Failed to assign control"
+    "assign_failed": "Failed to assign control",
+    "exception_reason_required": "Exception reason is required"
+  },
+  "matrix": {
+    "title": "Scope Matrix",
+    "subtitle": "Manage controls across scopes",
+    "control": "Control",
+    "framework": "Framework",
+    "owner": "Owner",
+    "mode": "Mode",
+    "actions": "Actions",
+    "search_controls": "Search controls...",
+    "show_conflicts_only": "Conflicts Only",
+    "no_assignments": "No assignments found",
+    "badge": {
+      "direct": "Direct",
+      "override": "Override",
+      "exception": "Exception",
+      "conflict": "Conflict"
+    },
+    "mode": {
+      "inherit": "Inherit",
+      "override": "Override"
+    },
+    "action": {
+      "assign": "Assign",
+      "save": "Save",
+      "set_exception": "Set Exception",
+      "fix_conflicts": "Fix Conflicts"
+    },
+    "dialog": {
+      "assign_title": "Assign Control",
+      "exception_title": "Set Exception"
+    },
+    "exception_reason_placeholder": "Reason for exception...",
+    "success": {
+      "assigned": "Assignment successful",
+      "unassigned": "Assignment removed",
+      "exception_set": "Exception set",
+      "conflicts_fixed": "{{count}} conflicts fixed"
+    }
   }
 }

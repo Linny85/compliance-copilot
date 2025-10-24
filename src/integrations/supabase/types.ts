@@ -2666,6 +2666,37 @@ export type Database = {
           },
         ]
       }
+      v_effective_controls: {
+        Row: {
+          control_id: string | null
+          created_at: string | null
+          effective_mode: string | null
+          exception_flag: boolean | null
+          exception_reason: string | null
+          inheritance_rule: string | null
+          owner_id: string | null
+          scope_id: string | null
+          scope_type: string | null
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_assignments_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "policy_assignments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_ensemble_weight_latest: {
         Row: {
           adjusted_at: string | null
@@ -2879,6 +2910,43 @@ export type Database = {
           },
         ]
       }
+      v_scope_conflicts: {
+        Row: {
+          cnt: number | null
+          conflict_kind: string | null
+          control_id: string | null
+          has_exception: boolean | null
+          rules: string[] | null
+          scope_id: string | null
+          scope_type: string | null
+          tenant_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "policy_assignments_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "policy_assignments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_scopes: {
+        Row: {
+          name: string | null
+          scope_id: string | null
+          scope_type: string | null
+          tenant_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       adjust_relation_weight: {
@@ -3012,6 +3080,21 @@ export type Database = {
       outbox_cleanup: {
         Args: { p_batch_limit?: number; p_retention_days?: number }
         Returns: Json
+      }
+      resolve_effective_control: {
+        Args: {
+          p_control: string
+          p_scope_id: string
+          p_scope_type: string
+          p_tenant: string
+        }
+        Returns: {
+          effective_mode: string
+          exception_flag: boolean
+          exception_reason: string
+          owner_id: string
+          source_assignments: Json
+        }[]
       }
       set_default_flags: { Args: { _tenant: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
