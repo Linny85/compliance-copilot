@@ -577,6 +577,7 @@ export type Database = {
       evidences: {
         Row: {
           control_id: string
+          expires_at: string | null
           file_path: string
           file_size: number
           hash_sha256: string
@@ -586,13 +587,16 @@ export type Database = {
           request_id: string | null
           reviewed_at: string | null
           reviewer_id: string | null
+          supersedes: string | null
           tenant_id: string
           uploaded_at: string
           uploaded_by: string
           verdict: string
+          version_id: string
         }
         Insert: {
           control_id: string
+          expires_at?: string | null
           file_path: string
           file_size: number
           hash_sha256: string
@@ -602,13 +606,16 @@ export type Database = {
           request_id?: string | null
           reviewed_at?: string | null
           reviewer_id?: string | null
+          supersedes?: string | null
           tenant_id: string
           uploaded_at?: string
           uploaded_by: string
           verdict?: string
+          version_id?: string
         }
         Update: {
           control_id?: string
+          expires_at?: string | null
           file_path?: string
           file_size?: number
           hash_sha256?: string
@@ -618,10 +625,12 @@ export type Database = {
           request_id?: string | null
           reviewed_at?: string | null
           reviewer_id?: string | null
+          supersedes?: string | null
           tenant_id?: string
           uploaded_at?: string
           uploaded_by?: string
           verdict?: string
+          version_id?: string
         }
         Relationships: [
           {
@@ -636,6 +645,20 @@ export type Database = {
             columns: ["request_id"]
             isOneToOne: false
             referencedRelation: "evidence_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
             referencedColumns: ["id"]
           },
           {
@@ -1087,6 +1110,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      helpbot_logs: {
+        Row: {
+          base_url: string | null
+          details: Json | null
+          error_code: string | null
+          func: string
+          id: number
+          latency_ms: number | null
+          level: string
+          message: string | null
+          method: string | null
+          path: string | null
+          session_id: string | null
+          status: number | null
+          tenant_id: string | null
+          ts: string
+          using_proxy: boolean | null
+        }
+        Insert: {
+          base_url?: string | null
+          details?: Json | null
+          error_code?: string | null
+          func: string
+          id?: number
+          latency_ms?: number | null
+          level: string
+          message?: string | null
+          method?: string | null
+          path?: string | null
+          session_id?: string | null
+          status?: number | null
+          tenant_id?: string | null
+          ts?: string
+          using_proxy?: boolean | null
+        }
+        Update: {
+          base_url?: string | null
+          details?: Json | null
+          error_code?: string | null
+          func?: string
+          id?: number
+          latency_ms?: number | null
+          level?: string
+          message?: string | null
+          method?: string | null
+          path?: string | null
+          session_id?: string | null
+          status?: number | null
+          tenant_id?: string | null
+          ts?: string
+          using_proxy?: boolean | null
+        }
+        Relationships: []
       }
       helpbot_messages: {
         Row: {
@@ -2013,6 +2090,64 @@ export type Database = {
       }
     }
     Views: {
+      evidences_current: {
+        Row: {
+          control_id: string | null
+          expires_at: string | null
+          file_path: string | null
+          file_size: number | null
+          hash_sha256: string | null
+          id: string | null
+          mime_type: string | null
+          note: string | null
+          request_id: string | null
+          reviewed_at: string | null
+          reviewer_id: string | null
+          supersedes: string | null
+          tenant_id: string | null
+          uploaded_at: string | null
+          uploaded_by: string | null
+          verdict: string | null
+          version_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidences_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "evidence_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "evidences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_supersedes_fkey"
+            columns: ["supersedes"]
+            isOneToOne: false
+            referencedRelation: "evidences_current"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evidences_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_approvals_pending: {
         Row: {
           action: string | null
