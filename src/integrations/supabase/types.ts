@@ -963,6 +963,51 @@ export type Database = {
           },
         ]
       }
+      integration_outbox_archive: {
+        Row: {
+          attempts: number
+          channel: string
+          created_at: string
+          dedupe_key: string | null
+          delivered_at: string | null
+          event_type: string
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          attempts?: number
+          channel: string
+          created_at?: string
+          dedupe_key?: string | null
+          delivered_at?: string | null
+          event_type: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload: Json
+          status?: string
+          tenant_id: string
+        }
+        Update: {
+          attempts?: number
+          channel?: string
+          created_at?: string
+          dedupe_key?: string | null
+          delivered_at?: string | null
+          event_type?: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
       nis2_risks: {
         Row: {
           company_id: string
@@ -1951,6 +1996,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      outbox_cleanup: {
+        Args: { p_batch_limit?: number; p_retention_days?: number }
+        Returns: Json
       }
       set_default_flags: { Args: { _tenant: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
