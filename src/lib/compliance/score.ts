@@ -102,3 +102,9 @@ export interface VFrameworkComplianceRow {
   framework: 'NIS2' | 'AI_ACT' | 'GDPR' | string;
   score: number | null;
 }
+
+export interface TrendData {
+  cur_score: number | null;
+  prev_score: number | null;
+  delta_score: number | null;
+}

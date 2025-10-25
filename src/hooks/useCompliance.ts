@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { VComplianceSummaryRow, VFrameworkComplianceRow } from '@/lib/compliance/score';
-
-interface TrendData {
-  cur_score: number;
-  prev_score: number;
-  delta_score: number;
-}
+import type { VComplianceSummaryRow, VFrameworkComplianceRow, TrendData } from '@/lib/compliance/score';
 
 export function useComplianceData() {
   const [summary, setSummary] = useState<VComplianceSummaryRow | null>(null);
