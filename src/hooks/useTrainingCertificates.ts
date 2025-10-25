@@ -64,9 +64,9 @@ export function useCreateTrainingCertificate() {
 
       if (!profile?.company_id) throw new Error('No company found');
 
-      // Generate unique filename with user folder structure
+      // Generate unique filename with tenant/user folder structure
       const fileExt = input.file.name.split('.').pop();
-      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+      const fileName = `${profile.company_id}/${user.id}/${crypto.randomUUID()}.${fileExt}`;
 
       // Upload file to storage
       const { error: uploadError } = await supabase.storage
