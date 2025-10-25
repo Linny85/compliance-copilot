@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { NextStepsCard } from "@/components/dashboard/NextStepsCard";
 import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
+import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { t, ready } = useTranslation(['common', 'dashboard']);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string>("");
   const [companyData, setCompanyData] = useState<CompanyData>({
     name: "",
     country: "",
@@ -42,6 +44,8 @@ const Dashboard = () => {
         navigate("/auth");
         return;
       }
+
+      setUserId(session.user.id);
 
       // Get user's company
       const { data: profile } = await supabase
@@ -138,6 +142,7 @@ const Dashboard = () => {
                   country={companyData.country}
                   sector={companyData.sector}
                 />
+                {userId && <TrainingCertificatesCard userId={userId} />}
               </div>
             </div>
           </div>

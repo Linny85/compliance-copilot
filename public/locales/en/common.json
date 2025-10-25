@@ -29,6 +29,30 @@
     "finish": "Finish",
     "step": "Step {{current}} of {{total}}"
   },
+  "training": {
+    "title": "Training Certificates",
+    "description": "Management and verification of uploaded training certificates",
+    "upload": "Upload Certificate",
+    "uploadTitle": "Upload Training Certificate",
+    "uploadDescription": "Upload your training certificate for review",
+    "courseTitle": "Course Title",
+    "provider": "Provider",
+    "dateCompleted": "Completion Date",
+    "file": "Certificate (PDF/Image)",
+    "status": {
+      "pending": "Under Review",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "recommended": "Recommended Training",
+    "noCertificates": "No certificates uploaded yet",
+    "verify": "Verify",
+    "reject": "Reject",
+    "delete": "Delete",
+    "notes": "Notes",
+    "verifyConfirm": "Confirm that the certificate is valid",
+    "rejectReason": "Provide a reason for rejection"
+  },
   "dashboard": {
     "welcome": "Welcome",
     "nextSteps": "Next Steps",

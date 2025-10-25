@@ -27,6 +27,7 @@ import Integrations from "./pages/Integrations";
 import Approvals from "./pages/Approvals";
 import OpsDashboard from "./pages/OpsDashboard";
 import HelpbotManager from "./pages/admin/HelpbotManager";
+import TrainingCertificates from "./pages/admin/TrainingCertificates";
 import DPIAList from "./pages/privacy/DPIAList";
 import DPIADetail from "./pages/privacy/DPIADetail";
 import Billing from "./pages/Billing";
@@ -72,6 +73,7 @@ const App = () => (
           <Route path="/admin/approvals" element={<Approvals />} />
           <Route path="/admin/ops" element={<OpsDashboard />} />
           <Route path="/admin/helpbot" element={<HelpbotManager />} />
+          <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
           <Route path="/privacy/dpia" element={<DPIAList />} />
           <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
           <Route path="/billing" element={<Billing />} />

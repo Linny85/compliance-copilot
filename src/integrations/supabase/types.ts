@@ -2682,6 +2682,54 @@ export type Database = {
         }
         Relationships: []
       }
+      training_certificates: {
+        Row: {
+          created_at: string
+          date_completed: string
+          file_url: string
+          id: string
+          notes: string | null
+          provider: string
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string
+          user_id: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          date_completed: string
+          file_url: string
+          id?: string
+          notes?: string | null
+          provider: string
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string
+          user_id: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          date_completed?: string
+          file_url?: string
+          id?: string
+          notes?: string | null
+          provider?: string
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: []
+      }
       Unternehmen: {
         Row: {
           address: string | null

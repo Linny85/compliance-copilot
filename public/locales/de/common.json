@@ -29,6 +29,30 @@
     "finish": "Abschließen",
     "step": "Schritt {{current}} von {{total}}"
   },
+  "training": {
+    "title": "Schulungszertifikate",
+    "description": "Verwaltung und Verifizierung hochgeladener Schulungsnachweise",
+    "upload": "Zertifikat hochladen",
+    "uploadTitle": "Schulungszertifikat hochladen",
+    "uploadDescription": "Laden Sie Ihr Schulungszertifikat zur Prüfung hoch",
+    "courseTitle": "Kurstitel",
+    "provider": "Anbieter",
+    "dateCompleted": "Abschlussdatum",
+    "file": "Zertifikat (PDF/Bild)",
+    "status": {
+      "pending": "In Prüfung",
+      "verified": "Bestätigt",
+      "rejected": "Abgelehnt"
+    },
+    "recommended": "Empfohlene Schulungen",
+    "noCertificates": "Noch keine Zertifikate hochgeladen",
+    "verify": "Bestätigen",
+    "reject": "Ablehnen",
+    "delete": "Löschen",
+    "notes": "Begründung",
+    "verifyConfirm": "Bestätigen Sie, dass das Zertifikat gültig ist",
+    "rejectReason": "Geben Sie einen Grund für die Ablehnung an"
+  },
   "dashboard": {
     "welcome": "Willkommen",
     "nextSteps": "Nächste Schritte",
