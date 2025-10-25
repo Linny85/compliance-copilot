@@ -21,6 +21,8 @@ jobs:
         run: node scripts/check-locales.js --ref en
 
       - name: DPIA keyset check (Priority-2)
+        env:
+          FAIL_ON_PLACEHOLDER: "1"
         run: |
           echo "::group::DPIA keyset check"
           node scripts/check-dpia-keys.js
