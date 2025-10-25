@@ -20,6 +20,9 @@ jobs:
       - name: Check Locales (strict)
         run: node scripts/check-locales.js --ref en
 
+      - name: Verify DPIA key snapshot
+        run: node scripts/snapshot-dpia-keys.js
+
       - name: DPIA keyset check (Priority-2)
         env:
           FAIL_ON_PLACEHOLDER: "1"
