@@ -17,7 +17,7 @@ const Landing = () => {
       await seedDemo();
       switchTo("demo");
       await new Promise((r) => requestAnimationFrame(() => r(null)));
-      navigate("/demo", { replace: true });
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       console.error("Demo start failed:", error);
     } finally {
