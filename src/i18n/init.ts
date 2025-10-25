@@ -31,12 +31,11 @@ if (g.__i18n_instance) {
       backend: {
         loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
       },
-      detection: {
-        order: ['localStorage', 'querystring'], // NO navigator/htmlTag -> less flicker
-        lookupQuerystring: 'lng',
-        lookupLocalStorage: LS_KEY,
-        caches: ['localStorage'],
-      },
+  detection: {
+    order: ['localStorage'], // ONLY localStorage - no browser/navigator detection
+    caches: ['localStorage'],
+    lookupLocalStorage: LS_KEY,
+  },
       interpolation: {
         escapeValue: false, // React already escapes
       },
@@ -47,6 +46,12 @@ if (g.__i18n_instance) {
       saveMissing: false,
       initImmediate: false, // Synchronous initialization prevents flicker
     });
+  }
+
+  // Fix stored language immediately after init
+  const stored = typeof window !== 'undefined' ? localStorage.getItem(LS_KEY) : null;
+  if (stored && stored !== instance.language) {
+    instance.changeLanguage(stored);
   }
 
   g.__i18n_instance = instance;
