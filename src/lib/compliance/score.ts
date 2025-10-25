@@ -8,6 +8,8 @@
  * - DPIA completion (20%)
  */
 
+export type ScoreVariant = 'success' | 'warning' | 'destructive';
+
 export interface ComplianceScoreData {
   overall: number;
   nis2: number;
@@ -65,7 +67,7 @@ export function calculateComplianceScore(
 /**
  * Get traffic light color based on score
  */
-export function getScoreColor(score: number): 'success' | 'warning' | 'destructive' {
+export function getScoreColor(score: number): ScoreVariant {
   if (score >= 0.80) return 'success';
   if (score >= 0.50) return 'warning';
   return 'destructive';
@@ -75,5 +77,28 @@ export function getScoreColor(score: number): 'success' | 'warning' | 'destructi
  * Format score as percentage
  */
 export function formatScore(score: number): string {
-  return `${Math.round(score * 100)}%`;
+  return `${Math.round((score ?? 0) * 100)}%`;
+}
+
+export const FRAMEWORK_CODES = {
+  NIS2: 'NIS2',
+  AI_ACT: 'AI_ACT',
+  GDPR: 'GDPR',
+} as const;
+
+export type FrameworkCode = typeof FRAMEWORK_CODES[keyof typeof FRAMEWORK_CODES];
+
+export interface VComplianceSummaryRow {
+  tenant_id: string;
+  overall_score: number | null;
+  controls_score: number | null;
+  evidence_score: number | null;
+  training_score: number | null;
+  dpia_score: number | null;
+}
+
+export interface VFrameworkComplianceRow {
+  tenant_id: string;
+  framework: 'NIS2' | 'AI_ACT' | 'GDPR' | string;
+  score: number | null;
 }
