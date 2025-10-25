@@ -5,7 +5,7 @@ import { supportedLocales, fallbackLng } from './languages';
 
 const LS_KEY = 'lang'; // Consistent key for language preference
 
-// Bundled resources to prevent HTTP requests
+// Bundled resources to prevent HTTP requests and 404 loops
 const resources = {
   de: {
     common: {},
@@ -33,7 +33,6 @@ const resources = {
 
 // ---- Singleton protection (critical for preview/HMR) ----
 const g = globalThis as any;
-
 let instance: I18nInstance;
 
 if (g.__i18n_instance) {
@@ -54,42 +53,29 @@ if (g.__i18n_instance) {
       ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope', 'evidence', 'checks'],
       defaultNS: 'common',
       fallbackNS: 'common',
+      
+      // CRITICAL: Single source of truth - only localStorage
       detection: {
-        order: ['localStorage'],
+        order: ['localStorage'],              // Only localStorage, no navigator/htmlTag
         caches: ['localStorage'],
         lookupLocalStorage: LS_KEY,
       },
+      
       interpolation: {
         escapeValue: false,
       },
       react: {
-        useSuspense: false,
-        bindI18n: '', // Prevent additional re-renders
+        useSuspense: false,                   // Prevent suspense flickering
+        bindI18n: 'languageChanged',          // Only bind to language change
       },
       returnEmptyString: false,
       saveMissing: false,
-      initImmediate: false,
+      initImmediate: false,                   // Synchronous init prevents flicker
+      partialBundledLanguages: true,          // Load available keys without loop
     });
   }
 
-  // Fix stored language immediately after init
-  const stored = typeof window !== 'undefined' ? localStorage.getItem(LS_KEY) : null;
-  if (stored && stored !== instance.language) {
-    instance.changeLanguage(stored);
-  }
-
   g.__i18n_instance = instance;
-}
-
-// Normalize language codes (nb/nn -> no, etc.)
-const normalize = (lng: string) => ({
-  'nb': 'no', 'nn': 'no',
-}[lng] ?? lng);
-
-// Only patch if not already patched
-if (!instance.changeLanguage.toString().includes('normalize')) {
-  const origChange = instance.changeLanguage.bind(instance);
-  instance.changeLanguage = (lng, ...rest) => origChange(normalize(lng), ...rest);
 }
 
 export default instance;

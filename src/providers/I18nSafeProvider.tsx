@@ -2,12 +2,13 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/init';
+import { LanguageGate } from '@/components/LanguageGate';
 
 /**
  * Stable wrapper for I18nextProvider:
  * - waits until i18n is initialized
  * - subscribes to "initialized" event (critical!)
- * - always renders children within <I18nextProvider>
+ * - wraps children in LanguageGate to prevent flickering
  */
 export default function I18nSafeProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState<boolean>(i18n?.isInitialized ?? false);
@@ -34,9 +35,15 @@ export default function I18nSafeProvider({ children }: { children: ReactNode }) 
   }
 
   if (!ready) {
-    // Optional: minimal loader
+    // Don't render until i18n is ready
     return null;
   }
 
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+  return (
+    <I18nextProvider i18n={i18n}>
+      <LanguageGate>
+        {children}
+      </LanguageGate>
+    </I18nextProvider>
+  );
 }
