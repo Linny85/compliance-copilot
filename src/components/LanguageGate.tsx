@@ -12,8 +12,9 @@ export function LanguageGate({ children }: LanguageGateProps) {
   const { ready } = useTranslation('common');
   
   // Don't render until i18n is ready
+  // CRITICAL: pointer-events: none prevents blocking clicks on login page
   if (!ready) {
-    return null; // Or return a minimal skeleton/spinner
+    return <div style={{ pointerEvents: 'none' }} />;
   }
 
   return <>{children}</>;
