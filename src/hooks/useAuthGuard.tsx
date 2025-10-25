@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppMode } from "@/state/AppModeProvider";
-import i18n from "@/i18n/init";
 
 interface UserInfo {
   userId: string;
@@ -18,20 +17,9 @@ export const useAuthGuard = () => {
   const { mode } = useAppMode();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const didNav = useRef(false);
-  const safeNavigate = (to: string) => {
-    if (didNav.current) return;
-    didNav.current = true;
-    navigate(to, { replace: true });
-    setTimeout(() => { didNav.current = false; }, 300);
-  };
+  const navDone = useRef(false);
 
   useEffect(() => {
-    // Wait for i18n to be ready before running auth checks
-    if (!i18n.isInitialized) {
-      return;
-    }
-
     // Skip if multiple guards trying to run simultaneously
     if ((window as any).__auth_guard_running) return;
     (window as any).__auth_guard_running = true;
@@ -42,12 +30,14 @@ export const useAuthGuard = () => {
     // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        navDone.current = false; // allow new navigation after auth change
         checkAuthAndRedirect();
       } else if (event === 'SIGNED_OUT') {
         setUserInfo(null);
         setLoading(false);
         if (mode !== 'demo' && location.pathname !== '/auth' && location.pathname !== '/') {
-          navigate('/auth');
+          navDone.current = false;
+          safeNavigate('/auth');
         }
       }
     });
@@ -56,6 +46,13 @@ export const useAuthGuard = () => {
       subscription.unsubscribe();
     };
   }, [location.pathname, mode]);
+
+  const safeNavigate = (to: string) => {
+    if (navDone.current) return;
+    navDone.current = true;
+    navigate(to, { replace: true });
+    setTimeout(() => { navDone.current = false; }, 500);
+  };
 
   const checkAuthAndRedirect = async () => {
     try {
@@ -91,7 +88,7 @@ export const useAuthGuard = () => {
         setUserInfo(null);
         // Only redirect to auth if not on public pages
         if (location.pathname !== '/auth' && location.pathname !== '/') {
-          navigate('/auth');
+          safeNavigate('/auth');
         }
         return;
       }
@@ -127,17 +124,17 @@ export const useAuthGuard = () => {
       if (!info.tenantId && location.pathname !== '/company-profile') {
         safeNavigate('/company-profile');
       } else if (info.tenantId && location.pathname === '/company-profile') {
-        navigate('/dashboard');
+        safeNavigate('/dashboard');
       } else if (info.tenantId && !hasActiveSubscription && location.pathname !== '/billing') {
-        navigate('/billing');
+        safeNavigate('/billing');
       } else if (info.tenantId && hasActiveSubscription && location.pathname === '/billing') {
-        navigate('/dashboard');
+        safeNavigate('/dashboard');
       } else if (info.tenantId && (location.pathname === '/auth' || location.pathname === '/')) {
         // Authenticated user with tenant on auth/landing page, redirect appropriately
         if (hasActiveSubscription) {
-          navigate('/dashboard');
+          safeNavigate('/dashboard');
         } else {
-          navigate('/billing');
+          safeNavigate('/billing');
         }
       }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,13 +11,14 @@ import { Building2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const Onboarding = () => {
+const OnboardingInner = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
   
+  // Stable form state - prevent remounts/resets
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [sector, setSector] = useState("");
@@ -25,7 +26,13 @@ const Onboarding = () => {
   const [masterCode, setMasterCode] = useState("");
   const [deleteCode, setDeleteCode] = useState("");
 
+  // Auth check only once on mount
+  const authChecked = useRef(false);
+
   useEffect(() => {
+    if (authChecked.current) return;
+    authChecked.current = true;
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -151,6 +158,8 @@ const Onboarding = () => {
                 <Label htmlFor="company-name">{t.onboarding.companyName} *</Label>
                 <Input
                   id="company-name"
+                  name="companyName"
+                  autoComplete="organization"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Acme Corporation"
@@ -162,6 +171,8 @@ const Onboarding = () => {
                 <Label htmlFor="address">{t.onboarding.address}</Label>
                 <Input
                   id="address"
+                  name="address"
+                  autoComplete="street-address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="123 Main St, City, Country"
@@ -190,6 +201,8 @@ const Onboarding = () => {
                   <Label htmlFor="country">{t.onboarding.country}</Label>
                   <Input
                     id="country"
+                    name="country"
+                    autoComplete="country-name"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     placeholder="Germany"
@@ -215,6 +228,8 @@ const Onboarding = () => {
                 <Label htmlFor="master-code">{t.onboarding.masterCode} *</Label>
                 <Input
                   id="master-code"
+                  name="masterCode"
+                  autoComplete="new-password"
                   value={masterCode}
                   onChange={(e) => setMasterCode(e.target.value)}
                   placeholder="XXXXXXXX"
@@ -229,6 +244,8 @@ const Onboarding = () => {
                 <Label htmlFor="delete-code">{t.onboarding.deleteCode} *</Label>
                 <Input
                   id="delete-code"
+                  name="deleteCode"
+                  autoComplete="new-password"
                   value={deleteCode}
                   onChange={(e) => setDeleteCode(e.target.value)}
                   placeholder="XXXXXXXX"
@@ -250,4 +267,5 @@ const Onboarding = () => {
   );
 };
 
-export default Onboarding;
+// Memo verhindert unnötige Re-Renders
+export default memo(OnboardingInner);
