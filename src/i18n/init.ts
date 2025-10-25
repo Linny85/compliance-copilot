@@ -4,6 +4,8 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpBackend from 'i18next-http-backend';
 import { supportedLocales, fallbackLng } from './languages';
 
+const LS_KEY = 'lang'; // Consistent key for language preference
+
 i18n
   .use(HttpBackend)
   .use(LanguageDetector)
@@ -11,7 +13,7 @@ i18n
   .init({
     supportedLngs: supportedLocales,
     fallbackLng,
-    load: 'languageOnly', // 'de-AT' → 'de'
+    load: 'currentOnly', // More efficient than 'languageOnly'
     lowerCaseLng: true,
     nonExplicitSupportedLngs: true,
     ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope', 'evidence', 'checks'],
@@ -20,8 +22,9 @@ i18n
       loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
     },
     detection: {
-      order: ['localStorage', 'querystring'], // Remove browser/navigator detection to prevent flicker
+      order: ['localStorage', 'querystring'], // localStorage first, no browser detection
       lookupQuerystring: 'lng',
+      lookupLocalStorage: LS_KEY,
       caches: ['localStorage'],
     },
     interpolation: {
@@ -32,6 +35,7 @@ i18n
     },
     returnEmptyString: false,
     saveMissing: false,
+    initImmediate: false, // Synchronous initialization prevents flicker
   });
 
 // Normalize language codes (nb/nn -> no, etc.)
