@@ -9,8 +9,7 @@ const MODE_KEY = "appMode";
 const getInitialMode = (): AppMode => {
   if (typeof window === "undefined") return "demo";
   const stored = window.localStorage.getItem(MODE_KEY) as AppMode | null;
-  const resolved = stored === "demo" || stored === "prod" ? stored : "demo";
-  return resolved;
+  return stored === "demo" || stored === "prod" ? stored : "demo";
 };
 
 const setMode = (m: AppMode) => {

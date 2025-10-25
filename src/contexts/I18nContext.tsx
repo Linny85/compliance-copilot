@@ -1,33 +1,57 @@
-import React, { createContext, useContext, useMemo } from 'react';
-import { translations } from '@/lib/i18n';
+import { createContext, useContext, ReactNode, useMemo } from "react";
+import { useTranslation } from "react-i18next";
+import { useLocaleHydration } from "@/hooks/useLocaleHydration";
+import { translations } from "@/lib/i18n";
 
-type Lang = 'de' | 'en' | 'sv';
-
-type I18nCtx = {
-  t: typeof translations.en;   // Objekt-Notation bleibt intakt
-  lng: Lang;
-  language: Lang;              // Alias für Abwärtskompat.
+interface I18nContextType {
+  language: string;
+  setLanguage: (lang: string) => Promise<void>;
+  t: typeof translations.en;
   ready: boolean;
-  setLanguage: (lng: Lang) => void; // NO-OP
+}
+
+const I18nContext = createContext<I18nContextType | undefined>(undefined);
+
+export const I18nProvider = ({ children }: { children: ReactNode }) => {
+  const { i18n } = useTranslation();
+  
+  // Hydrate user's language preference from DB
+  useLocaleHydration();
+
+  const setLanguage = async (lang: string) => {
+    await i18n.changeLanguage(lang);
+  };
+
+  // Provide legacy object-style t powered by i18next for ALL languages
+  const buildTObject = (template: any, prefix = ''): any => {
+    const out: any = Array.isArray(template) ? [] : {};
+    for (const key in template) {
+      const path = prefix ? `${prefix}.${key}` : key;
+      if (template[key] && typeof template[key] === 'object') {
+        out[key] = buildTObject(template[key], path);
+      } else {
+        out[key] = i18n.t(path);
+      }
+    }
+    return out;
+  };
+
+  const tObj = useMemo(() => buildTObject(translations.en), [i18n.language]);
+
+  const value: I18nContextType = {
+    language: i18n.language,
+    setLanguage,
+    t: tObj as typeof translations.en,
+    ready: i18n.isInitialized,
+  };
+
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 };
 
-const Ctx = createContext<I18nCtx | null>(null);
-
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const tObj = useMemo(() => translations.de as typeof translations.en, []);
-  const value: I18nCtx = useMemo(() => ({
-    t: tObj,
-    lng: 'de',
-    language: 'de',
-    ready: true,
-    setLanguage: () => {}, // bewusst deaktiviert
-  }), [tObj]);
-
-  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
-}
-
-export function useI18n() {
-  const ctx = useContext(Ctx);
-  if (!ctx) throw new Error('useI18n must be used within I18nProvider');
-  return ctx;
-}
+export const useI18n = () => {
+  const context = useContext(I18nContext);
+  if (!context) {
+    throw new Error("useI18n must be used within I18nProvider");
+  }
+  return context;
+};

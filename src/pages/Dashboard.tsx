@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -8,7 +8,6 @@ import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import { useAppMode } from "@/state/AppModeProvider";
 
 interface CompanyData {
   name: string;
@@ -24,16 +23,7 @@ interface SubscriptionData {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { t, ready } = useTranslation(['common', 'dashboard']);
-  const { mode } = useAppMode();
   const [loading, setLoading] = useState(true);
-
-  // Demo-Mode Gate: enforce onboarding if org/codes missing
-  const hasOrg = !!localStorage.getItem("demo_org_profile_v1");
-  const hasCodes = !!localStorage.getItem("demo_org_codes_v1");
-  
-  if (mode === "demo" && (!hasOrg || !hasCodes)) {
-    return <Navigate to="/onboarding" replace />;
-  }
   const [companyData, setCompanyData] = useState<CompanyData>({
     name: "",
     country: "",

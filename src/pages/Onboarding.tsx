@@ -1,5 +1,4 @@
-// SAFE-MODE: Minimales, kontrolliertes Formular ohne RHF
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,14 +11,13 @@ import { Building2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-export default function Onboarding() {
+const Onboarding = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
   
-  // Form state - stable
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [sector, setSector] = useState("");
@@ -27,13 +25,7 @@ export default function Onboarding() {
   const [masterCode, setMasterCode] = useState("");
   const [deleteCode, setDeleteCode] = useState("");
 
-  // Auth check only once on mount
-  const authChecked = useRef(false);
-
   useEffect(() => {
-    if (authChecked.current) return;
-    authChecked.current = true;
-
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -159,8 +151,6 @@ export default function Onboarding() {
                 <Label htmlFor="company-name">{t.onboarding.companyName} *</Label>
                 <Input
                   id="company-name"
-                  name="companyName"
-                  autoComplete="organization"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   placeholder="Acme Corporation"
@@ -172,8 +162,6 @@ export default function Onboarding() {
                 <Label htmlFor="address">{t.onboarding.address}</Label>
                 <Input
                   id="address"
-                  name="address"
-                  autoComplete="street-address"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="123 Main St, City, Country"
@@ -202,8 +190,6 @@ export default function Onboarding() {
                   <Label htmlFor="country">{t.onboarding.country}</Label>
                   <Input
                     id="country"
-                    name="country"
-                    autoComplete="country-name"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     placeholder="Germany"
@@ -229,8 +215,6 @@ export default function Onboarding() {
                 <Label htmlFor="master-code">{t.onboarding.masterCode} *</Label>
                 <Input
                   id="master-code"
-                  name="masterCode"
-                  autoComplete="new-password"
                   value={masterCode}
                   onChange={(e) => setMasterCode(e.target.value)}
                   placeholder="XXXXXXXX"
@@ -245,8 +229,6 @@ export default function Onboarding() {
                 <Label htmlFor="delete-code">{t.onboarding.deleteCode} *</Label>
                 <Input
                   id="delete-code"
-                  name="deleteCode"
-                  autoComplete="new-password"
                   value={deleteCode}
                   onChange={(e) => setDeleteCode(e.target.value)}
                   placeholder="XXXXXXXX"
@@ -266,4 +248,6 @@ export default function Onboarding() {
       </Card>
     </div>
   );
-}
+};
+
+export default Onboarding;

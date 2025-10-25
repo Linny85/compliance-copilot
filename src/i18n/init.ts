@@ -1,65 +1,45 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { translations } from '@/lib/i18n';
+import LanguageDetector from 'i18next-browser-languagedetector';
+import HttpBackend from 'i18next-http-backend';
+import { supportedLocales, fallbackLng } from './languages';
 
-type Lang = 'de' | 'en' | 'sv';
-
-// Build i18next resources from local translations object
-function buildResources(t: Record<Lang, Record<string, any>>) {
-  const out: Record<Lang, Record<string, any>> = { de: {}, en: {}, sv: {} };
-  (Object.keys(t) as Lang[]).forEach((lng) => {
-    Object.entries(t[lng] || {}).forEach(([ns, payload]) => {
-      out[lng][ns] = payload;
-    });
+i18n
+  .use(HttpBackend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    supportedLngs: supportedLocales,
+    fallbackLng,
+    load: 'languageOnly', // 'de-AT' → 'de'
+    lowerCaseLng: true,
+    nonExplicitSupportedLngs: true,
+    ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope', 'evidence', 'checks'],
+    defaultNS: 'common',
+    backend: {
+      loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
+    },
+    detection: {
+      order: ['localStorage', 'querystring'], // Remove browser/navigator detection to prevent flicker
+      lookupQuerystring: 'lng',
+      caches: ['localStorage'],
+    },
+    interpolation: {
+      escapeValue: false, // React already escapes
+    },
+    react: {
+      useSuspense: false, // Disable suspense for Lovable preview compatibility
+    },
+    returnEmptyString: false,
+    saveMissing: false,
   });
-  return out;
-}
 
-const SUPPORTED: Lang[] = ['de', 'en', 'sv'];
-const resources = buildResources(translations);
+// Normalize language codes (nb/nn -> no, etc.)
+const normalize = (lng: string) => ({
+  'nb': 'no', 'nn': 'no',
+}[lng] ?? lng);
 
-// Read language once at boot from i18next standard key
-const BOOT_LNG = (localStorage.getItem('i18nextLng') as Lang | null) || 'de';
-
-// Singleton to prevent double-init
-const g = globalThis as any;
-if (!g.__i18n_singleton__) {
-  g.__i18n_singleton__ = i18n
-    .use(initReactI18next)
-    .init({
-      lng: BOOT_LNG,
-      fallbackLng: 'de',
-      supportedLngs: SUPPORTED,
-      ns: Object.keys(translations.en),
-      defaultNS: 'common',
-      resources,
-      load: 'currentOnly',
-      react: {
-        useSuspense: false,
-        bindI18n: 'languageChanged',
-      },
-      interpolation: {
-        escapeValue: false,
-      },
-      cleanCode: true,
-      nonExplicitSupportedLngs: true,
-      returnEmptyString: false,
-      initImmediate: false,
-    });
-}
-
-export const i18nReady = g.__i18n_singleton__;
-
-// Bind languageChanged event once globally
-if (!g.__ni_i18nBound) {
-  g.__ni_i18nBound = true;
-  const setHtmlLang = (lng: string) => {
-    if (document?.documentElement?.lang !== lng) {
-      document.documentElement.lang = lng;
-    }
-  };
-  i18nReady.then(() => setHtmlLang(i18n.language));
-  i18n.on('languageChanged', setHtmlLang);
-}
+const origChange = i18n.changeLanguage.bind(i18n);
+i18n.changeLanguage = (lng, ...rest) => origChange(normalize(lng), ...rest);
 
 export default i18n;
