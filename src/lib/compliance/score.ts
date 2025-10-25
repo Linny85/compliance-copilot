@@ -1,43 +1,79 @@
 /**
  * Compliance Score Calculation
  * 
- * TODO: Implement score calculation after minimum data thresholds are met:
- * - At least X answered NIS2 controls
- * - At least Y registered AI systems
- * - At least Z documents generated
- * 
- * Score should be calculated based on:
- * 1. NIS2 compliance: percentage of controls completed
- * 2. AI Act compliance: percentage of systems classified & documented
- * 3. Document completeness: required policies in place
- * 
- * For now, return null to hide the score until meaningful data exists.
+ * Calculates overall compliance score based on:
+ * - Controls pass rate (50%)
+ * - Evidence completion (20%)
+ * - Training completion (10%)
+ * - DPIA completion (20%)
  */
 
 export interface ComplianceScoreData {
   overall: number;
   nis2: number;
   aiAct: number;
-  documents: number;
+  gdpr: number;
+  breakdown: {
+    controls: number;
+    evidence: number;
+    training: number;
+    dpia: number;
+  };
 }
 
-export function calculateComplianceScore(data: {
-  totalRisks: number;
-  aiSystems: number;
-  documents: number;
-}): ComplianceScoreData | null {
-  // Hide score until we have meaningful data
-  const hasMinimumData = data.totalRisks >= 5 || data.aiSystems >= 1 || data.documents >= 1;
-  
-  if (!hasMinimumData) {
-    return null;
-  }
-
-  // TODO: Implement real calculation logic
-  return {
-    overall: 0,
-    nis2: 0,
-    aiAct: 0,
-    documents: 0,
+export interface ComplianceMetrics {
+  overallScore: number;
+  frameworkScores: {
+    nis2: number;
+    aiAct: number;
+    gdpr: number;
   };
+  breakdown: {
+    controls: number;
+    evidence: number;
+    training: number;
+    dpia: number;
+  };
+}
+
+export interface OpenTask {
+  title: string;
+  due_at: string | null;
+  link: string;
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  type: 'evidence' | 'dpia' | 'training' | 'check';
+}
+
+/**
+ * Calculate compliance score with configurable weights
+ */
+export function calculateComplianceScore(
+  controlsScore: number = 0,
+  evidenceScore: number = 0,
+  trainingScore: number = 0,
+  dpiaScore: number = 0,
+  weights = { controls: 0.5, evidence: 0.2, training: 0.1, dpia: 0.2 }
+): number {
+  return (
+    controlsScore * weights.controls +
+    evidenceScore * weights.evidence +
+    trainingScore * weights.training +
+    dpiaScore * weights.dpia
+  );
+}
+
+/**
+ * Get traffic light color based on score
+ */
+export function getScoreColor(score: number): 'success' | 'warning' | 'destructive' {
+  if (score >= 0.80) return 'success';
+  if (score >= 0.50) return 'warning';
+  return 'destructive';
+}
+
+/**
+ * Format score as percentage
+ */
+export function formatScore(score: number): string {
+  return `${Math.round(score * 100)}%`;
 }

@@ -5,6 +5,7 @@ import { NextStepsCard } from "@/components/dashboard/NextStepsCard";
 import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
+import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
@@ -123,6 +124,7 @@ const Dashboard = () => {
             <div className="grid gap-6 lg:grid-cols-2">
               {/* Left Column */}
               <div className="space-y-6">
+                <ComplianceProgressCard />
                 <NextStepsCard />
                 <TrialCard 
                   trialEnd={subscriptionData.trial_end}

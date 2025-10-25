@@ -3359,6 +3359,25 @@ export type Database = {
           },
         ]
       }
+      v_compliance_overview: {
+        Row: {
+          controls_score: number | null
+          dpia_score: number | null
+          evidence_score: number | null
+          overall_score: number | null
+          tenant_id: string | null
+          training_score: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_compliance_summary: {
         Row: {
           failed: number | null
@@ -3372,6 +3391,33 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_control_compliance: {
+        Row: {
+          control_code: string | null
+          control_id: string | null
+          framework: string | null
+          pass_rate: number | null
+          passed: number | null
+          tenant_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_rules_control_id_fkey"
+            columns: ["control_id"]
+            isOneToOne: false
+            referencedRelation: "controls"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "Unternehmen"
@@ -3531,6 +3577,23 @@ export type Database = {
           },
         ]
       }
+      v_dpia_compliance: {
+        Row: {
+          completed: number | null
+          dpia_ratio: number | null
+          tenant_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dpia_records_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_dpia_overview: {
         Row: {
           answers_count: number | null
@@ -3641,6 +3704,23 @@ export type Database = {
           weight_gradient: number | null
         }
         Relationships: []
+      }
+      v_evidence_compliance: {
+        Row: {
+          approved: number | null
+          evidence_ratio: number | null
+          tenant_id: string | null
+          total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidences_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       v_evidence_index: {
         Row: {
@@ -3779,6 +3859,22 @@ export type Database = {
           weight_gradient: number | null
         }
         Relationships: []
+      }
+      v_framework_compliance: {
+        Row: {
+          framework: string | null
+          score: number | null
+          tenant_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       v_integration_pending: {
         Row: {
@@ -3924,6 +4020,16 @@ export type Database = {
           scope_id: string | null
           scope_type: string | null
           tenant_id: string | null
+        }
+        Relationships: []
+      }
+      v_training_compliance: {
+        Row: {
+          tenant_id: string | null
+          total_users: number | null
+          training_ratio: number | null
+          users_with_certs: number | null
+          verified: number | null
         }
         Relationships: []
       }
