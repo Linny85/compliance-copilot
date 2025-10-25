@@ -1,6 +1,5 @@
 import { createContext, useContext, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocaleHydration } from "@/hooks/useLocaleHydration";
 import { translations } from "@/lib/i18n";
 
 interface I18nContextType {
@@ -14,9 +13,6 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const { i18n } = useTranslation();
-  
-  // Hydrate user's language preference from DB
-  useLocaleHydration();
 
   const setLanguage = async (lang: string) => {
     await i18n.changeLanguage(lang);

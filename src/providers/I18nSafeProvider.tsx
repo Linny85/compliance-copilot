@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/init';
 import { LanguageGate } from '@/components/LanguageGate';
+import { LocaleHydrator } from '@/components/LocaleHydrator';
 
 /**
  * Stable wrapper for I18nextProvider:
@@ -42,6 +43,7 @@ export default function I18nSafeProvider({ children }: { children: ReactNode }) 
   return (
     <I18nextProvider i18n={i18n}>
       <LanguageGate>
+        <LocaleHydrator />
         {children}
       </LanguageGate>
     </I18nextProvider>
