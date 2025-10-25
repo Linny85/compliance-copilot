@@ -10,14 +10,17 @@ export function DemoStartButton() {
 
   return (
     <button
+      type="button"
       className="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-105 md:text-base"
       disabled={busy}
       onClick={async () => {
         try {
           setBusy(true);
-          switchTo("demo");
           await seedDemo();
-          nav("/demo");
+          switchTo("demo");
+          // Wait for state to propagate
+          await new Promise((r) => requestAnimationFrame(() => r(null)));
+          nav("/demo", { replace: true });
         } finally {
           setBusy(false);
         }

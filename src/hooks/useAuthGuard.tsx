@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAppMode } from "@/state/AppModeProvider";
 
 interface UserInfo {
   userId: string;
@@ -13,6 +14,7 @@ interface UserInfo {
 export const useAuthGuard = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { mode } = useAppMode();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
@@ -37,6 +39,13 @@ export const useAuthGuard = () => {
 
   const checkAuthAndRedirect = async () => {
     try {
+      // If in demo mode, skip all auth checks
+      if (mode === 'demo') {
+        setLoading(false);
+        setUserInfo(null);
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
