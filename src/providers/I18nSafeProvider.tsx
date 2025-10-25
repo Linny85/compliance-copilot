@@ -14,14 +14,11 @@ export default function I18nSafeProvider({ children }: { children: ReactNode }) 
 
   useEffect(() => {
     if (!i18n) return;
-    console.log('[Diag][I18nSafeProvider] mount: isInitialized =', i18n.isInitialized);
     if (i18n.isInitialized) {
-      console.log('[Diag][I18nSafeProvider] i18n already initialized');
       setReady(true);
       return;
     }
     const onInit = () => {
-      console.log('[Diag][I18nSafeProvider] initialized event fired');
       setReady(true);
     };
     i18n.on('initialized', onInit);
