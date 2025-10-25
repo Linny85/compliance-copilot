@@ -194,15 +194,6 @@ export default function Billing() {
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8">Abonnement & Abrechnung</h1>
 
-      {!subscription && (
-        <div className="mb-6">
-          <UpgradeCard 
-            sessionToken={""} 
-            userId={""} 
-          />
-        </div>
-      )}
-
       {subscription ? (
         <Card className="mb-6">
           <CardHeader>

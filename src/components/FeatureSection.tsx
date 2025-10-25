@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Building2, ShieldCheck, MessageSquare } from "lucide-react";
 import React from "react";
+import { DemoStartButton } from "./DemoStartButton";
 
 /**
  * FeatureSection – Drei Kacheln für Landingpage / Billing-Seite
@@ -99,12 +100,7 @@ export default function FeatureSection() {
         >
           Preise & Abonnement ansehen
         </a>
-        <a
-          href="#demo"
-          className="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-105 md:text-base"
-        >
-          Demo starten
-        </a>
+        <DemoStartButton />
       </div>
     </section>
   );
