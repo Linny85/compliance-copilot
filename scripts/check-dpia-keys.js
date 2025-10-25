@@ -174,7 +174,10 @@ for (const lang of dirs) {
   }
 }
 
-if (hasDiff) {
+// Apply fail-on-placeholder policy if configured
+const failOnPlaceholder = process.env.FAIL_ON_PLACEHOLDER === '1';
+
+if (hasDiff || (failOnPlaceholder && summary.placeholderIssues > 0)) {
   console.log(`\n—— DPIA Summary ——`);
   console.log(`OK locales:         ${summary.ok}`);
   console.log(`Missing keys total: ${summary.missingKeys}`);
@@ -188,8 +191,9 @@ if (hasDiff) {
   console.log(`\n—— DPIA Summary ——`);
   console.log(`✅ All ${summary.ok} locales have matching dpia structure (${refKeys.size} keys each)`);
   if (summary.placeholderIssues > 0) {
-    console.log(`⚠️  ${summary.placeholderIssues} placeholder warnings found`);
+    console.log(`⚠️  ${summary.placeholderIssues} placeholder warnings found (set FAIL_ON_PLACEHOLDER=1 to fail on these)`);
   }
   console.log();
   process.exit(0);
 }
+

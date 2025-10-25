@@ -20,6 +20,12 @@ jobs:
       - name: Check Locales (strict)
         run: node scripts/check-locales.js --ref en
 
+      - name: DPIA keyset check (Priority-2)
+        run: |
+          echo "::group::DPIA keyset check"
+          node scripts/check-dpia-keys.js
+          echo "::endgroup::"
+
       - name: Show diffs if any (non-fatal)
         if: failure()
         run: |
@@ -27,9 +33,3 @@ jobs:
           node scripts/check-locales.js --ref en --diff || true
           echo "::endgroup::"
 
-      - name: Annotate missing/extra DPIA keys
-        if: failure()
-        run: |
-          echo "::group::DPIA keyset check"
-          node scripts/check-dpia-keys.js || true
-          echo "::endgroup::"
