@@ -183,4 +183,4 @@ graph LR
 ---
 
 **Owner:** i18n Maintainers  
-**Last updated:** 2025-01-21
+**Last updated:** 2025-10-25
