@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, CreditCard, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import FeatureSection from "@/components/FeatureSection";
 
 interface SubscriptionData {
   status: string;
@@ -254,36 +255,7 @@ export default function Billing() {
         </Card>
       )}
 
-      {!hasActiveSubscription && (
-        <Card className="border-primary/50">
-          <CardHeader>
-            <CardTitle>Warum ein Abonnement?</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex items-start gap-2">
-              <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="font-medium">Vollständiger Zugriff</p>
-                <p className="text-sm text-muted-foreground">Zugang zu allen Compliance-Tools</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="font-medium">Multi-Tenant Support</p>
-                <p className="text-sm text-muted-foreground">Verwalten Sie mehrere Organisationen</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <p className="font-medium">Premium Support</p>
-                <p className="text-sm text-muted-foreground">Direkter Support bei Fragen</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <FeatureSection />
     </div>
   );
 }
