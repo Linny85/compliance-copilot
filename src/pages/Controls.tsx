@@ -20,7 +20,7 @@ interface Control {
   objective: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
   evidence_types: string[];
-  framework: Framework;
+  frameworks: Framework; // Backend returns 'frameworks' (singular object)
 }
 
 export default function Controls() {
@@ -149,7 +149,7 @@ export default function Controls() {
                     </div>
                     <CardTitle className="text-xl">{control.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      {control.framework.code} - {control.framework.title} ({control.framework.version})
+                      {control.frameworks?.code} - {control.frameworks?.title} ({control.frameworks?.version})
                     </p>
                   </div>
                   <Button variant="outline" size="sm">
