@@ -1,6 +1,7 @@
 # 🌐 Internationalization (i18n) - README Snippet
 
 > **Instructions:** Copy this section into your main `README.md` file at an appropriate location (e.g., after the project description or before the development section).
+> **Note:** Badge URL is already configured for `Linny85/nis2-ai-guard`.
 
 ---
 
@@ -8,7 +9,7 @@
 
 This project uses a **fully automated i18n validation system** with CI enforcement to ensure translation consistency across all supported locales.
 
-[![i18n Consistency](https://github.com/YOUR_ORG/YOUR_REPO/actions/workflows/i18n-check.yml/badge.svg)](https://github.com/YOUR_ORG/YOUR_REPO/actions/workflows/i18n-check.yml)
+[![i18n Consistency](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-check.yml/badge.svg)](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-check.yml)
 
 ### Key Features
 
@@ -54,7 +55,7 @@ The GitHub Actions workflow automatically:
 3. Detects EN schema drift via snapshot comparison
 4. Provides detailed annotations for any issues
 
-**Note:** Replace `YOUR_ORG/YOUR_REPO` in the badge URL with your actual GitHub organization and repository name.
+**Note:** The CI badge is already configured for `Linny85/nis2-ai-guard` and will update automatically when the workflow runs.
 
 ---
 
