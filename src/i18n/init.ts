@@ -1,14 +1,17 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import HttpBackend from 'i18next-http-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
+
+// Fix language at boot to avoid detector ping-pong
+const BOOT_LNG =
+  (localStorage.getItem('lang') as 'de' | 'en' | 'sv' | null) || 'de';
 
 export const i18nReady = i18n
   .use(HttpBackend)
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
+    lng: BOOT_LNG,
+    fallbackLng: 'de',
     supportedLngs: ['en', 'de', 'sv', 'da', 'no', 'fi', 'is', 'nl', 'fr', 'es', 'it', 'pt', 'pl', 'cs', 'sk', 'sl', 'hr', 'ro', 'bg', 'el', 'et', 'lv', 'lt', 'mt', 'ga', 'hu', 'ca'],
     ns: ['common', 'nav', 'dashboard', 'documents', 'checks', 'controls', 'evidence', 'scope', 'sectors'],
     defaultNS: 'common',
@@ -16,13 +19,9 @@ export const i18nReady = i18n
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage'],
-      lookupLocalStorage: 'lang',
-    },
     react: {
       useSuspense: false,
+      bindI18n: 'languageChanged',
     },
     interpolation: {
       escapeValue: false,
