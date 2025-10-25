@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { NextStepsCard } from "@/components/dashboard/NextStepsCard";
 import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
@@ -96,7 +94,7 @@ const Dashboard = () => {
 
   if (loading || !ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
           <p className="mt-4 text-muted-foreground">{ready ? t('common.loading') : 'Loading...'}</p>
@@ -106,10 +104,7 @@ const Dashboard = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex flex-col h-[100dvh] w-full bg-background">
-        <AppSidebar />
-        <main className="flex-1 min-h-0 overflow-auto p-6 lg:p-8">
+    <div className="p-6 lg:p-8">
           <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
             {/* Header with Language Switcher */}
             <div className="flex items-start justify-between gap-4">
@@ -146,9 +141,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        </main>
-      </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
