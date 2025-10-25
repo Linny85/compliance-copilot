@@ -1,10 +1,35 @@
 import i18n, { type i18n as I18nInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import HttpBackend from 'i18next-http-backend';
 import { supportedLocales, fallbackLng } from './languages';
 
 const LS_KEY = 'lang'; // Consistent key for language preference
+
+// Bundled resources to prevent HTTP requests
+const resources = {
+  de: {
+    common: {},
+    dashboard: {},
+    documents: {},
+    sectors: {},
+    nav: {},
+    controls: {},
+    scope: {},
+    evidence: {},
+    checks: {},
+  },
+  sv: {
+    common: {},
+    dashboard: {},
+    documents: {},
+    sectors: {},
+    nav: {},
+    controls: {},
+    scope: {},
+    evidence: {},
+    checks: {},
+  },
+};
 
 // ---- Singleton protection (critical for preview/HMR) ----
 const g = globalThis as any;
@@ -15,36 +40,35 @@ if (g.__i18n_instance) {
   instance = g.__i18n_instance as I18nInstance;
 } else {
   instance = i18n
-    .use(HttpBackend)
     .use(LanguageDetector)
     .use(initReactI18next);
 
   if (!instance.isInitialized) {
     instance.init({
+      resources,
       supportedLngs: supportedLocales,
       fallbackLng,
-      load: 'currentOnly', // More efficient than 'languageOnly'
+      load: 'currentOnly',
       lowerCaseLng: true,
       nonExplicitSupportedLngs: true,
       ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope', 'evidence', 'checks'],
       defaultNS: 'common',
-      backend: {
-        loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
+      fallbackNS: 'common',
+      detection: {
+        order: ['localStorage'],
+        caches: ['localStorage'],
+        lookupLocalStorage: LS_KEY,
       },
-  detection: {
-    order: ['localStorage'], // ONLY localStorage - no browser/navigator detection
-    caches: ['localStorage'],
-    lookupLocalStorage: LS_KEY,
-  },
       interpolation: {
-        escapeValue: false, // React already escapes
+        escapeValue: false,
       },
       react: {
-        useSuspense: false, // Disable suspense for Lovable preview compatibility
+        useSuspense: false,
+        bindI18n: '', // Prevent additional re-renders
       },
       returnEmptyString: false,
       saveMissing: false,
-      initImmediate: false, // Synchronous initialization prevents flicker
+      initImmediate: false,
     });
   }
 
