@@ -27,8 +27,28 @@ export default tseslint.config(
         {
           selector: "JSXText[value=/\\S/]",
           message: "Hard-coded UI string in JSX. Please use i18n t('key') instead."
+        },
+        {
+          selector: "JSXAttribute[name.name='key'][value.expression.name='lng']",
+          message: "Avoid key={lng} remounts."
+        },
+        {
+          selector: "JSXAttribute[name.name='key'][value.expression.property.name='language']",
+          message: "Avoid key={i18n.language} remounts."
         }
-      ]
+      ],
+      "no-restricted-imports": ["error", {
+        "paths": [
+          { 
+            "name": "i18next-http-backend", 
+            "message": "Use local resources only." 
+          },
+          { 
+            "name": "i18next-browser-languagedetector", 
+            "message": "Do not auto-detect language." 
+          }
+        ]
+      }]
     },
   },
 );

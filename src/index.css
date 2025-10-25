@@ -138,4 +138,11 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Chrome Autofill flickering fix */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    transition: background-color 9999s ease-out, color 9999s ease-out;
+  }
 }
