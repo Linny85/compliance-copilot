@@ -1,7 +1,12 @@
 import { Building2, ShieldCheck, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { seedDemo } from "@/data/seed";
 
 export default function Demo() {
+  useEffect(() => {
+    seedDemo();
+  }, []);
   const features = [
     {
       icon: <Building2 className="h-8 w-8" />,

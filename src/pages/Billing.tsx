@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, CreditCard, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import FeatureSection from "@/components/FeatureSection";
+import { UpgradeCard } from "@/components/UpgradeCard";
 
 interface SubscriptionData {
   status: string;
@@ -192,6 +193,15 @@ export default function Billing() {
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8">Abonnement & Abrechnung</h1>
+
+      {!subscription && (
+        <div className="mb-6">
+          <UpgradeCard 
+            sessionToken={""} 
+            userId={""} 
+          />
+        </div>
+      )}
 
       {subscription ? (
         <Card className="mb-6">
