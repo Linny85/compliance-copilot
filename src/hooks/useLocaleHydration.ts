@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
+import { setLocale } from '@/i18n/setLocale';
+import type { Locale } from '@/i18n/languages';
 
 /**
  * Hydrates user's language preference from database on mount
- * Priority: User profile → Browser detection (auto) → fallback 'en'
+ * Priority: User profile → localStorage → fallback
  */
 export function useLocaleHydration() {
   const { i18n } = useTranslation();
@@ -22,7 +24,7 @@ export function useLocaleHydration() {
           .maybeSingle();
 
         if (profile?.language && profile.language !== i18n.language) {
-          await i18n.changeLanguage(profile.language);
+          await setLocale(profile.language as Locale);
         }
       } catch (error) {
         console.error('Error hydrating locale:', error);

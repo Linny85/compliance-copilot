@@ -20,15 +20,9 @@ export const LanguageSwitcher = () => {
     document.documentElement.dir = rtlLanguages.includes(i18n.language) ? 'rtl' : 'ltr';
   }, [i18n.language]);
 
-  const setLocale = async (lng: string) => {
-    // Guard: Only change if different (prevents loop)
-    const current = i18n.resolvedLanguage || i18n.language;
-    if (current === lng) return;
-
-    await i18n.changeLanguage(lng);
-    
-    // Persist to localStorage with correct key
-    localStorage.setItem('lang', lng);
+  const handleLocaleChange = async (lng: string) => {
+    const { setLocale } = await import('@/i18n/setLocale');
+    await setLocale(lng as any);
     
     // Persist to user profile (best effort)
     try {
@@ -54,7 +48,7 @@ export const LanguageSwitcher = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="z-50 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border shadow-md">
         {supportedLocales.map((locale) => (
-          <DropdownMenuItem key={locale} onClick={() => setLocale(locale)}>
+          <DropdownMenuItem key={locale} onClick={() => handleLocaleChange(locale)}>
             {localeLabels[locale] || locale.toUpperCase()}
           </DropdownMenuItem>
         ))}

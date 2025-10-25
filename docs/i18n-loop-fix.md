@@ -10,28 +10,46 @@ The app was experiencing flickering due to an i18n language switching loop cause
 
 ## Solution
 
-### 1. Single Source of Truth (localStorage only)
+### 1. No Language Detector - Direct Init
 
 **File: `src/i18n/init.ts`**
-- Detection order: **only** `localStorage`
-- Key: `lang` (consistent across app)
-- No navigator, htmlTag, or other detectors
+- **Removed** `i18next-browser-languagedetector` entirely
+- Read `localStorage.getItem('lang')` once at startup
+- Initialize i18n with fixed `lng` parameter
+- No detection order, no conflicting sources
 - `partialBundledLanguages: true` prevents loading loops
 
 ### 2. Guards Against Redundant Changes
 
-**File: `src/components/LanguageSwitcher.tsx`**
+**File: `src/i18n/setLocale.ts`**
 ```typescript
-const setLocale = async (lng: string) => {
-  // Guard: Only change if different (prevents loop)
+export async function setLocale(lng: Locale) {
   const current = i18n.resolvedLanguage || i18n.language;
+  
+  // Guard 1: Already on this language
   if (current === lng) return;
   
-  await i18n.changeLanguage(lng);
-  localStorage.setItem('lang', lng);
-  // ...
-};
+  // Guard 2: Invalid language
+  if (!supportedLocales.includes(lng)) return;
+  
+  // Guard 3: Switch in progress
+  if (switching) return;
+  
+  // Guard 4: Too rapid (throttle 400ms)
+  if (Date.now() - lastSwitch < 400) return;
+  
+  switching = true;
+  try {
+    await i18n.changeLanguage(lng);
+    localStorage.setItem('lang', lng);
+    lastSwitch = Date.now();
+  } finally {
+    switching = false;
+  }
+}
 ```
+
+**CRITICAL:** All code must use `setLocale()` instead of calling `i18n.changeLanguage()` directly!
 
 ### 3. Rendering Gate
 
@@ -50,13 +68,15 @@ const setLocale = async (lng: string) => {
 
 ## Checklist
 
-- ✅ Only one detection source (localStorage)
+- ✅ **No LanguageDetector** - direct init with `lng` parameter
+- ✅ Single read from localStorage at startup
 - ✅ `supportedLngs` and `fallbackLng` set
 - ✅ All namespaces exist (bundled as empty objects)
-- ✅ Guard before every `changeLanguage`
+- ✅ **Centralized `setLocale()` with 4 guards**
 - ✅ `useSuspense: false` + `initImmediate: false`
 - ✅ `partialBundledLanguages: true`
 - ✅ LanguageGate prevents premature rendering
+- ✅ Migration from legacy `i18nextLng` key
 
 ## Testing
 
@@ -79,10 +99,12 @@ location.reload();
 
 ## Key Files Changed
 
-1. `src/i18n/init.ts` - Single source detection, bundled resources
-2. `src/components/LanguageSwitcher.tsx` - Guard against redundant changes
-3. `src/components/LanguageGate.tsx` - NEW - Prevents premature rendering
-4. `src/providers/I18nSafeProvider.tsx` - Wraps children in LanguageGate
+1. `src/i18n/init.ts` - **Removed LanguageDetector**, direct init, bundled resources
+2. `src/i18n/setLocale.ts` - **NEW** - Centralized locale switching with 4-layer guards
+3. `src/components/LanguageSwitcher.tsx` - Uses `setLocale()` instead of direct `changeLanguage()`
+4. `src/hooks/useLocaleHydration.ts` - Uses `setLocale()` for profile hydration
+5. `src/components/LanguageGate.tsx` - Prevents premature rendering
+6. `src/providers/I18nSafeProvider.tsx` - Wraps children in LanguageGate
 
 ## Migration Notes
 

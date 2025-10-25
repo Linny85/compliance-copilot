@@ -1,13 +1,23 @@
 import i18n, { type i18n as I18nInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
 import { supportedLocales, fallbackLng } from './languages';
 
-const LS_KEY = 'lang'; // Consistent key for language preference
+const LS_KEY = 'lang'; // Single source of truth
 
-// Bundled resources to prevent HTTP requests and 404 loops
-const resources = {
-  de: {
+// 1) Migrate legacy key if present
+const legacy = localStorage.getItem('i18nextLng');
+if (legacy && !localStorage.getItem(LS_KEY)) {
+  localStorage.setItem(LS_KEY, legacy);
+}
+
+// 2) Read initial language (single source, no detector needed)
+const storedLng = localStorage.getItem(LS_KEY);
+const initialLng = supportedLocales.includes(storedLng as any) ? storedLng : fallbackLng;
+
+// 3) Build bundled resources for all supported locales
+const resources: Record<string, Record<string, Record<string, any>>> = {};
+supportedLocales.forEach(locale => {
+  resources[locale] = {
     common: {},
     dashboard: {},
     documents: {},
@@ -17,49 +27,31 @@ const resources = {
     scope: {},
     evidence: {},
     checks: {},
-  },
-  sv: {
-    common: {},
-    dashboard: {},
-    documents: {},
-    sectors: {},
-    nav: {},
-    controls: {},
-    scope: {},
-    evidence: {},
-    checks: {},
-  },
-};
+  };
+});
 
-// ---- Singleton protection (critical for preview/HMR) ----
+// 4) Singleton protection (critical for preview/HMR)
 const g = globalThis as any;
 let instance: I18nInstance;
 
 if (g.__i18n_instance) {
   instance = g.__i18n_instance as I18nInstance;
 } else {
-  instance = i18n
-    .use(LanguageDetector)
-    .use(initReactI18next);
+  instance = i18n.use(initReactI18next);
 
   if (!instance.isInitialized) {
     instance.init({
-      resources,
-      supportedLngs: supportedLocales,
+      lng: initialLng,                        // Fixed initial language (no detector!)
       fallbackLng,
+      supportedLngs: supportedLocales,
       load: 'currentOnly',
       lowerCaseLng: true,
       nonExplicitSupportedLngs: true,
+      
+      resources,                              // Bundled resources (no HTTP backend)
       ns: ['common', 'dashboard', 'documents', 'nav', 'sectors', 'controls', 'scope', 'evidence', 'checks'],
       defaultNS: 'common',
       fallbackNS: 'common',
-      
-      // CRITICAL: Single source of truth - only localStorage
-      detection: {
-        order: ['localStorage'],              // Only localStorage, no navigator/htmlTag
-        caches: ['localStorage'],
-        lookupLocalStorage: LS_KEY,
-      },
       
       interpolation: {
         escapeValue: false,
@@ -77,5 +69,14 @@ if (g.__i18n_instance) {
 
   g.__i18n_instance = instance;
 }
+
+// 5) Sync HTML lang attribute
+const setHtmlLang = (lng: string) => {
+  if (document?.documentElement?.lang !== lng) {
+    document.documentElement.lang = lng;
+  }
+};
+setHtmlLang(initialLng!);
+instance.on('languageChanged', setHtmlLang);
 
 export default instance;
