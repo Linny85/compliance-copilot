@@ -7,6 +7,7 @@ interface I18nContextType {
   language: string;
   setLanguage: (lang: string) => Promise<void>;
   t: typeof translations.en;
+  ready: boolean;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
@@ -41,6 +42,7 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
     language: i18n.language,
     setLanguage,
     t: tObj as typeof translations.en,
+    ready: i18n.isInitialized,
   };
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

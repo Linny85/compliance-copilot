@@ -35,7 +35,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 export function AppSidebar() {
   const { state } = useSidebar();
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, ready } = useI18n();
   const isAdmin = useIsAdmin();
 
   const handleLogout = async () => {
@@ -45,6 +45,9 @@ export function AppSidebar() {
   };
 
   const isCollapsed = state === "collapsed";
+
+  // Don't render until i18n is ready
+  if (!ready) return null;
 
   // Main Navigation Items
   const mainNavItems = [
@@ -68,6 +71,16 @@ export function AppSidebar() {
 
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon">
+      {/* Logo Header */}
+      {!isCollapsed && (
+        <div className="p-4 border-b border-sidebar-border flex items-center gap-3">
+          <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground font-bold text-lg">
+            N
+          </div>
+          <span className="font-semibold text-sidebar-foreground">NIS2 AI Guard</span>
+        </div>
+      )}
+      
       <SidebarTrigger className="m-2 self-end" />
 
       <SidebarContent>

@@ -22,7 +22,7 @@ interface SubscriptionData {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['common', 'dashboard']);
+  const { t, ready } = useTranslation(['common', 'dashboard']);
   const [loading, setLoading] = useState(true);
   const [companyData, setCompanyData] = useState<CompanyData>({
     name: "",
@@ -90,12 +90,12 @@ const Dashboard = () => {
     checkAuthAndLoadData();
   }, [navigate]);
 
-  if (loading) {
+  if (loading || !ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
+          <p className="mt-4 text-muted-foreground">{ready ? t('common.loading') : 'Loading...'}</p>
         </div>
       </div>
     );
