@@ -3224,6 +3224,26 @@ export type Database = {
           },
         ]
       }
+      mv_compliance_summary: {
+        Row: {
+          failed: number | null
+          last_run_at: string | null
+          passed: number | null
+          success_rate: number | null
+          tenant_id: string | null
+          total: number | null
+          warnings: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_approvals_pending: {
         Row: {
           action: string | null
@@ -3424,6 +3444,15 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_control_compliance_trend: {
+        Row: {
+          cur_score: number | null
+          delta_score: number | null
+          prev_score: number | null
+          tenant_id: string | null
+        }
+        Relationships: []
       }
       v_current_tenant: {
         Row: {
@@ -4275,6 +4304,7 @@ export type Database = {
         Args: { p_batch_limit?: number; p_retention_days?: number }
         Returns: Json
       }
+      refresh_compliance_summary_rpc: { Args: never; Returns: string }
       resolve_effective_control: {
         Args: {
           p_control: string

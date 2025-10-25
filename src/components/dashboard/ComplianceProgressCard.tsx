@@ -1,15 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, CheckCircle2, TrendingUp } from "lucide-react";
+import { AlertCircle, CheckCircle2, TrendingUp, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
 import { useComplianceData } from "@/hooks/useCompliance";
+import { toast } from "sonner";
 
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['common']);
-  const { loading, summary, getFrameworkScorePct } = useComplianceData();
+  const { loading, summary, trend, getFrameworkScorePct, isAdmin, refreshSummary, refreshing } = useComplianceData();
 
   if (loading) {
     return (
@@ -50,6 +52,9 @@ export function ComplianceProgressCard() {
   const overallPercent = Math.round(overall * 100);
   const scoreVariant = getScoreColor(overall);
   
+  // Calculate delta in percentage points
+  const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
+  
   const getCircleColor = (score: number) => {
     if (score >= 0.80) return "hsl(var(--success))";
     if (score >= 0.50) return "hsl(var(--warning))";
@@ -62,16 +67,47 @@ export function ComplianceProgressCard() {
     return "destructive";
   };
 
+  const handleRefresh = async () => {
+    try {
+      await refreshSummary();
+      toast.success(t('compliance.refreshSuccess', 'Compliance summary refreshed successfully'));
+    } catch (error) {
+      toast.error(t('compliance.refreshError', 'Failed to refresh compliance summary'));
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          {t('compliance.progress', 'Compliance Progress')}
-        </CardTitle>
-        <CardDescription>
-          {t('compliance.overall', 'Overall compliance status and framework breakdown')}
-        </CardDescription>
+        <div className="flex items-center justify-between">
+          <div className="space-y-1.5 flex-1">
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              {t('compliance.progress', 'Compliance Progress')}
+              {deltaPP !== null && (
+                <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
+                  deltaPP >= 0 ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                }`}>
+                  {deltaPP >= 0 ? '▲' : '▼'} {Math.abs(deltaPP)}pp
+                </span>
+              )}
+            </CardTitle>
+            <CardDescription>
+              {t('compliance.overall', 'Overall compliance status and framework breakdown')}
+            </CardDescription>
+          </div>
+          {isAdmin && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="ml-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Overall Score Circle */}

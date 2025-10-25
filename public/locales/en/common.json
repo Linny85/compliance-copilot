@@ -267,6 +267,14 @@
     "progress": "Compliance Progress",
     "noData": "No compliance data available yet. Complete checks, upload evidence, and complete DPIAs to see your progress.",
     "overall": "Overall Compliance",
+    "refresh": "Refresh Summary",
+    "refreshSuccess": "Compliance summary refreshed successfully",
+    "refreshError": "Failed to refresh compliance summary",
+    "trend": {
+      "up": "Improved",
+      "down": "Decreased",
+      "points": "pp"
+    },
     "framework": {
       "nis2": "NIS2",
       "ai_act": "AI Act",
