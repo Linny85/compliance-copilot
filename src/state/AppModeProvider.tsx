@@ -9,7 +9,9 @@ const MODE_KEY = "appMode";
 const getInitialMode = (): AppMode => {
   if (typeof window === "undefined") return "demo";
   const stored = window.localStorage.getItem(MODE_KEY) as AppMode | null;
-  return stored === "demo" || stored === "prod" ? stored : "demo";
+  const resolved = stored === "demo" || stored === "prod" ? stored : "demo";
+  try { console.log("[Diag][AppMode] getInitialMode", { stored, resolved }); } catch {}
+  return resolved;
 };
 
 const setMode = (m: AppMode) => {
@@ -22,6 +24,7 @@ export function AppModeProvider({ children }: { children: React.ReactNode }) {
     () => ({
       mode,
       switchTo: (m: AppMode) => {
+        console.log("[Diag][AppMode] switchTo:", m);
         set(m);
         setMode(m);
       },
