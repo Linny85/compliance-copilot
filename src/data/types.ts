@@ -1,36 +1,36 @@
 export type Id = string;
-export type ISO = string;
 
-export interface Company { 
+export type Company = { 
   id: Id; 
   name: string; 
-  createdAt: ISO; 
-}
+  createdAt: string;
+};
 
-export interface Vendor { 
+export type Vendor = { 
   id: Id; 
-  companyId: Id; 
   name: string; 
-  criticality: "low" | "med" | "high"; 
-}
+  criticality?: "low" | "med" | "high"; 
+  createdAt: string;
+};
 
-export interface AiSystem { 
+export type AiSystem = { 
   id: Id; 
-  companyId: Id; 
-  title: string; 
-  riskClass: "minimal" | "limited" | "high" | "unacceptable"; 
-}
+  name: string; 
+  ownerCompanyId?: Id; 
+  risk?: "minimal" | "limited" | "high"; 
+  createdAt: string;
+};
 
-export interface Snapshot {
-  version: number;
+export type Snapshot = {
+  version: 1;
   companies: Company[];
   vendors: Vendor[];
   aiSystems: AiSystem[];
-}
+};
 
-export interface StorageAdapter {
+export interface Repository {
   getSnapshot(userId?: string): Promise<Snapshot>;
-  upsert<T extends { id: Id }>(collection: keyof Snapshot, record: T): Promise<void>;
+  upsert<T extends Company | Vendor | AiSystem>(collection: keyof Snapshot, record: T): Promise<void>;
   remove(collection: keyof Snapshot, id: Id): Promise<void>;
   bulkImport(s: Snapshot, userId?: string): Promise<void>;
 }

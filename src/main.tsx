@@ -11,13 +11,13 @@ const queryClient = new QueryClient();
 function Root() {
   return (
     <React.StrictMode>
-      <AppModeProvider>
+      <QueryClientProvider client={queryClient}>
         <I18nSafeProvider>
-          <QueryClientProvider client={queryClient}>
+          <AppModeProvider>
             <App />
-          </QueryClientProvider>
+          </AppModeProvider>
         </I18nSafeProvider>
-      </AppModeProvider>
+      </QueryClientProvider>
     </React.StrictMode>
   );
 }

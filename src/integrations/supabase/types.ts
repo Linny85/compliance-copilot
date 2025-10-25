@@ -512,6 +512,78 @@ export type Database = {
           },
         ]
       }
+      demo_ai_systems: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          owner_company_id: string | null
+          risk: string | null
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          name: string
+          owner_company_id?: string | null
+          risk?: string | null
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          owner_company_id?: string | null
+          risk?: string | null
+          tenant_id?: string
+        }
+        Relationships: []
+      }
+      demo_companies: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          name: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
+      demo_vendors: {
+        Row: {
+          created_at: string | null
+          criticality: string | null
+          id: string
+          name: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          criticality?: string | null
+          id: string
+          name: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string | null
+          criticality?: string | null
+          id?: string
+          name?: string
+          tenant_id?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           company_id: string
