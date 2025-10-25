@@ -2686,13 +2686,16 @@ export type Database = {
         Row: {
           created_at: string
           date_completed: string
-          file_url: string
+          file_path: string | null
+          file_url: string | null
           id: string
           notes: string | null
           provider: string
+          retention_until: string | null
           status: string
           tenant_id: string
           title: string
+          training_tag: string | null
           updated_at: string
           user_id: string
           verified_at: string | null
@@ -2701,13 +2704,16 @@ export type Database = {
         Insert: {
           created_at?: string
           date_completed: string
-          file_url: string
+          file_path?: string | null
+          file_url?: string | null
           id?: string
           notes?: string | null
           provider: string
+          retention_until?: string | null
           status?: string
           tenant_id: string
           title: string
+          training_tag?: string | null
           updated_at?: string
           user_id: string
           verified_at?: string | null
@@ -2716,13 +2722,16 @@ export type Database = {
         Update: {
           created_at?: string
           date_completed?: string
-          file_url?: string
+          file_path?: string | null
+          file_url?: string | null
           id?: string
           notes?: string | null
           provider?: string
+          retention_until?: string | null
           status?: string
           tenant_id?: string
           title?: string
+          training_tag?: string | null
           updated_at?: string
           user_id?: string
           verified_at?: string | null

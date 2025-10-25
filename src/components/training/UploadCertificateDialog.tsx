@@ -12,6 +12,13 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useCreateTrainingCertificate } from '@/hooks/useTrainingCertificates';
 import type { CreateTrainingCertificateInput } from '@/types/training';
 
@@ -20,12 +27,14 @@ interface FormData {
   provider: string;
   date_completed: string;
   file: FileList;
+  training_tag?: string;
 }
 
 export function UploadCertificateDialog() {
   const [open, setOpen] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
+  const { register, handleSubmit, formState: { errors }, reset, setValue, watch } = useForm<FormData>();
   const createMutation = useCreateTrainingCertificate();
+  const selectedTrainingTag = watch('training_tag');
 
   const onSubmit = async (data: FormData) => {
     if (!data.file?.[0]) return;
@@ -35,6 +44,7 @@ export function UploadCertificateDialog() {
       provider: data.provider,
       date_completed: data.date_completed,
       file: data.file[0],
+      training_tag: data.training_tag,
     };
 
     await createMutation.mutateAsync(input);
@@ -61,6 +71,20 @@ export function UploadCertificateDialog() {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <Label htmlFor="training_tag">Schulung auswählen (optional)</Label>
+            <Select onValueChange={(value) => setValue('training_tag', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Wählen Sie eine Schulung" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nis2_basics">NIS2 Grundlagen</SelectItem>
+                <SelectItem value="ai_act_awareness">EU AI Act Awareness</SelectItem>
+                <SelectItem value="gdpr_basics">DSGVO Basis</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div>
             <Label htmlFor="title">Kurstitel *</Label>
             <Input

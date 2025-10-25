@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { FileText, CheckCircle, XCircle, Trash2, ExternalLink } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, Trash2, Download } from 'lucide-react';
+import { CertificateDownloadButton } from '@/components/training/CertificateDownloadButton';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Button } from '@/components/ui/button';
@@ -28,6 +29,8 @@ import {
   useVerifyTrainingCertificate,
   useDeleteTrainingCertificate,
 } from '@/hooks/useTrainingCertificates';
+import { useSignedUrl } from '@/hooks/useSignedUrl';
+import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
@@ -149,13 +152,10 @@ export default function TrainingCertificates() {
                           </TableCell>
                           <TableCell>{getStatusBadge(cert.status)}</TableCell>
                           <TableCell>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => window.open(cert.file_url, '_blank')}
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                            </Button>
+                            <CertificateDownloadButton 
+                              filePath={cert.file_path} 
+                              title={cert.title}
+                            />
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">

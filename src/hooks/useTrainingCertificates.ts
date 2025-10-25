@@ -64,9 +64,9 @@ export function useCreateTrainingCertificate() {
 
       if (!profile?.company_id) throw new Error('No company found');
 
-      // Generate unique filename
+      // Generate unique filename with user folder structure
       const fileExt = input.file.name.split('.').pop();
-      const fileName = `${profile.company_id}/${user.id}/${crypto.randomUUID()}.${fileExt}`;
+      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
 
       // Upload file to storage
       const { error: uploadError } = await supabase.storage
@@ -78,12 +78,11 @@ export function useCreateTrainingCertificate() {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL (signed for private bucket)
-      const { data: { publicUrl } } = supabase.storage
-        .from('training-certificates')
-        .getPublicUrl(fileName);
+      // Calculate retention (e.g., 7 years for compliance records)
+      const retentionDate = new Date();
+      retentionDate.setFullYear(retentionDate.getFullYear() + 7);
 
-      // Create database record
+      // Create database record with file_path
       const { data, error } = await supabase
         .from('training_certificates')
         .insert({
@@ -92,7 +91,9 @@ export function useCreateTrainingCertificate() {
           title: input.title,
           provider: input.provider,
           date_completed: input.date_completed,
-          file_url: publicUrl,
+          file_path: fileName,
+          training_tag: input.training_tag || null,
+          retention_until: retentionDate.toISOString(),
           status: 'pending',
         })
         .select()
@@ -172,7 +173,7 @@ export function useDeleteTrainingCertificate() {
       // Get certificate to find file path
       const { data: cert } = await supabase
         .from('training_certificates')
-        .select('file_url')
+        .select('file_path')
         .eq('id', id)
         .single();
 
@@ -184,13 +185,11 @@ export function useDeleteTrainingCertificate() {
 
       if (error) throw error;
 
-      // Delete file from storage (extract path from URL)
-      if (cert?.file_url) {
-        const urlPath = new URL(cert.file_url).pathname;
-        const filePath = urlPath.split('/training-certificates/')[1];
-        if (filePath) {
-          await supabase.storage.from('training-certificates').remove([filePath]);
-        }
+      // Delete file from storage using file_path
+      if (cert?.file_path) {
+        await supabase.storage
+          .from('training-certificates')
+          .remove([cert.file_path]);
       }
     },
     onSuccess: () => {

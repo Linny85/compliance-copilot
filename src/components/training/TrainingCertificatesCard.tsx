@@ -2,6 +2,7 @@ import { Award, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { UploadCertificateDialog } from './UploadCertificateDialog';
+import { CertificateDownloadButton } from './CertificateDownloadButton';
 import { useUserTrainingCertificates } from '@/hooks/useTrainingCertificates';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
@@ -13,16 +14,19 @@ const RECOMMENDED_TRAININGS = [
     id: 'nis2-basics',
     title: 'NIS2 Grundlagen',
     description: 'Einführung in NIS2-Anforderungen',
+    tag: 'nis2_basics',
   },
   {
     id: 'ai-act-awareness',
     title: 'EU AI Act Awareness',
     description: 'Überblick über EU AI Act Pflichten',
+    tag: 'ai_act_awareness',
   },
   {
     id: 'gdpr-basics',
     title: 'DSGVO Basis',
     description: 'Datenschutz-Grundlagen',
+    tag: 'gdpr_basics',
   },
 ];
 
@@ -83,7 +87,9 @@ export function TrainingCertificatesCard({ userId }: TrainingCertificatesCardPro
         ) : (
           <div className="space-y-4">
             {RECOMMENDED_TRAININGS.map((training) => {
+              // Match by training_tag first, fallback to title matching
               const cert = certificates.find((c) =>
+                c.training_tag === training.tag ||
                 c.title.toLowerCase().includes(training.title.toLowerCase().split(' ')[0])
               );
 
@@ -101,7 +107,7 @@ export function TrainingCertificatesCard({ userId }: TrainingCertificatesCardPro
                       {training.description}
                     </p>
                     {cert && (
-                      <div className="text-xs text-muted-foreground mt-2">
+                      <div className="text-xs text-muted-foreground mt-2 space-y-1">
                         <p>Anbieter: {cert.provider}</p>
                         <p>
                           Abgeschlossen:{' '}
@@ -116,6 +122,12 @@ export function TrainingCertificatesCard({ userId }: TrainingCertificatesCardPro
                         {cert.status === 'rejected' && cert.notes && (
                           <p className="text-destructive mt-1">Grund: {cert.notes}</p>
                         )}
+                        <div className="pt-1">
+                          <CertificateDownloadButton 
+                            filePath={cert.file_path} 
+                            title={cert.title}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>
