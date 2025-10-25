@@ -22,7 +22,7 @@ export async function setLocale(raw: string) {
   pending = (async () => {
     try {
       await i18n.changeLanguage(lng);
-      localStorage.setItem('lang', lng);
+      localStorage.setItem('i18nextLng', lng);
       lastSwitch = Date.now();
     } finally {
       switching = false;

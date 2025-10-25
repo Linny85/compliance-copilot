@@ -4,7 +4,7 @@ import HttpBackend from 'i18next-http-backend';
 
 // Fix language at boot to avoid detector ping-pong
 const BOOT_LNG =
-  (localStorage.getItem('lang') as 'de' | 'en' | 'sv' | null) || 'de';
+  (localStorage.getItem('i18nextLng') as 'de' | 'en' | 'sv' | null) || 'de';
 
 export const i18nReady = i18n
   .use(HttpBackend)
@@ -12,12 +12,12 @@ export const i18nReady = i18n
   .init({
     lng: BOOT_LNG,
     fallbackLng: 'de',
-    supportedLngs: ['en', 'de', 'sv', 'da', 'no', 'fi', 'is', 'nl', 'fr', 'es', 'it', 'pt', 'pl', 'cs', 'sk', 'sl', 'hr', 'ro', 'bg', 'el', 'et', 'lv', 'lt', 'mt', 'ga', 'hu', 'ca'],
+    supportedLngs: ['de', 'en', 'sv'],
     ns: ['common', 'nav', 'dashboard', 'documents', 'checks', 'controls', 'evidence', 'scope', 'sectors'],
     defaultNS: 'common',
     load: 'currentOnly',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: `${import.meta.env.BASE_URL}locales/{{lng}}/{{ns}}.json`,
     },
     react: {
       useSuspense: false,
