@@ -1,11 +1,26 @@
 import { Building2, ShieldCheck, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { seedDemo } from "@/data/seed";
+import { useAppMode } from "@/state/AppModeProvider";
 
 export default function Demo() {
+  const navigate = useNavigate();
+  const { switchTo, mode } = useAppMode();
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    seedDemo();
+    (async () => {
+      try {
+        await seedDemo();
+        switchTo("demo");
+        await new Promise((r) => requestAnimationFrame(() => r(null)));
+        navigate("/dashboard", { replace: true });
+      } catch (error) {
+        console.error("Demo initialization failed:", error);
+        setIsLoading(false);
+      }
+    })();
   }, []);
   const features = [
     {
@@ -36,6 +51,17 @@ export default function Demo() {
       ],
     },
   ];
+
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-surface-2">
+        <div className="text-center">
+          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <p className="text-sm text-text-secondary">Demo wird vorbereitet…</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-surface-2">
