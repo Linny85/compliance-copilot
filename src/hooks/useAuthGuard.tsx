@@ -60,12 +60,11 @@ export const useAuthGuard = () => {
 
       const info: UserInfo = data;
       
-      // Fetch subscription status
-      if (info.userId && info.tenantId) {
+      // Fetch subscription status using view (no custom claims needed)
+      if (info.userId) {
         const { data: subData } = await supabase
-          .from('subscriptions')
+          .from('v_me_subscription')
           .select('status')
-          .eq('user_id', info.userId)
           .maybeSingle();
         
         info.subscriptionStatus = subData?.status || null;

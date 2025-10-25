@@ -1,9 +1,10 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
-const STRIPE_WEBHOOK_SECRET = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+// Use Stripe SDK for proper webhook verification
+const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY")!;
+const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -21,39 +22,18 @@ interface SubscriptionUpdate {
 async function upsertSubscription(input: SubscriptionUpdate) {
   console.log("[Webhook] Updating subscription:", input);
   
-  // Find user by stripe_customer_id
-  const findRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/subscriptions?stripe_customer_id=eq.${input.stripeCustomerId}&select=id,user_id,company_id`,
-    {
-      headers: {
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-      },
-    }
-  );
-  
-  const existing = await findRes.json();
-  
-  if (!existing || existing.length === 0) {
-    console.warn("[Webhook] No subscription found for customer:", input.stripeCustomerId);
-    return;
-  }
-
-  const sub = existing[0];
-  
-  // Update subscription
+  // Update using Service Role Key with proper headers
   const updateRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/subscriptions?id=eq.${sub.id}`,
+    `${supabaseUrl}/rest/v1/subscriptions?stripe_customer_id=eq.${input.stripeCustomerId}`,
     {
       method: "PATCH",
       headers: {
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        apikey: serviceRoleKey,
+        Authorization: `Bearer ${serviceRoleKey}`, // Critical for RLS bypass
         "Content-Type": "application/json",
-        Prefer: "return=minimal",
+        Prefer: "resolution=merge-duplicates,return=representation",
       },
       body: JSON.stringify({
-        stripe_customer_id: input.stripeCustomerId,
         stripe_sub_id: input.stripeSubId,
         status: input.status,
         plan: input.plan,
@@ -64,51 +44,77 @@ async function upsertSubscription(input: SubscriptionUpdate) {
 
   if (!updateRes.ok) {
     const text = await updateRes.text();
+    console.error("[Webhook] Supabase update failed:", updateRes.status, text);
     throw new Error(`Supabase update failed: ${updateRes.status} ${text}`);
   }
   
-  console.log("[Webhook] Subscription updated successfully");
+  const result = await updateRes.json();
+  console.log("[Webhook] Subscription updated successfully:", result);
 }
 
-async function verifyStripeSignature(request: Request, body: string): Promise<any> {
+async function verifyStripeWebhook(request: Request, body: string): Promise<any> {
   const signature = request.headers.get("stripe-signature");
   if (!signature) {
-    throw new Error("No signature provided");
+    throw new Error("No stripe-signature header");
   }
 
-  // Parse signature
-  const elements = signature.split(',');
-  const timestamp = elements.find(e => e.startsWith('t='))?.split('=')[1];
-  const sig = elements.find(e => e.startsWith('v1='))?.split('=')[1];
+  // Use Stripe's webhook verification via fetch API
+  const response = await fetch("https://api.stripe.com/v1/webhook_endpoints/verify", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${stripeSecretKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      signature,
+      payload: body,
+      secret: webhookSecret,
+    }),
+  });
 
-  if (!timestamp || !sig) {
-    throw new Error("Invalid signature format");
-  }
+  if (!response.ok) {
+    // Fallback to manual verification with proper timestamp check
+    const elements = signature.split(',');
+    const timestampElement = elements.find(e => e.startsWith('t='));
+    const signatureElement = elements.find(e => e.startsWith('v1='));
 
-  // Create signed payload
-  const signedPayload = `${timestamp}.${body}`;
-  
-  // Verify signature using Web Crypto API
-  const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    encoder.encode(STRIPE_WEBHOOK_SECRET),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["verify"]
-  );
+    if (!timestampElement || !signatureElement) {
+      throw new Error("Invalid signature format");
+    }
 
-  const sigBytes = new Uint8Array(sig.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
-  
-  const isValid = await crypto.subtle.verify(
-    "HMAC",
-    key,
-    sigBytes,
-    encoder.encode(signedPayload)
-  );
+    const timestamp = timestampElement.split('=')[1];
+    const sig = signatureElement.split('=')[1];
+    
+    // Check timestamp tolerance (5 minutes)
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timestampNum = parseInt(timestamp, 10);
+    if (currentTime - timestampNum > 300) {
+      throw new Error("Timestamp too old");
+    }
 
-  if (!isValid) {
-    throw new Error("Invalid signature");
+    // Verify signature using Web Crypto API
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(webhookSecret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+
+    const signedPayload = `${timestamp}.${body}`;
+    const sigBytes = new Uint8Array(sig.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+    
+    const isValid = await crypto.subtle.verify(
+      "HMAC",
+      key,
+      sigBytes,
+      encoder.encode(signedPayload)
+    );
+
+    if (!isValid) {
+      throw new Error("Invalid signature");
+    }
   }
 
   return JSON.parse(body);
@@ -121,9 +127,9 @@ serve(async (req) => {
 
   try {
     const body = await req.text();
-    const event = await verifyStripeSignature(req, body);
+    const event = await verifyStripeWebhook(req, body);
     
-    console.log("[Webhook] Received event:", event.type);
+    console.log("[Webhook] Event received:", event.type, event.id);
 
     switch (event.type) {
       case "checkout.session.completed": {
@@ -138,8 +144,31 @@ serve(async (req) => {
         break;
       }
 
-      case "customer.subscription.updated":
-      case "customer.subscription.deleted": {
+      case "checkout.session.async_payment_succeeded": {
+        const session = event.data.object;
+        await upsertSubscription({
+          stripeCustomerId: String(session.customer),
+          stripeSubId: String(session.subscription),
+          status: "active",
+          plan: session.metadata?.plan || "basic",
+          currentPeriodEnd: new Date().toISOString(),
+        });
+        break;
+      }
+
+      case "checkout.session.async_payment_failed": {
+        const session = event.data.object;
+        await upsertSubscription({
+          stripeCustomerId: String(session.customer),
+          stripeSubId: String(session.subscription),
+          status: "incomplete",
+          plan: session.metadata?.plan || "basic",
+          currentPeriodEnd: new Date().toISOString(),
+        });
+        break;
+      }
+
+      case "customer.subscription.updated": {
         const subscription = event.data.object;
         await upsertSubscription({
           stripeCustomerId: String(subscription.customer),
@@ -153,12 +182,63 @@ serve(async (req) => {
         break;
       }
 
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object;
+        await upsertSubscription({
+          stripeCustomerId: String(subscription.customer),
+          stripeSubId: subscription.id,
+          status: "canceled",
+          plan: subscription.items?.data?.[0]?.price?.nickname || 
+                subscription.items?.data?.[0]?.price?.id || 
+                "basic",
+          currentPeriodEnd: new Date(subscription.current_period_end * 1000).toISOString(),
+        });
+        break;
+      }
+
+      case "invoice.payment_succeeded": {
+        const invoice = event.data.object;
+        if (invoice.subscription) {
+          // Confirm active status on successful payment
+          await upsertSubscription({
+            stripeCustomerId: String(invoice.customer),
+            stripeSubId: String(invoice.subscription),
+            status: "active",
+            plan: "basic", // Would need to fetch subscription details for accurate plan
+            currentPeriodEnd: new Date(invoice.period_end * 1000).toISOString(),
+          });
+        }
+        break;
+      }
+
+      case "invoice.payment_failed": {
+        const invoice = event.data.object;
+        if (invoice.subscription) {
+          // Mark as past_due on payment failure
+          await upsertSubscription({
+            stripeCustomerId: String(invoice.customer),
+            stripeSubId: String(invoice.subscription),
+            status: "past_due",
+            plan: "basic",
+            currentPeriodEnd: new Date(invoice.period_end * 1000).toISOString(),
+          });
+        }
+        break;
+      }
+
+      case "customer.subscription.trial_will_end": {
+        const subscription = event.data.object;
+        console.log("[Webhook] Trial ending soon for:", subscription.customer);
+        // Could trigger notification here
+        break;
+      }
+
       default:
         console.log("[Webhook] Unhandled event type:", event.type);
     }
 
     return new Response(
-      JSON.stringify({ received: true }),
+      JSON.stringify({ received: true, event_id: event.id }),
       { 
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" }

@@ -3676,6 +3676,53 @@ export type Database = {
           },
         ]
       }
+      v_me_subscription: {
+        Row: {
+          company_id: string | null
+          created_at: string | null
+          current_period_end: string | null
+          id: string | null
+          plan: string | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_sub_id: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          id?: string | null
+          plan?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_sub_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          id?: string | null
+          plan?: string | null
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_sub_id?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_rc_factors: {
         Row: {
           check_type: string | null

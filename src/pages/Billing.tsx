@@ -47,13 +47,10 @@ export default function Billing() {
 
   async function fetchSubscription() {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
+      // Use view instead of direct table access (no custom claims needed)
       const { data, error } = await supabase
-        .from('subscriptions')
+        .from('v_me_subscription')
         .select('status, plan, current_period_end, stripe_customer_id')
-        .eq('user_id', user.id)
         .maybeSingle();
 
       if (error) throw error;
@@ -68,37 +65,50 @@ export default function Billing() {
   async function startCheckout() {
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Nicht angemeldet");
+      const session = await supabase.auth.getSession();
+      if (!session.data.session) throw new Error("Nicht angemeldet");
 
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('stripe_customer_id')
-        .eq('id', user.id)
-        .single();
+      // Step 1: Prepare subscription (create customer if needed, pre-insert record)
+      const prepRes = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/subscription-prep`,
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.data.session.access_token}`,
+          },
+        }
+      );
 
-      const res = await fetch(
+      if (!prepRes.ok) {
+        const error = await prepRes.json();
+        throw new Error(error.error || 'Vorbereitung fehlgeschlagen');
+      }
+
+      const { stripe_customer_id } = await prepRes.json();
+
+      // Step 2: Create checkout session
+      const checkoutRes = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/billing-checkout`,
         {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
           },
           body: JSON.stringify({
-            customerId: profile?.stripe_customer_id,
+            customerId: stripe_customer_id,
             success_url: `${window.location.origin}/billing?status=success`,
             cancel_url: `${window.location.origin}/billing?status=cancel`,
           }),
         }
       );
 
-      if (!res.ok) {
-        const error = await res.json();
+      if (!checkoutRes.ok) {
+        const error = await checkoutRes.json();
         throw new Error(error.error || 'Checkout fehlgeschlagen');
       }
 
-      const { url } = await res.json();
+      const { url } = await checkoutRes.json();
       window.location.href = url;
     } catch (error) {
       console.error('Checkout error:', error);
@@ -129,7 +139,6 @@ export default function Billing() {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
           },
           body: JSON.stringify({
             customerId: subscription.stripe_customer_id,
