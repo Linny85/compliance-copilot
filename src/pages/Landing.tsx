@@ -1,10 +1,29 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, FileCheck, Brain, Users, CheckCircle2, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAppMode } from "@/state/AppModeProvider";
+import { seedDemo } from "@/data/seed";
 
 const Landing = () => {
   const navigate = useNavigate();
+  const { switchTo } = useAppMode();
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  const handleViewDemo = async () => {
+    try {
+      setDemoLoading(true);
+      await seedDemo();
+      switchTo("demo");
+      await new Promise((r) => requestAnimationFrame(() => r(null)));
+      navigate("/demo", { replace: true });
+    } catch (error) {
+      console.error("Demo start failed:", error);
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,8 +59,8 @@ const Landing = () => {
             <Button size="lg" onClick={() => navigate("/auth")} className="shadow-glow">
               Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline">
-              View Demo
+            <Button size="lg" variant="outline" onClick={handleViewDemo} disabled={demoLoading}>
+              {demoLoading ? "Demo wird vorbereitet…" : "View Demo"}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">14-day free trial • No credit card required</p>
