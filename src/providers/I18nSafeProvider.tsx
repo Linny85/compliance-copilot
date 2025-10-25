@@ -13,10 +13,5 @@ export default function I18nSafeProvider({ children }: { children: ReactNode }) 
     return <>{children}</>;
   }
   
-  // Wait for i18n to be initialized to prevent flicker
-  if (!i18n.isInitialized) {
-    return null; // or a simple loader if preferred
-  }
-  
   return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
 }
