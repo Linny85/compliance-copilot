@@ -1,6 +1,6 @@
 {
-  "title": "Kontrollbibliotek",
-  "subtitle": "Bläddra bland efterlevnadskontroller och skapa policymallar",
+  "title": "Kontroller",
+  "subtitle": "Alla aktiva kontroller för NIS2, AI-lagen och GDPR",
   "filters": {
     "title": "Filtrera kontroller",
     "allFrameworks": "Alla ramverk"

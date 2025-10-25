@@ -1,6 +1,6 @@
 {
-  "title": "Controls Library",
-  "subtitle": "Browse compliance controls and create policy templates",
+  "title": "Controls",
+  "subtitle": "All active controls for NIS2, AI Act and GDPR",
   "filters": {
     "title": "Filter Controls",
     "allFrameworks": "All Frameworks"

@@ -1,6 +1,6 @@
 {
-  "title": "Kontrollbibliothek",
-  "subtitle": "Compliance-Kontrollen durchsuchen und Policy-Vorlagen erstellen",
+  "title": "Kontrollen",
+  "subtitle": "Alle aktiven Kontrollen nach NIS2, KI-Gesetz und DSGVO",
   "filters": {
     "title": "Kontrollen filtern",
     "allFrameworks": "Alle Rahmenwerke"

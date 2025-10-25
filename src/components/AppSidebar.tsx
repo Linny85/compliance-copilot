@@ -14,6 +14,7 @@ import {
   HelpCircle,
   LogOut,
   Database,
+  Award,
 } from "lucide-react";
 import {
   Sidebar,
@@ -58,6 +59,7 @@ export function AppSidebar() {
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
     { title: t.nav.checks, url: "/checks", icon: PlayCircle },
     { title: t.nav.docs, url: "/documents", icon: FileText },
+    { title: t.nav.certificates, url: "/admin/training-certificates", icon: Award, adminOnly: true },
     { title: t.nav.reports, url: "/admin/ops", icon: BarChart3, adminOnly: true },
   ];
 
