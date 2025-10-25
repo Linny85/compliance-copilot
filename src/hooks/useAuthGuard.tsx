@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppMode } from "@/state/AppModeProvider";
+import i18n from "@/i18n/init";
 
 interface UserInfo {
   userId: string;
@@ -19,6 +20,9 @@ export const useAuthGuard = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
+    // Wait for i18n to be ready before running auth checks
+    if (!i18n.isInitialized) return;
+
     checkAuthAndRedirect();
 
     // Listen for auth state changes
@@ -28,24 +32,27 @@ export const useAuthGuard = () => {
       } else if (event === 'SIGNED_OUT') {
         setUserInfo(null);
         setLoading(false);
-        if (location.pathname !== '/auth' && location.pathname !== '/') {
+        if (mode !== 'demo' && location.pathname !== '/auth' && location.pathname !== '/') {
           navigate('/auth');
         }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname]);
+  }, [location.pathname, mode]);
 
   const checkAuthAndRedirect = async () => {
     try {
-      // If in demo mode, check if onboarding is complete
+      // Skip all auth checks in demo mode
       if (mode === 'demo') {
         const hasOrg = !!localStorage.getItem("demo_org_profile_v1");
         const hasCodes = !!localStorage.getItem("demo_org_codes_v1");
         
+        // Only redirect to onboarding if demo data is missing AND not already there
         if (!(hasOrg && hasCodes) && location.pathname !== '/onboarding') {
           navigate('/onboarding', { replace: true });
+          setLoading(false);
+          return;
         }
         
         setLoading(false);
