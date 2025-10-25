@@ -54,19 +54,19 @@ serve(async (req) => {
         'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams(
-        Object.entries({
-          mode: sessionData.mode,
-          'line_items[0][price]': sessionData.line_items[0].price,
-          'line_items[0][quantity]': sessionData.line_items[0].quantity.toString(),
-          'payment_method_types[0]': sessionData.payment_method_types[0],
-          success_url: sessionData.success_url,
-          cancel_url: sessionData.cancel_url,
-          allow_promotion_codes: sessionData.allow_promotion_codes.toString(),
-          'metadata[plan]': sessionData.metadata.plan,
-          ...(customerId ? { customer: customerId } : {}),
-        })
-      ),
+      body: new URLSearchParams({
+        mode: 'subscription',
+        'line_items[0][price]': STRIPE_PRICE_BASIC,
+        'line_items[0][quantity]': '1',
+        'payment_method_types[0]': 'card',
+        success_url: success_url || `${origin}/billing?status=success`,
+        cancel_url: cancel_url || `${origin}/billing?status=cancel`,
+        allow_promotion_codes: 'true',
+        'metadata[plan]': plan,
+        // 14-day trial period
+        'subscription_data[trial_period_days]': '14',
+        ...(customerId ? { customer: customerId } : {}),
+      }),
     });
 
     if (!response.ok) {

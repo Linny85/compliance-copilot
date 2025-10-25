@@ -134,25 +134,52 @@ serve(async (req) => {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object;
+        const subId = String(session.subscription);
+        
+        // Fetch actual subscription from Stripe to get real status (trialing vs active) and period_end
+        console.log("[Webhook] Fetching subscription details:", subId);
+        const subResponse = await fetch(`https://api.stripe.com/v1/subscriptions/${subId}`, {
+          headers: {
+            'Authorization': `Bearer ${stripeSecretKey}`,
+          },
+        });
+
+        if (!subResponse.ok) {
+          console.error("[Webhook] Failed to fetch subscription:", await subResponse.text());
+          throw new Error("Failed to fetch subscription details");
+        }
+
+        const sub = await subResponse.json();
+        
         await upsertSubscription({
           stripeCustomerId: String(session.customer),
-          stripeSubId: String(session.subscription),
-          status: "active",
-          plan: session.metadata?.plan || "basic",
-          currentPeriodEnd: new Date().toISOString(),
+          stripeSubId: subId,
+          status: sub.status, // 'trialing' during trial period, then 'active'
+          plan: sub.items?.data?.[0]?.price?.nickname || session.metadata?.plan || "basic",
+          currentPeriodEnd: new Date(sub.current_period_end * 1000).toISOString(),
         });
         break;
       }
 
       case "checkout.session.async_payment_succeeded": {
         const session = event.data.object;
-        await upsertSubscription({
-          stripeCustomerId: String(session.customer),
-          stripeSubId: String(session.subscription),
-          status: "active",
-          plan: session.metadata?.plan || "basic",
-          currentPeriodEnd: new Date().toISOString(),
+        const subId = String(session.subscription);
+        
+        // Fetch subscription for accurate status
+        const subResponse = await fetch(`https://api.stripe.com/v1/subscriptions/${subId}`, {
+          headers: { 'Authorization': `Bearer ${stripeSecretKey}` },
         });
+
+        if (subResponse.ok) {
+          const sub = await subResponse.json();
+          await upsertSubscription({
+            stripeCustomerId: String(session.customer),
+            stripeSubId: subId,
+            status: sub.status,
+            plan: sub.items?.data?.[0]?.price?.nickname || session.metadata?.plan || "basic",
+            currentPeriodEnd: new Date(sub.current_period_end * 1000).toISOString(),
+          });
+        }
         break;
       }
 
@@ -173,7 +200,7 @@ serve(async (req) => {
         await upsertSubscription({
           stripeCustomerId: String(subscription.customer),
           stripeSubId: subscription.id,
-          status: subscription.status,
+          status: subscription.status, // Transitions: trialing → active, active → past_due, etc.
           plan: subscription.items?.data?.[0]?.price?.nickname || 
                 subscription.items?.data?.[0]?.price?.id || 
                 "basic",
