@@ -65,18 +65,18 @@ export default function FeatureSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.06 }}
             viewport={{ once: true, margin: "-50px" }}
-            className="group relative overflow-hidden rounded-2xl border border-[color:hsl(var(--border-muted))] bg-[hsl(var(--surface-1))] p-6 shadow-sm backdrop-blur-sm transition hover:bg-[hsl(var(--surface-3))] hover:shadow-md"
+            className="group relative overflow-hidden rounded-2xl border border-border-muted bg-surface-1 p-6 shadow-sm backdrop-blur-sm transition hover:bg-surface-3 hover:shadow-md"
           >
-            <div className="mb-4 inline-flex items-center gap-2 rounded-xl border border-[color:hsl(var(--border-muted))] px-3 py-2 text-sm font-medium shadow-sm">
-              <span className="text-[hsl(var(--primary))]">{f.icon}</span>
-              <span className="text-[hsl(var(--text-primary))]">{f.title}</span>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-xl border border-border-muted px-3 py-2 text-sm font-medium shadow-sm">
+              <span className="text-primary">{f.icon}</span>
+              <span className="text-text-primary">{f.title}</span>
             </div>
 
-            <ul className="space-y-2 text-sm leading-relaxed text-[hsl(var(--text-secondary))]">
+            <ul className="space-y-2 text-sm leading-relaxed text-text-secondary">
               {f.bullets.map((b) => (
                 <li key={b} className="flex gap-2">
-                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-none rounded-full bg-[hsl(var(--primary))]" />
-                  <span className="text-[hsl(var(--text-secondary))]">{b}</span>
+                  <span className="mt-1 inline-block h-1.5 w-1.5 flex-none rounded-full bg-primary" />
+                  <span className="text-text-secondary">{b}</span>
                 </li>
               ))}
             </ul>
@@ -85,8 +85,8 @@ export default function FeatureSection() {
               className="pointer-events-none absolute inset-0 -z-10 opacity-0 blur-2xl transition duration-500 group-hover:opacity-100"
               aria-hidden
             >
-              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[hsl(var(--primary-glow))]/15" />
-              <div className="absolute -bottom-12 -left-12 h-44 w-44 rounded-full bg-[hsl(var(--accent))]/10" />
+              <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary-glow/15" />
+              <div className="absolute -bottom-12 -left-12 h-44 w-44 rounded-full bg-accent/10" />
             </div>
           </motion.article>
         ))}
@@ -95,13 +95,13 @@ export default function FeatureSection() {
       <div className="mt-10 flex flex-col items-center gap-3 text-center md:flex-row md:justify-center">
         <a
           href="#pricing"
-          className="inline-flex items-center justify-center rounded-2xl border border-[color:hsl(var(--border-muted))] bg-[hsl(var(--surface-1))] px-5 py-3 text-sm font-medium text-[hsl(var(--text-primary))] shadow-sm transition hover:bg-[hsl(var(--surface-3))] hover:shadow md:text-base"
+          className="inline-flex items-center justify-center rounded-2xl border border-border-muted bg-surface-1 px-5 py-3 text-sm font-medium text-text-primary shadow-sm transition hover:bg-surface-3 hover:shadow md:text-base"
         >
           Preise & Abonnement ansehen
         </a>
         <a
           href="#demo"
-          className="inline-flex items-center justify-center rounded-2xl bg-[hsl(var(--primary))] px-5 py-3 text-sm font-semibold text-[hsl(var(--primary-foreground))] shadow-sm transition hover:brightness-105 md:text-base"
+          className="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition hover:brightness-105 md:text-base"
         >
           Demo starten
         </a>
