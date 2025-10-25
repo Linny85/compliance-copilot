@@ -1,6 +1,8 @@
 import { createContext, useContext, ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { translations } from "@/lib/i18n";
+import type { Language } from "@/lib/i18n";
+import { setLocale } from "@/i18n/setLocale";
 
 interface I18nContextType {
   language: string;
@@ -15,24 +17,15 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
   const { i18n } = useTranslation();
 
   const setLanguage = async (lang: string) => {
-    await i18n.changeLanguage(lang);
+    await setLocale(lang);
   };
 
-  // Provide legacy object-style t powered by i18next for ALL languages
-  const buildTObject = (template: any, prefix = ''): any => {
-    const out: any = Array.isArray(template) ? [] : {};
-    for (const key in template) {
-      const path = prefix ? `${prefix}.${key}` : key;
-      if (template[key] && typeof template[key] === 'object') {
-        out[key] = buildTObject(template[key], path);
-      } else {
-        out[key] = i18n.t(path);
-      }
-    }
-    return out;
-  };
-
-  const tObj = useMemo(() => buildTObject(translations.en), [i18n.language]);
+  // Provide object-style t sourced from our local translations
+  // Avoid calling i18n.t here to prevent resource fetch/keys flicker
+  const tObj = useMemo(() => {
+    const lng = (i18n.language as Language) || "en";
+    return (translations[lng] ?? translations.en);
+  }, [i18n.language]);
 
   const value: I18nContextType = {
     language: i18n.language,
