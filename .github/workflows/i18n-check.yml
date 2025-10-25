@@ -30,4 +30,6 @@ jobs:
       - name: Annotate missing/extra DPIA keys
         if: failure()
         run: |
+          echo "::group::DPIA keyset check"
           node scripts/check-dpia-keys.js || true
+          echo "::endgroup::"

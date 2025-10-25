@@ -14,12 +14,17 @@ const path = require('path');
 const LOCALES_DIR = path.join(process.cwd(), 'public', 'locales');
 const NAMESPACE = 'common.json';
 const REF = 'en';
+const PRIORITY2 = new Set(['bg','da','el','et','fi','ga','hr','hu','lt','lv','mt','pt','ro','sk','sl','no','is','ca']);
 
-function flatten(obj, prefix = []) {
+function flatten(node, prefix = []) {
   const out = [];
-  if (obj && typeof obj === 'object' && !Array.isArray(obj)) {
-    for (const k of Object.keys(obj)) {
-      out.push(...flatten(obj[k], [...prefix, k]));
+  if (Array.isArray(node)) {
+    node.forEach((v, i) => {
+      out.push(...flatten(v, [...prefix, i]));
+    });
+  } else if (node && typeof node === 'object') {
+    for (const k of Object.keys(node)) {
+      out.push(...flatten(node[k], [...prefix, k]));
     }
   } else {
     out.push(prefix.join('.'));
@@ -29,9 +34,10 @@ function flatten(obj, prefix = []) {
 
 function loadJSON(p) {
   try {
-    return JSON.parse(fs.readFileSync(p, 'utf8'));
+    const raw = fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, ''); // strip BOM
+    return JSON.parse(raw);
   } catch (e) {
-    console.error(`Failed to parse ${p}: ${e.message}`);
+    console.log(`::error file=${p},title=Parse error::${e.message}`);
     return null;
   }
 }
@@ -58,11 +64,11 @@ console.log(`\n🔍 Checking dpia structure against reference (${refKeys.size} k
 
 let hasDiff = false;
 
-// Get all language directories
+// Get all Priority-2 language directories
 const dirs = fs.readdirSync(LOCALES_DIR, { withFileTypes: true })
   .filter(d => d.isDirectory())
   .map(d => d.name)
-  .filter(lang => lang !== REF)
+  .filter(lang => lang !== REF && PRIORITY2.has(lang))
   .sort();
 
 for (const lang of dirs) {
@@ -80,6 +86,13 @@ for (const lang of dirs) {
     continue;
   }
 
+  // Check for flat dpia.* keys at top level (wrong structure)
+  const flatDpiaKeys = Object.keys(j).filter(k => k.startsWith('dpia.'));
+  if (flatDpiaKeys.length) {
+    console.log(`::warning file=${p},title=Flat dpia keys::${flatDpiaKeys.slice(0, 5).join(', ')}${flatDpiaKeys.length > 5 ? ` ... +${flatDpiaKeys.length - 5} more` : ''}`);
+    hasDiff = true;
+  }
+
   // Check if dpia exists and is an object
   if (!j.dpia || typeof j.dpia !== 'object') {
     console.log(`::warning file=${p},title=Missing "dpia"::${lang}/common.json has no top-level "dpia" object`);
@@ -90,8 +103,8 @@ for (const lang of dirs) {
   // Flatten and compare keys
   const keys = new Set(flatten(j.dpia).map(k => `dpia.${k}`));
 
-  const missing = [...refKeys].filter(k => !keys.has(k));
-  const extra = [...keys].filter(k => !refKeys.has(k));
+  const missing = [...refKeys].filter(k => !keys.has(k)).sort();
+  const extra = [...keys].filter(k => !refKeys.has(k)).sort();
 
   if (missing.length || extra.length) {
     hasDiff = true;
