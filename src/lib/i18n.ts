@@ -193,6 +193,13 @@ export const translations = {
         noRequests: "No open requests",
         noEvidence: "No evidence yet",
       },
+      table: {
+        colControl: "Control",
+        colTitle: "Title",
+        colStatus: "Status",
+        colDue: "Due",
+        colSeverity: "Priority",
+      },
       success: {
         request_created: "Request created successfully",
         uploaded: "Evidence uploaded successfully",
@@ -432,6 +439,13 @@ export const translations = {
         noRequests: "Keine offenen Anfragen",
         noEvidence: "Keine Nachweise vorhanden",
       },
+      table: {
+        colControl: "Kontrolle",
+        colTitle: "Titel",
+        colStatus: "Status",
+        colDue: "Fällig",
+        colSeverity: "Priorität",
+      },
       success: {
         request_created: "Anfrage wurde erstellt",
         uploaded: "Nachweis wurde hochgeladen",
@@ -670,6 +684,13 @@ export const translations = {
       empty: {
         noRequests: "Inga öppna förfrågningar",
         noEvidence: "Inga bevis ännu",
+      },
+      table: {
+        colControl: "Kontroll",
+        colTitle: "Titel",
+        colStatus: "Status",
+        colDue: "Förfaller",
+        colSeverity: "Prioritet",
       },
       success: {
         request_created: "Förfrågan skapad",
