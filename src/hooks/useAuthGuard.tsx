@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppMode } from "@/state/AppModeProvider";
@@ -18,6 +18,13 @@ export const useAuthGuard = () => {
   const { mode } = useAppMode();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const didNav = useRef(false);
+  const safeNavigate = (to: string) => {
+    if (didNav.current) return;
+    didNav.current = true;
+    navigate(to, { replace: true });
+    setTimeout(() => { didNav.current = false; }, 300);
+  };
 
   useEffect(() => {
     // Wait for i18n to be ready before running auth checks
@@ -66,7 +73,7 @@ export const useAuthGuard = () => {
 
         // Redirect to onboarding if demo data is missing
         if (!(hasOrg && hasCodes)) {
-          navigate('/onboarding', { replace: true });
+          safeNavigate('/onboarding');
           setLoading(false);
           return;
         }
@@ -118,7 +125,7 @@ export const useAuthGuard = () => {
       
       // Routing logic based on tenantId and subscription
       if (!info.tenantId && location.pathname !== '/company-profile') {
-        navigate('/company-profile');
+        safeNavigate('/company-profile');
       } else if (info.tenantId && location.pathname === '/company-profile') {
         navigate('/dashboard');
       } else if (info.tenantId && !hasActiveSubscription && location.pathname !== '/billing') {

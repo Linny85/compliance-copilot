@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 function Root() {
   return (
-    <React.StrictMode>
+    
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
           <AppModeProvider>
@@ -19,7 +19,7 @@ function Root() {
           </AppModeProvider>
         </I18nProvider>
       </QueryClientProvider>
-    </React.StrictMode>
+    
   );
 }
 
