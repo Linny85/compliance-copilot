@@ -147,3 +147,11 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* SAFE-MODE: alle Animationen/Transitions aus (Debug) */
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+}

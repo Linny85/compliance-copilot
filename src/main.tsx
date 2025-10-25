@@ -7,11 +7,23 @@ import App from "./App.tsx";
 import "./index.css";
 import { i18nReady } from "@/i18n/init";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: Infinity,
+      gcTime: Infinity,
+    },
+    mutations: { retry: false },
+  },
+});
 
 function Root() {
   return (
-    
+    // <React.StrictMode>  {/* SAFE-MODE: AUS */}
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
           <AppModeProvider>
@@ -19,7 +31,7 @@ function Root() {
           </AppModeProvider>
         </I18nProvider>
       </QueryClientProvider>
-    
+    // </React.StrictMode>
   );
 }
 

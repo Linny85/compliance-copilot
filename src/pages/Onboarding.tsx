@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef, memo } from "react";
+// SAFE-MODE: Minimales, kontrolliertes Formular ohne RHF
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -11,14 +12,14 @@ import { Building2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const OnboardingInner = () => {
+export default function Onboarding() {
   const navigate = useNavigate();
   const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string>("");
   
-  // Stable form state - prevent remounts/resets
+  // Form state - stable
   const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [sector, setSector] = useState("");
@@ -265,7 +266,4 @@ const OnboardingInner = () => {
       </Card>
     </div>
   );
-};
-
-// Memo verhindert unnötige Re-Renders
-export default memo(OnboardingInner);
+}
