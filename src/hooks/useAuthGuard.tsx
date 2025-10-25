@@ -57,20 +57,21 @@ export const useAuthGuard = () => {
         const hasOrg = !!localStorage.getItem("demo_org_profile_v1");
         const hasCodes = !!localStorage.getItem("demo_org_codes_v1");
 
-        // Prevent redirect loop: don't navigate if we're already on onboarding
+        // Prevent redirect loop: never navigate away from onboarding
         if (location.pathname === '/onboarding') {
           setLoading(false);
           setUserInfo(null);
           return;
         }
 
-        // Only redirect to onboarding if demo data is missing AND not already there
+        // Redirect to onboarding if demo data is missing
         if (!(hasOrg && hasCodes)) {
           navigate('/onboarding', { replace: true });
           setLoading(false);
           return;
         }
 
+        // Demo complete: allow normal navigation
         setLoading(false);
         setUserInfo(null);
         return;

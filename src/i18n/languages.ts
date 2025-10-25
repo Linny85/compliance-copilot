@@ -1,8 +1,8 @@
 // Supported locales (EU + EWR pack)
-export const fallbackLng = 'en';
+export const fallbackLng = 'de';
 
 export const supportedLocales = [
-  'en', 'de', 'sv', 'da', 'no', 'fi', 'is',
+  'de', 'sv', 'da', 'no', 'fi', 'is',
   'fr', 'it', 'es', 'pt', 'ro', 'ca',
   'nl', 'pl', 'cs', 'sk', 'sl', 'hr',
   'hu', 'bg', 'el',
@@ -14,7 +14,7 @@ export type Locale = typeof supportedLocales[number];
 
 // Language labels for UI
 export const localeLabels: Record<string, string> = {
-  en: 'English (EN)', de: 'Deutsch (DE)', sv: 'Svenska (SV)',
+  de: 'Deutsch (DE)', sv: 'Svenska (SV)',
   da: 'Dansk (DA)', no: 'Norsk (NO)', fi: 'Suomi (FI)', is: 'Íslenska (IS)',
   fr: 'Français (FR)', it: 'Italiano (IT)', es: 'Español (ES)',
   pt: 'Português (PT)', ro: 'Română (RO)', ca: 'Català (CA)',
