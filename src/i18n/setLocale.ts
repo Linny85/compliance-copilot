@@ -3,23 +3,32 @@ import { normalizeLocale, supportedLocales, type Locale } from './languages';
 
 let switching = false;
 let lastSwitch = 0;
+let pending: Promise<void> | null = null;
 
 export async function setLocale(raw: string) {
   const lng = normalizeLocale(raw) as Locale;
-  if (!supportedLocales.includes(lng)) {
-    console.warn('[setLocale] normalized but not supported:', lng);
-    return;
-  }
+  if (!supportedLocales.includes(lng)) return;
 
   const current = (i18n.resolvedLanguage || i18n.language) as Locale;
-  if (current === lng || switching || Date.now() - lastSwitch < 400) return;
+  if (current === lng) return;
+
+  // Coalesce: if switch in progress, wait for same promise
+  if (pending) return pending;
+
+  // Throttle
+  if (Date.now() - lastSwitch < 400) return;
 
   switching = true;
-  try {
-    await i18n.changeLanguage(lng);
-    localStorage.setItem('lang', lng);
-    lastSwitch = Date.now();
-  } finally {
-    switching = false;
-  }
+  pending = (async () => {
+    try {
+      await i18n.changeLanguage(lng);
+      localStorage.setItem('lang', lng);
+      lastSwitch = Date.now();
+    } finally {
+      switching = false;
+      pending = null;
+    }
+  })();
+
+  return pending;
 }

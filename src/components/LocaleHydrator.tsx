@@ -1,32 +1,47 @@
 import { useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
 import { setLocale } from '@/i18n/setLocale';
+import i18n from '@/i18n/init';
 import type { Locale } from '@/i18n/languages';
+
+const LOCK_KEY = '__ni_locale_hydrated_v1';
+const LOCK_TTL_MS = 5 * 60 * 1000; // 5 min
+
+function hasValidLock() {
+  try {
+    const raw = localStorage.getItem(LOCK_KEY);
+    if (!raw) return false;
+    const ts = Number(raw);
+    return Number.isFinite(ts) && (Date.now() - ts) < LOCK_TTL_MS;
+  } catch { return false; }
+}
+
+function setLock() {
+  try { localStorage.setItem(LOCK_KEY, String(Date.now())); } catch {}
+}
 
 /**
  * One-time locale hydrator component
- * Runs ONCE at app startup to load user's language preference
- * Placed at top-level to avoid StrictMode double-mount issues
+ * Uses cross-frame lock to prevent multiple hydrations in Lovable editor
  */
 export function LocaleHydrator() {
-  const { i18n } = useTranslation();
   const didHydrate = useRef(false);
 
   useEffect(() => {
-    // Global singleton guard across StrictMode remounts/HMR
-    const g = globalThis as any;
-    const MARK = '__locale_hydrated__';
-    if (g[MARK]) return;
-    g[MARK] = true;
-
+    // Cross-frame guard via localStorage
+    if (hasValidLock()) return;
+    
     // Component-instance guard
     if (didHydrate.current) return;
     didHydrate.current = true;
 
-    let cancelled = false;
+    // Broadcast to other frames/tabs
+    const bc = 'BroadcastChannel' in window ? new BroadcastChannel('ni_i18n') : null;
+    bc?.postMessage({ type: 'hydration:start' });
 
-    const hydrateLocale = async () => {
+    let cancelled = false;
+    
+    (async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user || cancelled) return;
@@ -37,24 +52,31 @@ export function LocaleHydrator() {
           .eq('id', user.id)
           .maybeSingle();
 
-        if (cancelled) return;
-
-        if (profile?.language && profile.language !== i18n.language) {
-          await setLocale(profile.language as Locale);
-        }
-      } catch (error) {
         if (!cancelled) {
-          console.warn('[LocaleHydrator] hydration failed:', error);
+          const lng = profile?.language as Locale | undefined;
+          if (lng && lng !== i18n.language) {
+            await setLocale(lng);
+          }
+          setLock();
+          bc?.postMessage({ type: 'hydration:done', lng: i18n.language });
         }
+      } catch (e) {
+        setLock();
+        bc?.postMessage({ type: 'hydration:error' });
       }
-    };
+    })();
 
-    hydrateLocale();
+    bc?.addEventListener?.('message', (ev: any) => {
+      if (ev?.data?.type?.startsWith('hydration:')) {
+        // Another frame/tab handled hydration
+      }
+    });
 
     return () => {
       cancelled = true;
+      bc?.close?.();
     };
-  }, [i18n]);
+  }, []);
 
-  return null; // This component doesn't render anything
+  return null;
 }

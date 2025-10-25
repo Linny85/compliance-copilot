@@ -30,4 +30,17 @@ i18n.use(initReactI18next).init({
   partialBundledLanguages: true,
 });
 
+// Bind languageChanged event once globally
+const g = globalThis as any;
+if (!g.__ni_i18nBound) {
+  g.__ni_i18nBound = true;
+  const setHtmlLang = (lng: string) => {
+    if (document?.documentElement?.lang !== lng) {
+      document.documentElement.lang = lng;
+    }
+  };
+  setHtmlLang(i18n.language);
+  i18n.on('languageChanged', setHtmlLang);
+}
+
 export default i18n;
