@@ -262,5 +262,25 @@
     "manufacturing": "Manufacturing",
     "public": "Public Sector",
     "other": "Other"
+  },
+  "compliance": {
+    "progress": "Compliance Progress",
+    "noData": "No compliance data available yet. Complete checks, upload evidence, and complete DPIAs to see your progress.",
+    "overall": "Overall Compliance",
+    "framework": {
+      "nis2": "NIS2",
+      "ai_act": "AI Act",
+      "gdpr": "GDPR"
+    },
+    "breakdown": {
+      "controls": "Controls",
+      "evidence": "Evidence",
+      "training": "Training",
+      "dpia": "Data Protection"
+    },
+    "todos": {
+      "title": "Top Priorities",
+      "empty": "All tasks up to date"
+    }
   }
 }

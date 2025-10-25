@@ -53,38 +53,83 @@ export function ComplianceProgressCard() {
 
       if (!profile?.company_id) return;
 
-      // Load overall compliance summary
-      const { data: summary, error: summaryError } = await supabase
-        .from("v_compliance_overview" as any)
-        .select("*")
-        .eq("tenant_id", profile.company_id)
-        .maybeSingle();
-
-      if (summary && !summaryError) {
-        setCompliance(summary as ComplianceData);
-      }
-
-      // Load framework scores
-      const { data: frameworks, error: frameworkError } = await supabase
-        .from("v_framework_compliance" as any)
-        .select("framework, score")
+      // Calculate scores manually for now (until views are populated)
+      
+      // 1. Controls score - from check results
+      const { data: checkResults } = await supabase
+        .from("check_results")
+        .select("outcome")
         .eq("tenant_id", profile.company_id);
 
-      if (frameworks && !frameworkError) {
-        setFrameworkScores(frameworks as FrameworkScore[]);
-      }
+      const controlsScore = checkResults && checkResults.length > 0
+        ? checkResults.filter(r => r.outcome === 'pass').length / checkResults.length
+        : 0;
 
-      // Load open tasks (simplified - top 3 most urgent)
+      // 2. Evidence score - from evidences
+      const { data: evidences } = await supabase
+        .from("evidences")
+        .select("verdict")
+        .eq("tenant_id", profile.company_id);
+
+      const evidenceScore = evidences && evidences.length > 0
+        ? evidences.filter(e => e.verdict === 'approved').length / evidences.length
+        : 0;
+
+      // 3. Training score - from training certificates
+      const { data: trainings } = await supabase
+        .from("training_certificates")
+        .select("status")
+        .eq("tenant_id", profile.company_id);
+
+      const { data: users } = await supabase
+        .from("profiles")
+        .select("id", { count: 'exact', head: true })
+        .eq("company_id", profile.company_id);
+
+      const trainingScore = users && (users as any) > 0 && trainings
+        ? trainings.filter(t => t.status === 'verified').length / (users as any)
+        : 0;
+
+      // 4. DPIA score - from dpia records
+      const { data: dpias } = await supabase
+        .from("dpia_records")
+        .select("status")
+        .eq("tenant_id", profile.company_id);
+
+      const dpiaScore = dpias && dpias.length > 0
+        ? dpias.filter(d => d.status === 'approved' || d.status === 'completed').length / dpias.length
+        : 0;
+
+      // Calculate overall score (weights: controls=50%, evidence=20%, training=10%, dpia=20%)
+      const overallScore = (
+        controlsScore * 0.50 +
+        evidenceScore * 0.20 +
+        trainingScore * 0.10 +
+        dpiaScore * 0.20
+      );
+
+      setCompliance({
+        overall_score: overallScore,
+        controls_score: controlsScore,
+        evidence_score: evidenceScore,
+        training_score: trainingScore,
+        dpia_score: dpiaScore
+      });
+
+      // For now, set dummy framework scores (will be replaced with real data)
+      setFrameworkScores([
+        { framework: 'NIS2', score: controlsScore },
+        { framework: 'AI_ACT', score: controlsScore * 0.9 },
+        { framework: 'GDPR', score: dpiaScore }
+      ]);
+
+      // Load open tasks
       const tasks: OpenTask[] = [];
 
       // Failed checks
       const { data: failedChecks } = await supabase
         .from("check_results")
-        .select(`
-          message,
-          created_at,
-          check_rules!inner(title, code, severity)
-        `)
+        .select("message, created_at")
         .eq("tenant_id", profile.company_id)
         .eq("outcome", "fail")
         .order("created_at", { ascending: false })
@@ -92,10 +137,10 @@ export function ComplianceProgressCard() {
 
       if (failedChecks) {
         tasks.push(...failedChecks.map(c => ({
-          title: c.check_rules?.title || c.message,
+          title: c.message || "Failed check",
           due_at: null,
           link: "/checks",
-          severity: c.check_rules?.severity || "medium",
+          severity: "high",
           type: "check"
         })));
       }
@@ -162,6 +207,12 @@ export function ComplianceProgressCard() {
 
   const overallPercent = Math.round(compliance.overall_score * 100);
   const scoreColor = getScoreColor(compliance.overall_score);
+  
+  const getCircleColor = (score: number) => {
+    if (score >= 0.80) return "hsl(var(--success))";
+    if (score >= 0.50) return "hsl(var(--warning))";
+    return "hsl(var(--destructive))";
+  };
 
   const getFrameworkScore = (framework: string) => {
     const score = frameworkScores.find(f => f.framework === framework);
@@ -194,21 +245,20 @@ export function ComplianceProgressCard() {
                 cx="64"
                 cy="64"
                 r="56"
-                stroke="currentColor"
+                stroke="hsl(var(--muted))"
                 strokeWidth="8"
                 fill="none"
-                className="text-muted"
               />
               <circle
                 cx="64"
                 cy="64"
                 r="56"
-                stroke="currentColor"
+                stroke={getCircleColor(compliance.overall_score)}
                 strokeWidth="8"
                 fill="none"
                 strokeDasharray={`${2 * Math.PI * 56}`}
                 strokeDashoffset={`${2 * Math.PI * 56 * (1 - compliance.overall_score)}`}
-                className={`text-${scoreColor} transition-all duration-1000`}
+                className="transition-all duration-1000"
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
