@@ -39,8 +39,15 @@ export const useAuthGuard = () => {
 
   const checkAuthAndRedirect = async () => {
     try {
-      // If in demo mode, skip all auth checks
+      // If in demo mode, check if onboarding is complete
       if (mode === 'demo') {
+        const hasOrg = !!localStorage.getItem("demo_org_profile_v1");
+        const hasCodes = !!localStorage.getItem("demo_org_codes_v1");
+        
+        if (!(hasOrg && hasCodes) && location.pathname !== '/onboarding') {
+          navigate('/onboarding', { replace: true });
+        }
+        
         setLoading(false);
         setUserInfo(null);
         return;
