@@ -14,7 +14,13 @@ export function LocaleHydrator() {
   const didHydrate = useRef(false);
 
   useEffect(() => {
-    // Absolute guard: only run once per app lifecycle
+    // Global singleton guard across StrictMode remounts/HMR
+    const g = globalThis as any;
+    const MARK = '__locale_hydrated__';
+    if (g[MARK]) return;
+    g[MARK] = true;
+
+    // Component-instance guard
     if (didHydrate.current) return;
     didHydrate.current = true;
 
