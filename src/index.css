@@ -4,6 +4,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent autofill flickering */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 9999s ease-out, color 9999s ease-out;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

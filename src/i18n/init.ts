@@ -1,34 +1,33 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { supportedLocales, normalizeLocale } from './languages';
+import HttpBackend from 'i18next-http-backend';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
-// Alte Keys übernehmen, falls vorhanden
-const legacy = localStorage.getItem('i18nextLng');
-if (legacy && !localStorage.getItem('lang')) localStorage.setItem('lang', legacy);
-
-// Initialsprache stabilisieren
-const initialLng = normalizeLocale(localStorage.getItem('lang'));
-
-const resources: Record<string, any> = {};
-for (const locale of supportedLocales) {
-  resources[locale] = {
-    common: {}, dashboard: {}, documents: {}, onboarding: {},
-  };
-}
-
-i18n.use(initReactI18next).init({
-  lng: initialLng,
-  fallbackLng: 'en',
-  supportedLngs: supportedLocales as unknown as string[],
-  resources,
-  ns: ['common', 'dashboard', 'documents', 'onboarding'],
-  defaultNS: 'common',
-  fallbackNS: 'common',
-  interpolation: { escapeValue: false },
-  react: { useSuspense: false },
-  initImmediate: false,
-  partialBundledLanguages: true,
-});
+export const i18nReady = i18n
+  .use(HttpBackend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: 'en',
+    supportedLngs: ['en', 'de', 'sv', 'da', 'no', 'fi', 'is', 'nl', 'fr', 'es', 'it', 'pt', 'pl', 'cs', 'sk', 'sl', 'hr', 'ro', 'bg', 'el', 'et', 'lv', 'lt', 'mt', 'ga', 'hu', 'ca'],
+    ns: ['common', 'nav', 'dashboard', 'documents', 'checks', 'controls', 'evidence', 'scope', 'sectors'],
+    defaultNS: 'common',
+    load: 'currentOnly',
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+    },
+    detection: {
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+      lookupLocalStorage: 'lang',
+    },
+    react: {
+      useSuspense: false,
+    },
+    interpolation: {
+      escapeValue: false,
+    },
+  });
 
 // Bind languageChanged event once globally
 const g = globalThis as any;
@@ -39,7 +38,7 @@ if (!g.__ni_i18nBound) {
       document.documentElement.lang = lng;
     }
   };
-  setHtmlLang(i18n.language);
+  i18nReady.then(() => setHtmlLang(i18n.language));
   i18n.on('languageChanged', setHtmlLang);
 }
 

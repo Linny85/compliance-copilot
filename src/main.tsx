@@ -5,6 +5,7 @@ import I18nSafeProvider from "@/providers/I18nSafeProvider";
 import { AppModeProvider } from "@/state/AppModeProvider";
 import App from "./App.tsx";
 import "./index.css";
+import { i18nReady } from "@/i18n/init";
 
 const queryClient = new QueryClient();
 
@@ -22,4 +23,13 @@ function Root() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<Root />);
+const root = document.getElementById("root")!;
+
+i18nReady.then(() => {
+  createRoot(root).render(<Root />);
+});
+
+// Vite HMR: prevent re-init on hot reload
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}
