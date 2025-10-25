@@ -1,46 +1,78 @@
-import { createContext, useContext, ReactNode, useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { I18nextProvider, useTranslation } from "react-i18next";
+import i18n, { i18nReady } from "@/i18n/init";
 import { translations } from "@/lib/i18n";
 import type { Language } from "@/lib/i18n";
-import { setLocale } from "@/i18n/setLocale";
 
-interface I18nContextType {
-  language: string;
-  setLanguage: (lang: string) => Promise<void>;
+type I18nCtx = {
   t: typeof translations.en;
+  i18n: typeof import("i18next").default;
+  lng: string;
+  language: string;
   ready: boolean;
+  setLanguage: (lng: string) => void;
+};
+
+const Ctx = createContext<I18nCtx | null>(null);
+
+function I18nProviderInner({ children }: { children: React.ReactNode }) {
+  const { i18n: i18nInstance } = useTranslation();
+  const [lng, setLng] = useState<string>(i18nInstance.language || "de");
+
+  useEffect(() => {
+    const onChanged = (next: string) => setLng(next);
+    i18nInstance.on("languageChanged", onChanged);
+    return () => {
+      i18nInstance.off("languageChanged", onChanged);
+    };
+  }, [i18nInstance]);
+
+  const setLanguage = (next: string) => {
+    if (next && next !== i18nInstance.language) {
+      localStorage.setItem("i18nextLng", next);
+      i18nInstance.changeLanguage(next);
+    }
+  };
+
+  const tObj = useMemo(() => {
+    const lang = (lng as Language) || "de";
+    return translations[lang] ?? translations.de;
+  }, [lng]);
+
+  const value: I18nCtx = useMemo(
+    () => ({
+      t: tObj as typeof translations.en,
+      i18n: i18nInstance,
+      lng,
+      language: lng,
+      ready: i18nInstance.isInitialized,
+      setLanguage,
+    }),
+    [tObj, i18nInstance, lng]
+  );
+
+  return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
-const I18nContext = createContext<I18nContextType | undefined>(undefined);
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const [ready, setReady] = useState(i18n.isInitialized);
+  
+  useEffect(() => {
+    if (i18n.isInitialized) return;
+    i18nReady.then(() => setReady(true));
+  }, []);
 
-export const I18nProvider = ({ children }: { children: ReactNode }) => {
-  const { i18n } = useTranslation();
+  if (!ready) return null;
 
-  const setLanguage = async (lang: string) => {
-    await setLocale(lang);
-  };
+  return (
+    <I18nextProvider i18n={i18n}>
+      <I18nProviderInner>{children}</I18nProviderInner>
+    </I18nextProvider>
+  );
+}
 
-  // Provide object-style t sourced from our local translations
-  // Avoid calling i18n.t here to prevent resource fetch/keys flicker
-  const tObj = useMemo(() => {
-    const lng = (i18n.language as Language) || "en";
-    return (translations[lng] ?? translations.en);
-  }, [i18n.language]);
-
-  const value: I18nContextType = {
-    language: i18n.language,
-    setLanguage,
-    t: tObj as typeof translations.en,
-    ready: i18n.isInitialized,
-  };
-
-  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
-};
-
-export const useI18n = () => {
-  const context = useContext(I18nContext);
-  if (!context) {
-    throw new Error("useI18n must be used within I18nProvider");
-  }
-  return context;
-};
+export function useI18n() {
+  const ctx = useContext(Ctx);
+  if (!ctx) throw new Error("useI18n must be used within I18nProvider");
+  return ctx;
+}

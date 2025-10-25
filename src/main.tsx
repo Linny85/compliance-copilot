@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import I18nSafeProvider from "@/providers/I18nSafeProvider";
+import { I18nProvider } from "@/contexts/I18nContext";
 import { AppModeProvider } from "@/state/AppModeProvider";
 import App from "./App.tsx";
 import "./index.css";
@@ -13,11 +13,11 @@ function Root() {
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <I18nSafeProvider>
+        <I18nProvider>
           <AppModeProvider>
             <App />
           </AppModeProvider>
-        </I18nSafeProvider>
+        </I18nProvider>
       </QueryClientProvider>
     </React.StrictMode>
   );
