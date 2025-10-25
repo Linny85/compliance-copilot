@@ -38,6 +38,10 @@ module.exports = {
             const tag = node.name && node.name.name;
             if (!tag || !['input','select','textarea'].includes(tag)) return;
 
+            // Skip hidden inputs - they don't need these attributes
+            const type = getAttrValue({ openingElement: node }, 'type');
+            if (type === 'hidden') return;
+
             const hasName = hasAttr({ openingElement: node }, 'name');
             const hasId   = hasAttr({ openingElement: node }, 'id');
             if (!(hasName || hasId)) {
@@ -72,23 +76,47 @@ module.exports = {
           familyName: 'family-name',
           lastName: 'family-name',
           street: 'address-line1',
+          address: 'address-line1',
+          address2: 'address-line2',
           city: 'address-level2',
+          state: 'address-level1',
           postalCode: 'postal-code',
           zip: 'postal-code',
           country: 'country',
           phone: 'tel',
           tel: 'tel',
           password: 'current-password',
+          currentPassword: 'current-password',
           newPassword: 'new-password',
           organization: 'organization',
           company: 'organization',
           url: 'url',
+          birthday: 'bday',
+          bday: 'bday',
+          bdayDay: 'bday-day',
+          bdayMonth: 'bday-month',
+          bdayYear: 'bday-year',
+          ccName: 'cc-name',
+          ccNumber: 'cc-number',
+          ccExp: 'cc-exp',
+          ccExpMonth: 'cc-exp-month',
+          ccExpYear: 'cc-exp-year',
+          ccCsc: 'cc-csc',
+          oneTimeCode: 'one-time-code',
+          otp: 'one-time-code',
+          vat: 'tax-id',
+          vatId: 'tax-id',
+          taxId: 'tax-id',
         }));
 
         return {
           JSXOpeningElement(node) {
             const tag = node.name && node.name.name;
             if (tag !== 'input') return;
+
+            // Skip hidden inputs
+            const type = getAttrValue({ openingElement: node }, 'type');
+            if (type === 'hidden') return;
 
             const hasAuto = hasAttr({ openingElement: node }, 'autoComplete') || hasAttr({ openingElement: node }, 'autocomplete');
             if (hasAuto) return;

@@ -18,17 +18,37 @@ const autocompleteMap = {
   familyname: 'family-name',
   lastname: 'family-name',
   street: 'address-line1',
+  address: 'address-line1',
+  address2: 'address-line2',
   city: 'address-level2',
+  state: 'address-level1',
   postalcode: 'postal-code',
   zip: 'postal-code',
   country: 'country',
   phone: 'tel',
   tel: 'tel',
   password: 'current-password',
+  currentpassword: 'current-password',
   newpassword: 'new-password',
   organization: 'organization',
   company: 'organization',
   url: 'url',
+  birthday: 'bday',
+  bday: 'bday',
+  bdayday: 'bday-day',
+  bdaymonth: 'bday-month',
+  bdayyear: 'bday-year',
+  ccname: 'cc-name',
+  ccnumber: 'cc-number',
+  ccexp: 'cc-exp',
+  ccexpmonth: 'cc-exp-month',
+  ccexpyear: 'cc-exp-year',
+  cccsc: 'cc-csc',
+  onetimecode: 'one-time-code',
+  otp: 'one-time-code',
+  vat: 'tax-id',
+  vatid: 'tax-id',
+  taxid: 'tax-id',
 };
 
 module.exports = function(fileInfo, api) {
@@ -48,6 +68,11 @@ module.exports = function(fileInfo, api) {
       const attrs = path.node.attributes;
 
       const get = name => attrs.find(a => a.type === 'JSXAttribute' && a.name.name === name);
+      
+      // Skip hidden inputs - they don't need these attributes
+      const typeAttr = get('type');
+      if (typeAttr?.value?.value === 'hidden') return;
+
       const set = (name, value) => {
         attrs.push(j.jsxAttribute(
           j.jsxIdentifier(name), 
