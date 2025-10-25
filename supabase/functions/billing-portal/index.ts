@@ -1,0 +1,72 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  if (req.method !== 'POST') {
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  try {
+    const { customerId, return_url } = await req.json();
+    const origin = new URL(req.url).origin;
+
+    if (!customerId) {
+      throw new Error("Customer ID is required");
+    }
+
+    console.log("[Portal] Creating session for customer:", customerId);
+
+    // Create Stripe billing portal session using Fetch API
+    const response = await fetch('https://api.stripe.com/v1/billing_portal/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        customer: customerId,
+        return_url: return_url || `${origin}/billing`,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.error("[Portal] Stripe API error:", error);
+      throw new Error(`Stripe API error: ${error}`);
+    }
+
+    const session = await response.json();
+    console.log("[Portal] Session created");
+
+    return new Response(
+      JSON.stringify({ url: session.url }),
+      { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
+  } catch (error) {
+    console.error("[Portal] Error:", error);
+    const errorMessage = error instanceof Error ? error.message : 'Portal creation failed';
+    return new Response(
+      JSON.stringify({ error: errorMessage }),
+      { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
+  }
+});

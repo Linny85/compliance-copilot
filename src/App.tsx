@@ -29,6 +29,7 @@ import OpsDashboard from "./pages/OpsDashboard";
 import HelpbotManager from "./pages/admin/HelpbotManager";
 import DPIAList from "./pages/privacy/DPIAList";
 import DPIADetail from "./pages/privacy/DPIADetail";
+import Billing from "./pages/Billing";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 import { NorrlandGuide } from "./components/NorrlandGuide";
@@ -72,6 +73,7 @@ const App = () => (
           <Route path="/admin/helpbot" element={<HelpbotManager />} />
           <Route path="/privacy/dpia" element={<DPIAList />} />
           <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
+          <Route path="/billing" element={<Billing />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

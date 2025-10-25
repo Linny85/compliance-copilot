@@ -2138,6 +2138,7 @@ export type Database = {
           full_name: string | null
           id: string
           language: string | null
+          stripe_customer_id: string | null
           updated_at: string | null
         }
         Insert: {
@@ -2147,6 +2148,7 @@ export type Database = {
           full_name?: string | null
           id: string
           language?: string | null
+          stripe_customer_id?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -2156,6 +2158,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           language?: string | null
+          stripe_customer_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -2421,41 +2424,56 @@ export type Database = {
         Row: {
           company_id: string
           created_at: string | null
+          current_period_end: string | null
           external_customer_id: string | null
           external_subscription_id: string | null
           id: string
+          plan: string | null
           plan_id: string | null
           provider: string | null
           status: string | null
+          stripe_customer_id: string | null
+          stripe_sub_id: string | null
           trial_end: string | null
           trial_start: string | null
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           company_id: string
           created_at?: string | null
+          current_period_end?: string | null
           external_customer_id?: string | null
           external_subscription_id?: string | null
           id?: string
+          plan?: string | null
           plan_id?: string | null
           provider?: string | null
           status?: string | null
+          stripe_customer_id?: string | null
+          stripe_sub_id?: string | null
           trial_end?: string | null
           trial_start?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           company_id?: string
           created_at?: string | null
+          current_period_end?: string | null
           external_customer_id?: string | null
           external_subscription_id?: string | null
           id?: string
+          plan?: string | null
           plan_id?: string | null
           provider?: string | null
           status?: string | null
+          stripe_customer_id?: string | null
+          stripe_sub_id?: string | null
           trial_end?: string | null
           trial_start?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {

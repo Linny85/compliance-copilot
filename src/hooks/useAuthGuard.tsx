@@ -7,6 +7,7 @@ interface UserInfo {
   email: string;
   tenantId: string | null;
   role: string | null;
+  subscriptionStatus?: string | null;
 }
 
 export const useAuthGuard = () => {
@@ -58,18 +59,44 @@ export const useAuthGuard = () => {
       }
 
       const info: UserInfo = data;
+      
+      // Fetch subscription status
+      if (info.userId && info.tenantId) {
+        const { data: subData } = await supabase
+          .from('subscriptions')
+          .select('status')
+          .eq('user_id', info.userId)
+          .maybeSingle();
+        
+        info.subscriptionStatus = subData?.status || null;
+      }
+      
       setUserInfo(info);
 
-      // Routing logic based on tenantId
+      // Check if subscription is required
+      const hasActiveSubscription = info.subscriptionStatus && 
+        ['active', 'trialing'].includes(info.subscriptionStatus);
+      
+      // Routing logic based on tenantId and subscription
       if (!info.tenantId && location.pathname !== '/company-profile') {
         // User has no tenant, redirect to onboarding
         navigate('/company-profile');
       } else if (info.tenantId && location.pathname === '/company-profile') {
         // User has tenant but is on onboarding page, redirect to dashboard
         navigate('/dashboard');
-      } else if (info.tenantId && (location.pathname === '/auth' || location.pathname === '/')) {
-        // Authenticated user with tenant on auth/landing page, redirect to dashboard
+      } else if (info.tenantId && !hasActiveSubscription && location.pathname !== '/billing') {
+        // User has tenant but no active subscription, redirect to billing
+        navigate('/billing');
+      } else if (info.tenantId && hasActiveSubscription && location.pathname === '/billing') {
+        // User has active subscription but is on billing page, redirect to dashboard
         navigate('/dashboard');
+      } else if (info.tenantId && (location.pathname === '/auth' || location.pathname === '/')) {
+        // Authenticated user with tenant on auth/landing page, redirect appropriately
+        if (hasActiveSubscription) {
+          navigate('/dashboard');
+        } else {
+          navigate('/billing');
+        }
       }
 
       setLoading(false);
