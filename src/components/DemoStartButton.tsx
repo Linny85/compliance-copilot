@@ -20,7 +20,7 @@ export function DemoStartButton() {
           switchTo("demo");
           // Wait for state to propagate
           await new Promise((r) => requestAnimationFrame(() => r(null)));
-          nav("/onboarding?mode=demo", { replace: true });
+          nav("/demo", { replace: true });
         } finally {
           setBusy(false);
         }
