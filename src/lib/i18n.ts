@@ -143,6 +143,70 @@ export const translations = {
       help: "Help",
       logout: "Logout",
     },
+    // Evidence
+    evidence: {
+      title: "Evidence",
+      subtitle: "Manage requests and evidences for controls (NIS2, AI Act, GDPR).",
+      tabs: {
+        requests: "Requests",
+        evidence: "Evidence",
+      },
+      actions: {
+        newRequest: "Create request",
+        save: "Save",
+        cancel: "Cancel",
+        upload: "Upload",
+        review: "Review",
+      },
+      fields: {
+        control: "Control",
+        controlPlaceholder: "Select a control…",
+        title: "Title",
+        description: "Description",
+        dueAt: "Due date",
+        severity: "Priority",
+        attach: "Attach file (optional)",
+        file: "File",
+        verdict: "Verdict",
+        note: "Note",
+      },
+      severity: {
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        critical: "Critical",
+      },
+      status: {
+        open: "Open",
+        fulfilled: "Fulfilled",
+        expired: "Expired",
+        cancelled: "Cancelled",
+      },
+      verdict: {
+        pending: "Pending",
+        pass: "Approved",
+        fail: "Rejected",
+        warn: "Warning",
+      },
+      empty: {
+        noRequests: "No open requests",
+        noEvidence: "No evidence yet",
+      },
+      success: {
+        request_created: "Request created successfully",
+        uploaded: "Evidence uploaded successfully",
+        review_saved: "Review saved successfully",
+      },
+      errors: {
+        create_failed: "Failed to create request",
+        upload_failed: "Failed to upload evidence",
+        review_failed: "Failed to save review",
+      },
+      validation: {
+        controlRequired: "Please select a control.",
+        titleRequired: "Title is required.",
+      },
+    },
     // Common
     common: {
       save: "Save",
@@ -317,6 +381,70 @@ export const translations = {
       help: "Hilfe",
       logout: "Abmelden",
     },
+    // Evidence
+    evidence: {
+      title: "Nachweise",
+      subtitle: "Verwalte Anfragen und Nachweise zu Kontrollen (NIS2, KI-Act, GDPR).",
+      tabs: {
+        requests: "Anfragen",
+        evidence: "Evidenzen",
+      },
+      actions: {
+        newRequest: "Neue Anfrage erstellen",
+        save: "Speichern",
+        cancel: "Abbrechen",
+        upload: "Hochladen",
+        review: "Prüfen",
+      },
+      fields: {
+        control: "Kontrolle",
+        controlPlaceholder: "Kontrolle auswählen …",
+        title: "Titel",
+        description: "Beschreibung",
+        dueAt: "Fällig bis",
+        severity: "Priorität",
+        attach: "Datei anhängen (optional)",
+        file: "Datei",
+        verdict: "Urteil",
+        note: "Notiz",
+      },
+      severity: {
+        low: "Niedrig",
+        medium: "Mittel",
+        high: "Hoch",
+        critical: "Kritisch",
+      },
+      status: {
+        open: "Offen",
+        fulfilled: "Erfüllt",
+        expired: "Abgelaufen",
+        cancelled: "Storniert",
+      },
+      verdict: {
+        pending: "Ausstehend",
+        pass: "Genehmigt",
+        fail: "Abgelehnt",
+        warn: "Warnung",
+      },
+      empty: {
+        noRequests: "Keine offenen Anfragen",
+        noEvidence: "Keine Nachweise vorhanden",
+      },
+      success: {
+        request_created: "Anfrage wurde erstellt",
+        uploaded: "Nachweis wurde hochgeladen",
+        review_saved: "Prüfung wurde gespeichert",
+      },
+      errors: {
+        create_failed: "Anfrage konnte nicht erstellt werden",
+        upload_failed: "Nachweis konnte nicht hochgeladen werden",
+        review_failed: "Prüfung konnte nicht gespeichert werden",
+      },
+      validation: {
+        controlRequired: "Bitte eine Kontrolle auswählen.",
+        titleRequired: "Titel ist erforderlich.",
+      },
+    },
     // Common
     common: {
       save: "Speichern",
@@ -490,6 +618,70 @@ export const translations = {
       admin: "Admin",
       help: "Hjälp",
       logout: "Logga ut",
+    },
+    // Evidence
+    evidence: {
+      title: "Bevis",
+      subtitle: "Hantera förfrågningar och bevis för kontroller (NIS2, AI-lagen, GDPR).",
+      tabs: {
+        requests: "Förfrågningar",
+        evidence: "Bevis",
+      },
+      actions: {
+        newRequest: "Skapa förfrågan",
+        save: "Spara",
+        cancel: "Avbryt",
+        upload: "Ladda upp",
+        review: "Granska",
+      },
+      fields: {
+        control: "Kontroll",
+        controlPlaceholder: "Välj en kontroll …",
+        title: "Titel",
+        description: "Beskrivning",
+        dueAt: "Förfaller",
+        severity: "Prioritet",
+        attach: "Bifoga fil (valfritt)",
+        file: "Fil",
+        verdict: "Beslut",
+        note: "Anteckning",
+      },
+      severity: {
+        low: "Låg",
+        medium: "Mellan",
+        high: "Hög",
+        critical: "Kritisk",
+      },
+      status: {
+        open: "Öppen",
+        fulfilled: "Uppfylld",
+        expired: "Utgången",
+        cancelled: "Avbruten",
+      },
+      verdict: {
+        pending: "Väntar",
+        pass: "Godkänd",
+        fail: "Avvisad",
+        warn: "Varning",
+      },
+      empty: {
+        noRequests: "Inga öppna förfrågningar",
+        noEvidence: "Inga bevis ännu",
+      },
+      success: {
+        request_created: "Förfrågan skapad",
+        uploaded: "Bevis uppladdat",
+        review_saved: "Granskning sparad",
+      },
+      errors: {
+        create_failed: "Det gick inte att skapa förfrågan",
+        upload_failed: "Det gick inte att ladda upp bevis",
+        review_failed: "Det gick inte att spara granskning",
+      },
+      validation: {
+        controlRequired: "Välj en kontroll.",
+        titleRequired: "Titel krävs.",
+      },
     },
     // Common
     common: {

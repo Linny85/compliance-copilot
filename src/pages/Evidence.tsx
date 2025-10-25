@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Upload, CheckCircle2, XCircle, AlertCircle, Clock } from "lucide-react";
+import { NewRequestDialog } from "@/components/evidence/NewRequestDialog";
 
 interface EvidenceRequest {
   id: string;
@@ -53,11 +54,9 @@ export default function EvidencePage() {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
   const [selectedEvidence, setSelectedEvidence] = useState<Evidence | null>(null);
+  const [tenantId, setTenantId] = useState<string | null>(null);
 
   // Form states
-  const [newTitle, setNewTitle] = useState("");
-  const [newDescription, setNewDescription] = useState("");
-  const [newControlId, setNewControlId] = useState("");
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadControlId, setUploadControlId] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -65,8 +64,29 @@ export default function EvidencePage() {
   const [reviewNote, setReviewNote] = useState("");
 
   useEffect(() => {
-    loadData();
+    loadTenantAndData();
   }, []);
+
+  const loadTenantAndData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('company_id')
+        .eq('id', user.id)
+        .single();
+
+      if (profile?.company_id) {
+        setTenantId(profile.company_id);
+      }
+    } catch (error) {
+      console.error('Failed to load tenant:', error);
+    }
+    
+    await loadData();
+  };
 
   const loadData = async () => {
     setLoading(true);
@@ -92,35 +112,6 @@ export default function EvidencePage() {
     }
   };
 
-  const handleCreateRequest = async () => {
-    if (!newTitle.trim() || !newControlId) return;
-
-    try {
-      const { error } = await supabase.functions.invoke("create-evidence-request", {
-        body: {
-          control_id: newControlId,
-          title: newTitle.trim(),
-          description: newDescription.trim() || null,
-        },
-      });
-
-      if (error) throw error;
-
-      toast({ title: t("evidence:success.request_created") });
-      setRequestDialogOpen(false);
-      setNewTitle("");
-      setNewDescription("");
-      setNewControlId("");
-      loadData();
-    } catch (error: any) {
-      console.error("Failed to create request:", error);
-      toast({
-        title: t("evidence:errors.create_failed"),
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleUpload = async () => {
     if (!uploadFile || !uploadControlId) return;
@@ -272,48 +263,10 @@ export default function EvidencePage() {
 
         <TabsContent value="requests" className="space-y-4">
           <div className="flex justify-end">
-            <Dialog open={requestDialogOpen} onOpenChange={setRequestDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <FileText className="h-4 w-4 mr-2" />
-                  {t("evidence:actions.newRequest")}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{t("evidence:actions.newRequest")}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label>{t("evidence:fields.control")}</Label>
-                    <Input
-                      value={newControlId}
-                      onChange={(e) => setNewControlId(e.target.value)}
-                      placeholder="Control UUID"
-                    />
-                  </div>
-                  <div>
-                    <Label>{t("evidence:fields.title")}</Label>
-                    <Input
-                      value={newTitle}
-                      onChange={(e) => setNewTitle(e.target.value)}
-                      placeholder={t("evidence:fields.title")}
-                    />
-                  </div>
-                  <div>
-                    <Label>{t("evidence:fields.description")}</Label>
-                    <Textarea
-                      value={newDescription}
-                      onChange={(e) => setNewDescription(e.target.value)}
-                      rows={3}
-                    />
-                  </div>
-                  <Button onClick={handleCreateRequest} className="w-full">
-                    {t("common:save")}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+            <Button onClick={() => setRequestDialogOpen(true)} disabled={!tenantId}>
+              <FileText className="h-4 w-4 mr-2" />
+              {t("evidence:actions.newRequest")}
+            </Button>
           </div>
 
           {loading ? (
@@ -473,6 +426,15 @@ export default function EvidencePage() {
           )}
         </TabsContent>
       </Tabs>
+
+      {tenantId && (
+        <NewRequestDialog
+          open={requestDialogOpen}
+          onOpenChange={setRequestDialogOpen}
+          tenantId={tenantId}
+          onSuccess={loadData}
+        />
+      )}
     </div>
   );
 }
