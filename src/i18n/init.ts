@@ -20,9 +20,9 @@ i18n
       loadPath: `${import.meta.env.BASE_URL || '/'}locales/{{lng}}/{{ns}}.json`,
     },
     detection: {
-      order: ['querystring', 'localStorage', 'cookie', 'navigator', 'htmlTag'],
+      order: ['localStorage', 'querystring'], // Remove browser/navigator detection to prevent flicker
       lookupQuerystring: 'lng',
-      caches: ['localStorage', 'cookie'],
+      caches: ['localStorage'],
     },
     interpolation: {
       escapeValue: false, // React already escapes
