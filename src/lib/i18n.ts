@@ -116,6 +116,45 @@ export const translations = {
     nis2: {
       title: "NIS2 Compliance",
       risks: "Risks",
+      subtitle: "Track and manage cybersecurity risks",
+      addRisk: "Add Risk",
+      createTitle: "Create New Risk",
+      createDesc: "Document a new NIS2 cybersecurity risk",
+      form: {
+        titleLabel: "Risk Title *",
+        descriptionLabel: "Description",
+        riskLevelLabel: "Risk Level",
+        statusLabel: "Status",
+        mitigationPlanLabel: "Mitigation Plan",
+        titlePlaceholder: "Unauthorized access to critical systems",
+        descriptionPlaceholder: "Detailed description of the risk...",
+        mitigationPlanPlaceholder: "Steps to mitigate this risk...",
+      },
+      riskLevels: {
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        critical: "Critical",
+      },
+      statuses: {
+        open: "Open",
+        in_progress: "In Progress",
+        mitigated: "Mitigated",
+        closed: "Closed",
+      },
+      actions: {
+        create: "Create Risk",
+        cancel: "Cancel",
+        createFirst: "Create First Risk",
+      },
+      empty: {
+        title: "No risks documented",
+        desc: "Start managing your cybersecurity risks by creating your first risk entry",
+        cta: "Create First Risk",
+      },
+      sections: {
+        mitigationPlan: "Mitigation Plan:",
+      },
     },
     // AI Act
     aiact: {
@@ -362,6 +401,45 @@ export const translations = {
     nis2: {
       title: "NIS2-Compliance",
       risks: "Risiken",
+      subtitle: "Cybersicherheitsrisiken nachverfolgen und verwalten",
+      addRisk: "Risiko hinzufügen",
+      createTitle: "Neues Risiko erstellen",
+      createDesc: "Ein neues NIS2-Cybersicherheitsrisiko dokumentieren",
+      form: {
+        titleLabel: "Risikotitel *",
+        descriptionLabel: "Beschreibung",
+        riskLevelLabel: "Risikostufe",
+        statusLabel: "Status",
+        mitigationPlanLabel: "Maßnahmenplan",
+        titlePlaceholder: "Unbefugter Zugriff auf kritische Systeme",
+        descriptionPlaceholder: "Detaillierte Beschreibung des Risikos...",
+        mitigationPlanPlaceholder: "Schritte zur Risikominderung...",
+      },
+      riskLevels: {
+        low: "Niedrig",
+        medium: "Mittel",
+        high: "Hoch",
+        critical: "Kritisch",
+      },
+      statuses: {
+        open: "Offen",
+        in_progress: "In Bearbeitung",
+        mitigated: "Mitigiert",
+        closed: "Geschlossen",
+      },
+      actions: {
+        create: "Risiko erstellen",
+        cancel: "Abbrechen",
+        createFirst: "Erstes Risiko erstellen",
+      },
+      empty: {
+        title: "Keine Risiken dokumentiert",
+        desc: "Beginnen Sie mit dem Management Ihrer Cybersicherheitsrisiken, indem Sie Ihren ersten Eintrag erstellen",
+        cta: "Erstes Risiko erstellen",
+      },
+      sections: {
+        mitigationPlan: "Maßnahmenplan:",
+      },
     },
     // AI Act
     aiact: {
@@ -608,6 +686,45 @@ export const translations = {
     nis2: {
       title: "NIS2-efterlevnad",
       risks: "Risker",
+      subtitle: "Spåra och hantera cybersäkerhetsrisker",
+      addRisk: "Lägg till risk",
+      createTitle: "Skapa ny risk",
+      createDesc: "Dokumentera en ny NIS2‑risk för cybersäkerhet",
+      form: {
+        titleLabel: "Risktitel *",
+        descriptionLabel: "Beskrivning",
+        riskLevelLabel: "Risknivå",
+        statusLabel: "Status",
+        mitigationPlanLabel: "Åtgärdsplan",
+        titlePlaceholder: "Obehörig åtkomst till kritiska system",
+        descriptionPlaceholder: "Detaljerad beskrivning av risken...",
+        mitigationPlanPlaceholder: "Steg för att åtgärda denna risk...",
+      },
+      riskLevels: {
+        low: "Låg",
+        medium: "Medel",
+        high: "Hög",
+        critical: "Kritisk",
+      },
+      statuses: {
+        open: "Öppen",
+        in_progress: "Pågår",
+        mitigated: "Åtgärdad",
+        closed: "Stängd",
+      },
+      actions: {
+        create: "Skapa risk",
+        cancel: "Avbryt",
+        createFirst: "Skapa första risk",
+      },
+      empty: {
+        title: "Inga risker dokumenterade",
+        desc: "Börja hantera dina cybersäkerhetsrisker genom att skapa din första riskpost",
+        cta: "Skapa första risk",
+      },
+      sections: {
+        mitigationPlan: "Åtgärdsplan:",
+      },
     },
     // AI Act
     aiact: {

@@ -149,48 +149,51 @@ const NIS2 = () => {
                   <AlertTriangle className="h-8 w-8 text-primary" />
                   {t.nis2.title}
                 </h1>
-                <p className="text-muted-foreground">{t.nis2.risks}</p>
+                <p className="text-muted-foreground">{t.nis2.subtitle}</p>
               </div>
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Risk
+                    {t.nis2.addRisk}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>Create New Risk</DialogTitle>
+                    <DialogTitle>{t.nis2.createTitle}</DialogTitle>
                     <DialogDescription>
-                      Document a new NIS2 cybersecurity risk
+                      {t.nis2.createDesc}
+                    </DialogDescription>
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="title">Risk Title *</Label>
+                      <Label htmlFor="title">{t.nis2.form.titleLabel}</Label>
                       <Input
                         id="title"
                         value={newRisk.title}
                         onChange={(e) => setNewRisk({ ...newRisk, title: e.target.value })}
-                        placeholder="Unauthorized access to critical systems"
+                        placeholder={t.nis2.form.titlePlaceholder}
+                      />
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="description">Description</Label>
+                      <Label htmlFor="description">{t.nis2.form.descriptionLabel}</Label>
                       <Textarea
                         id="description"
                         value={newRisk.description}
                         onChange={(e) => setNewRisk({ ...newRisk, description: e.target.value })}
-                        placeholder="Detailed description of the risk..."
+                        placeholder={t.nis2.form.descriptionPlaceholder}
                         rows={3}
+                      />
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="risk-level">Risk Level</Label>
+                        <Label htmlFor="risk-level">{t.nis2.form.riskLevelLabel}</Label>
                         <Select
                           value={newRisk.risk_level}
                           onValueChange={(value) => setNewRisk({ ...newRisk, risk_level: value })}
@@ -199,16 +202,16 @@ const NIS2 = () => {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                            <SelectItem value="critical">Critical</SelectItem>
+                            <SelectItem value="low">{t.nis2.riskLevels.low}</SelectItem>
+                            <SelectItem value="medium">{t.nis2.riskLevels.medium}</SelectItem>
+                            <SelectItem value="high">{t.nis2.riskLevels.high}</SelectItem>
+                            <SelectItem value="critical">{t.nis2.riskLevels.critical}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="status">Status</Label>
+                        <Label htmlFor="status">{t.nis2.form.statusLabel}</Label>
                         <Select
                           value={newRisk.status}
                           onValueChange={(value) => setNewRisk({ ...newRisk, status: value })}
@@ -217,32 +220,33 @@ const NIS2 = () => {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="open">Open</SelectItem>
-                            <SelectItem value="in_progress">In Progress</SelectItem>
-                            <SelectItem value="mitigated">Mitigated</SelectItem>
-                            <SelectItem value="closed">Closed</SelectItem>
+                            <SelectItem value="open">{t.nis2.statuses.open}</SelectItem>
+                            <SelectItem value="in_progress">{t.nis2.statuses.in_progress}</SelectItem>
+                            <SelectItem value="mitigated">{t.nis2.statuses.mitigated}</SelectItem>
+                            <SelectItem value="closed">{t.nis2.statuses.closed}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="mitigation">Mitigation Plan</Label>
+                      <Label htmlFor="mitigation">{t.nis2.form.mitigationPlanLabel}</Label>
                       <Textarea
                         id="mitigation"
                         value={newRisk.mitigation_plan}
                         onChange={(e) => setNewRisk({ ...newRisk, mitigation_plan: e.target.value })}
-                        placeholder="Steps to mitigate this risk..."
+                        placeholder={t.nis2.form.mitigationPlanPlaceholder}
                         rows={3}
+                      />
                       />
                     </div>
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      Cancel
+                      {t.common.cancel}
                     </Button>
                     <Button onClick={handleCreateRisk} disabled={!newRisk.title}>
-                      Create Risk
+                      {t.nis2.actions.create}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -253,13 +257,13 @@ const NIS2 = () => {
               <Card>
                 <CardContent className="p-12 text-center">
                   <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No risks documented</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t.nis2.empty.title}</h3>
                   <p className="text-muted-foreground mb-4">
-                    Start managing your cybersecurity risks by creating your first risk entry
+                    {t.nis2.empty.desc}
                   </p>
                   <Button onClick={() => setDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Create First Risk
+                    {t.nis2.empty.cta}
                   </Button>
                 </CardContent>
               </Card>
@@ -279,10 +283,10 @@ const NIS2 = () => {
                         </div>
                         <div className="flex gap-2">
                           <Badge className={getRiskLevelColor(risk.risk_level)}>
-                            {risk.risk_level}
+                            {t.nis2.riskLevels[risk.risk_level] || risk.risk_level}
                           </Badge>
                           <Badge variant="outline" className={getStatusColor(risk.status)}>
-                            {risk.status}
+                            {t.nis2.statuses[risk.status] || risk.status}
                           </Badge>
                         </div>
                       </div>
