@@ -37,32 +37,35 @@ export function CourseCard({ kind }: { kind: CourseKind }) {
                       "EU-AIACT-EMP";
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border bg-card p-5 shadow-sm transition hover:shadow-md">
+    <div className="relative flex flex-col rounded-2xl border bg-card/80 backdrop-blur shadow-sm p-4 sm:p-6 min-h-[220px] sm:min-h-[260px] transition md:hover:shadow-md md:hover:bg-accent/5">
       <div className="flex items-center gap-2">
         <div className="text-primary">{ICONS[kind]}</div>
-        <div className="text-xs uppercase tracking-wide text-muted-foreground">{code}</div>
+        <div className="text-xs sm:text-sm font-medium uppercase tracking-wide text-muted-foreground">{code}</div>
       </div>
 
-      <h3 className="mt-1 text-lg font-semibold">{title}</h3>
+      <h3 className="mt-1 text-lg sm:text-xl font-semibold leading-snug text-balance line-clamp-2">{title}</h3>
 
-      <ul className="mt-2 space-y-1 text-sm">
+      <ul className="mt-2 space-y-1.5 sm:space-y-2 text-sm sm:text-base text-pretty">
         {bullets.map((b, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span>•</span><span>{b}</span>
+          <li key={i} className="flex gap-2">
+            <span className="mt-2 size-1.5 sm:size-2 shrink-0 rounded-full bg-primary/60" />
+            <span className="leading-relaxed">{b}</span>
           </li>
         ))}
       </ul>
 
-      {url && (
-        <a
-          href={url}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-block text-sm font-medium underline text-primary hover:opacity-80 transition-opacity"
-        >
-          {t("viewCourse", { ns: "common", defaultValue: "View course" })}
-        </a>
-      )}
+      <div className="mt-auto pt-4">
+        {url && (
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg border px-3 py-2 text-sm sm:text-base font-medium hover:bg-accent transition-colors"
+          >
+            {t("viewCourse", { ns: "common", defaultValue: "View course" })}
+          </a>
+        )}
+      </div>
     </div>
   );
 }

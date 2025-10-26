@@ -103,34 +103,38 @@ export default function TrainingCertificates() {
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <AppSidebar />
-        <main className="flex-1 p-6">
+        <main className="flex-1 px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="max-w-7xl mx-auto space-y-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">{t('title', { ns: 'training' })}</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-balance">
+                {t('title', { ns: 'training' })}
+              </h1>
+              <p className="mt-1 text-sm sm:text-base text-muted-foreground text-pretty">
                 {t('description', { ns: 'training' })}
               </p>
             </div>
 
             {/* Hint Bar with Link to Courses */}
-            <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 p-4">
-              <span className="text-sm">
-                {t('hintBar.text', { ns: 'training' })}
-              </span>
-              <a
-                href="https://www.norrland-innovate.com/compliance-schulungen/"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
-              >
-                {t('hintBar.cta', { ns: 'training' })}
-                <ExternalLink className="h-4 w-4" />
-              </a>
+            <div className="rounded-xl border bg-card p-3 sm:p-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+                <span className="text-sm sm:text-base">
+                  {t('hintBar.text', { ns: 'training' })}
+                </span>
+                <a
+                  href="https://www.norrland-innovate.com/compliance-schulungen/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm sm:text-base w-full sm:w-auto hover:bg-accent transition-colors"
+                >
+                  {t('hintBar.cta', { ns: 'training' })}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </div>
             </div>
 
             {/* Course Cards - DE only */}
             {showCourses ? (
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {(['nis2', 'lead', 'emp'] as const).map((kind) => (
                   <CourseCard key={kind} kind={kind} />
                 ))}
@@ -146,18 +150,18 @@ export default function TrainingCertificates() {
             )}
 
             {/* Action Buttons */}
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
               <UploadCertificateDialog />
               <VerifyByCodeDialog />
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+            <Card className="p-4 sm:p-6">
+              <CardHeader className="px-0 pt-0">
+                <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
                   <FileText className="h-5 w-5" />
                   {t('sections.uploaded.title', { ns: 'training' })}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm sm:text-base">
                   {t('sections.uploaded.subtitle', { ns: 'training' })}
                 </CardDescription>
               </CardHeader>
