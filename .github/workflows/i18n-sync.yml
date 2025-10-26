@@ -1,0 +1,48 @@
+name: i18n Sync Guard
+
+on:
+  pull_request:
+    paths:
+      - "src/lib/i18n.ts"
+      - "public/locales/**"
+    branches:
+      - main
+      - develop
+  push:
+    paths:
+      - "src/lib/i18n.ts"
+      - "public/locales/**"
+    branches:
+      - main
+
+jobs:
+  verify-i18n:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check TypeScript compilation
+        run: npm run build
+
+      - name: Check locale consistency
+        run: |
+          echo "🔍 Checking i18n consistency across namespaces..."
+          node scripts/check-locales.js --namespaces checks aiSystems common training --ref en
+
+      - name: Verify embedded translations exist
+        run: |
+          echo "🔍 Verifying all required namespaces in embedded translations..."
+          node scripts/verify-embedded-i18n.js
+
+      - name: Report status
+        if: success()
+        run: echo "✅ All i18n checks passed successfully!"
