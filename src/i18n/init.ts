@@ -2,13 +2,14 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { translations } from '@/lib/i18n';
 
-type Lang = 'de' | 'en' | 'sv';
-const SUPPORTED: Lang[] = ['de', 'en', 'sv'];
-const resources = {
-  de: translations.de,
-  en: translations.en,
-  sv: translations.sv,
-};
+type Lang = 'en' | 'de' | 'sv' | 'da' | 'no' | 'fi' | 'is' | 'fr' | 'it' | 'es' | 'pt' | 'ro' | 'ca' | 'nl' | 'pl' | 'cs' | 'sk' | 'sl' | 'hr' | 'hu' | 'bg' | 'el' | 'et' | 'lv' | 'lt' | 'ga' | 'mt';
+const SUPPORTED: Lang[] = ['en', 'de', 'sv', 'da', 'no', 'fi', 'is', 'fr', 'it', 'es', 'pt', 'ro', 'ca', 'nl', 'pl', 'cs', 'sk', 'sl', 'hr', 'hu', 'bg', 'el', 'et', 'lv', 'lt', 'ga', 'mt'];
+
+// Build resources object dynamically with all supported languages
+const resources = SUPPORTED.reduce((acc, lang) => {
+  acc[lang] = (translations as any)[lang] || translations.en;
+  return acc;
+}, {} as Record<Lang, any>);
 const BOOT_LNG: Lang = (localStorage.getItem('i18nextLng') as Lang) || 'de';
 
 const g = globalThis as any;

@@ -3,7 +3,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/init';
 import { translations } from '@/lib/i18n';
 
-type Lang = 'de' | 'en' | 'sv';
+type Lang = 'en' | 'de' | 'sv' | 'da' | 'no' | 'fi' | 'is' | 'fr' | 'it' | 'es' | 'pt' | 'ro' | 'ca' | 'nl' | 'pl' | 'cs' | 'sk' | 'sl' | 'hr' | 'hu' | 'bg' | 'el' | 'et' | 'lv' | 'lt' | 'ga' | 'mt';
 type CtxType = {
   t: typeof translations.en;
   i18n: typeof i18n;
@@ -16,15 +16,17 @@ type CtxType = {
 const Ctx = createContext<CtxType | null>(null);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const supportedLangs: Lang[] = ['en', 'de', 'sv', 'da', 'no', 'fi', 'is', 'fr', 'it', 'es', 'pt', 'ro', 'ca', 'nl', 'pl', 'cs', 'sk', 'sl', 'hr', 'hu', 'bg', 'el', 'et', 'lv', 'lt', 'ga', 'mt'];
+  
   const [currentLng, setCurrentLng] = useState<Lang>(() => {
     const stored = localStorage.getItem('i18nextLng') as Lang;
-    return stored && ['de', 'en', 'sv'].includes(stored) ? stored : 'de';
+    return stored && supportedLangs.includes(stored) ? stored : 'de';
   });
 
   // Listen to i18n language changes
   useEffect(() => {
     const handleLanguageChanged = (lng: string) => {
-      if (['de', 'en', 'sv'].includes(lng)) {
+      if (supportedLangs.includes(lng as Lang)) {
         setCurrentLng(lng as Lang);
       }
     };
