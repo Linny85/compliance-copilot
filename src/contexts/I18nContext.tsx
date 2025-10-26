@@ -20,10 +20,32 @@ type CtxType = {
 const Ctx = createContext<CtxType | null>(null);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
+  // Dev warning for double mounting
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      // @ts-ignore
+      if (window.__I18N_PROVIDER_MOUNTED) {
+        console.warn('[i18n] I18nProvider ist doppelt gemountet – bitte nur einmal verwenden.');
+      }
+      // @ts-ignore
+      window.__I18N_PROVIDER_MOUNTED = true;
+    }
+  }, []);
+
   const [currentLng, setCurrentLng] = useState<Lang>(() => {
     const stored = localStorage.getItem('i18nextLng') as Lang;
     return stored && ['de', 'en', 'sv'].includes(stored) ? stored : 'de';
   });
+
+  // Update document lang and persist to localStorage
+  useEffect(() => {
+    try { 
+      localStorage.setItem('i18nextLng', currentLng); 
+    } catch {}
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = currentLng;
+    }
+  }, [currentLng]);
 
   // Listen to i18n language changes
   useEffect(() => {

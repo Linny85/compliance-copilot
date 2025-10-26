@@ -3,7 +3,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { I18nProvider } from "./contexts/I18nContext";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
@@ -40,58 +39,56 @@ import { AppLayout } from "./components/AppLayout";
 installDomGuards();
 
 const App = () => (
-  <I18nProvider>
-        <TooltipProvider>
-          <Toaster position="top-right" richColors closeButton expand duration={3500} />
-          <NorrlandGuide />
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-            <AuthGuard>
-              <Routes>
-                {/* Public routes */}
-                <Route path="/" element={<Landing />} />
-                <Route path="/auth" element={<Auth />} />
-                
-                {/* Protected routes with shared layout */}
-                <Route element={<AppLayout />}>
-                  <Route path="/onboarding" element={<Onboarding />} />
-                  <Route path="/company-profile" element={
-                    <ErrorBoundary>
-                      <CompanyProfile />
-                    </ErrorBoundary>
-                  } />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/nis2" element={<NIS2 />} />
-                  <Route path="/ai-act" element={<AIAct />} />
-                  <Route path="/documents" element={<Documents />} />
-                  <Route path="/controls" element={<Controls />} />
-                  <Route path="/scope" element={<Scope />} />
-                  <Route path="/evidence" element={<Evidence />} />
-                  <Route path="/checks" element={<Checks />} />
-                  <Route path="/checks/new" element={<ChecksNewRule />} />
-                  <Route path="/controls/mapping" element={<ControlsMapping />} />
-                  <Route path="/settings/notifications" element={<SettingsNotifications />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/admin/audit" element={<AuditLog />} />
-                  <Route path="/admin/noc" element={<NOC />} />
-                  <Route path="/admin/remediation" element={<RemediationEngine />} />
-                  <Route path="/admin/integrations" element={<Integrations />} />
-                  <Route path="/admin/approvals" element={<Approvals />} />
-                  <Route path="/admin/ops" element={<OpsDashboard />} />
-                  <Route path="/admin/helpbot" element={<HelpbotManager />} />
-                  <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
-                  <Route path="/privacy/dpia" element={<DPIAList />} />
-                  <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
-                  <Route path="/billing" element={<Billing />} />
-                  <Route path="/demo" element={<Demo />} />
-                </Route>
-                
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AuthGuard>
-          </BrowserRouter>
-        </TooltipProvider>
-      </I18nProvider>
+  <TooltipProvider>
+    <Toaster position="top-right" richColors closeButton expand duration={3500} />
+    <NorrlandGuide />
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <AuthGuard>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/auth" element={<Auth />} />
+          
+          {/* Protected routes with shared layout */}
+          <Route element={<AppLayout />}>
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/company-profile" element={
+              <ErrorBoundary>
+                <CompanyProfile />
+              </ErrorBoundary>
+            } />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/nis2" element={<NIS2 />} />
+            <Route path="/ai-act" element={<AIAct />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/controls" element={<Controls />} />
+            <Route path="/scope" element={<Scope />} />
+            <Route path="/evidence" element={<Evidence />} />
+            <Route path="/checks" element={<Checks />} />
+            <Route path="/checks/new" element={<ChecksNewRule />} />
+            <Route path="/controls/mapping" element={<ControlsMapping />} />
+            <Route path="/settings/notifications" element={<SettingsNotifications />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/audit" element={<AuditLog />} />
+            <Route path="/admin/noc" element={<NOC />} />
+            <Route path="/admin/remediation" element={<RemediationEngine />} />
+            <Route path="/admin/integrations" element={<Integrations />} />
+            <Route path="/admin/approvals" element={<Approvals />} />
+            <Route path="/admin/ops" element={<OpsDashboard />} />
+            <Route path="/admin/helpbot" element={<HelpbotManager />} />
+            <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
+            <Route path="/privacy/dpia" element={<DPIAList />} />
+            <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/demo" element={<Demo />} />
+          </Route>
+          
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AuthGuard>
+    </BrowserRouter>
+  </TooltipProvider>
 );
 
 export default App;
