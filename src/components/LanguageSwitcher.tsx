@@ -11,6 +11,9 @@ import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { supportedLocales, localeLabels, rtlLanguages } from "@/i18n/languages";
 
+// Only show languages that are fully supported
+const activeLocales = ['de', 'en', 'sv'] as const;
+
 export const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
 
@@ -49,7 +52,7 @@ export const LanguageSwitcher = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="z-50 max-h-[400px] overflow-y-auto bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border shadow-md">
-        {supportedLocales.map((locale) => (
+        {activeLocales.map((locale) => (
           <DropdownMenuItem key={locale} onClick={() => setLocale(locale)}>
             {localeLabels[locale] || locale.toUpperCase()}
           </DropdownMenuItem>
