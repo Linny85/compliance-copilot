@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
-import { DemoBanner } from "@/components/DemoBanner";
-import { TrialBanner } from "@/components/billing/TrialBanner";
+import { AppModeBanner } from "@/components/AppModeBanner";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 /**
@@ -21,8 +20,7 @@ export function AppLayout() {
             <SidebarTrigger className="ml-2" />
           </header>
           <main className="flex-1 flex flex-col overflow-auto">
-            <DemoBanner />
-            <TrialBanner tenantId={userInfo?.tenantId} />
+            <AppModeBanner />
             <Outlet />
           </main>
         </div>

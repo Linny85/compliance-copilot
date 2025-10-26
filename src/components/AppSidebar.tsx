@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { useI18n } from "@/contexts/I18nContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useFeatures } from "@/contexts/FeatureFlagContext";
+import { isDemo } from "@/config/appMode";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -61,7 +62,8 @@ export function AppSidebar() {
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck, feature: "evidence" },
     { title: t.nav.checks, url: "/checks", icon: PlayCircle, feature: "checks" },
     { title: "Audit Tasks", url: "/audit", icon: ClipboardCheck },
-    { title: t.nav.docs, url: "/documents", icon: FileText },
+    // Dokumente nur in Trial/Prod
+    ...(!isDemo() ? [{ title: t.nav.docs, url: "/documents", icon: FileText }] : []),
     { title: t.nav.certificates, url: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
     { title: t.nav.reports, url: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
   ].filter(item => !item.feature || hasFeature(item.feature as any));

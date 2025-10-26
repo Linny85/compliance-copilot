@@ -6,11 +6,23 @@ import { corsHeaders } from "../_shared/cors.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const APP_MODE = Deno.env.get("APP_MODE") ?? "trial";
 
 serve(async (req) => {
   // Handle CORS
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Demo-Modus blockieren
+  if (APP_MODE === 'demo') {
+    return new Response(
+      JSON.stringify({ error: "Generation disabled in demo mode" }),
+      { 
+        status: 403, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      }
+    );
   }
 
   try {
@@ -201,6 +213,17 @@ serve(async (req) => {
       color: rgb(0.5, 0.5, 0.5),
     });
 
+    // Wasserzeichen nur in Trial
+    if (APP_MODE === 'trial') {
+      page.drawText("TRIAL", {
+        x: width - 130,
+        y: 40,
+        size: 24,
+        font: fontBold,
+        color: rgb(0.8, 0.1, 0.1),
+      });
+    }
+
     const pdfBytes = await pdfDoc.save();
     console.log("[generate-audit-report] PDF generated, size:", pdfBytes.length);
 
@@ -252,8 +275,8 @@ serve(async (req) => {
       },
     });
 
-    // 6. Optional: Send email (if Postmark is configured)
-    if (send_email && user_email && Deno.env.get("POSTMARK_TOKEN")) {
+    // 6. Optional: Send email (nur wenn nicht Demo und Postmark konfiguriert)
+    if (send_email && APP_MODE !== 'demo' && user_email && Deno.env.get("POSTMARK_TOKEN")) {
       try {
         console.log("[generate-audit-report] Sending email to:", user_email);
         
