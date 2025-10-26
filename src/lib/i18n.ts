@@ -518,6 +518,12 @@ export const translations = {
         assessment: 'Assessment'
       }
     },
+    // Jurisdictions
+    jurisdictions: {
+      selectLabel: "Select legal framework",
+      hint: "Choose the applicable jurisdiction – views & controls adapt accordingly.",
+      suffix: " (GDPR + national law)",
+    },
     // Common
     common: {
       save: "Save",
@@ -1081,6 +1087,12 @@ export const translations = {
         audit: 'Audit',
         assessment: 'Bewertung'
       }
+    },
+    // Jurisdictions
+    jurisdictions: {
+      selectLabel: "Rechtsrahmen auswählen",
+      hint: "Wählen Sie den geltenden Rechtsrahmen – Anzeigen & Kontrollen passen sich an.",
+      suffix: " (GDPR + nationales Recht)",
     },
     // Common
     common: {
@@ -1646,6 +1658,12 @@ export const translations = {
         audit: 'Revision',
         assessment: 'Bedömning'
       }
+    },
+    // Jurisdictions
+    jurisdictions: {
+      selectLabel: "Välj rättslig ram",
+      hint: "Välj gällande jurisdiktion – vyer och kontroller anpassas därefter.",
+      suffix: " (GDPR + nationell lag)",
     },
     // Common
     common: {
