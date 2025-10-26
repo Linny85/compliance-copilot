@@ -3271,6 +3271,47 @@ export type Database = {
           },
         ]
       }
+      v_billing_status: {
+        Row: {
+          company_id: string | null
+          paid_active: boolean | null
+          plan: string | null
+          status: string | null
+          trial_active: boolean | null
+          trial_days_left: number | null
+          trial_end: string | null
+          trial_start: string | null
+        }
+        Insert: {
+          company_id?: string | null
+          paid_active?: never
+          plan?: string | null
+          status?: string | null
+          trial_active?: never
+          trial_days_left?: never
+          trial_end?: string | null
+          trial_start?: string | null
+        }
+        Update: {
+          company_id?: string | null
+          paid_active?: never
+          plan?: string | null
+          status?: string | null
+          trial_active?: never
+          trial_days_left?: never
+          trial_end?: string | null
+          trial_start?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       v_check_results_join: {
         Row: {
           control_id: string | null
@@ -4323,6 +4364,33 @@ export type Database = {
       set_default_flags: { Args: { _tenant: string }; Returns: undefined }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
+      start_or_reset_trial: {
+        Args: { days?: number }
+        Returns: {
+          company_id: string
+          created_at: string | null
+          current_period_end: string | null
+          external_customer_id: string | null
+          external_subscription_id: string | null
+          id: string
+          plan: string | null
+          plan_id: string | null
+          provider: string | null
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_sub_id: string | null
+          trial_end: string | null
+          trial_start: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "subscriptions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       svc_evidence_bulk_update: { Args: { p_updates: Json }; Returns: number }
     }
     Enums: {

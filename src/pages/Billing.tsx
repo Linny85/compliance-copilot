@@ -8,6 +8,8 @@ import { Loader2, CreditCard, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import FeatureSection from "@/components/FeatureSection";
 import { UpgradeCard } from "@/components/UpgradeCard";
+import { useBillingStatus } from "@/hooks/useBilling";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 interface SubscriptionData {
   status: string;
@@ -22,6 +24,9 @@ export default function Billing() {
   const [loading, setLoading] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [fetchingData, setFetchingData] = useState(true);
+  const [startingTrial, setStartingTrial] = useState(false);
+  const { userInfo } = useAuthGuard();
+  const { data: billingStatus } = useBillingStatus(userInfo?.tenantId);
 
   useEffect(() => {
     fetchSubscription();
@@ -61,6 +66,29 @@ export default function Billing() {
       console.error('Error fetching subscription:', error);
     } finally {
       setFetchingData(false);
+    }
+  }
+
+  async function startTrial() {
+    setStartingTrial(true);
+    try {
+      // @ts-ignore - RPC function not in generated types yet
+      const { error } = await supabase.rpc('start_or_reset_trial', { days: 14 });
+      if (error) throw error;
+      toast({
+        title: "Testversion aktiviert",
+        description: "Ihre 14-Tage-Testversion wurde erfolgreich aktiviert.",
+      });
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Fehler",
+        description: "Fehler beim Starten der Testversion",
+        variant: "destructive",
+      });
+    } finally {
+      setStartingTrial(false);
     }
   }
 
@@ -194,6 +222,25 @@ export default function Billing() {
     <div className="container mx-auto py-8 px-4 max-w-4xl">
       <h1 className="text-3xl font-bold mb-8">Abonnement & Abrechnung</h1>
 
+      {billingStatus?.trial_active && (
+        <Card className="mb-6 border-amber-200 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/20">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-amber-900 dark:text-amber-200">
+                Testversion aktiv
+              </CardTitle>
+              <Badge variant="default" className="bg-amber-600">
+                {billingStatus.trial_days_left} Tag{billingStatus.trial_days_left !== 1 ? 'e' : ''} verbleibend
+              </Badge>
+            </div>
+            <CardDescription className="text-amber-900/70 dark:text-amber-200/70">
+              Ihre kostenlose Testphase läuft bis{' '}
+              {billingStatus.trial_end ? new Date(billingStatus.trial_end).toLocaleDateString('de-DE') : '—'}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
+
       {subscription ? (
         <Card className="mb-6">
           <CardHeader>
@@ -232,28 +279,55 @@ export default function Billing() {
           </CardContent>
         </Card>
       ) : (
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Kein aktives Abonnement</CardTitle>
-            <CardDescription>
-              Starten Sie Ihr Abonnement, um Zugriff auf alle Funktionen zu erhalten
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={startCheckout}
-              disabled={loading}
-              size="lg"
-            >
-              {loading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <ArrowRight className="mr-2 h-4 w-4" />
-              )}
-              Abonnement starten
-            </Button>
-          </CardContent>
-        </Card>
+        <>
+          {!billingStatus?.trial_active && (
+            <Card className="mb-6 border-primary/20">
+              <CardHeader>
+                <CardTitle>14 Tage kostenlos testen</CardTitle>
+                <CardDescription>
+                  Testen Sie alle Funktionen ohne Risiko. Keine Kreditkarte erforderlich.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  onClick={startTrial}
+                  disabled={startingTrial}
+                  size="lg"
+                >
+                  {startingTrial ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                  )}
+                  Testversion starten
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Premium-Abonnement</CardTitle>
+              <CardDescription>
+                Wählen Sie einen Plan, der zu Ihren Anforderungen passt
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button 
+                onClick={startCheckout}
+                disabled={loading}
+                size="lg"
+              >
+                {loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <CreditCard className="mr-2 h-4 w-4" />
+                )}
+                Jetzt upgraden
+              </Button>
+            </CardContent>
+          </Card>
+        </>
       )}
 
       <FeatureSection />
