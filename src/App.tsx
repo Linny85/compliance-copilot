@@ -36,6 +36,7 @@ import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
 import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
+import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 
 installDomGuards();
 
@@ -45,7 +46,8 @@ const App = () => (
     <NorrlandGuide />
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <AuthGuard>
-        <Routes>
+        <FeatureFlagProvider>
+          <Routes>
           {/* Public routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
@@ -87,7 +89,8 @@ const App = () => (
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </FeatureFlagProvider>
       </AuthGuard>
     </BrowserRouter>
   </TooltipProvider>

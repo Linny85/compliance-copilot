@@ -34,8 +34,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
-const FEATURE_ENABLED = import.meta.env.VITE_FEATURE_TRAINING_CERTS === 'true';
-
 export default function TrainingCertificates() {
   const { data: certificates = [], isLoading } = useTrainingCertificates();
   const verifyMutation = useVerifyTrainingCertificate();
@@ -44,26 +42,6 @@ export default function TrainingCertificates() {
   const [selectedCert, setSelectedCert] = useState<string | null>(null);
   const [action, setAction] = useState<'verify' | 'reject' | null>(null);
   const [notes, setNotes] = useState('');
-
-  if (!FEATURE_ENABLED) {
-    return (
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <AppSidebar />
-          <main className="flex-1 p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Feature nicht aktiviert</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Das Training Certificates Modul ist aktuell deaktiviert.</p>
-              </CardContent>
-            </Card>
-          </main>
-        </div>
-      </SidebarProvider>
-    );
-  }
 
   const handleVerify = async () => {
     if (!selectedCert || !action) return;
