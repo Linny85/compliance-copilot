@@ -24,7 +24,7 @@ interface Control {
 }
 
 export default function Controls() {
-  const { t } = useI18n();
+  const { tx } = useI18n();
   const [controls, setControls] = useState<Control[]>([]);
   const [frameworks, setFrameworks] = useState<Framework[]>([]);
   const [selectedFramework, setSelectedFramework] = useState<string>("all");
@@ -90,9 +90,9 @@ export default function Controls() {
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("controls:title")}</h1>
+          <h1 className="text-3xl font-bold">{tx("controls.title")}</h1>
           <p className="text-muted-foreground mt-2">
-            {t("controls:subtitle")}
+            {tx("controls.subtitle")}
           </p>
         </div>
       </div>
@@ -100,13 +100,13 @@ export default function Controls() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>{t("controls:filters.title")}</CardTitle>
+            <CardTitle>{tx("controls.filters.title")}</CardTitle>
             <Select value={selectedFramework} onValueChange={setSelectedFramework}>
               <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder={t("controls:filters.allFrameworks")} />
+                <SelectValue placeholder={tx("controls.filters.allFrameworks")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t("controls:filters.allFrameworks")}</SelectItem>
+                <SelectItem value="all">{tx("controls.filters.allFrameworks")}</SelectItem>
                 {frameworks.map((fw) => (
                   <SelectItem key={fw.code} value={fw.code}>
                     {fw.code} - {fw.title}
@@ -120,13 +120,13 @@ export default function Controls() {
 
       {loading ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">{t("common:loading")}</p>
+          <p className="text-muted-foreground">{tx("common.loading")}</p>
         </div>
       ) : controls.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center">
             <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">{t("controls:empty.noControls")}</p>
+            <p className="text-muted-foreground">{tx("controls.empty.noControls")}</p>
           </CardContent>
         </Card>
       ) : (
@@ -143,7 +143,7 @@ export default function Controls() {
                       <Badge className={getSeverityColor(control.severity)}>
                         <span className="flex items-center gap-1">
                           {getSeverityIcon(control.severity)}
-                          {t(`common:severity.${control.severity}`)}
+                          {tx(`common.severity.${control.severity}`)}
                         </span>
                       </Badge>
                     </div>
@@ -154,19 +154,19 @@ export default function Controls() {
                   </div>
                   <Button variant="outline" size="sm">
                     <FileText className="h-4 w-4 mr-2" />
-                    {t("controls:actions.createPolicy")}
+                    {tx("controls.actions.createPolicy")}
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-semibold mb-2">{t("controls:labels.objective")}</h4>
+                    <h4 className="text-sm font-semibold mb-2">{tx("controls.labels.objective")}</h4>
                     <p className="text-sm text-muted-foreground">{control.objective}</p>
                   </div>
                   {control.evidence_types && control.evidence_types.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-semibold mb-2">{t("controls:labels.evidenceTypes")}</h4>
+                      <h4 className="text-sm font-semibold mb-2">{tx("controls.labels.evidenceTypes")}</h4>
                       <div className="flex flex-wrap gap-2">
                         {control.evidence_types.map((type) => (
                           <Badge key={type} variant="secondary" className="text-xs">
