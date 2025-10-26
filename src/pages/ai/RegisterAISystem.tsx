@@ -14,13 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 /* ---------------------- Presets ---------------------- */
-type PresetKey =
-  | 'chatbot'
-  | 'recruiting'
-  | 'fraud'
-  | 'summarizer'
-  | 'pred_maint'
-  | 'face_access';
+type PresetKey = 'chatbot' | 'recruiting' | 'fraud' | 'summarizer' | 'pred_maint' | 'face_access';
 
 const PRESETS: Record<PresetKey, {
   label: string;
@@ -75,7 +69,7 @@ const PRESETS: Record<PresetKey, {
 
 /* ---------------------- Schema ---------------------- */
 const schema = z.object({
-  preset_key: z.string().optional(),
+  preset_key: z.union([z.literal('__custom__'), z.enum(['chatbot','recruiting','fraud','summarizer','pred_maint','face_access'])]).optional(),
   system_name: z.string().min(3, "Minimum 3 characters").max(120, "Maximum 120 characters"),
   custom_name: z.string().max(120).optional(),
   description: z.string().min(10, "Minimum 10 characters").max(2000, "Maximum 2000 characters"),
@@ -91,8 +85,8 @@ const Field = ({label, hint, error, children, className}:{label:React.ReactNode;
   <div className={className}>
     <Label className="text-sm font-medium mb-1.5 block">{label}</Label>
     {children}
-    {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
-    {error && <div className="mt-1 text-xs text-red-600">{String(error)}</div>}
+    {hint ? <div className="mt-1 text-xs text-muted-foreground">{hint}</div> : null}
+    {error ? <div className="mt-1 text-xs text-red-600">{String(error)}</div> : null}
   </div>
 );
 
@@ -108,6 +102,7 @@ export default function RegisterAISystem() {
       defaultValues: {
         preset_key: '__custom__',
         system_name: '',
+        custom_name: '',
         description: '',
         purpose: '',
         risk: 'minimal',
@@ -117,30 +112,32 @@ export default function RegisterAISystem() {
     });
 
   const preset = watch('preset_key');
-  const isCustom = preset === '__custom__';
+  const isCustom = !preset || preset === '__custom__';
 
   function applyPreset(key: PresetKey | '__custom__') {
     if (key === '__custom__') {
       setValue('preset_key', '__custom__');
       setValue('system_name', '');
+      setValue('custom_name', '');
       setValue('description', '');
       setValue('purpose', '');
       setValue('risk', 'minimal');
-    } else {
-      const p = PRESETS[key];
-      setValue('preset_key', key);
-      setValue('system_name', p.name);
-      setValue('description', p.description);
-      setValue('purpose', p.purpose);
-      setValue('risk', p.risk);
+      return;
     }
+    const p = PRESETS[key];
+    setValue('preset_key', key);
+    setValue('system_name', p.name);
+    setValue('custom_name', '');
+    setValue('description', p.description);
+    setValue('purpose', p.purpose);
+    setValue('risk', p.risk);
   }
 
   async function onSubmit(values: FormValues) {
     try {
       const payload = {
-        preset_key: isCustom ? null : values.preset_key,
-        system_name: isCustom ? (values.custom_name || values.system_name) : values.system_name,
+        preset_key: isCustom ? null : (values.preset_key as PresetKey),
+        system_name: isCustom ? (values.custom_name?.trim() || values.system_name) : values.system_name,
         description: values.description,
         purpose: values.purpose,
         risk: values.risk,
@@ -189,10 +186,10 @@ export default function RegisterAISystem() {
                   type="button" 
                   variant={preset === key ? "default" : "outline"}
                   onClick={() => applyPreset(key as PresetKey)} 
-                  className="justify-start h-auto py-3 text-left" 
+                  className="justify-start h-auto py-3 text-left w-full" 
                   title={p.description}
                 >
-                  <div>
+                  <div className="text-left w-full">
                     <div className="font-medium">{p.label}</div>
                     <div className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{p.description}</div>
                   </div>
@@ -202,7 +199,7 @@ export default function RegisterAISystem() {
                 type="button" 
                 variant={isCustom ? "default" : "outline"}
                 onClick={() => applyPreset('__custom__')} 
-                className="justify-start h-auto py-3"
+                className="justify-start h-auto py-3 w-full"
               >
                 {tx('aiSystems.register.presets.custom')}
               </Button>
@@ -275,7 +272,7 @@ export default function RegisterAISystem() {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder={tx('aiSystems.risk.minimal')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="minimal">{tx('aiSystems.risk.minimal')}</SelectItem>
@@ -297,7 +294,7 @@ export default function RegisterAISystem() {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder={tx('aiSystems.deploy.planned')} />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="planned">{tx('aiSystems.deploy.planned')}</SelectItem>
