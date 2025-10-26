@@ -936,6 +936,96 @@ export type Database = {
           },
         ]
       }
+      email_events: {
+        Row: {
+          email: string | null
+          event_type: string
+          id: number
+          message_id: string | null
+          occurred_at: string
+          payload: Json
+        }
+        Insert: {
+          email?: string | null
+          event_type: string
+          id?: number
+          message_id?: string | null
+          occurred_at?: string
+          payload?: Json
+        }
+        Update: {
+          email?: string | null
+          event_type?: string
+          id?: number
+          message_id?: string | null
+          occurred_at?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
+      email_jobs: {
+        Row: {
+          created_at: string
+          id: string
+          last_error: string | null
+          message_stream: string
+          model: Json
+          retry_count: number
+          scheduled_at: string
+          sent_at: string | null
+          status: Database["public"]["Enums"]["email_status"]
+          template_alias: string
+          tenant_id: string
+          to_email: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          message_stream?: string
+          model?: Json
+          retry_count?: number
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["email_status"]
+          template_alias: string
+          tenant_id: string
+          to_email: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          message_stream?: string
+          model?: Json
+          retry_count?: number
+          scheduled_at?: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["email_status"]
+          template_alias?: string
+          tenant_id?: string
+          to_email?: string
+        }
+        Relationships: []
+      }
+      email_suppressions: {
+        Row: {
+          created_at: string
+          email: string
+          reason: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          reason: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          reason?: string
+        }
+        Relationships: []
+      }
       ensemble_weight_history: {
         Row: {
           adjusted_at: string | null
@@ -4309,6 +4399,7 @@ export type Database = {
         }[]
       }
       get_user_company: { Args: { _user_id: string }; Returns: string }
+      get_user_tenant: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {
           _company_id: string
@@ -4395,6 +4486,7 @@ export type Database = {
     }
     Enums: {
       app_role: "master_admin" | "admin" | "member" | "editor"
+      email_status: "queued" | "sending" | "sent" | "failed" | "blocked"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4523,6 +4615,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["master_admin", "admin", "member", "editor"],
+      email_status: ["queued", "sending", "sent", "failed", "blocked"],
     },
   },
 } as const

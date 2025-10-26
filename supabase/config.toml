@@ -1,6 +1,22 @@
 project_id = "eadjoqlyjxwqjfvukvqx"
 
 [[functions]]
+name = "email-dispatcher"
+verify_jwt = false
+
+[[functions]]
+name = "send-test"
+verify_jwt = false
+
+[[functions]]
+name = "webhooks-bounce"
+verify_jwt = false
+
+[[functions]]
+name = "enqueue-trial-emails"
+verify_jwt = false
+
+[[functions]]
 name = "integration-dispatcher"
 verify_jwt = false
 
@@ -59,6 +75,11 @@ verify_jwt = false
 [[functions]]
 name = "helpbot-graph-learn"
 verify_jwt = false
+
+[[cron.jobs]]
+name = "email-dispatcher"
+schedule = "*/5 * * * *"
+endpoint = "/functions/v1/email-dispatcher"
 
 [[cron.jobs]]
 name = "integration-dispatcher"
