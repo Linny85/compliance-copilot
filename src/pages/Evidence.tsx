@@ -45,7 +45,7 @@ async function sha256Hex(file: File): Promise<string> {
 }
 
 export default function EvidencePage() {
-  const { t } = useI18n();
+  const { tx } = useI18n();
   const { toast } = useToast();
   const [requests, setRequests] = useState<EvidenceRequest[]>([]);
   const [evidences, setEvidences] = useState<Evidence[]>([]);
@@ -104,7 +104,7 @@ export default function EvidencePage() {
     } catch (error) {
       console.error("Failed to load evidence data:", error);
       toast({
-        title: t("evidence:errors.create_failed"),
+        title: tx("evidence.errors.create_failed"),
         variant: "destructive",
       });
     } finally {
@@ -120,7 +120,7 @@ export default function EvidencePage() {
     const MAX_SIZE = 25 * 1024 * 1024;
     if (uploadFile.size > MAX_SIZE) {
       toast({
-        title: t("evidence:errors.upload_failed"),
+        title: tx("evidence.errors.upload_failed"),
         description: `File too large. Maximum size: ${MAX_SIZE / (1024 * 1024)} MB`,
         variant: "destructive",
       });
@@ -167,7 +167,7 @@ export default function EvidencePage() {
 
       if (submitError) throw submitError;
 
-      toast({ title: t("evidence:success.uploaded") });
+      toast({ title: tx("evidence.success.uploaded") });
       setUploadDialogOpen(false);
       setUploadFile(null);
       setUploadControlId("");
@@ -175,7 +175,7 @@ export default function EvidencePage() {
     } catch (error: any) {
       console.error("Upload failed:", error);
       toast({
-        title: t("evidence:errors.upload_failed"),
+        title: tx("evidence.errors.upload_failed"),
         description: error.message,
         variant: "destructive",
       });
@@ -198,7 +198,7 @@ export default function EvidencePage() {
 
       if (error) throw error;
 
-      toast({ title: t("evidence:success.review_saved") });
+      toast({ title: tx("evidence.success.review_saved") });
       setReviewDialogOpen(false);
       setSelectedEvidence(null);
       setReviewNote("");
@@ -206,7 +206,7 @@ export default function EvidencePage() {
     } catch (error: any) {
       console.error("Review failed:", error);
       toast({
-        title: t("evidence:errors.review_failed"),
+        title: tx("evidence.errors.review_failed"),
         description: error.message,
         variant: "destructive",
       });
@@ -250,34 +250,34 @@ export default function EvidencePage() {
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("evidence:title")}</h1>
-          <p className="text-muted-foreground mt-2">{t("evidence:subtitle")}</p>
+          <h1 className="text-3xl font-bold">{tx("evidence.title")}</h1>
+          <p className="text-muted-foreground mt-2">{tx("evidence.subtitle")}</p>
         </div>
       </div>
 
       <Tabs defaultValue="requests" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="requests">{t("evidence:tabs.requests")}</TabsTrigger>
-          <TabsTrigger value="evidence">{t("evidence:tabs.evidence")}</TabsTrigger>
+          <TabsTrigger value="requests">{tx("evidence.tabs.requests")}</TabsTrigger>
+          <TabsTrigger value="evidence">{tx("evidence.tabs.evidence")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="requests" className="space-y-4">
           <div className="flex justify-end">
             <Button onClick={() => setRequestDialogOpen(true)} disabled={!tenantId}>
               <FileText className="h-4 w-4 mr-2" />
-              {t("evidence:actions.newRequest")}
+              {tx("evidence.actions.newRequest")}
             </Button>
           </div>
 
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">{t("common:loading")}</p>
+              <p className="text-muted-foreground">{tx("common.loading")}</p>
             </div>
           ) : requests.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">{t("evidence:empty.noRequests")}</p>
+                <p className="text-muted-foreground">{tx("evidence.empty.noRequests")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -292,7 +292,7 @@ export default function EvidencePage() {
                           <p className="text-sm text-muted-foreground">{req.description}</p>
                         )}
                         <Badge className={getStatusColor(req.status)}>
-                          {t(`evidence:status.${req.status}`)}
+                          {tx(`evidence.status.${req.status}`)}
                         </Badge>
                       </div>
                     </div>
@@ -309,16 +309,16 @@ export default function EvidencePage() {
               <DialogTrigger asChild>
                 <Button>
                   <Upload className="h-4 w-4 mr-2" />
-                  {t("evidence:actions.upload")}
+                  {tx("evidence.actions.upload")}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>{t("evidence:actions.upload")}</DialogTitle>
+                  <DialogTitle>{tx("evidence.actions.upload")}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label>{t("evidence:fields.control")}</Label>
+                    <Label>{tx("evidence.fields.control")}</Label>
                     <Input
                       value={uploadControlId}
                       onChange={(e) => setUploadControlId(e.target.value)}
@@ -326,14 +326,14 @@ export default function EvidencePage() {
                     />
                   </div>
                   <div>
-                    <Label>{t("evidence:fields.file")}</Label>
+                    <Label>{tx("evidence.fields.file")}</Label>
                     <Input
                       type="file"
                       onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                     />
                   </div>
                   <Button onClick={handleUpload} disabled={uploading} className="w-full">
-                    {uploading ? t("common:loading") : t("evidence:actions.upload")}
+                    {uploading ? tx("common.loading") : tx("evidence.actions.upload")}
                   </Button>
                 </div>
               </DialogContent>
@@ -342,13 +342,13 @@ export default function EvidencePage() {
 
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">{t("common:loading")}</p>
+              <p className="text-muted-foreground">{tx("common.loading")}</p>
             </div>
           ) : evidences.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <Upload className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">{t("evidence:empty.noEvidence")}</p>
+                <p className="text-muted-foreground">{tx("evidence.empty.noEvidence")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -362,7 +362,7 @@ export default function EvidencePage() {
                           <Badge className={getVerdictColor(ev.verdict)}>
                             <span className="flex items-center gap-1">
                               {getVerdictIcon(ev.verdict)}
-                              {t(`evidence:verdict.${ev.verdict}`)}
+                              {tx(`evidence.verdict.${ev.verdict}`)}
                             </span>
                           </Badge>
                         </div>
@@ -383,29 +383,29 @@ export default function EvidencePage() {
                       >
                         <DialogTrigger asChild>
                           <Button variant="outline" size="sm">
-                            {t("evidence:actions.review")}
+                            {tx("evidence.actions.review")}
                           </Button>
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>{t("evidence:actions.review")}</DialogTitle>
+                            <DialogTitle>{tx("evidence.actions.review")}</DialogTitle>
                           </DialogHeader>
                           <div className="space-y-4">
                             <div>
-                              <Label>{t("evidence:fields.verdict")}</Label>
+                              <Label>{tx("evidence.fields.verdict")}</Label>
                               <Select value={reviewVerdict} onValueChange={setReviewVerdict}>
                                 <SelectTrigger>
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="pass">{t("evidence:verdict.pass")}</SelectItem>
-                                  <SelectItem value="fail">{t("evidence:verdict.fail")}</SelectItem>
-                                  <SelectItem value="warn">{t("evidence:verdict.warn")}</SelectItem>
+                                  <SelectItem value="pass">{tx("evidence.verdict.pass")}</SelectItem>
+                                  <SelectItem value="fail">{tx("evidence.verdict.fail")}</SelectItem>
+                                  <SelectItem value="warn">{tx("evidence.verdict.warn")}</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                             <div>
-                              <Label>{t("evidence:fields.note")}</Label>
+                              <Label>{tx("evidence.fields.note")}</Label>
                               <Textarea
                                 value={reviewNote}
                                 onChange={(e) => setReviewNote(e.target.value)}
@@ -413,7 +413,7 @@ export default function EvidencePage() {
                               />
                             </div>
                             <Button onClick={handleReview} className="w-full">
-                              {t("common:save")}
+                              {tx("common.save")}
                             </Button>
                           </div>
                         </DialogContent>
