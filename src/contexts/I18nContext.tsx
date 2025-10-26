@@ -1,59 +1,66 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { I18nextProvider, useTranslation } from 'react-i18next';
+import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/init';
+import { translations } from '@/lib/i18n';
 
+type Lang = 'de' | 'en' | 'sv';
 type CtxType = {
+  t: typeof translations.en;
   i18n: typeof i18n;
-  lng: string;
-  language: string;
+  lng: Lang;
+  language: Lang;
   ready: boolean;
-  setLanguage: (lng: string) => void;
+  setLanguage: (lng: Lang) => void;
 };
 
 const Ctx = createContext<CtxType | null>(null);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [isReady, setIsReady] = useState(false);
+  const [currentLng, setCurrentLng] = useState<Lang>(() => {
+    const stored = localStorage.getItem('i18nextLng') as Lang;
+    return stored && ['de', 'en', 'sv'].includes(stored) ? stored : 'de';
+  });
 
+  // Listen to i18n language changes
   useEffect(() => {
-    // Wait for i18n to be initialized
-    if (i18n.isInitialized) {
-      setIsReady(true);
-    } else {
-      i18n.on('initialized', () => setIsReady(true));
-    }
+    const handleLanguageChanged = (lng: string) => {
+      if (['de', 'en', 'sv'].includes(lng)) {
+        setCurrentLng(lng as Lang);
+      }
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
   }, []);
 
-  if (!isReady) {
-    return null; // or a loading spinner
-  }
+  const tObj = useMemo(() => {
+    const langTranslations = (translations as any)[currentLng];
+    return langTranslations || translations.en;
+  }, [currentLng]);
+  
+  const value: CtxType = useMemo(() => ({
+    t: tObj,
+    i18n,
+    lng: currentLng,
+    language: currentLng,
+    ready: true,
+    setLanguage: (lng) => { 
+      localStorage.setItem('i18nextLng', lng); 
+      i18n.changeLanguage(lng); 
+    },
+  }), [tObj, currentLng]);
 
   return (
     <I18nextProvider i18n={i18n}>
-      <Ctx.Provider value={{
-        i18n,
-        lng: i18n.language,
-        language: i18n.language,
-        ready: true,
-        setLanguage: (lng) => { 
-          localStorage.setItem('i18nextLng', lng); 
-          i18n.changeLanguage(lng); 
-        },
-      }}>
-        {children}
-      </Ctx.Provider>
+      <Ctx.Provider value={value}>{children}</Ctx.Provider>
     </I18nextProvider>
   );
 }
 
 export function useI18n() {
   const ctx = useContext(Ctx);
-  const { t } = useTranslation();
-  
   if (!ctx) throw new Error('useI18n must be used within I18nProvider');
-  
-  return {
-    ...ctx,
-    t, // Add useTranslation's t function
-  };
+  return ctx;
 }
