@@ -10,7 +10,7 @@ type TranslationFunction = (key: string, params?: string | Record<string, any>) 
 
 type CtxType = {
   t: typeof translations.en & TranslationFunction;
-  tx: (key: string, fallback?: string) => string;
+  tx: (key: string, paramsOrFallback?: string | Record<string, any>) => string;
   i18n: typeof i18n;
   lng: Lang;
   language: Lang;
@@ -79,18 +79,34 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   };
 
   const tx = useMemo(() => {
-    return (key: string, fallback?: string): string => {
+    return (key: string, paramsOrFallback?: string | Record<string, any>): string => {
       const value = resolveKey((translations as any)[currentLng], key);
-      if (value !== undefined) return value as string;
+      let result: string | undefined;
       
-      const enValue = resolveKey(translations.en, key);
-      if (enValue !== undefined) return enValue as string;
-      
-      if (import.meta.env.DEV) {
-        console.warn(`[i18n] Missing key in ${currentLng}:`, key);
+      if (value !== undefined) {
+        result = value as string;
+      } else {
+        const enValue = resolveKey(translations.en, key);
+        if (enValue !== undefined) {
+          result = enValue as string;
+        }
       }
       
-      return fallback ?? key;
+      if (result === undefined) {
+        if (import.meta.env.DEV) {
+          console.warn(`[i18n] Missing key in ${currentLng}:`, key);
+        }
+        return typeof paramsOrFallback === 'string' ? paramsOrFallback : key;
+      }
+      
+      // Handle parameter interpolation
+      if (typeof paramsOrFallback === 'object' && paramsOrFallback !== null) {
+        Object.entries(paramsOrFallback).forEach(([paramKey, paramValue]) => {
+          result = result!.replace(new RegExp(`{{\\s*${paramKey}\\s*}}`, 'g'), String(paramValue));
+        });
+      }
+      
+      return result;
     };
   }, [currentLng]);
 

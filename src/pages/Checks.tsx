@@ -56,7 +56,7 @@ interface CheckResult {
 }
 
 export default function ChecksPage() {
-  const { t } = useI18n();
+  const { tx } = useI18n();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
@@ -149,7 +149,7 @@ export default function ChecksPage() {
       setResultsTotal(data.pagination?.total || 0);
     } catch (e) {
       console.error('[loadResults] Error:', e);
-      toast({ title: t("checks:errors.load_failed"), variant: "destructive" });
+      toast({ title: tx("checks.errors.load_failed"), variant: "destructive" });
     } finally {
       setResultsLoading(false);
     }
@@ -178,7 +178,7 @@ export default function ChecksPage() {
     } catch (error: any) {
       console.error("Failed to load checks:", error);
       toast({
-        title: t("checks:errors.load_failed"),
+        title: tx("checks.errors.load_failed"),
         description: error?.message,
         variant: "destructive",
       });
@@ -199,12 +199,12 @@ export default function ChecksPage() {
 
       if (error) throw error;
 
-      toast({ title: t("checks:success.checks_run") });
+      toast({ title: tx("checks.success.checks_run") });
       loadData();
     } catch (error: any) {
       console.error("Failed to run checks:", error);
       toast({
-        title: t("checks:errors.run_failed"),
+        title: tx("checks.errors.run_failed"),
         description: error.message,
         variant: "destructive",
       });
@@ -228,12 +228,12 @@ export default function ChecksPage() {
         throw new Error(data?.error || error?.message || 'DELETE_FAILED');
       }
 
-      toast({ title: t("checks:form.success.deleted") });
+      toast({ title: tx("checks.form.success.deleted") });
       loadData();
     } catch (e: any) {
       console.error('[Checks] Delete failed:', e);
       toast({
-        title: t("checks:form.errors.delete_failed"),
+        title: tx("checks.form.errors.delete_failed"),
         description: e.message,
         variant: "destructive",
       });
@@ -263,7 +263,7 @@ export default function ChecksPage() {
         const errorCode = data?.error;
         if (errorCode === 'DUPLICATE_CODE') {
           toast({
-            title: t("checks:form.errors.duplicate_code"),
+            title: tx("checks.form.errors.duplicate_code"),
             variant: "destructive",
           });
           return;
@@ -271,13 +271,13 @@ export default function ChecksPage() {
         throw new Error(data?.error || error?.message || 'UPDATE_FAILED');
       }
 
-      toast({ title: t("checks:form.success.updated") });
+      toast({ title: tx("checks.form.success.updated") });
       setEditOpen(false);
       loadData();
     } catch (e: any) {
       console.error('[Checks] Update failed:', e);
       toast({
-        title: t("checks:form.errors.update_failed"),
+        title: tx("checks.form.errors.update_failed"),
         description: e.message,
         variant: "destructive",
       });
@@ -335,8 +335,8 @@ export default function ChecksPage() {
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">{t("checks:title")}</h1>
-          <p className="text-muted-foreground mt-2">{t("checks:subtitle")}</p>
+          <h1 className="text-3xl font-bold">{tx("checks.title")}</h1>
+          <p className="text-muted-foreground mt-2">{tx("checks.subtitle")}</p>
         </div>
         <div className="flex gap-2">
           <TooltipProvider>
@@ -345,12 +345,12 @@ export default function ChecksPage() {
                 <span>
                   <Button onClick={() => navigate("/checks/new")} variant="outline" disabled={isAdmin !== true}>
                     <Plus className="h-4 w-4 mr-2" />
-                    {t("checks:actions.newRule")}
+                    {tx("checks.actions.newRule")}
                   </Button>
                 </span>
               </TooltipTrigger>
               {isAdmin === false && (
-                <TooltipContent>{t('common:tooltips.adminOnly')}</TooltipContent>
+                <TooltipContent>{tx('common.tooltips.adminOnly')}</TooltipContent>
               )}
             </Tooltip>
           </TooltipProvider>
@@ -363,12 +363,12 @@ export default function ChecksPage() {
                 <span>
                   <Button onClick={() => runChecks()} disabled={running || rules.length === 0}>
                     <PlayCircle className="h-4 w-4 mr-2" />
-                    {running ? t("common:loading") : t("checks:actions.runAll")}
+                    {running ? tx("common.loading") : tx("checks.actions.runAll")}
                   </Button>
                 </span>
               </TooltipTrigger>
               {rules.length === 0 && (
-                <TooltipContent>{t('common:tooltips.noRules')}</TooltipContent>
+                <TooltipContent>{tx('common.tooltips.noRules')}</TooltipContent>
               )}
             </Tooltip>
           </TooltipProvider>
@@ -377,20 +377,20 @@ export default function ChecksPage() {
 
       <Tabs defaultValue="rules" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="rules">{t("checks:tabs.rules")}</TabsTrigger>
-          <TabsTrigger value="results">{t("checks:tabs.results")}</TabsTrigger>
+          <TabsTrigger value="rules">{tx("checks.tabs.rules")}</TabsTrigger>
+          <TabsTrigger value="results">{tx("checks.tabs.results")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="rules" className="space-y-4">
           {loading ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">{t("common:loading")}</p>
+              <p className="text-muted-foreground">{tx("common.loading")}</p>
             </div>
           ) : rules.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <PlayCircle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">{t("checks:empty.noRules")}</p>
+                <p className="text-muted-foreground">{tx("checks.empty.noRules")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -404,7 +404,7 @@ export default function ChecksPage() {
                           <CardTitle className="text-xl">{rule.title}</CardTitle>
                           {!rule.enabled && (
                             <Badge variant="outline" className="bg-gray-100 dark:bg-gray-800">
-                              {t("common:disabled")}
+                              {tx("common.disabled")}
                             </Badge>
                           )}
                         </div>
@@ -414,9 +414,9 @@ export default function ChecksPage() {
                         <div className="flex flex-wrap gap-2">
                           <Badge variant="outline">{rule.code}</Badge>
                           <Badge className={getSeverityColor(rule.severity)}>
-                            {t(`common:severity.${rule.severity}`)}
+                            {tx(`common.severity.${rule.severity}`)}
                           </Badge>
-                          <Badge variant="secondary">{t(`checks:kind.${rule.kind}`)}</Badge>
+                          <Badge variant="secondary">{tx(`checks.kind.${rule.kind}`)}</Badge>
                           {rule.controls && (
                             <Badge variant="outline">
                               {rule.controls.code}: {rule.controls.title}
@@ -433,7 +433,7 @@ export default function ChecksPage() {
                               variant="ghost"
                             >
                               <Pencil className="h-4 w-4 mr-1" />
-                              {t("common:edit")}
+                              {tx("common.edit")}
                             </Button>
                           ) : isAdmin === false ? (
                             <Tooltip>
@@ -441,11 +441,11 @@ export default function ChecksPage() {
                                 <span>
                                   <Button size="sm" variant="ghost" disabled>
                                     <Pencil className="h-4 w-4 mr-1" />
-                                    {t("common:edit")}
+                                    {tx("common.edit")}
                                   </Button>
                                 </span>
                               </TooltipTrigger>
-                              <TooltipContent>{t('common:tooltips.adminOnly')}</TooltipContent>
+                              <TooltipContent>{tx('common.tooltips.adminOnly')}</TooltipContent>
                             </Tooltip>
                           ) : null}
                           
@@ -453,24 +453,24 @@ export default function ChecksPage() {
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive">
-                                  <Trash2 className="h-4 w-4 mr-1" />
-                                  {t("common:delete")}
+                                <Trash2 className="h-4 w-4 mr-1" />
+                                  {tx("common.delete")}
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
-                                  <AlertDialogTitle>{t("checks:form.delete_confirm_title")}</AlertDialogTitle>
+                                  <AlertDialogTitle>{tx("checks.form.delete_confirm_title")}</AlertDialogTitle>
                                 </AlertDialogHeader>
                                 <p className="text-sm text-muted-foreground">
-                                  {t("checks:form.delete_confirm_text", { code: rule.code })}
+                                  {tx("checks.form.delete_confirm_text", { code: rule.code })}
                                 </p>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>{t("common:cancel")}</AlertDialogCancel>
+                                  <AlertDialogCancel>{tx("common.cancel")}</AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() => handleDelete(rule.id)}
                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                   >
-                                    {t("common:delete")}
+                                    {tx("common.delete")}
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>
@@ -481,11 +481,11 @@ export default function ChecksPage() {
                                 <span>
                                   <Button size="sm" variant="ghost" disabled className="text-destructive">
                                     <Trash2 className="h-4 w-4 mr-1" />
-                                    {t("common:delete")}
+                                    {tx("common.delete")}
                                   </Button>
                                 </span>
                               </TooltipTrigger>
-                              <TooltipContent>{t('common:tooltips.adminOnly')}</TooltipContent>
+                              <TooltipContent>{tx('common.tooltips.adminOnly')}</TooltipContent>
                             </Tooltip>
                           ) : null}
                         </TooltipProvider>
@@ -496,7 +496,7 @@ export default function ChecksPage() {
                           variant="outline"
                         >
                           <PlayCircle className="h-4 w-4 mr-2" />
-                          {t("checks:actions.runSelected")}
+                          {tx("checks.actions.runSelected")}
                         </Button>
                       </div>
                     </div>
@@ -525,13 +525,13 @@ export default function ChecksPage() {
                 onClick={() => {
                   navigator.clipboard.writeText(window.location.href);
                   toast({
-                    title: t('checks:results.copyViewLink'),
-                    description: t('checks:results.copyViewLink_desc'),
+                    title: tx('checks.results.copyViewLink'),
+                    description: tx('checks.results.copyViewLink_desc'),
                   });
                 }}
               >
                 <Link className="h-4 w-4 mr-2" />
-                {t('checks:results.copyViewLink')}
+                {tx('checks.results.copyViewLink')}
               </Button>
               <TooltipProvider>
                 <Tooltip>
@@ -544,7 +544,7 @@ export default function ChecksPage() {
                         onClick={async () => {
                           if (results.length === 0) {
                             toast({
-                              title: t("checks:errors.noResultsToExport"),
+                              title: tx("checks.errors.noResultsToExport"),
                               variant: "destructive"
                             });
                             return;
@@ -566,13 +566,13 @@ export default function ChecksPage() {
                             URL.revokeObjectURL(link.href);
                             
                             toast({
-                              title: t("checks:success.exported"),
-                              description: `${t("checks:success.exported_desc")} (${filename})`
+                              title: tx("checks.success.exported"),
+                              description: `${tx("checks.success.exported_desc")} (${filename})`
                             });
                           } catch (e: any) {
                             console.error("[export-results]", e);
                             toast({
-                              title: t("checks:errors.export_failed"),
+                              title: tx("checks.errors.export_failed"),
                               variant: "destructive"
                             });
                           } finally {
@@ -581,13 +581,13 @@ export default function ChecksPage() {
                         }}
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        {exporting ? t("common:loading") : "Export CSV"}
+                        {exporting ? tx("common.loading") : "Export CSV"}
                       </Button>
                     </span>
                   </TooltipTrigger>
                   {(isAdmin === false || results.length === 0) && (
                     <TooltipContent>
-                      {isAdmin === false ? t('common:tooltips.adminOnly') : t("checks:errors.noResultsToExport")}
+                      {isAdmin === false ? tx('common.tooltips.adminOnly') : tx("checks.errors.noResultsToExport")}
                     </TooltipContent>
                   )}
                 </Tooltip>
@@ -611,7 +611,7 @@ export default function ChecksPage() {
             <Card>
               <CardContent className="py-12 text-center">
                 <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">{t("checks:empty.noResults")}</p>
+                <p className="text-muted-foreground">{tx("checks.empty.noResults")}</p>
               </CardContent>
             </Card>
           ) : (
@@ -620,13 +620,13 @@ export default function ChecksPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>{t("checks:results.time")}</TableHead>
-                      <TableHead>{t("checks:results.rule")}</TableHead>
-                      <TableHead>{t("checks:results.outcome")}</TableHead>
-                      <TableHead>{t("checks:results.runStatus")}</TableHead>
-                      <TableHead>{t("checks:results.severity")}</TableHead>
-                      <TableHead className="max-w-xs">{t("checks:results.message")}</TableHead>
-                      <TableHead className="text-right">{t("checks:results.actions")}</TableHead>
+                      <TableHead>{tx("checks.results.time")}</TableHead>
+                      <TableHead>{tx("checks.results.rule")}</TableHead>
+                      <TableHead>{tx("checks.results.outcome")}</TableHead>
+                      <TableHead>{tx("checks.results.runStatus")}</TableHead>
+                      <TableHead>{tx("checks.results.severity")}</TableHead>
+                      <TableHead className="max-w-xs">{tx("checks.results.message")}</TableHead>
+                      <TableHead className="text-right">{tx("checks.results.actions")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -647,19 +647,19 @@ export default function ChecksPage() {
                             <Badge className={getOutcomeColor(result.outcome)}>
                               <span className="flex items-center gap-1">
                                 {getOutcomeIcon(result.outcome)}
-                                {t(`checks:outcome.${result.outcome}`)}
+                                {tx(`checks.outcome.${result.outcome}`)}
                               </span>
                             </Badge>
                           </TableCell>
                           <TableCell>
                             <span className="inline-flex items-center gap-1 text-sm">
                               {getRunStatusIcon(run.status)}
-                              {t(`checks:status.${run.status}`)}
+                              {tx(`checks.status.${run.status}`)}
                             </span>
                           </TableCell>
                           <TableCell>
                             <Badge className={getSeverityColor(result.check_rules.severity)} variant="outline">
-                              {t(`common:severity.${result.check_rules.severity}`)}
+                              {tx(`common.severity.${result.check_rules.severity}`)}
                             </Badge>
                           </TableCell>
                           <TableCell className="max-w-xs truncate text-sm text-muted-foreground">
@@ -676,7 +676,7 @@ export default function ChecksPage() {
                             >
                               <Eye className="h-4 w-4" />
                               <span className="ml-1 sr-only sm:not-sr-only sm:inline">
-                                {t("checks:results.viewDetails")}
+                                {tx("checks.results.viewDetails")}
                               </span>
                             </Button>
                           </TableCell>
@@ -690,7 +690,7 @@ export default function ChecksPage() {
               {/* Pagination */}
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground" aria-label="Pagination info">
-                  {t("checks:results.showing", { 
+                  {tx("checks.results.showing", { 
                     from: (resultsPage - 1) * 50 + 1, 
                     to: Math.min(resultsPage * 50, resultsTotal), 
                     total: resultsTotal 
@@ -704,7 +704,7 @@ export default function ChecksPage() {
                     disabled={resultsPage === 1}
                     aria-label="Previous page"
                   >
-                    {t("common:previous") || "Previous"}
+                    {tx("common.previous") || "Previous"}
                   </Button>
                   <Button
                     variant="outline"
@@ -713,7 +713,7 @@ export default function ChecksPage() {
                     disabled={resultsPage * 50 >= resultsTotal}
                     aria-label="Next page"
                   >
-                    {t("common:next") || "Next"}
+                    {tx("common.next") || "Next"}
                   </Button>
                 </div>
               </div>
@@ -726,21 +726,21 @@ export default function ChecksPage() {
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
-            <DialogTitle>{t("checks:form.edit_rule_title")}</DialogTitle>
+            <DialogTitle>{tx("checks.form.edit_rule_title")}</DialogTitle>
           </DialogHeader>
 
           {editingRule && (
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>{t("checks:form.fields.title")}</Label>
+                  <Label>{tx("checks.form.fields.title")}</Label>
                   <Input
                     value={editingRule.title}
                     onChange={(e) => setEditingRule({ ...editingRule, title: e.target.value })}
                   />
                 </div>
                 <div>
-                  <Label>{t("checks:form.fields.severity")}</Label>
+                  <Label>{tx("checks.form.fields.severity")}</Label>
                   <Select
                     value={editingRule.severity}
                     onValueChange={(v) => setEditingRule({ ...editingRule, severity: v as Severity })}
@@ -749,10 +749,10 @@ export default function ChecksPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="low">{t("common:severity.low")}</SelectItem>
-                      <SelectItem value="medium">{t("common:severity.medium")}</SelectItem>
-                      <SelectItem value="high">{t("common:severity.high")}</SelectItem>
-                      <SelectItem value="critical">{t("common:severity.critical")}</SelectItem>
+                      <SelectItem value="low">{tx("common.severity.low")}</SelectItem>
+                      <SelectItem value="medium">{tx("common.severity.medium")}</SelectItem>
+                      <SelectItem value="high">{tx("common.severity.high")}</SelectItem>
+                      <SelectItem value="critical">{tx("common.severity.critical")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -760,7 +760,7 @@ export default function ChecksPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>{t("checks:form.fields.kind")}</Label>
+                  <Label>{tx("checks.form.fields.kind")}</Label>
                   <Select
                     value={editingRule.kind}
                     onValueChange={(v) => setEditingRule({ ...editingRule, kind: v as RuleKind })}
@@ -769,8 +769,8 @@ export default function ChecksPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="static">{t("checks:kind.static")}</SelectItem>
-                      <SelectItem value="query">{t("checks:kind.query")}</SelectItem>
+                      <SelectItem value="static">{tx("checks.kind.static")}</SelectItem>
+                      <SelectItem value="query">{tx("checks.kind.query")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -779,12 +779,12 @@ export default function ChecksPage() {
                     checked={editingRule.enabled}
                     onCheckedChange={(checked) => setEditingRule({ ...editingRule, enabled: checked })}
                   />
-                  <Label>{t("checks:form.fields.enabled")}</Label>
+                  <Label>{tx("checks.form.fields.enabled")}</Label>
                 </div>
               </div>
 
               <div>
-                <Label>{t("checks:form.fields.description")}</Label>
+                <Label>{tx("checks.form.fields.description")}</Label>
                 <Textarea
                   rows={3}
                   value={editingRule.description || ''}
@@ -793,16 +793,16 @@ export default function ChecksPage() {
               </div>
 
               <div>
-                <Label>{t("checks:form.fields.control_id")}</Label>
+                <Label>{tx("checks.form.fields.control_id")}</Label>
                 <ControlSelect
                   value={editingRule.control_id || null}
                   onChange={(id) => setEditingRule({ ...editingRule, control_id: id || "" })}
-                  placeholder={t("checks:form.placeholders.control_id") || ""}
+                  placeholder={tx("checks.form.placeholders.control_id") || ""}
                 />
               </div>
 
               <div>
-                <Label>{t("checks:form.fields.spec")}</Label>
+                <Label>{tx("checks.form.fields.spec")}</Label>
                 <SpecEditor
                   kind={editingRule.kind as 'static' | 'query'}
                   value={JSON.stringify(editingRule.spec, null, 2)}
@@ -821,10 +821,10 @@ export default function ChecksPage() {
 
           <DialogFooter>
             <Button variant="ghost" onClick={() => setEditOpen(false)}>
-              {t("common:cancel")}
+              {tx("common.cancel")}
             </Button>
             <Button onClick={saveEdit} disabled={submitting}>
-              {submitting ? t("common:saving") : t("common:save")}
+              {submitting ? tx("common.saving") : tx("common.save")}
             </Button>
           </DialogFooter>
         </DialogContent>
