@@ -1,0 +1,35 @@
+{
+  "register": {
+    "title": "Register AI System",
+    "description": "Document a new AI system for EU AI Act compliance.",
+    "fields": {
+      "system_name": "System Name",
+      "custom_name": "Custom name (optional)",
+      "custom_name_ph": "Enter a custom system name",
+      "description": "Description",
+      "purpose": "Purpose",
+      "risk": "Risk Classification",
+      "deployment": "Deployment Status"
+    },
+    "presets": {
+      "label": "Quick presets",
+      "custom": "Other / Custom",
+      "hintText": "Select a common AI system to pre-fill fields or choose \"Custom\"."
+    },
+    "actions": { 
+      "submit": "Register System",
+      "cancel": "Cancel"
+    }
+  },
+  "risk": { 
+    "minimal": "Minimal Risk", 
+    "limited": "Limited Risk", 
+    "high": "High Risk" 
+  },
+  "deploy": { 
+    "planned": "Planned", 
+    "testing": "Testing", 
+    "live": "Live", 
+    "retired": "Retired" 
+  }
+}

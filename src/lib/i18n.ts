@@ -576,6 +576,43 @@ export const translations = {
         }
       }
     },
+    // AI Systems
+    aiSystems: {
+      register: {
+        title: "Register AI System",
+        description: "Document a new AI system for EU AI Act compliance.",
+        fields: {
+          system_name: "System Name",
+          custom_name: "Custom name (optional)",
+          custom_name_ph: "Enter a custom system name",
+          description: "Description",
+          purpose: "Purpose",
+          risk: "Risk Classification",
+          deployment: "Deployment Status"
+        },
+        presets: {
+          label: "Quick presets",
+          custom: "Other / Custom",
+          hintText: "Select a common AI system to pre-fill fields or choose \"Custom\"."
+        },
+        actions: { 
+          submit: "Register System",
+          cancel: "Cancel"
+        },
+        success: "AI System registered successfully"
+      },
+      risk: { 
+        minimal: "Minimal Risk", 
+        limited: "Limited Risk", 
+        high: "High Risk" 
+      },
+      deploy: { 
+        planned: "Planned", 
+        testing: "Testing", 
+        live: "Live", 
+        retired: "Retired" 
+      }
+    },
     // Common
     common: {
       save: "Save",
@@ -1197,6 +1234,43 @@ export const translations = {
           subtitle: "Überprüfen und verifizieren Sie eingereichte Schulungszertifikate",
           empty: "Keine Zertifikate vorhanden"
         }
+      }
+    },
+    // AI Systems
+    aiSystems: {
+      register: {
+        title: "KI-System registrieren",
+        description: "Dokumentiere ein neues KI-System zur EU-KI-Gesetz-Compliance.",
+        fields: {
+          system_name: "Systemname",
+          custom_name: "Eigener Name (optional)",
+          custom_name_ph: "Eigenen Systemnamen eingeben",
+          description: "Beschreibung",
+          purpose: "Zweck",
+          risk: "Risikoklassifizierung",
+          deployment: "Bereitstellungsstatus"
+        },
+        presets: {
+          label: "Schnellvorlagen",
+          custom: "Anderes / Eigenes",
+          hintText: "Wähle eine Vorlage zur Vorbefüllung oder \"Eigenes\"."
+        },
+        actions: { 
+          submit: "System registrieren",
+          cancel: "Abbrechen"
+        },
+        success: "KI-System erfolgreich registriert"
+      },
+      risk: { 
+        minimal: "Minimales Risiko", 
+        limited: "Begrenztes Risiko", 
+        high: "Hohes Risiko" 
+      },
+      deploy: { 
+        planned: "Geplant", 
+        testing: "Testbetrieb", 
+        live: "Live", 
+        retired: "Außer Betrieb" 
       }
     },
     // Common
@@ -1821,6 +1895,43 @@ export const translations = {
           subtitle: "Granska och verifiera inskickade utbildningsintyg",
           empty: "Inga intyg ännu"
         }
+      }
+    },
+    // AI Systems
+    aiSystems: {
+      register: {
+        title: "Registrera AI-system",
+        description: "Dokumentera ett nytt AI-system för EU AI Act-efterlevnad.",
+        fields: {
+          system_name: "Systemnamn",
+          custom_name: "Eget namn (valfritt)",
+          custom_name_ph: "Ange ett eget systemnamn",
+          description: "Beskrivning",
+          purpose: "Syfte",
+          risk: "Riskklassificering",
+          deployment: "Driftsättningsstatus"
+        },
+        presets: {
+          label: "Snabbmallar",
+          custom: "Annat / Eget",
+          hintText: "Välj en vanlig AI-systemtyp för att förifyll fält eller välj \"Eget\"."
+        },
+        actions: { 
+          submit: "Registrera system",
+          cancel: "Avbryt"
+        },
+        success: "AI-system registrerat"
+      },
+      risk: { 
+        minimal: "Minimal risk", 
+        limited: "Begränsad risk", 
+        high: "Hög risk" 
+      },
+      deploy: { 
+        planned: "Planerad", 
+        testing: "Testning", 
+        live: "Live", 
+        retired: "Avvecklad" 
       }
     },
     // Common

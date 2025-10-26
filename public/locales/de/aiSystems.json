@@ -1,0 +1,35 @@
+{
+  "register": {
+    "title": "KI-System registrieren",
+    "description": "Dokumentiere ein neues KI-System zur EU-KI-Gesetz-Compliance.",
+    "fields": {
+      "system_name": "Systemname",
+      "custom_name": "Eigener Name (optional)",
+      "custom_name_ph": "Eigenen Systemnamen eingeben",
+      "description": "Beschreibung",
+      "purpose": "Zweck",
+      "risk": "Risikoklassifizierung",
+      "deployment": "Bereitstellungsstatus"
+    },
+    "presets": {
+      "label": "Schnellvorlagen",
+      "custom": "Anderes / Eigenes",
+      "hintText": "Wähle eine Vorlage zur Vorbefüllung oder „Eigenes"."
+    },
+    "actions": { 
+      "submit": "System registrieren",
+      "cancel": "Abbrechen"
+    }
+  },
+  "risk": { 
+    "minimal": "Minimales Risiko", 
+    "limited": "Begrenztes Risiko", 
+    "high": "Hohes Risiko" 
+  },
+  "deploy": { 
+    "planned": "Geplant", 
+    "testing": "Testbetrieb", 
+    "live": "Live", 
+    "retired": "Außer Betrieb" 
+  }
+}
