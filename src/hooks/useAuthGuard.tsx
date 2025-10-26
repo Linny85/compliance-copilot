@@ -69,43 +69,49 @@ export const useAuthGuard = () => {
 
       const info: UserInfo = data;
       
-      // Fetch subscription status using view (no custom claims needed)
-      if (info.userId) {
-        const { data: subData } = await supabase
-          .from('v_me_subscription')
-          .select('status')
-          .maybeSingle();
+      // Fetch subscription AND billing status using views
+      if (info.userId && info.tenantId) {
+        const [subRes, billingRes] = await Promise.all([
+          supabase.from('v_me_subscription').select('status').maybeSingle(),
+          supabase.from('v_billing_status' as any).select('trial_active, paid_active').eq('company_id', info.tenantId).maybeSingle()
+        ]);
         
-        info.subscriptionStatus = subData?.status || null;
+        info.subscriptionStatus = subRes.data?.status || null;
+        
+        // Check if trial or paid is active
+        const trialActive = (billingRes.data as any)?.trial_active || false;
+        const paidActive = (billingRes.data as any)?.paid_active || false;
+        const hasAccess = paidActive || trialActive;
+        
+        // Routing logic based on tenantId and access
+        if (!info.tenantId && location.pathname !== '/company-profile') {
+          // User has no tenant, redirect to onboarding
+          navigate('/company-profile');
+        } else if (info.tenantId && location.pathname === '/company-profile') {
+          // User has tenant but is on onboarding page, redirect to dashboard
+          navigate('/dashboard');
+        } else if (info.tenantId && !hasAccess && location.pathname !== '/billing') {
+          // User has tenant but no trial/paid access, redirect to billing
+          navigate('/billing');
+        } else if (info.tenantId && hasAccess && location.pathname === '/billing') {
+          // User has active trial/paid but is on billing page, redirect to dashboard
+          navigate('/dashboard');
+        } else if (info.tenantId && (location.pathname === '/auth' || location.pathname === '/')) {
+          // Authenticated user with tenant on auth/landing page, redirect appropriately
+          if (hasAccess) {
+            navigate('/dashboard');
+          } else {
+            navigate('/billing');
+          }
+        }
+      } else {
+        // No tenantId or userId - redirect to onboarding
+        if (location.pathname !== '/company-profile') {
+          navigate('/company-profile');
+        }
       }
       
       setUserInfo(info);
-
-      // Check if subscription is required
-      const hasActiveSubscription = info.subscriptionStatus && 
-        ['active', 'trialing'].includes(info.subscriptionStatus);
-      
-      // Routing logic based on tenantId and subscription
-      if (!info.tenantId && location.pathname !== '/company-profile') {
-        // User has no tenant, redirect to onboarding
-        navigate('/company-profile');
-      } else if (info.tenantId && location.pathname === '/company-profile') {
-        // User has tenant but is on onboarding page, redirect to dashboard
-        navigate('/dashboard');
-      } else if (info.tenantId && !hasActiveSubscription && location.pathname !== '/billing') {
-        // User has tenant but no active subscription, redirect to billing
-        navigate('/billing');
-      } else if (info.tenantId && hasActiveSubscription && location.pathname === '/billing') {
-        // User has active subscription but is on billing page, redirect to dashboard
-        navigate('/dashboard');
-      } else if (info.tenantId && (location.pathname === '/auth' || location.pathname === '/')) {
-        // Authenticated user with tenant on auth/landing page, redirect appropriately
-        if (hasActiveSubscription) {
-          navigate('/dashboard');
-        } else {
-          navigate('/billing');
-        }
-      }
 
       setLoading(false);
     } catch (error) {
