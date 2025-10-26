@@ -103,6 +103,14 @@ export const translations = {
       country: "Country",
       sector: "Sector",
       editOrganization: "Edit Company Profile",
+      complianceProgress: "Compliance Progress",
+      complianceProgressDesc: "No compliance data available yet. Complete checks, upload evidence, and complete DPIAs to see your progress.",
+      nextStepsHeader: "Next Steps",
+      nextStepsSub: "Quick actions to improve compliance",
+      scheduleChecks: "Schedule Checks",
+      scheduleChecksDesc: "Set up automated checks",
+      addRisks: "Add Risks",
+      addRisksDesc: "Document NIS2 risks",
     },
     // Admin
     admin: {
@@ -164,8 +172,49 @@ export const translations = {
     },
     // AI Act
     aiact: {
-      title: "AI Act Registry",
+      title: "AI Act System Registry",
       systems: "AI Systems",
+      emptyTitle: "No AI systems registered",
+      emptyDesc: "Start documenting your AI systems for EU AI Act compliance",
+      register: "Register System",
+      registerFirst: "Register First System",
+    },
+    // Controls
+    controls: {
+      title: "Controls",
+      subtitle: "Define and manage compliance controls across frameworks.",
+      filters: {
+        title: "Filters",
+        allFrameworks: "All frameworks",
+      },
+      actions: {
+        createPolicy: "Generate Policy",
+        runAll: "Run All Checks",
+      },
+      labels: {
+        objective: "Objective",
+        evidenceTypes: "Evidence types",
+        severity: "Severity",
+      },
+      empty: {
+        noRules: "No controls defined yet",
+      },
+    },
+    // Checks
+    checks: {
+      title: "Checks",
+      subtitle: "Run automated compliance checks and review results.",
+      tabs: {
+        rules: "Rules",
+        results: "Results",
+      },
+      actions: {
+        newRule: "New Rule",
+        runAll: "Run All",
+      },
+      empty: {
+        noRules: "No rules configured yet",
+      },
     },
     // Navigation
     nav: {
@@ -394,6 +443,14 @@ export const translations = {
       country: "Land",
       sector: "Sektor",
       editOrganization: "Firmenprofil bearbeiten",
+      complianceProgress: "Compliance-Fortschritt",
+      complianceProgressDesc: "Noch keine Compliance-Daten vorhanden. Führen Sie Prüfungen durch, laden Sie Nachweise hoch und schließen Sie DPIAs ab, um Ihren Fortschritt zu sehen.",
+      nextStepsHeader: "Nächste Schritte",
+      nextStepsSub: "Schnelle Aktionen zur Verbesserung der Compliance",
+      scheduleChecks: "Prüfungen planen",
+      scheduleChecksDesc: "Automatisierte Prüfungen einrichten",
+      addRisks: "Risiken hinzufügen",
+      addRisksDesc: "NIS2-Risiken dokumentieren",
     },
     // Admin
     admin: {
@@ -455,8 +512,49 @@ export const translations = {
     },
     // AI Act
     aiact: {
-      title: "KI-Gesetz-Register",
+      title: "KI-Gesetz-Systemregister",
       systems: "KI-Systeme",
+      emptyTitle: "Keine KI-Systeme registriert",
+      emptyDesc: "Beginnen Sie mit der Dokumentation Ihrer KI-Systeme für die EU-KI-Gesetz-Konformität",
+      register: "System registrieren",
+      registerFirst: "Erstes System registrieren",
+    },
+    // Controls
+    controls: {
+      title: "Maßnahmen",
+      subtitle: "Definieren und verwalten Sie Compliance-Maßnahmen über Frameworks hinweg.",
+      filters: {
+        title: "Filter",
+        allFrameworks: "Alle Frameworks",
+      },
+      actions: {
+        createPolicy: "Richtlinie generieren",
+        runAll: "Alle Prüfungen ausführen",
+      },
+      labels: {
+        objective: "Ziel",
+        evidenceTypes: "Evidenztypen",
+        severity: "Schweregrad",
+      },
+      empty: {
+        noRules: "Noch keine Maßnahmen definiert",
+      },
+    },
+    // Checks
+    checks: {
+      title: "Prüfungen",
+      subtitle: "Automatisierte Compliance-Prüfungen ausführen und Ergebnisse prüfen.",
+      tabs: {
+        rules: "Regeln",
+        results: "Ergebnisse",
+      },
+      actions: {
+        newRule: "Neue Regel",
+        runAll: "Alles ausführen",
+      },
+      empty: {
+        noRules: "Noch keine Regeln konfiguriert",
+      },
     },
     // Navigation
     nav: {
@@ -685,6 +783,14 @@ export const translations = {
       country: "Land",
       sector: "Sektor",
       editOrganization: "Redigera företagsprofil",
+      complianceProgress: "Efterlevnadsstatus",
+      complianceProgressDesc: "Inga data ännu. Kör kontroller, ladda upp bevis och slutför DPIA:er för att se din status.",
+      nextStepsHeader: "Nästa steg",
+      nextStepsSub: "Snabba åtgärder för bättre efterlevnad",
+      scheduleChecks: "Schemalägg kontroller",
+      scheduleChecksDesc: "Ställ in automatiska kontroller",
+      addRisks: "Lägg till risker",
+      addRisksDesc: "Dokumentera NIS2-risker",
     },
     // Admin
     admin: {
@@ -746,8 +852,49 @@ export const translations = {
     },
     // AI Act
     aiact: {
-      title: "AI Act-register",
+      title: "AI Act-systemregister",
       systems: "AI-system",
+      emptyTitle: "Inga AI-system registrerade",
+      emptyDesc: "Börja dokumentera dina AI-system för EU:s AI-lag",
+      register: "Registrera system",
+      registerFirst: "Registrera första systemet",
+    },
+    // Controls
+    controls: {
+      title: "Kontroller",
+      subtitle: "Definiera och hantera kontroller över olika ramverk.",
+      filters: {
+        title: "Filter",
+        allFrameworks: "Alla ramverk",
+      },
+      actions: {
+        createPolicy: "Skapa policy",
+        runAll: "Kör alla kontroller",
+      },
+      labels: {
+        objective: "Syfte",
+        evidenceTypes: "Bevistyper",
+        severity: "Allvarlighetsgrad",
+      },
+      empty: {
+        noRules: "Inga kontroller definierade ännu",
+      },
+    },
+    // Checks
+    checks: {
+      title: "Kontroller",
+      subtitle: "Kör automatiska efterlevnadskontroller och granska resultat.",
+      tabs: {
+        rules: "Regler",
+        results: "Resultat",
+      },
+      actions: {
+        newRule: "Ny regel",
+        runAll: "Kör alla",
+      },
+      empty: {
+        noRules: "Inga regler konfigurerade ännu",
+      },
     },
     // Navigation
     nav: {

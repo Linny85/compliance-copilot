@@ -13,6 +13,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Plus, Brain } from "lucide-react";
 import { toast } from "sonner";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface AISystem {
   id: string;
@@ -26,6 +27,7 @@ interface AISystem {
 
 const AIAct = () => {
   const navigate = useNavigate();
+  const { tx } = useI18n();
   const [loading, setLoading] = useState(true);
   const [systems, setSystems] = useState<AISystem[]>([]);
   const [companyId, setCompanyId] = useState<string | null>(null);
@@ -144,7 +146,7 @@ const AIAct = () => {
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Register System
+                    {tx('aiact.register', 'Register System')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
@@ -241,13 +243,13 @@ const AIAct = () => {
               <Card>
                 <CardContent className="p-12 text-center">
                   <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No AI systems registered</h3>
+                  <h3 className="text-lg font-semibold mb-2">{tx('aiact.emptyTitle', 'No AI systems registered')}</h3>
                   <p className="text-muted-foreground mb-4">
-                    Start documenting your AI systems for EU AI Act compliance
+                    {tx('aiact.emptyDesc', 'Start documenting your AI systems for EU AI Act compliance')}
                   </p>
                   <Button onClick={() => setDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Register First System
+                    {tx('aiact.registerFirst', 'Register First System')}
                   </Button>
                 </CardContent>
               </Card>

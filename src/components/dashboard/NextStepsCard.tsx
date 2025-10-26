@@ -28,17 +28,17 @@ export function NextStepsCard() {
   }, []);
 
   const steps = [
-    { icon: Upload, title: "Upload Evidence", desc: "Complete evidence requests", action: () => navigate("/evidence"), show: counts.evidence > 0 },
-    { icon: Calendar, title: "Schedule Checks", desc: "Set up automated checks", action: () => navigate("/checks"), show: counts.checks < 5 },
-    { icon: Building2, title: "Add Risks", desc: "Document NIS2 risks", action: () => navigate("/nis2"), show: true },
-    { icon: FileText, title: "Generate Policies", desc: "Create documentation", action: () => navigate("/documents"), show: true },
+    { icon: Upload, title: t('dashboard.addFirstRisk', 'Upload Evidence'), desc: t('dashboard.addFirstRiskDesc', 'Complete evidence requests'), action: () => navigate("/evidence"), show: counts.evidence > 0 },
+    { icon: Calendar, title: t('dashboard.scheduleChecks', 'Schedule Checks'), desc: t('dashboard.scheduleChecksDesc', 'Set up automated checks'), action: () => navigate("/checks"), show: counts.checks < 5 },
+    { icon: Building2, title: t('dashboard.addRisks', 'Add Risks'), desc: t('dashboard.addRisksDesc', 'Document NIS2 risks'), action: () => navigate("/nis2"), show: true },
+    { icon: FileText, title: t('dashboard.generatePolicy', 'Generate Policies'), desc: t('dashboard.generatePolicyDesc', 'Create documentation'), action: () => navigate("/documents"), show: true },
   ].filter(s => s.show).slice(0, 3);
 
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Next Steps</CardTitle>
-        <CardDescription>Quick actions to improve compliance</CardDescription>
+        <CardTitle>{t('dashboard.nextStepsHeader', 'Next Steps')}</CardTitle>
+        <CardDescription>{t('dashboard.nextStepsSub', 'Quick actions to improve compliance')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {steps.map((step, i) => {

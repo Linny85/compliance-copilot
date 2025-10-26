@@ -10,6 +10,7 @@ type TranslationFunction = (key: string, params?: string | Record<string, any>) 
 
 type CtxType = {
   t: typeof translations.en & TranslationFunction;
+  tx: (key: string, fallback?: string) => string;
   i18n: typeof i18n;
   lng: Lang;
   language: Lang;
@@ -62,6 +63,36 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       i18n.off('languageChanged', handleLanguageChanged);
     };
   }, []);
+
+  // Resolver function for flexible key access (supports 'controls:title' and 'controls.title')
+  const resolveKey = (dict: any, key: string): any => {
+    const path = key.replace(/:/g, '.').split('.');
+    let current = dict;
+    for (const part of path) {
+      if (current && Object.prototype.hasOwnProperty.call(current, part)) {
+        current = current[part];
+      } else {
+        return undefined;
+      }
+    }
+    return current;
+  };
+
+  const tx = useMemo(() => {
+    return (key: string, fallback?: string): string => {
+      const value = resolveKey((translations as any)[currentLng], key);
+      if (value !== undefined) return value as string;
+      
+      const enValue = resolveKey(translations.en, key);
+      if (enValue !== undefined) return enValue as string;
+      
+      if (import.meta.env.DEV) {
+        console.warn(`[i18n] Missing key in ${currentLng}:`, key);
+      }
+      
+      return fallback ?? key;
+    };
+  }, [currentLng]);
 
   const tObj = useMemo(() => {
     console.log('[I18nContext] Creating tObj for language:', currentLng);
@@ -117,6 +148,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   
   const value: CtxType = useMemo(() => ({
     t: tObj,
+    tx,
     i18n,
     lng: currentLng,
     language: currentLng,
@@ -125,7 +157,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('i18nextLng', lng); 
       i18n.changeLanguage(lng); 
     },
-  }), [tObj, currentLng]);
+  }), [tObj, tx, currentLng]);
 
   return (
     <I18nextProvider i18n={i18n}>
