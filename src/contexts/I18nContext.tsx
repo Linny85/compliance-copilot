@@ -28,7 +28,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   // Listen to i18n language changes
   useEffect(() => {
     const handleLanguageChanged = (lng: string) => {
+      console.log('[I18nContext] languageChanged event received:', lng);
       if (['de', 'en', 'sv'].includes(lng)) {
+        console.log('[I18nContext] Setting currentLng to:', lng);
         setCurrentLng(lng as Lang);
       }
     };
@@ -40,6 +42,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const tObj = useMemo(() => {
+    console.log('[I18nContext] Creating tObj for language:', currentLng);
     const langTranslations = (translations as any)[currentLng];
     const base = langTranslations || translations.en;
     
