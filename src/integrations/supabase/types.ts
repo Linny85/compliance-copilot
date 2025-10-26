@@ -2300,6 +2300,7 @@ export type Database = {
           full_name: string | null
           id: string
           language: string | null
+          locale: string | null
           stripe_customer_id: string | null
           updated_at: string | null
         }
@@ -2310,6 +2311,7 @@ export type Database = {
           full_name?: string | null
           id: string
           language?: string | null
+          locale?: string | null
           stripe_customer_id?: string | null
           updated_at?: string | null
         }
@@ -2320,6 +2322,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           language?: string | null
+          locale?: string | null
           stripe_customer_id?: string | null
           updated_at?: string | null
         }
@@ -4318,6 +4321,30 @@ export type Database = {
           first_break_at: number
           ok: boolean
         }[]
+      }
+      auth_tenant_id: { Args: never; Returns: string }
+      claim_email_jobs: {
+        Args: { p_limit: number }
+        Returns: {
+          created_at: string
+          id: string
+          last_error: string | null
+          message_stream: string
+          model: Json
+          retry_count: number
+          scheduled_at: string
+          sent_at: string | null
+          status: Database["public"]["Enums"]["email_status"]
+          template_alias: string
+          tenant_id: string
+          to_email: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "email_jobs"
+          isOneToOne: false
+          isSetofReturn: true
+        }
       }
       cleanup_notification_deliveries: { Args: never; Returns: undefined }
       cleanup_run_events: { Args: never; Returns: undefined }

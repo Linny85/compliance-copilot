@@ -19,14 +19,10 @@ Deno.serve(async (req) => {
   let failed = 0;
 
   try {
-    // Fetch pending jobs
-    const { data: jobs, error } = await sb
-      .from("email_jobs")
-      .select("*")
-      .eq("status", "queued")
-      .lte("scheduled_at", new Date().toISOString())
-      .order("scheduled_at", { ascending: true })
-      .limit(BATCH_SIZE);
+    // Atomically claim pending jobs
+    const { data: jobs, error } = await sb.rpc('claim_email_jobs', { 
+      p_limit: BATCH_SIZE 
+    });
 
     if (error) throw error;
 
@@ -79,6 +75,12 @@ Deno.serve(async (req) => {
       } catch (error: any) {
         const newRetryCount = (job.retry_count || 0) + 1;
         const newStatus = newRetryCount >= MAX_RETRIES ? "failed" : "queued";
+        
+        // Exponential backoff: 5, 10, 20, 40, 60 minutes
+        const backoffMinutes = Math.min(60, Math.pow(2, newRetryCount - 1) * 5);
+        const nextScheduled = newStatus === "failed" 
+          ? job.scheduled_at
+          : new Date(Date.now() + backoffMinutes * 60 * 1000).toISOString();
 
         await sb
           .from("email_jobs")
@@ -86,6 +88,7 @@ Deno.serve(async (req) => {
             status: newStatus,
             retry_count: newRetryCount,
             last_error: error.message?.slice(0, 500),
+            scheduled_at: nextScheduled,
           })
           .eq("id", job.id);
 
