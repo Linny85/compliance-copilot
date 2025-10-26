@@ -249,6 +249,46 @@ export const translations = {
       empty: {
         noRules: "No controls defined yet",
       },
+      catalog: {
+        AI_ACT: {
+          AI_01: {
+            title: 'Data Governance',
+            objective: 'Ensure data quality and governance for AI systems according to AI Act.'
+          },
+          AI_02: {
+            title: 'Technical Documentation',
+            objective: 'Maintain comprehensive technical documentation for AI systems.'
+          },
+          AI_03: {
+            title: 'Risk Management',
+            objective: 'Implement and maintain risk management systems for high-risk systems.'
+          }
+        },
+        GDPR: {
+          GDPR_01: {
+            title: 'Legal Basis',
+            objective: 'Ensure valid legal basis for all personal data processing.'
+          },
+          GDPR_02: {
+            title: 'Information Obligation',
+            objective: 'Provide clear and transparent information to data subjects.'
+          },
+          GDPR_03: {
+            title: 'Data Subject Rights',
+            objective: 'Ensure data subject rights according to GDPR art. 15–22.'
+          }
+        },
+        NIS2: {
+          NIS2_01: {
+            title: 'Network Security',
+            objective: 'Implement measures to secure network and information systems.'
+          },
+          NIS2_02: {
+            title: 'Incident Management',
+            objective: 'Establish processes for handling and reporting security incidents.'
+          }
+        }
+      }
     },
     // Checks
     checks: {
@@ -467,6 +507,16 @@ export const translations = {
         controlRequired: "Please select a control.",
         titleRequired: "Title is required.",
       },
+      types: {
+        policy: 'Policy',
+        documentation: 'Documentation',
+        report: 'Report',
+        log: 'Log',
+        contract: 'Contract',
+        certificate: 'Certificate',
+        audit: 'Audit',
+        assessment: 'Assessment'
+      }
     },
     // Common
     common: {
@@ -763,6 +813,46 @@ export const translations = {
       empty: {
         noRules: "Noch keine Maßnahmen definiert",
       },
+      catalog: {
+        AI_ACT: {
+          AI_01: {
+            title: 'Daten-Governance',
+            objective: 'Sicherstellung von Datenqualität und -verwaltung für KI-Systeme gemäß KI-Verordnung.'
+          },
+          AI_02: {
+            title: 'Technische Dokumentation',
+            objective: 'Führung umfassender technischer Dokumentation für KI-Systeme.'
+          },
+          AI_03: {
+            title: 'Risikomanagement',
+            objective: 'Implementierung und Wartung von Risikomanagementsystemen für Hochrisikosysteme.'
+          }
+        },
+        GDPR: {
+          GDPR_01: {
+            title: 'Rechtsgrundlage',
+            objective: 'Sicherstellung gültiger Rechtsgrundlagen für alle Datenverarbeitungen.'
+          },
+          GDPR_02: {
+            title: 'Informationspflicht',
+            objective: 'Bereitstellung klarer und transparenter Informationen für Betroffene.'
+          },
+          GDPR_03: {
+            title: 'Betroffenenrechte',
+            objective: 'Gewährleistung der Betroffenenrechte gemäß DSGVO Art. 15–22.'
+          }
+        },
+        NIS2: {
+          NIS2_01: {
+            title: 'Netzwerksicherheit',
+            objective: 'Implementierung von Maßnahmen zur Sicherung von Netzwerk- und Informationssystemen.'
+          },
+          NIS2_02: {
+            title: 'Vorfallmanagement',
+            objective: 'Etablierung von Prozessen zur Handhabung und Meldung von Sicherheitsvorfällen.'
+          }
+        }
+      }
     },
     // Checks
     checks: {
@@ -981,6 +1071,16 @@ export const translations = {
         controlRequired: "Bitte eine Kontrolle auswählen.",
         titleRequired: "Titel ist erforderlich.",
       },
+      types: {
+        policy: 'Richtlinie',
+        documentation: 'Dokumentation',
+        report: 'Bericht',
+        log: 'Protokoll',
+        contract: 'Vertrag',
+        certificate: 'Zertifikat',
+        audit: 'Audit',
+        assessment: 'Bewertung'
+      }
     },
     // Common
     common: {
@@ -1278,6 +1378,46 @@ export const translations = {
         noRules: "Inga kontroller definierade ännu",
         noControls: "Inga kontroller hittades",
       },
+      catalog: {
+        AI_ACT: {
+          AI_01: {
+            title: 'Datastyrning',
+            objective: 'Säkerställ datakvalitet och datastyrning för AI-system enligt AI-förordningen.'
+          },
+          AI_02: {
+            title: 'Teknisk dokumentation',
+            objective: 'Upprätthåll omfattande teknisk dokumentation för AI-system.'
+          },
+          AI_03: {
+            title: 'Riskhantering',
+            objective: 'Implementera och underhåll riskhanteringssystem för högrisksystem.'
+          }
+        },
+        GDPR: {
+          GDPR_01: {
+            title: 'Rättslig grund',
+            objective: 'Säkerställ giltig rättslig grund för all personuppgiftsbehandling.'
+          },
+          GDPR_02: {
+            title: 'Informationsskyldighet',
+            objective: 'Tillhandahåll tydlig och transparent information till registrerade.'
+          },
+          GDPR_03: {
+            title: 'Registrerades rättigheter',
+            objective: 'Säkerställ de registrerades rättigheter enligt GDPR art. 15–22.'
+          }
+        },
+        NIS2: {
+          NIS2_01: {
+            title: 'Nätverkssäkerhet',
+            objective: 'Implementera åtgärder för att säkra nätverks- och informationssystem.'
+          },
+          NIS2_02: {
+            title: 'Incidenthantering',
+            objective: 'Etablera processer för hantering och rapportering av säkerhetsincidenter.'
+          }
+        }
+      }
     },
     // Checks
     checks: {
@@ -1413,14 +1553,14 @@ export const translations = {
       controls: "Kontroller",
       scope: "Omfattning",
       evidence: "Bevis",
-      checks: "Kontroller",
+      checks: "Granskningar",
       audits: "Granskningar",
       docs: "Dokument",
       documents: "Dokument",
       reports: "Rapporter",
       organization: "Organisation",
-      integrations: "Integrations",
-      helpbot_manager: "Helpbot Manager",
+      integrations: "Integrationer",
+      helpbot_manager: "Helpbot-hanterare",
       certificates: "Intyg",
       admin: "Admin",
       help: "Hjälp",
@@ -1496,6 +1636,16 @@ export const translations = {
         controlRequired: "Välj en kontroll.",
         titleRequired: "Titel krävs.",
       },
+      types: {
+        policy: 'Policy',
+        documentation: 'Dokumentation',
+        report: 'Rapport',
+        log: 'Logg',
+        contract: 'Avtal',
+        certificate: 'Certifikat',
+        audit: 'Revision',
+        assessment: 'Bedömning'
+      }
     },
     // Common
     common: {

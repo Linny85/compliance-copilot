@@ -155,7 +155,9 @@ export default function Controls() {
                         </span>
                       </Badge>
                     </div>
-                    <CardTitle className="text-xl">{control.title}</CardTitle>
+                    <CardTitle className="text-xl">
+                      {tx(`controls.catalog.${control.frameworks?.code}.${control.code}.title`, { defaultValue: control.title })}
+                    </CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {control.frameworks?.code} - {control.frameworks?.title} ({control.frameworks?.version})
                     </p>
@@ -175,7 +177,9 @@ export default function Controls() {
                 <div className="space-y-4">
                   <div>
                     <h4 className="text-sm font-semibold mb-2">{tx("controls.labels.objective")}</h4>
-                    <p className="text-sm text-muted-foreground">{control.objective}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {tx(`controls.catalog.${control.frameworks?.code}.${control.code}.objective`, { defaultValue: control.objective })}
+                    </p>
                   </div>
                   {control.evidence_types && control.evidence_types.length > 0 && (
                     <div>
@@ -183,7 +187,7 @@ export default function Controls() {
                       <div className="flex flex-wrap gap-2">
                         {control.evidence_types.map((type) => (
                           <Badge key={type} variant="secondary" className="text-xs">
-                            {type}
+                            {tx(`evidence.types.${type}`, { defaultValue: type })}
                           </Badge>
                         ))}
                       </div>
