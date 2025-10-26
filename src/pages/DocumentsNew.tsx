@@ -52,13 +52,13 @@ export default function DocumentsNew() {
       if (error) throw error;
       
       setControl(data);
-      setTitle(`${data.code} - Policy Document`);
+      setTitle(`${data.code} - ${tx("documents.policyDocument")}`);
       setDescription(data.objective || "");
     } catch (error) {
       console.error("Failed to load control:", error);
       toast({
-        title: "Error",
-        description: "Failed to load control information",
+        title: tx("common.error"),
+        description: tx("documents.errors.loadControl"),
         variant: "destructive",
       });
     } finally {
@@ -69,8 +69,8 @@ export default function DocumentsNew() {
   const handleGenerate = async () => {
     if (!title.trim()) {
       toast({
-        title: "Validation Error",
-        description: "Please provide a document title",
+        title: tx("documents.errors.validation"),
+        description: tx("documents.errors.titleRequired"),
         variant: "destructive",
       });
       return;
@@ -83,16 +83,16 @@ export default function DocumentsNew() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
-        title: "Document Generated",
-        description: "Your policy document has been created successfully",
+        title: tx("documents.success.generated"),
+        description: tx("documents.success.generatedDesc"),
       });
       
       navigate("/documents");
     } catch (error) {
       console.error("Failed to generate document:", error);
       toast({
-        title: "Generation Failed",
-        description: "Failed to generate the document. Please try again.",
+        title: tx("documents.errors.generateFailed"),
+        description: tx("documents.errors.generateFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -121,9 +121,9 @@ export default function DocumentsNew() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">Generate Policy Document</h1>
+          <h1 className="text-3xl font-bold">{tx("documents.generateTitle")}</h1>
           <p className="text-muted-foreground mt-2">
-            Create compliance documentation based on control requirements
+            {tx("documents.generateSubtitle")}
           </p>
         </div>
       </div>
@@ -131,20 +131,20 @@ export default function DocumentsNew() {
       {control && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Selected Control</CardTitle>
+            <CardTitle className="text-lg">{tx("documents.selectedControl")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">Code:</span>
+                <span className="text-sm font-medium">{tx("documents.fields.code")}:</span>
                 <span className="text-sm text-muted-foreground">{control.code}</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium">Title:</span>
+                <span className="text-sm font-medium">{tx("documents.fields.title")}:</span>
                 <span className="text-sm text-muted-foreground">{control.title}</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium">Objective:</span>
+                <span className="text-sm font-medium">{tx("documents.fields.objective")}:</span>
                 <span className="text-sm text-muted-foreground">{control.objective}</span>
               </div>
             </div>
@@ -154,41 +154,41 @@ export default function DocumentsNew() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Document Details</CardTitle>
+          <CardTitle>{tx("documents.documentDetails")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="documentType">Document Type</Label>
+            <Label htmlFor="documentType">{tx("documents.fields.documentType")}</Label>
             <Select value={documentType} onValueChange={setDocumentType}>
               <SelectTrigger id="documentType">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="policy">Policy Document</SelectItem>
-                <SelectItem value="procedure">Procedure</SelectItem>
-                <SelectItem value="guideline">Guideline</SelectItem>
-                <SelectItem value="report">Compliance Report</SelectItem>
+                <SelectItem value="policy">{tx("documents.types.policy")}</SelectItem>
+                <SelectItem value="procedure">{tx("documents.types.procedure")}</SelectItem>
+                <SelectItem value="guideline">{tx("documents.types.guideline")}</SelectItem>
+                <SelectItem value="report">{tx("documents.types.report")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Document Title *</Label>
+            <Label htmlFor="title">{tx("documents.fields.documentTitle")} *</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter document title..."
+              placeholder={tx("documents.placeholders.title")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{tx("documents.fields.description")}</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter document description or objectives..."
+              placeholder={tx("documents.placeholders.description")}
               rows={5}
             />
           </div>
@@ -202,12 +202,12 @@ export default function DocumentsNew() {
               {generating ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Generating...
+                  {tx("documents.generating")}
                 </>
               ) : (
                 <>
                   <FileText className="h-4 w-4 mr-2" />
-                  Generate Document
+                  {tx("documents.generateButton")}
                 </>
               )}
             </Button>
@@ -216,7 +216,7 @@ export default function DocumentsNew() {
               onClick={() => navigate(-1)}
               disabled={generating}
             >
-              Cancel
+              {tx("common.cancel")}
             </Button>
           </div>
         </CardContent>
@@ -228,11 +228,10 @@ export default function DocumentsNew() {
             <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                AI-Powered Document Generation
+                {tx("documents.aiPoweredTitle")}
               </p>
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                This feature uses AI to generate compliance documentation based on the selected control requirements. 
-                The generated document will include relevant policies, procedures, and implementation guidelines.
+                {tx("documents.aiPoweredDesc")}
               </p>
             </div>
           </div>
