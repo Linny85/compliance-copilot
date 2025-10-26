@@ -94,6 +94,25 @@ export default function Controls() {
     return <ShieldCheck className="h-4 w-4" />;
   };
 
+  // Helper function to get localized control title with fallback to catalog
+  const getControlTitle = (control: Control): string => {
+    const fw = control.frameworks?.code;
+    const code = control.code;
+    return tx(`controls.catalog.${fw}.${code}.title`, { defaultValue: control.title });
+  };
+
+  // Helper function to get localized control objective with fallback to catalog
+  const getControlObjective = (control: Control): string => {
+    const fw = control.frameworks?.code;
+    const code = control.code;
+    return tx(`controls.catalog.${fw}.${code}.objective`, { defaultValue: control.objective });
+  };
+
+  // Helper function to get localized evidence type label
+  const getEvidenceLabel = (code: string): string => {
+    return tx(`evidence.types.${code}`, { defaultValue: code });
+  };
+
   return (
     <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
@@ -156,7 +175,7 @@ export default function Controls() {
                       </Badge>
                     </div>
                     <CardTitle className="text-xl">
-                      {tx(`controls.catalog.${control.frameworks?.code}.${control.code}.title`, { defaultValue: control.title })}
+                      {getControlTitle(control)}
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {control.frameworks?.code} - {control.frameworks?.title} ({control.frameworks?.version})
@@ -178,7 +197,7 @@ export default function Controls() {
                   <div>
                     <h4 className="text-sm font-semibold mb-2">{tx("controls.labels.objective")}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {tx(`controls.catalog.${control.frameworks?.code}.${control.code}.objective`, { defaultValue: control.objective })}
+                      {getControlObjective(control)}
                     </p>
                   </div>
                   {control.evidence_types && control.evidence_types.length > 0 && (
@@ -187,7 +206,7 @@ export default function Controls() {
                       <div className="flex flex-wrap gap-2">
                         {control.evidence_types.map((type) => (
                           <Badge key={type} variant="secondary" className="text-xs">
-                            {tx(`evidence.types.${type}`, { defaultValue: type })}
+                            {getEvidenceLabel(type)}
                           </Badge>
                         ))}
                       </div>
