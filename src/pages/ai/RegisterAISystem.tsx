@@ -81,7 +81,15 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 /* ---------------------- UI helper ---------------------- */
-const Field = ({label, hint, error, children, className}:{label:React.ReactNode; hint?:React.ReactNode; error?:React.ReactNode; children:React.ReactNode; className?:string})=>(
+const Field = ({
+  label, hint, error, children, className
+}: {
+  label: React.ReactNode;
+  hint?: React.ReactNode;
+  error?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}) => (
   <div className={className}>
     <Label className="text-sm font-medium mb-1.5 block">{label}</Label>
     {children}
