@@ -7,7 +7,7 @@ import { ChevronsUpDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 
-type Control = { id: string; code: string; title: string };
+type Control = { id: string; code: string; title: string; framework?: string };
 
 type Props = {
   value?: string | null;
@@ -27,11 +27,31 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
   const fetchItems = React.useCallback(async (q: string) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("search-controls", {
-        body: { q, page: 1, pageSize: 20 }
-      });
+      let query = supabase
+        .from('controls')
+        .select(`
+          id, 
+          code, 
+          title,
+          frameworks:framework_id (code)
+        `)
+        .order('code', { ascending: true })
+        .limit(20);
+
+      if (q) {
+        query = query.or(`code.ilike.%${q}%,title.ilike.%${q}%`);
+      }
+
+      const { data, error } = await query;
       if (error) throw error;
-      setItems(data?.items || []);
+      
+      const mapped = (data || []).map((c: any) => ({
+        id: c.id,
+        code: c.code,
+        title: c.title,
+        framework: c.frameworks?.code || '—'
+      }));
+      setItems(mapped);
     } catch (e) {
       console.error('[ControlSelect] Fetch error:', e);
       setItems([]);
@@ -49,12 +69,27 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
         return; 
       }
       try {
-        const { data, error } = await supabase.functions.invoke("search-controls", { 
-          body: { id: value } 
-        });
+        const { data, error } = await supabase
+          .from('controls')
+          .select(`
+            id,
+            code,
+            title,
+            frameworks:framework_id (code)
+          `)
+          .eq('id', value)
+          .maybeSingle();
+        
         if (!active) return;
         if (error) throw error;
-        const item = (data?.items || [])[0] || null;
+        
+        const item = data ? {
+          id: data.id,
+          code: data.code,
+          title: data.title,
+          framework: (data as any).frameworks?.code || '—'
+        } : null;
+        
         setSelected(item);
         // Enrich items list if not already present
         if (item && !items.find(i => i.id === item.id)) {
@@ -88,7 +123,7 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
           className="w-full justify-between"
           disabled={disabled}
         >
-          {selected ? `${selected.code}: ${selected.title}` : (placeholder || t("checks:form.placeholders.control_id"))}
+          {selected ? `${selected.code} — ${selected.title}` : (placeholder || t("checks:form.placeholders.control_id"))}
           <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -104,9 +139,20 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
           <CommandList>
             {loading ? (
               <CommandEmpty>{t("common:loading") || "Loading..."}</CommandEmpty>
-            ) : (
-              <CommandEmpty>{t("checks:empty.noResults") || "No results"}</CommandEmpty>
-            )}
+            ) : items.length === 0 ? (
+              <div className="px-3 py-6 text-center text-sm text-muted-foreground">
+                {query ? (
+                  t("checks:empty.noResults") || "No results"
+                ) : (
+                  <div>
+                    Noch keine Kontrollen verfügbar.
+                    <a href="/controls" className="ml-1 underline hover:no-underline">
+                      Jetzt Kontrollen verwalten
+                    </a>
+                  </div>
+                )}
+              </div>
+            ) : null}
             <CommandGroup>
               {items.map((it) => (
                 <CommandItem
@@ -118,7 +164,14 @@ export function ControlSelect({ value, onChange, placeholder, disabled }: Props)
                   }}
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium">{it.code}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{it.code}</span>
+                      {it.framework && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                          {it.framework}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-xs text-muted-foreground">{it.title}</span>
                   </div>
                 </CommandItem>
