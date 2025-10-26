@@ -110,8 +110,11 @@ node scripts/snapshot-dpia-keys.js --update
 
 ### Documentation
 
+- 📖 **[i18n Quick Start Guide](README_I18N.md)** – Essential workflow and usage guide
 - 📖 **[i18n Developer Guide](docs/i18n-guide.md)** – Commands, best practices, error fixes
 - 🏗️ **[i18n Architecture](docs/i18n-architecture.md)** – Technical overview, CI flow, diagrams
+- 🔧 **[i18n Workflow](docs/i18n-workflow.md)** – Complete translation workflow and maintenance
+- 🧪 **[i18n CI Setup](docs/i18n-ci-setup.md)** – GitHub Actions configuration and testing
 
 ### CI Integration
 
