@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -46,14 +46,14 @@ export default function EmailAdmin() {
       if (jobError) throw jobError;
       setJobs(j || []);
 
-      const { data: e, error: eventError } = await supabase
-        .from("email_events")
-        .select("id, occurred_at, event_type, email, message_id")
-        .order("occurred_at", { ascending: false })
-        .limit(200);
-
-      if (eventError) console.warn("Events not accessible:", eventError);
-      setEvents(e || []);
+      // Events via Service-Role Function (RLS-gesichert)
+      const { data: eventsData, error: eventError } = await supabase.functions.invoke('events-list');
+      
+      if (eventError) {
+        console.warn("Events not accessible:", eventError);
+      } else {
+        setEvents(eventsData?.data || []);
+      }
     } catch (error: any) {
       toast.error("Fehler beim Laden: " + error.message);
     } finally {

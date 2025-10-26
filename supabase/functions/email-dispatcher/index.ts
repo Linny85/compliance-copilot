@@ -76,8 +76,11 @@ Deno.serve(async (req) => {
         const newRetryCount = (job.retry_count || 0) + 1;
         const newStatus = newRetryCount >= MAX_RETRIES ? "failed" : "queued";
         
-        // Exponential backoff: 5, 10, 20, 40, 60 minutes
-        const backoffMinutes = Math.min(60, Math.pow(2, newRetryCount - 1) * 5);
+        // Exponential backoff with jitter: 5, 10, 20, 40, 60 minutes
+        const base = Math.min(60, Math.pow(2, newRetryCount - 1) * 5);
+        const jitter = Math.floor(Math.random() * 30); // 0-29 min
+        const backoffMinutes = Math.min(60, base + jitter);
+        
         const nextScheduled = newStatus === "failed" 
           ? job.scheduled_at
           : new Date(Date.now() + backoffMinutes * 60 * 1000).toISOString();

@@ -9,6 +9,16 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // 🛡️ Webhook-Absicherung
+  const webhookSecret = Deno.env.get("POSTMARK_WEBHOOK_SECRET");
+  if (webhookSecret) {
+    const token = req.headers.get("x-postmark-webhook-token");
+    if (token !== webhookSecret) {
+      console.warn("[webhook-bounce] Invalid webhook token");
+      return new Response("Forbidden", { status: 403, headers: corsHeaders });
+    }
+  }
+
   try {
     const payload = await req.json();
     const sb = createClient(url, key);
