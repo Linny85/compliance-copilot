@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useI18n } from "@/contexts/I18nContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +26,7 @@ interface Risk {
 }
 
 const NIS2 = () => {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [risks, setRisks] = useState<Risk[]>([]);
@@ -129,7 +131,7 @@ const NIS2 = () => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">Loading risks...</p>
+          <p className="mt-4 text-muted-foreground">{t.common.loading}</p>
         </div>
       </div>
     );
@@ -145,9 +147,9 @@ const NIS2 = () => {
               <div>
                 <h1 className="text-3xl font-bold flex items-center gap-2">
                   <AlertTriangle className="h-8 w-8 text-primary" />
-                  NIS2 Risk Management
+                  {t.nis2.title}
                 </h1>
-                <p className="text-muted-foreground">Track and manage cybersecurity risks</p>
+                <p className="text-muted-foreground">{t.nis2.risks}</p>
               </div>
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
