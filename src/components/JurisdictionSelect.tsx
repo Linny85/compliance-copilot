@@ -1,6 +1,6 @@
 import { EU_JURISDICTIONS } from "@/data/eu_jurisdictions";
+import { labelByLocale } from "@/lib/jurisdictions";
 import { useI18n } from "@/contexts/I18nContext";
-import type { Jurisdiction } from "@/types/jurisdiction";
 import {
   Select,
   SelectContent,
@@ -10,14 +10,12 @@ import {
 } from "@/components/ui/select";
 
 type Props = {
-  value?: string;              // iso2
+  value?: string;                   // iso2 (z. B. "SE")
   onChange: (iso2: string) => void;
+  placeholderIso2?: string;         // optional default/empty
 };
 
-const labelByLocale = (j: Jurisdiction, locale: string) =>
-  locale === "de" ? j.name_de : locale === "sv" ? j.name_sv : j.name_en;
-
-export default function JurisdictionSelect({ value, onChange }: Props) {
+export default function JurisdictionSelect({ value, onChange, placeholderIso2 }: Props) {
   const { tx, language } = useI18n();
   const locale = language || "en";
 
@@ -33,7 +31,7 @@ export default function JurisdictionSelect({ value, onChange }: Props) {
         <SelectContent>
           {EU_JURISDICTIONS.map(j => (
             <SelectItem key={j.iso2} value={j.iso2}>
-              {labelByLocale(j, locale)} {tx("jurisdictions.suffix")}
+              {labelByLocale(j, locale)}{tx("jurisdictions.suffix")}
             </SelectItem>
           ))}
         </SelectContent>
