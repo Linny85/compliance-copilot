@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Calendar, Building2, FileText } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function NextStepsCard() {
   const navigate = useNavigate();
-  const { t } = useTranslation(['common', 'dashboard']);
+  const { tx } = useI18n();
   const [counts, setCounts] = useState({ evidence: 0, checks: 0 });
 
   useEffect(() => {
@@ -28,17 +28,17 @@ export function NextStepsCard() {
   }, []);
 
   const steps = [
-    { icon: Upload, title: t('dashboard.addFirstRisk', 'Upload Evidence'), desc: t('dashboard.addFirstRiskDesc', 'Complete evidence requests'), action: () => navigate("/evidence"), show: counts.evidence > 0 },
-    { icon: Calendar, title: t('dashboard.scheduleChecks', 'Schedule Checks'), desc: t('dashboard.scheduleChecksDesc', 'Set up automated checks'), action: () => navigate("/checks"), show: counts.checks < 5 },
-    { icon: Building2, title: t('dashboard.addRisks', 'Add Risks'), desc: t('dashboard.addRisksDesc', 'Document NIS2 risks'), action: () => navigate("/nis2"), show: true },
-    { icon: FileText, title: t('dashboard.generatePolicy', 'Generate Policies'), desc: t('dashboard.generatePolicyDesc', 'Create documentation'), action: () => navigate("/documents"), show: true },
+    { icon: Upload, title: tx('dashboard.uploadEvidence'), desc: tx('dashboard.uploadEvidenceDesc'), action: () => navigate("/evidence"), show: counts.evidence > 0 },
+    { icon: Calendar, title: tx('dashboard.scheduleChecks'), desc: tx('dashboard.scheduleChecksDesc'), action: () => navigate("/checks"), show: counts.checks < 5 },
+    { icon: Building2, title: tx('dashboard.addRisks'), desc: tx('dashboard.addRisksDesc'), action: () => navigate("/nis2"), show: true },
+    { icon: FileText, title: tx('dashboard.generatePolicy'), desc: tx('dashboard.generatePolicyDesc'), action: () => navigate("/documents"), show: true },
   ].filter(s => s.show).slice(0, 3);
 
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>{t('dashboard.nextStepsHeader', 'Next Steps')}</CardTitle>
-        <CardDescription>{t('dashboard.nextStepsSub', 'Quick actions to improve compliance')}</CardDescription>
+        <CardTitle>{tx('dashboard.nextStepsHeader')}</CardTitle>
+        <CardDescription>{tx('dashboard.nextStepsSub')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {steps.map((step, i) => {

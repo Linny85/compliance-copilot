@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, CheckCircle2, TrendingUp, RefreshCw } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
 import { useComplianceData } from "@/hooks/useCompliance";
 import { toast } from "sonner";
 
 export function ComplianceProgressCard() {
-  const { t } = useTranslation(['common']);
+  const { tx } = useI18n();
   const { loading, summary, trend, getFrameworkScorePct, isAdmin, refreshSummary, refreshing } = useComplianceData();
 
   if (loading) {
@@ -38,10 +38,10 @@ export function ComplianceProgressCard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            {t('compliance.progress', 'Compliance Progress')}
+            {tx('dashboard.complianceProgress')}
           </CardTitle>
           <CardDescription>
-            {t('compliance.noData', 'No compliance data available yet. Complete checks, upload evidence, and complete DPIAs to see your progress.')}
+            {tx('dashboard.complianceProgressDesc')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -70,9 +70,9 @@ export function ComplianceProgressCard() {
   const handleRefresh = async () => {
     try {
       await refreshSummary();
-      toast.success(t('compliance.refreshSuccess', 'Compliance summary refreshed successfully'));
+      toast.success(tx('dashboard.complianceRefreshSuccess'));
     } catch (error) {
-      toast.error(t('compliance.refreshError', 'Failed to refresh compliance summary'));
+      toast.error(tx('dashboard.complianceRefreshError'));
     }
   };
 
@@ -83,7 +83,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1.5 flex-1">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
-              {t('compliance.progress', 'Compliance Progress')}
+              {tx('dashboard.complianceProgress')}
               {deltaPP !== null && (
                 <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
                   deltaPP >= 0 ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
@@ -93,7 +93,7 @@ export function ComplianceProgressCard() {
               )}
             </CardTitle>
             <CardDescription>
-              {t('compliance.overall', 'Overall compliance status and framework breakdown')}
+              {tx('dashboard.complianceOverallDesc')}
             </CardDescription>
           </div>
           {isAdmin && (
@@ -143,13 +143,13 @@ export function ComplianceProgressCard() {
           {/* Framework Badges */}
           <div className="flex flex-wrap gap-2 justify-center">
             <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.NIS2))}>
-              {t('compliance.framework.nis2', 'NIS2')}: {getFrameworkScorePct(FRAMEWORK_CODES.NIS2)}%
+              NIS2: {getFrameworkScorePct(FRAMEWORK_CODES.NIS2)}%
             </Badge>
             <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT))}>
-              {t('compliance.framework.ai_act', 'AI Act')}: {getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT)}%
+              AI Act: {getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT)}%
             </Badge>
             <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.GDPR))}>
-              {t('compliance.framework.gdpr', 'GDPR')}: {getFrameworkScorePct(FRAMEWORK_CODES.GDPR)}%
+              GDPR: {getFrameworkScorePct(FRAMEWORK_CODES.GDPR)}%
             </Badge>
           </div>
         </div>
@@ -159,7 +159,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('compliance.breakdown.controls', 'Controls')}
+                {tx('dashboard.complianceControls')}
               </span>
               <span className="font-medium">{formatScore(summary.controls_score ?? 0)}</span>
             </div>
@@ -168,7 +168,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('compliance.breakdown.evidence', 'Evidence')}
+                {tx('dashboard.complianceEvidence')}
               </span>
               <span className="font-medium">{formatScore(summary.evidence_score ?? 0)}</span>
             </div>
@@ -177,7 +177,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('compliance.breakdown.training', 'Training')}
+                {tx('dashboard.complianceTraining')}
               </span>
               <span className="font-medium">{formatScore(summary.training_score ?? 0)}</span>
             </div>
@@ -186,7 +186,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('compliance.breakdown.dpia', 'Data Protection')}
+                {tx('dashboard.complianceDpia')}
               </span>
               <span className="font-medium">{formatScore(summary.dpia_score ?? 0)}</span>
             </div>
@@ -199,19 +199,19 @@ export function ComplianceProgressCard() {
           {scoreVariant === 'success' && (
             <>
               <CheckCircle2 className="h-4 w-4 text-success" />
-              <span className="text-success">Excellent compliance status</span>
+              <span className="text-success">{tx('dashboard.complianceStatusExcellent')}</span>
             </>
           )}
           {scoreVariant === 'warning' && (
             <>
               <AlertCircle className="h-4 w-4 text-warning" />
-              <span className="text-warning">Good progress, continue improving</span>
+              <span className="text-warning">{tx('dashboard.complianceStatusGood')}</span>
             </>
           )}
           {scoreVariant === 'destructive' && (
             <>
               <AlertCircle className="h-4 w-4 text-destructive" />
-              <span className="text-destructive">Needs attention</span>
+              <span className="text-destructive">{tx('dashboard.complianceStatusNeeds')}</span>
             </>
           )}
         </div>
