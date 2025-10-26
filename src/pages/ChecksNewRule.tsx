@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { ControlSelect } from "@/components/controls/ControlSelect";
 import { SpecEditor } from "@/components/checks/SpecEditor";
 
@@ -34,7 +34,7 @@ const FormSchema = z.object({
 type FormValues = z.infer<typeof FormSchema>;
 
 export default function ChecksNewRule() {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { toast } = useToast();
   const isAdmin = useIsAdmin();

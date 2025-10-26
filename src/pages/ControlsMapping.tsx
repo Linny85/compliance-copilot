@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +33,7 @@ type ControlMappingItem = {
 };
 
 export default function ControlsMapping() {
-  const { t } = useTranslation(["checks", "common"]);
+  const { t } = useI18n();
   const { toast } = useToast();
   const isAdmin = useIsAdmin();
   const [searchParams, setSearchParams] = useSearchParams();

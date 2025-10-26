@@ -7,7 +7,7 @@ import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
 import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 
 interface CompanyData {
   name: string;
@@ -22,7 +22,7 @@ interface SubscriptionData {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { t, ready } = useTranslation(['common', 'dashboard']);
+  const { t, ready } = useI18n();
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string>("");
   const [companyData, setCompanyData] = useState<CompanyData>({

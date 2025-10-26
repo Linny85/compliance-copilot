@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,7 +56,7 @@ interface CheckResult {
 }
 
 export default function ChecksPage() {
-  const { t } = useTranslation(["checks", "common"]);
+  const { t } = useI18n();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();

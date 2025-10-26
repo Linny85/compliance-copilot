@@ -4,8 +4,12 @@ import i18n from '@/i18n/init';
 import { translations } from '@/lib/i18n';
 
 type Lang = 'de' | 'en' | 'sv';
+
+// Helper type for translation function
+type TranslationFunction = (key: string, params?: string | Record<string, any>) => string;
+
 type CtxType = {
-  t: typeof translations.en;
+  t: typeof translations.en & TranslationFunction;
   i18n: typeof i18n;
   lng: Lang;
   language: Lang;
@@ -37,7 +41,38 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const tObj = useMemo(() => {
     const langTranslations = (translations as any)[currentLng];
-    return langTranslations || translations.en;
+    const base = langTranslations || translations.en;
+    
+    // Add a function call interface for compatibility
+    const tFunction = ((key: string, params?: string | Record<string, any>) => {
+      const parts = key.split('.');
+      let value: any = base;
+      for (const part of parts) {
+        value = value?.[part];
+        if (value === undefined) break;
+      }
+      
+      // If value not found, use fallback (if params is string) or return key
+      if (value === undefined) {
+        return typeof params === 'string' ? params : key;
+      }
+      
+      // If params is an object, do simple string interpolation
+      if (typeof params === 'object' && params !== null) {
+        let result = value;
+        for (const [k, v] of Object.entries(params)) {
+          result = result.replace(new RegExp(`{{\\s*${k}\\s*}}`, 'g'), String(v));
+        }
+        return result;
+      }
+      
+      return value;
+    }) as any;
+    
+    // Copy all properties from base to function
+    Object.assign(tFunction, base);
+    
+    return tFunction;
   }, [currentLng]);
   
   const value: CtxType = useMemo(() => ({

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +21,7 @@ interface TenantSettings {
 }
 
 export default function SettingsNotifications() {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const { toast } = useToast();
   const navigate = useNavigate();
   const isAdmin = useIsAdmin();

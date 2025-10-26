@@ -6,11 +6,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { FileText, Download } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 
 const Documents = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['common', 'documents']);
+  const { t } = useI18n();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

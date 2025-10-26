@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ async function sha256Hex(file: File): Promise<string> {
 }
 
 export default function EvidencePage() {
-  const { t } = useTranslation(["evidence", "common"]);
+  const { t } = useI18n();
   const { toast } = useToast();
   const [requests, setRequests] = useState<EvidenceRequest[]>([]);
   const [evidences, setEvidences] = useState<Evidence[]>([]);

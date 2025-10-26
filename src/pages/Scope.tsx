@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ interface Control {
 }
 
 export default function Scope() {
-  const { t } = useTranslation(["scope", "common"]);
+  const { t } = useI18n();
   const { toast } = useToast();
   const [units, setUnits] = useState<ScopeUnit[]>([]);
   const [loading, setLoading] = useState(true);

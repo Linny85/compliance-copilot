@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useI18n } from "@/contexts/I18nContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -39,7 +39,7 @@ interface MatrixItem {
 }
 
 export default function ScopeMatrix() {
-  const { t } = useTranslation();
+  const { t } = useI18n();
   const [scopeType, setScopeType] = useState<'orgunit' | 'asset' | 'process'>('orgunit');
   const [scopes, setScopes] = useState<ScopeItem[]>([]);
   const [selectedScope, setSelectedScope] = useState<ScopeItem | null>(null);
