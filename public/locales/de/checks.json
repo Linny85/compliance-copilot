@@ -57,33 +57,83 @@
     "noResultsToExport": "Keine Ergebnisse zum Exportieren."
   },
   "form": {
-    "new_rule_title": "Neue Regel anlegen",
+    "new_rule_title": "Neue Prüfregel",
     "new_rule_nav": "Neue Regel",
     "edit_rule_title": "Regel bearbeiten",
     "delete_confirm_title": "Regel löschen?",
-    "delete_confirm_text": "Möchtest du die Regel „{{code}}" wirklich löschen?",
+    "delete_confirm_text": "Möchten Sie die Regel \"{{code}}\" wirklich löschen?",
     "fields": {
       "title": "Titel",
       "code": "Code",
+      "help_code": "Nur A–Z, 0–9, -, _ (z. B. NIS2-BACKUP-AGE)",
       "description": "Beschreibung",
       "severity": "Schweregrad",
-      "kind": "Art",
+      "kind": "Art der Regel",
       "enabled": "Aktiv",
-      "control_id": "Control-ID (UUID, optional)",
-      "spec": "Spezifikation (JSON)"
+      "control_id": "Zugehöriges Control",
+      "spec": "Spezifikation",
+      "source": "Quelle",
+      "query": "Abfrage",
+      "evaluator": "Auswertung",
+      "threshold": "Schwellwert",
+      "timeout_ms": "Timeout (ms)",
+      "metric_key": "Metrik-Key",
+      "aggregation": "Aggregation",
+      "pass_when": "Bestanden wenn",
+      "pass_value": "Vergleichswert",
+      "owner_user_id": "Owner",
+      "tags": "Tags",
+      "schedule_cron": "Zeitplan (CRON)",
+      "remediation": "Hinweis zur Behebung"
     },
     "placeholders": {
       "severity": "Schweregrad wählen",
-      "kind": "Art wählen",
-      "control_id": "z. B. UUID aus Controls"
+      "kind": "Typ wählen",
+      "control_id": "Control wählen..."
     },
     "help": {
-      "code": "Erlaubt: Buchstaben, Ziffern, - _ : .  (pro Tenant eindeutig)",
-      "control_id": "Optional: Verknüpfe die Regel mit einer Control (UUID)."
+      "code": "Erlaubt: Buchstaben, Zahlen, - _ : .  (eindeutig pro Mandant)",
+      "control_id": "Optional: Diese Regel einem Control zuordnen (UUID)."
+    },
+    "kinds": {
+      "static": "Statisch",
+      "query": "Abfrage"
+    },
+    "severities": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch",
+      "critical": "Kritisch"
+    },
+    "evaluators": {
+      "any_pass": "Mindestens ein Treffer",
+      "all_pass": "Alle müssen passen",
+      "threshold": "Schwellwert"
+    },
+    "aggregations": {
+      "latest": "Letzter",
+      "avg": "Durchschnitt",
+      "min": "Minimum",
+      "max": "Maximum",
+      "sum": "Summe"
+    },
+    "pass_ops": {
+      "lte": "≤",
+      "lt": "<",
+      "gte": "≥",
+      "gt": ">",
+      "eq": "=",
+      "ne": "≠"
     },
     "actions": {
-      "load_static_template": "Static-Template laden",
-      "load_query_template": "Query-Template laden"
+      "load_static_template": "Statische Vorlage laden",
+      "load_query_template": "Query-Vorlage laden",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "test": "Testlauf"
+    },
+    "hint": {
+      "sandbox": "SQL ist im Sandbox-Runner read-only. Schreibzugriffe sind blockiert."
     },
     "errors": {
       "invalid_json": "Spec ist kein gültiges JSON.",
@@ -91,10 +141,14 @@
       "save_failed": "Regel konnte nicht gespeichert werden.",
       "duplicate_code": "Code existiert bereits für diesen Mandanten.",
       "update_failed": "Regel konnte nicht aktualisiert werden.",
-      "delete_failed": "Regel konnte nicht gelöscht werden."
+      "delete_failed": "Regel konnte nicht gelöscht werden.",
+      "unique_code": "Dieser Code ist bereits vergeben.",
+      "invalid_code": "Nur A–Z, 0–9, -, _ (3–40 Zeichen).",
+      "query_required": "Abfrage erforderlich.",
+      "control_required": "Bitte ein Control auswählen."
     },
     "success": {
-      "saved": "Regel wurde gespeichert.",
+      "saved": "Regel erfolgreich gespeichert.",
       "updated": "Regel aktualisiert.",
       "deleted": "Regel gelöscht."
     }

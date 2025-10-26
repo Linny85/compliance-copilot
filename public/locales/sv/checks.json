@@ -65,25 +65,75 @@
     "fields": {
       "title": "Titel",
       "code": "Kod",
+      "help_code": "Endast A–Z, 0–9, -, _ (t.ex. NIS2-BACKUP-AGE)",
       "description": "Beskrivning",
       "severity": "Allvarlighetsgrad",
       "kind": "Typ",
       "enabled": "Aktiverad",
-      "control_id": "Kontroll-ID (UUID, valfritt)",
-      "spec": "Specifikation (JSON)"
+      "control_id": "Relaterad kontroll",
+      "spec": "Specifikation",
+      "source": "Källa",
+      "query": "Fråga",
+      "evaluator": "Utvärdering",
+      "threshold": "Tröskelvärde",
+      "timeout_ms": "Timeout (ms)",
+      "metric_key": "Mätnyc kel",
+      "aggregation": "Aggregering",
+      "pass_when": "Godkänd när",
+      "pass_value": "Jämförelsevärde",
+      "owner_user_id": "Ägare",
+      "tags": "Taggar",
+      "schedule_cron": "Schema (CRON)",
+      "remediation": "Åtgärdstips"
     },
     "placeholders": {
       "severity": "Välj allvarlighetsgrad",
       "kind": "Välj typ",
-      "control_id": "t.ex. UUID från kontroller"
+      "control_id": "Välj kontroll..."
     },
     "help": {
       "code": "Tillåtet: bokstäver, siffror, - _ : .  (unikt per klient)",
       "control_id": "Valfritt: Länka denna regel till en kontroll (UUID)."
     },
+    "kinds": {
+      "static": "Statisk",
+      "query": "Fråga"
+    },
+    "severities": {
+      "low": "Låg",
+      "medium": "Medel",
+      "high": "Hög",
+      "critical": "Kritisk"
+    },
+    "evaluators": {
+      "any_pass": "Minst en träff",
+      "all_pass": "Alla måste godkännas",
+      "threshold": "Tröskelvärde"
+    },
+    "aggregations": {
+      "latest": "Senaste",
+      "avg": "Medelvärde",
+      "min": "Minimum",
+      "max": "Maximum",
+      "sum": "Summa"
+    },
+    "pass_ops": {
+      "lte": "≤",
+      "lt": "<",
+      "gte": "≥",
+      "gt": ">",
+      "eq": "=",
+      "ne": "≠"
+    },
     "actions": {
       "load_static_template": "Ladda statisk mall",
-      "load_query_template": "Ladda Query-mall"
+      "load_query_template": "Ladda frågemall",
+      "cancel": "Avbryt",
+      "save": "Spara",
+      "test": "Testkörning"
+    },
+    "hint": {
+      "sandbox": "SQL-körning är skrivskyddad i sandlådan. Skrivåtkomst är blockerad."
     },
     "errors": {
       "invalid_json": "Spec är inte giltig JSON.",
@@ -91,7 +141,11 @@
       "save_failed": "Misslyckades att spara regel.",
       "duplicate_code": "Koden finns redan för denna klient.",
       "update_failed": "Det gick inte att uppdatera regeln.",
-      "delete_failed": "Det gick inte att ta bort regeln."
+      "delete_failed": "Det gick inte att ta bort regeln.",
+      "unique_code": "Denna kod används redan.",
+      "invalid_code": "Endast A–Z, 0–9, -, _ (3–40 tecken).",
+      "query_required": "Fråga krävs.",
+      "control_required": "Vänligen välj en kontroll."
     },
     "success": {
       "saved": "Regel sparad framgångsrikt.",

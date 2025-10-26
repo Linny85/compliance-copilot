@@ -1,11 +1,11 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { useI18n } from "@/contexts/I18nContext";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,238 +13,535 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { useI18n } from "@/contexts/I18nContext";
 import { ControlSelect } from "@/components/controls/ControlSelect";
-import { SpecEditor } from "@/components/checks/SpecEditor";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-type Severity = 'low' | 'medium' | 'high' | 'critical';
-type Kind = 'static' | 'query';
+// ========== Validation Schemas ==========
+const staticSpecSchema = z.object({
+  criteria: z.object({
+    path: z.string().min(1, "Path required"),
+    operator: z.enum(['equals', 'contains', 'gt', 'gte', 'lt', 'lte', 'regex']),
+    value: z.any(),
+  }),
+});
 
-const FormSchema = z.object({
-  title: z.string().min(3),
-  code: z.string().regex(/^[a-z0-9-_:.]+$/i).min(2),
-  description: z.string().max(1000).optional(),
+const querySpecSchema = z.object({
+  source: z.enum(['supabase', 'http', 'function']),
+  query: z.string().min(1, "Query required"),
+  evaluator: z.enum(['any_pass', 'all_pass', 'threshold']),
+  threshold: z.number().min(0).max(1).optional(),
+  timeout_ms: z.number().int().positive().max(60000).optional(),
+});
+
+const baseSchema = z.object({
+  name: z.string().min(4, "Min 4 characters").max(120, "Max 120 characters"),
+  code: z.string().regex(/^[A-Z0-9_-]{3,40}$/, "Only A-Z, 0-9, -, _ (3-40 chars)"),
   severity: z.enum(['low', 'medium', 'high', 'critical']),
   kind: z.enum(['static', 'query']),
   enabled: z.boolean().default(true),
+  description: z.string().max(500).optional(),
   control_id: z.string().uuid().optional().or(z.literal("")),
-  specText: z.string().min(2),
+  
+  // Metrics
+  metric_key: z.string().optional(),
+  aggregation: z.enum(['latest', 'avg', 'min', 'max', 'sum']).optional(),
+  pass_when: z.enum(['lte', 'lt', 'gte', 'gt', 'eq', 'ne']).optional(),
+  pass_value: z.union([z.string(), z.number(), z.boolean()]).optional(),
+  
+  // Governance
+  owner_user_id: z.string().uuid().optional().or(z.literal("")),
+  tags: z.string().optional(), // comma-separated
+  schedule_cron: z.string().optional(),
+  remediation: z.string().max(500).optional(),
 });
 
-type FormValues = z.infer<typeof FormSchema>;
+const formSchema = z.discriminatedUnion('kind', [
+  baseSchema.extend({ kind: z.literal('static'), spec: staticSpecSchema }),
+  baseSchema.extend({ kind: z.literal('query'), spec: querySpecSchema }),
+]);
 
+type FormValues = z.infer<typeof formSchema>;
+
+// ========== Helper Functions ==========
+function parseJSONSafe<T = unknown>(raw: string): T | null {
+  try { return JSON.parse(raw) as T; } catch { return null; }
+}
+
+function toBool(v: string) {
+  if (v === 'true') return true;
+  if (v === 'false') return false;
+  return v;
+}
+
+// ========== Main Component ==========
 export default function ChecksNewRule() {
-  const { t } = useI18n();
+  const { tx } = useI18n();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const isAdmin = useIsAdmin();
   const [submitting, setSubmitting] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testResult, setTestResult] = useState<null | { ok: boolean; rows?: any[]; error?: string }>(null);
+  const [jsonMode, setJsonMode] = useState(false);
+  const [rawSpec, setRawSpec] = useState("");
 
-  // Redirect if not admin
-  useEffect(() => {
-    if (isAdmin === false) {
-      toast({ 
-        title: t("common:forbidden") || "Access denied (admins only).", 
-        variant: "destructive" 
-      });
-      navigate("/checks");
-    }
-  }, [isAdmin, navigate, toast, t]);
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(FormSchema),
+  const methods = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      enabled: true,
+      name: '',
+      code: '',
       severity: 'medium',
       kind: 'static',
-      specText: JSON.stringify({ metric: "password_rotation_days", value: 92, op: "<=", threshold: 90 }, null, 2),
+      enabled: true,
+      description: '',
+      control_id: '',
+      spec: {
+        criteria: { path: '', operator: 'equals', value: '' },
+      } as any,
+      metric_key: '',
+      aggregation: 'latest',
+      pass_when: 'lte',
+      pass_value: '',
+      owner_user_id: '',
+      tags: '',
+      schedule_cron: '',
+      remediation: '',
     },
+    mode: 'onChange',
   });
 
-  const kind = watch("kind");
+  const { register, handleSubmit, control, watch, formState: { errors, isValid }, setValue, getValues } = methods;
+  const kind = watch('kind');
+  const specValue = watch('spec');
 
-  const templates = useMemo(() => ({
-    static: JSON.stringify({ metric: "password_rotation_days", value: 92, op: "<=", threshold: 90 }, null, 2),
-    query: JSON.stringify({ table: "evidences", threshold: 1 }, null, 2),
-  }), []);
-
-  const onKindChange = (val: Kind) => {
-    setValue("kind", val, { shouldValidate: true });
-    setValue("specText", templates[val], { shouldValidate: true });
-  };
-
-  const onSubmit = async (values: FormValues) => {
-    setSubmitting(true);
-    try {
-      let spec: any;
-      try {
-        spec = JSON.parse(values.specText);
-      } catch {
-        toast({ title: t("checks:form.errors.invalid_json"), variant: "destructive" });
-        setSubmitting(false);
-        return;
-      }
-
-      if (values.kind === "static") {
-        const StaticSpec = z.object({
-          metric: z.string().min(1),
-          value: z.number(),
-          op: z.enum(['<', '<=', '>', '>=', '==']).default('<='),
-          threshold: z.number(),
-        });
-        try {
-          StaticSpec.parse(spec);
-        } catch {
-          toast({ title: t("checks:form.errors.invalid_spec"), variant: "destructive" });
-          setSubmitting(false);
-          return;
-        }
-      } else {
-        const QuerySpec = z.object({
-          table: z.string().min(1).optional(),
-          threshold: z.number().int().nonnegative(),
-        });
-        try {
-          QuerySpec.parse(spec);
-        } catch {
-          toast({ title: t("checks:form.errors.invalid_spec"), variant: "destructive" });
-          setSubmitting(false);
-          return;
-        }
-      }
-
-      const { data, error } = await supabase.functions.invoke("create-rule", {
-        body: {
-          title: values.title,
-          code: values.code,
-          description: values.description,
-          severity: values.severity,
-          kind: values.kind,
-          enabled: values.enabled,
-          control_id: values.control_id || undefined,
-          spec,
-        },
-      });
-
-      if (error) {
-        const msg = typeof error === 'string' ? error : (error.message || JSON.stringify(error));
-        toast({ title: t("checks:form.errors.save_failed"), description: msg, variant: "destructive" });
-        setSubmitting(false);
-        return;
-      }
-
-      if (data?.error) {
-        const key = data.error === 'DUPLICATE_CODE' ? "checks:form.errors.duplicate_code" : "checks:form.errors.save_failed";
-        toast({ title: t(key), variant: "destructive" });
-        setSubmitting(false);
-        return;
-      }
-
-      toast({ title: t("checks:form.success.saved") });
-      navigate("/checks?tab=rules");
-    } catch (err) {
-      console.error('[ChecksNewRule] Error:', err);
-      toast({ title: t("checks:form.errors.save_failed"), variant: "destructive" });
-      setSubmitting(false);
+  // ========== Handlers ==========
+  const onKindChange = (newKind: 'static' | 'query') => {
+    setValue('kind', newKind);
+    if (newKind === 'static') {
+      setValue('spec', { criteria: { path: '', operator: 'equals', value: '' } } as any);
+      setRawSpec(JSON.stringify({ criteria: { path: '', operator: 'equals', value: '' } }, null, 2));
+    } else {
+      setValue('spec', { source: 'supabase', query: '', evaluator: 'any_pass', timeout_ms: 15000 } as any);
+      setRawSpec(JSON.stringify({ source: 'supabase', query: '', evaluator: 'any_pass', timeout_ms: 15000 }, null, 2));
     }
   };
 
+  const applyJSON = () => {
+    const parsed = parseJSONSafe(rawSpec);
+    if (!parsed) {
+      toast({ title: tx("checks.form.errors.invalid_json"), variant: "destructive" });
+      return;
+    }
+    setValue('spec', parsed as any, { shouldValidate: true });
+    setJsonMode(false);
+  };
+
+  const loadExample = () => {
+    const example = kind === 'static'
+      ? { criteria: { path: 'system.dataRetention.days', operator: 'lte', value: 30 } }
+      : { source: 'supabase', query: 'SELECT * FROM v_backup_ages LIMIT 10;', evaluator: 'any_pass', timeout_ms: 15000 };
+    setRawSpec(JSON.stringify(example, null, 2));
+  };
+
+  async function onSubmit(data: FormValues) {
+    setSubmitting(true);
+    try {
+      const payload = {
+        title: data.name,
+        code: data.code,
+        description: data.description,
+        severity: data.severity,
+        kind: data.kind,
+        enabled: data.enabled,
+        control_id: data.control_id || undefined,
+        spec: data.spec,
+        // Additional fields (backend needs to support these)
+        metric_key: data.metric_key,
+        aggregation: data.aggregation,
+        pass_when: data.pass_when,
+        pass_value: data.pass_value,
+        owner_user_id: data.owner_user_id || undefined,
+        tags: data.tags ? data.tags.split(',').map(t => t.trim()) : undefined,
+        schedule_cron: data.schedule_cron,
+        remediation: data.remediation,
+      };
+
+      const { data: result, error } = await supabase.functions.invoke("create-rule", { body: payload });
+
+      if (error) {
+        throw new Error(error.message || JSON.stringify(error));
+      }
+
+      if (result?.error) {
+        const key = result.error === 'DUPLICATE_CODE' ? "checks.form.errors.duplicate_code" : "checks.form.errors.save_failed";
+        toast({ title: tx(key), variant: "destructive" });
+        return;
+      }
+
+      toast({ title: tx("checks.form.success.saved") });
+      navigate("/checks?tab=rules");
+    } catch (err: any) {
+      console.error('[ChecksNewRule] Error:', err);
+      toast({ title: tx("checks.form.errors.save_failed"), description: err.message, variant: "destructive" });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function runTest() {
+    setTesting(true);
+    setTestResult(null);
+    try {
+      const payload = getValues();
+      // Note: You'll need to create a test-rule edge function
+      const res = await supabase.functions.invoke("test-rule", { body: payload });
+      setTestResult(res.data || { ok: false, error: "No response" });
+    } catch (e: any) {
+      setTestResult({ ok: false, error: e?.message ?? "Network error" });
+    } finally {
+      setTesting(false);
+    }
+  }
+
   return (
-    <div className="mx-auto max-w-3xl space-y-6 p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("checks:form.new_rule_title")}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label>{t("checks:form.fields.title")}</Label>
-                <Input {...register("title")} />
-                {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
-              </div>
-              <div>
-                <Label>{t("checks:form.fields.code")}</Label>
-                <Input {...register("code")} />
-                <p className="text-xs text-muted-foreground">{t("checks:form.help.code")}</p>
-                {errors.code && <p className="text-sm text-red-500">{errors.code.message}</p>}
-              </div>
-              <div>
-                <Label>{t("checks:form.fields.severity")}</Label>
-                <Select defaultValue="medium" onValueChange={(v) => setValue("severity", v as Severity, { shouldValidate: true })}>
-                  <SelectTrigger><SelectValue placeholder={t("checks:form.placeholders.severity")} /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">{t("common:severity.low")}</SelectItem>
-                    <SelectItem value="medium">{t("common:severity.medium")}</SelectItem>
-                    <SelectItem value="high">{t("common:severity.high")}</SelectItem>
-                    <SelectItem value="critical">{t("common:severity.critical")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex items-end gap-2">
-                <div className="flex-1">
-                  <Label>{t("checks:form.fields.kind")}</Label>
-                  <Select defaultValue="static" onValueChange={(v) => onKindChange(v as Kind)}>
-                    <SelectTrigger><SelectValue placeholder={t("checks:form.placeholders.kind")} /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="static">{t("checks:kind.static")}</SelectItem>
-                      <SelectItem value="query">{t("checks:kind.query")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex items-center gap-2 pt-6">
-                  <Switch defaultChecked {...register("enabled")} />
-                  <Label>{t("checks:form.fields.enabled")}</Label>
-                </div>
-              </div>
-            </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold">{tx("checks.form.new_rule_title")}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{tx("checks.form.hint.sandbox")}</p>
+      </div>
 
-            <div>
-              <Label>{t("checks:form.fields.description")}</Label>
-              <Textarea rows={3} {...register("description")} />
-              {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
-            </div>
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        {/* Left Column - Basic Fields */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{tx("checks.labels.title")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Field label={tx("checks.form.fields.title")} error={errors.name?.message}>
+                <Input {...register("name")} placeholder={tx("checks.form.fields.title")} />
+              </Field>
 
-            <div>
-              <Label>{t("checks:form.fields.control_id")}</Label>
-              <ControlSelect
-                value={watch("control_id") || null}
-                onChange={(id) => setValue("control_id", id || "", { shouldValidate: true })}
-                placeholder={t("checks:form.placeholders.control_id") || ""}
-              />
-              <p className="text-xs text-muted-foreground">{t("checks:form.help.control_id")}</p>
-            </div>
+              <Field label={tx("checks.form.fields.code")} hint={tx("checks.form.fields.help_code")} error={errors.code?.message}>
+                <Input {...register("code")} placeholder="NIS2-BACKUP-AGE" className="uppercase tracking-wide" />
+              </Field>
 
-            <div>
-              <Label>
-                {t("checks:form.fields.spec")}
-                <span className="ml-2 text-xs text-muted-foreground">({t(`checks:kind.${kind}`)})</span>
-              </Label>
-              <SpecEditor 
-                kind={kind}
-                value={watch("specText")}
-                onChange={(v) => setValue("specText", v, { shouldValidate: true })}
-              />
-              {errors.specText && <p className="text-sm text-red-500">{errors.specText.message}</p>}
-            </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Field label={tx("checks.form.fields.severity")} error={errors.severity?.message}>
+                  <Controller
+                    control={control}
+                    name="severity"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={tx("checks.form.placeholders.severity")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="low">{tx("checks.form.severities.low")}</SelectItem>
+                          <SelectItem value="medium">{tx("checks.form.severities.medium")}</SelectItem>
+                          <SelectItem value="high">{tx("checks.form.severities.high")}</SelectItem>
+                          <SelectItem value="critical">{tx("checks.form.severities.critical")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </Field>
 
-            <div className="flex justify-end gap-2 pt-4">
-              <Button type="button" variant="ghost" onClick={() => navigate("/checks?tab=rules")}>
-                {t("common:cancel")}
-              </Button>
-              <Button type="submit" disabled={submitting}>
-                {submitting ? t("common:saving") : t("common:save")}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+                <Field label={tx("checks.form.fields.kind")} error={errors.kind?.message}>
+                  <Controller
+                    control={control}
+                    name="kind"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={(v) => onKindChange(v as 'static' | 'query')}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="static">{tx("checks.form.kinds.static")}</SelectItem>
+                          <SelectItem value="query">{tx("checks.form.kinds.query")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </Field>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Controller
+                  control={control}
+                  name="enabled"
+                  render={({ field }) => (
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  )}
+                />
+                <Label>{tx("checks.form.fields.enabled")}</Label>
+              </div>
+
+              <Field label={tx("checks.form.fields.description")} error={errors.description?.message}>
+                <Textarea {...register("description")} rows={3} />
+              </Field>
+
+              <Field label={tx("checks.form.fields.control_id")} error={errors.control_id?.message}>
+                <Controller
+                  control={control}
+                  name="control_id"
+                  render={({ field }) => (
+                    <ControlSelect
+                      value={field.value || null}
+                      onChange={(id) => field.onChange(id || "")}
+                      placeholder={tx("checks.form.placeholders.control_id") || ""}
+                    />
+                  )}
+                />
+              </Field>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Spec & Advanced */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{tx("checks.form.fields.spec")}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={jsonMode ? "json" : "form"} onValueChange={(v) => setJsonMode(v === "json")}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="form">{tx("checks.specEditor.form")}</TabsTrigger>
+                  <TabsTrigger value="json">{tx("checks.specEditor.json")}</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="form" className="space-y-3 mt-4">
+                  {kind === 'static' ? <StaticSpecForm control={control} register={register} watch={watch} setValue={setValue} tx={tx} /> : <QuerySpecForm control={control} register={register} tx={tx} />}
+                </TabsContent>
+                
+                <TabsContent value="json" className="space-y-3 mt-4">
+                  <Textarea
+                    value={rawSpec || JSON.stringify(specValue, null, 2)}
+                    onChange={(e) => setRawSpec(e.target.value)}
+                    className="font-mono min-h-[200px] sm:min-h-[280px]"
+                    placeholder="{}"
+                  />
+                  <div className="flex gap-2">
+                    <Button type="button" onClick={applyJSON} variant="secondary" size="sm">
+                      {tx("checks.form.actions.save")}
+                    </Button>
+                    <Button type="button" onClick={loadExample} variant="outline" size="sm">
+                      Load Example
+                    </Button>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+
+          {/* Metrics Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">{tx("checks.form.fields.metric_key")}</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field label={tx("checks.form.fields.metric_key")}>
+                <Input {...register("metric_key")} placeholder="nis2.backup_age_days" />
+              </Field>
+              <Field label={tx("checks.form.fields.aggregation")}>
+                <Controller
+                  control={control}
+                  name="aggregation"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="latest">{tx("checks.form.aggregations.latest")}</SelectItem>
+                        <SelectItem value="avg">{tx("checks.form.aggregations.avg")}</SelectItem>
+                        <SelectItem value="min">{tx("checks.form.aggregations.min")}</SelectItem>
+                        <SelectItem value="max">{tx("checks.form.aggregations.max")}</SelectItem>
+                        <SelectItem value="sum">{tx("checks.form.aggregations.sum")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </Field>
+              <Field label={tx("checks.form.fields.pass_when")}>
+                <Controller
+                  control={control}
+                  name="pass_when"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="lte">{tx("checks.form.pass_ops.lte")}</SelectItem>
+                        <SelectItem value="lt">{tx("checks.form.pass_ops.lt")}</SelectItem>
+                        <SelectItem value="gte">{tx("checks.form.pass_ops.gte")}</SelectItem>
+                        <SelectItem value="gt">{tx("checks.form.pass_ops.gt")}</SelectItem>
+                        <SelectItem value="eq">{tx("checks.form.pass_ops.eq")}</SelectItem>
+                        <SelectItem value="ne">{tx("checks.form.pass_ops.ne")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </Field>
+              <Field label={tx("checks.form.fields.pass_value")}>
+                <Input {...register("pass_value")} placeholder="30" />
+              </Field>
+            </CardContent>
+          </Card>
+
+          {/* Governance Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Governance</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field label={tx("checks.form.fields.owner_user_id")}>
+                <Input {...register("owner_user_id")} placeholder="UUID" />
+              </Field>
+              <Field label={tx("checks.form.fields.schedule_cron")}>
+                <Input {...register("schedule_cron")} placeholder="0 3 * * *" />
+              </Field>
+              <Field label={tx("checks.form.fields.tags")} className="sm:col-span-2">
+                <Input {...register("tags")} placeholder="backup, reporting" />
+              </Field>
+              <Field label={tx("checks.form.fields.remediation")} className="sm:col-span-2">
+                <Input {...register("remediation")} placeholder="Enable daily offsite backup" />
+              </Field>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Test Result */}
+      {testResult && (
+        <Card className={testResult.ok ? "border-green-500" : "border-red-500"}>
+          <CardHeader>
+            <CardTitle>{testResult.ok ? 'Test OK' : 'Test Error'}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {testResult.error ? (
+              <pre className="text-sm whitespace-pre-wrap">{testResult.error}</pre>
+            ) : (
+              <pre className="text-sm overflow-auto max-h-72">{JSON.stringify(testResult.rows ?? [], null, 2)}</pre>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t">
+        <Button type="button" onClick={() => navigate("/checks?tab=rules")} variant="ghost" className="w-full sm:w-auto">
+          {tx("checks.form.actions.cancel")}
+        </Button>
+        <Button type="button" onClick={runTest} disabled={testing || !isValid} variant="outline" className="w-full sm:w-auto">
+          {testing ? "..." : tx("checks.form.actions.test")}
+        </Button>
+        <Button type="submit" disabled={submitting || !isValid} className="w-full sm:w-auto">
+          {submitting ? tx("common.saving") : tx("checks.form.actions.save")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+// ========== Sub-components ==========
+function Field({ label, hint, error, children, className }: { label: React.ReactNode; hint?: React.ReactNode; error?: React.ReactNode; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={className}>
+      <Label className="text-sm font-medium mb-1.5 block">{label}</Label>
+      {children}
+      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+      {error && <p className="mt-1 text-xs text-red-600">{String(error)}</p>}
+    </div>
+  );
+}
+
+function StaticSpecForm({ control, register, watch, setValue, tx }: any) {
+  const criteriaValue = watch('spec.criteria.value');
+
+  return (
+    <div className="space-y-3">
+      <Field label={tx("checks.form.fields.query")}>
+        <Input {...register('spec.criteria.path')} placeholder="system.dataRetention.days" />
+      </Field>
+      <Field label="Operator">
+        <Controller
+          control={control}
+          name="spec.criteria.operator"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {['equals','contains','gt','gte','lt','lte','regex'].map(op => (
+                  <SelectItem key={op} value={op}>{op}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+      </Field>
+      <Field label="Value">
+        <Input
+          value={criteriaValue ?? ''}
+          onChange={(e) => {
+            const raw = e.target.value;
+            const asNum = Number(raw);
+            if (!Number.isNaN(asNum) && raw.trim() !== '') setValue('spec.criteria.value', asNum);
+            else if (raw === 'true' || raw === 'false') setValue('spec.criteria.value', toBool(raw));
+            else setValue('spec.criteria.value', raw);
+          }}
+          placeholder="30"
+        />
+      </Field>
+    </div>
+  );
+}
+
+function QuerySpecForm({ control, register, tx }: any) {
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-3 gap-3">
+        <Field label={tx("checks.form.fields.source")}>
+          <Controller
+            control={control}
+            name="spec.source"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="supabase">supabase</SelectItem>
+                  <SelectItem value="http">http</SelectItem>
+                  <SelectItem value="function">function</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+        <Field label={tx("checks.form.fields.evaluator")}>
+          <Controller
+            control={control}
+            name="spec.evaluator"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any_pass">{tx("checks.form.evaluators.any_pass")}</SelectItem>
+                  <SelectItem value="all_pass">{tx("checks.form.evaluators.all_pass")}</SelectItem>
+                  <SelectItem value="threshold">{tx("checks.form.evaluators.threshold")}</SelectItem>
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </Field>
+        <Field label={tx("checks.form.fields.threshold")}>
+          <Input type="number" step="0.01" {...register('spec.threshold', { valueAsNumber: true })} placeholder="0.8" />
+        </Field>
+      </div>
+      <Field label={tx("checks.form.fields.query")}>
+        <Textarea {...register('spec.query')} className="font-mono" rows={6} placeholder="SELECT * FROM v_backup_ages WHERE days > 30 LIMIT 50;" />
+      </Field>
+      <Field label={tx("checks.form.fields.timeout_ms")}>
+        <Input type="number" {...register('spec.timeout_ms', { valueAsNumber: true })} placeholder="15000" />
+      </Field>
     </div>
   );
 }
