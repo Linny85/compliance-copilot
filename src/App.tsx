@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import NIS2 from "./pages/NIS2";
 import AIAct from "./pages/AIAct";
 import Documents from "./pages/Documents";
+import DocumentsNew from "./pages/DocumentsNew";
 import Admin from "./pages/Admin";
 import AuditLog from "./pages/AuditLog";
 import NOC from "./pages/NOC";
@@ -61,6 +62,7 @@ const App = () => (
             <Route path="/nis2" element={<NIS2 />} />
             <Route path="/ai-act" element={<AIAct />} />
             <Route path="/documents" element={<Documents />} />
+            <Route path="/documents/new" element={<DocumentsNew />} />
             <Route path="/controls" element={<Controls />} />
             <Route path="/scope" element={<Scope />} />
             <Route path="/evidence" element={<Evidence />} />

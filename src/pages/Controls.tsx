@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "@/contexts/I18nContext";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +26,7 @@ interface Control {
 
 export default function Controls() {
   const { tx } = useI18n();
+  const navigate = useNavigate();
   const [controls, setControls] = useState<Control[]>([]);
   const [frameworks, setFrameworks] = useState<Framework[]>([]);
   const [selectedFramework, setSelectedFramework] = useState<string>("all");
@@ -77,6 +79,12 @@ export default function Controls() {
       critical: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
     };
     return colors[severity] || colors.low;
+  };
+
+  const handleCreatePolicy = (controlId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    navigate(`/documents/new?controlId=${controlId}`);
   };
 
   const getSeverityIcon = (severity: string) => {
@@ -152,7 +160,12 @@ export default function Controls() {
                       {control.frameworks?.code} - {control.frameworks?.title} ({control.frameworks?.version})
                     </p>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={(e) => handleCreatePolicy(control.id, e)}
+                    className="relative z-10 pointer-events-auto"
+                  >
                     <FileText className="h-4 w-4 mr-2" />
                     {tx("controls.actions.createPolicy")}
                   </Button>
