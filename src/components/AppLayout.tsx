@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { DemoBanner } from "@/components/DemoBanner";
 import { TrialBanner } from "@/components/billing/TrialBanner";
@@ -16,11 +16,16 @@ export function AppLayout() {
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
-        <main className="flex-1 flex flex-col overflow-auto">
-          <DemoBanner />
-          <TrialBanner tenantId={userInfo?.tenantId} />
-          <Outlet />
-        </main>
+        <div className="flex-1 flex flex-col overflow-auto">
+          <header className="h-12 flex items-center border-b border-border bg-background sticky top-0 z-40">
+            <SidebarTrigger className="ml-2" />
+          </header>
+          <main className="flex-1 flex flex-col overflow-auto">
+            <DemoBanner />
+            <TrialBanner tenantId={userInfo?.tenantId} />
+            <Outlet />
+          </main>
+        </div>
       </div>
     </SidebarProvider>
   );

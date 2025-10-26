@@ -25,7 +25,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,7 +82,7 @@ export function AppSidebar() {
         </div>
       )}
       
-      <SidebarTrigger className="m-2 self-end" />
+      
 
       <SidebarContent>
         {/* Main Navigation */}
