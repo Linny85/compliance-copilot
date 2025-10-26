@@ -1,5 +1,5 @@
 import { BookOpen, ShieldCheck, Brain } from "lucide-react";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 
 type CourseKind = "nis2" | "lead" | "emp";
 
@@ -22,12 +22,12 @@ function safeArray(v: unknown): string[] {
 }
 
 export function CourseCard({ kind }: { kind: CourseKind }) {
-  const { tx } = useI18n();
-  const base = `training.courses.${kind}`;
+  const { t } = useTranslation('training');
+  const base = `courses.${kind}`;
 
-  const title = tx(`${base}.title`);
-  const url   = tx(`${base}.url`, { defaultValue: "" });
-  const raw   = tx(`${base}.bullets`, { returnObjects: true });
+  const title = t(`${base}.title`);
+  const url = t(`${base}.url`, { defaultValue: "" });
+  const raw = t(`${base}.bullets`, { returnObjects: true });
   const bullets = safeArray(raw);
 
   // Optional: feste Codes anzeigen
@@ -60,7 +60,7 @@ export function CourseCard({ kind }: { kind: CourseKind }) {
           rel="noreferrer"
           className="mt-4 inline-block text-sm font-medium underline text-primary hover:opacity-80 transition-opacity"
         >
-          {tx("common.viewCourse", { defaultValue: "Kurs ansehen" })}
+          {t("viewCourse", { ns: "common", defaultValue: "View course" })}
         </a>
       )}
     </div>

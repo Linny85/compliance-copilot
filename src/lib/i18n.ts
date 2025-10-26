@@ -524,6 +524,58 @@ export const translations = {
       hint: "Choose the applicable jurisdiction – views & controls adapt accordingly.",
       suffix: " (GDPR + national law)",
     },
+    // Training
+    training: {
+      title: "Compliance Training & Certificates",
+      description: "Complete your trainings and manage certificates across frameworks.",
+      hintBar: {
+        text: "Courses are currently available in German on our website.",
+        cta: "Open German course page"
+      },
+      notice: {
+        deOnly: "These courses are currently available in German only."
+      },
+      courses: {
+        nis2: {
+          title: "NIS2 Compliance Certification",
+          url: "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+          bullets: [
+            "Implement 10 minimum measures",
+            "Train incident response & reporting paths",
+            "11 templates + 12-month updates"
+          ]
+        },
+        lead: {
+          title: "EU AI Act – Compliance for Companies",
+          url: "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+          bullets: [
+            "Understand risk classes & obligations",
+            "CE conformity & documentation",
+            "Implement AI literacy requirements"
+          ]
+        },
+        emp: {
+          title: "EU AI Act – Employee Training",
+          url: "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+          bullets: [
+            "Do's & don'ts in daily work",
+            "Data protection & bias explained",
+            "Certificate after quiz"
+          ]
+        }
+      },
+      actions: {
+        upload: "Upload certificate",
+        verifyByCode: "Verify by code"
+      },
+      sections: {
+        uploaded: {
+          title: "Uploaded certificates",
+          subtitle: "Review and verify submitted training certificates",
+          empty: "No certificates available"
+        }
+      }
+    },
     // Common
     common: {
       save: "Save",
@@ -543,6 +595,7 @@ export const translations = {
       disabled: "Disabled",
       previous: "Previous",
       next: "Next",
+      viewCourse: "View course",
       tooltips: {
         adminOnly: "Admin access required",
         noRules: "No rules available",
@@ -1094,6 +1147,58 @@ export const translations = {
       hint: "Wählen Sie den geltenden Rechtsrahmen – Anzeigen & Kontrollen passen sich an.",
       suffix: " (GDPR + nationales Recht)",
     },
+    // Training
+    training: {
+      title: "Schulungen & Zertifikate",
+      description: "Absolviere Schulungen und verwalte Zertifikate über alle Frameworks.",
+      hintBar: {
+        text: "Noch kein Zertifikat? Buchen Sie jetzt eine Schulung bei Norrland Innovate.",
+        cta: "Zu den Kursen"
+      },
+      notice: {
+        deOnly: "Die Kursübersicht ist in Ihrer aktuellen Sprache nicht verfügbar."
+      },
+      courses: {
+        nis2: {
+          title: "NIS2 Compliance Zertifizierung",
+          url: "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+          bullets: [
+            "10 Mindestmaßnahmen umsetzen",
+            "Incident-Response & Meldewege trainieren",
+            "11 Vorlagen + 12-Monats-Updates"
+          ]
+        },
+        lead: {
+          title: "EU KI Gesetz – Compliance für Unternehmen",
+          url: "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+          bullets: [
+            "Risikoklassen & Pflichten verstehen",
+            "CE-Konformität & Dokumentation",
+            "AI-Literacy-Pflichten umsetzen"
+          ]
+        },
+        emp: {
+          title: "EU KI Gesetz – Mitarbeiterschulung",
+          url: "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+          bullets: [
+            "Do's & Don'ts im Arbeitsalltag",
+            "Datenschutz & Bias verständlich erklärt",
+            "Teilnahmezertifikat nach Quiz"
+          ]
+        }
+      },
+      actions: {
+        upload: "Zertifikat hochladen",
+        verifyByCode: "Per Code verifizieren"
+      },
+      sections: {
+        uploaded: {
+          title: "Hochgeladene Zertifikate",
+          subtitle: "Überprüfen und verifizieren Sie eingereichte Schulungszertifikate",
+          empty: "Keine Zertifikate vorhanden"
+        }
+      }
+    },
     // Common
     common: {
       save: "Speichern",
@@ -1113,6 +1218,7 @@ export const translations = {
       disabled: "Deaktiviert",
       previous: "Zurück",
       next: "Weiter",
+      viewCourse: "Kurs ansehen",
       tooltips: {
         adminOnly: "Admin-Zugriff erforderlich",
         noRules: "Keine Regeln verfügbar",
@@ -1665,6 +1771,58 @@ export const translations = {
       hint: "Välj gällande jurisdiktion – vyer och kontroller anpassas därefter.",
       suffix: " (GDPR + nationell lag)",
     },
+    // Training
+    training: {
+      title: "Utbildningar & intyg",
+      description: "Slutför utbildningar och hantera intyg över alla ramverk.",
+      hintBar: {
+        text: "Kurserna finns för närvarande endast på tyska.",
+        cta: "Öppna den tyska kurssidan"
+      },
+      notice: {
+        deOnly: "Dessa kurser finns just nu endast på tyska."
+      },
+      courses: {
+        nis2: {
+          title: "NIS2 Grund",
+          url: "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+          bullets: [
+            "Risk, styrning & rapportering",
+            "Incidenthantering & kontinuitet",
+            "Praktiska uppgifter för småföretag"
+          ]
+        },
+        lead: {
+          title: "EU AI-akten – Ledning",
+          url: "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+          bullets: [
+            "Skyldigheter & riskklasser",
+            "Policies & ansvar",
+            "Tillsyn av leverantörer & system"
+          ]
+        },
+        emp: {
+          title: "EU AI-akten – Medarbetare",
+          url: "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+          bullets: [
+            "Säker & ansvarsfull AI-användning",
+            "Dataskydd & prompts",
+            "Gör & gör inte på jobbet"
+          ]
+        }
+      },
+      actions: {
+        upload: "Ladda upp intyg",
+        verifyByCode: "Verifiera med kod"
+      },
+      sections: {
+        uploaded: {
+          title: "Uppladdade intyg",
+          subtitle: "Granska och verifiera inskickade utbildningsintyg",
+          empty: "Inga intyg ännu"
+        }
+      }
+    },
     // Common
     common: {
       save: "Spara",
@@ -1684,6 +1842,7 @@ export const translations = {
       disabled: "Inaktiverad",
       previous: "Föregående",
       next: "Nästa",
+      viewCourse: "Visa kurs",
       tooltips: {
         adminOnly: "Endast för administratörer",
         noRules: "Inga regler tillgängliga",

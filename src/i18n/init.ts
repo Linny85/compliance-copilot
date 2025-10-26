@@ -17,7 +17,7 @@ if (!g.__i18n_singleton__) {
     lng: BOOT_LNG,
     fallbackLng: 'en',
     supportedLngs: SUPPORTED,
-    ns: Object.keys(translations.de),
+    ns: [...Object.keys(translations.de), 'training'],
     defaultNS: 'common',
     resources,
     load: 'currentOnly',
@@ -26,6 +26,7 @@ if (!g.__i18n_singleton__) {
     cleanCode: true,
     nonExplicitSupportedLngs: true,
     returnEmptyString: false,
+    returnNull: false,
     initImmediate: false,
   });
 }

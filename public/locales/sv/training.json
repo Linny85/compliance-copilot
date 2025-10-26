@@ -1,0 +1,51 @@
+{
+  "title": "Utbildningar & intyg",
+  "description": "Slutför utbildningar och hantera intyg över alla ramverk.",
+  "hintBar": {
+    "text": "Kurserna finns för närvarande endast på tyska.",
+    "cta": "Öppna den tyska kurssidan"
+  },
+  "notice": {
+    "deOnly": "Dessa kurser finns just nu endast på tyska."
+  },
+  "courses": {
+    "nis2": {
+      "title": "NIS2 Grund",
+      "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+      "bullets": [
+        "Risk, styrning & rapportering",
+        "Incidenthantering & kontinuitet",
+        "Praktiska uppgifter för småföretag"
+      ]
+    },
+    "lead": {
+      "title": "EU AI-akten – Ledning",
+      "url": "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+      "bullets": [
+        "Skyldigheter & riskklasser",
+        "Policies & ansvar",
+        "Tillsyn av leverantörer & system"
+      ]
+    },
+    "emp": {
+      "title": "EU AI-akten – Medarbetare",
+      "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+      "bullets": [
+        "Säker & ansvarsfull AI-användning",
+        "Dataskydd & prompts",
+        "Gör & gör inte på jobbet"
+      ]
+    }
+  },
+  "actions": {
+    "upload": "Ladda upp intyg",
+    "verifyByCode": "Verifiera med kod"
+  },
+  "sections": {
+    "uploaded": {
+      "title": "Uppladdade intyg",
+      "subtitle": "Granska och verifiera inskickade utbildningsintyg",
+      "empty": "Inga intyg ännu"
+    }
+  }
+}

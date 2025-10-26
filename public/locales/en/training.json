@@ -1,0 +1,51 @@
+{
+  "title": "Compliance Training & Certificates",
+  "description": "Complete your trainings and manage certificates across frameworks.",
+  "hintBar": {
+    "text": "Courses are currently available in German on our website.",
+    "cta": "Open German course page"
+  },
+  "notice": {
+    "deOnly": "These courses are currently available in German only."
+  },
+  "courses": {
+    "nis2": {
+      "title": "NIS2 Compliance Certification",
+      "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+      "bullets": [
+        "Implement 10 minimum measures",
+        "Train incident response & reporting paths",
+        "11 templates + 12-month updates"
+      ]
+    },
+    "lead": {
+      "title": "EU AI Act – Compliance for Companies",
+      "url": "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+      "bullets": [
+        "Understand risk classes & obligations",
+        "CE conformity & documentation",
+        "Implement AI literacy requirements"
+      ]
+    },
+    "emp": {
+      "title": "EU AI Act – Employee Training",
+      "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+      "bullets": [
+        "Do's & don'ts in daily work",
+        "Data protection & bias explained",
+        "Certificate after quiz"
+      ]
+    }
+  },
+  "actions": {
+    "upload": "Upload certificate",
+    "verifyByCode": "Verify by code"
+  },
+  "sections": {
+    "uploaded": {
+      "title": "Uploaded certificates",
+      "subtitle": "Review and verify submitted training certificates",
+      "empty": "No certificates available"
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "title": "Schulungen & Zertifikate",
+  "description": "Absolviere Schulungen und verwalte Zertifikate über alle Frameworks.",
+  "hintBar": {
+    "text": "Noch kein Zertifikat? Buchen Sie jetzt eine Schulung bei Norrland Innovate.",
+    "cta": "Zu den Kursen"
+  },
+  "notice": {
+    "deOnly": "Die Kursübersicht ist in Ihrer aktuellen Sprache nicht verfügbar."
+  },
+  "courses": {
+    "nis2": {
+      "title": "NIS2 Compliance Zertifizierung",
+      "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+      "bullets": [
+        "10 Mindestmaßnahmen umsetzen",
+        "Incident-Response & Meldewege trainieren",
+        "11 Vorlagen + 12-Monats-Updates"
+      ]
+    },
+    "lead": {
+      "title": "EU KI Gesetz – Compliance für Unternehmen",
+      "url": "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+      "bullets": [
+        "Risikoklassen & Pflichten verstehen",
+        "CE-Konformität & Dokumentation",
+        "AI-Literacy-Pflichten umsetzen"
+      ]
+    },
+    "emp": {
+      "title": "EU KI Gesetz – Mitarbeiterschulung",
+      "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+      "bullets": [
+        "Do's & Don'ts im Arbeitsalltag",
+        "Datenschutz & Bias verständlich erklärt",
+        "Teilnahmezertifikat nach Quiz"
+      ]
+    }
+  },
+  "actions": {
+    "upload": "Zertifikat hochladen",
+    "verifyByCode": "Per Code verifizieren"
+  },
+  "sections": {
+    "uploaded": {
+      "title": "Hochgeladene Zertifikate",
+      "subtitle": "Überprüfen und verifizieren Sie eingereichte Schulungszertifikate",
+      "empty": "Keine Zertifikate vorhanden"
+    }
+  }
+}

@@ -53,7 +53,7 @@ const COURSE_DATA = {
 };
 
 export default function TrainingCertificates() {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation(['training', 'common']);
   const { data: certificates = [], isLoading } = useTrainingCertificates();
   const verifyMutation = useVerifyTrainingCertificate();
   const deleteMutation = useDeleteTrainingCertificate();
@@ -106,16 +106,16 @@ export default function TrainingCertificates() {
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">{t('training.title')}</h1>
+              <h1 className="text-3xl font-bold mb-2">{t('title', { ns: 'training' })}</h1>
               <p className="text-muted-foreground">
-                {t('training.description')}
+                {t('description', { ns: 'training' })}
               </p>
             </div>
 
             {/* Hint Bar with Link to Courses */}
             <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 p-4">
               <span className="text-sm">
-                {t('training.hintBar.text')}
+                {t('hintBar.text', { ns: 'training' })}
               </span>
               <a
                 href="https://www.norrland-innovate.com/compliance-schulungen/"
@@ -123,7 +123,7 @@ export default function TrainingCertificates() {
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
               >
-                {t('training.hintBar.cta')}
+                {t('hintBar.cta', { ns: 'training' })}
                 <ExternalLink className="h-4 w-4" />
               </a>
             </div>
@@ -139,7 +139,7 @@ export default function TrainingCertificates() {
               <Card>
                 <CardContent className="py-6">
                   <p className="text-sm text-muted-foreground text-center">
-                    {t('training.notice.deOnly')}
+                    {t('notice.deOnly', { ns: 'training' })}
                   </p>
                 </CardContent>
               </Card>
@@ -155,18 +155,18 @@ export default function TrainingCertificates() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  Hochgeladene Zertifikate
+                  {t('sections.uploaded.title', { ns: 'training' })}
                 </CardTitle>
                 <CardDescription>
-                  Überprüfen und verifizieren Sie eingereichte Schulungszertifikate
+                  {t('sections.uploaded.subtitle', { ns: 'training' })}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 {isLoading ? (
-                  <p>Lädt...</p>
+                  <p>{t('common.loading', { defaultValue: 'Loading...' })}</p>
                 ) : certificates.length === 0 ? (
                   <p className="text-center text-muted-foreground py-8">
-                    Keine Zertifikate vorhanden
+                    {t('sections.uploaded.empty', { ns: 'training' })}
                   </p>
                 ) : (
                   <Table>
