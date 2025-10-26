@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/init';
 import { translations } from '@/lib/i18n';
@@ -16,18 +16,38 @@ type CtxType = {
 const Ctx = createContext<CtxType | null>(null);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const tObj = useMemo(() => translations.de as typeof translations.en, []);
+  const [currentLng, setCurrentLng] = useState<Lang>(() => {
+    const stored = localStorage.getItem('i18nextLng') as Lang;
+    return stored && ['de', 'en', 'sv'].includes(stored) ? stored : 'de';
+  });
+
+  // Listen to i18n language changes
+  useEffect(() => {
+    const handleLanguageChanged = (lng: string) => {
+      if (['de', 'en', 'sv'].includes(lng)) {
+        setCurrentLng(lng as Lang);
+      }
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, []);
+
+  const tObj = useMemo(() => translations[currentLng] as typeof translations.en, [currentLng]);
+  
   const value: CtxType = useMemo(() => ({
     t: tObj,
     i18n,
-    lng: 'de',
-    language: 'de',
+    lng: currentLng,
+    language: currentLng,
     ready: true,
     setLanguage: (lng) => { 
       localStorage.setItem('i18nextLng', lng); 
       i18n.changeLanguage(lng); 
     },
-  }), [tObj]);
+  }), [tObj, currentLng]);
 
   return (
     <I18nextProvider i18n={i18n}>
