@@ -94,7 +94,7 @@ const NIS2 = () => {
       return;
     }
 
-    toast.success("Risk created successfully");
+    toast.success(t.nis2.actions.create);
     setDialogOpen(false);
     setNewRisk({
       title: "",
@@ -290,7 +290,7 @@ const NIS2 = () => {
                     {risk.mitigation_plan && (
                       <CardContent>
                         <div className="space-y-2">
-                          <h4 className="text-sm font-semibold">Mitigation Plan:</h4>
+                          <h4 className="text-sm font-semibold">{t.nis2.sections.mitigationPlan}</h4>
                           <p className="text-sm text-muted-foreground">{risk.mitigation_plan}</p>
                         </div>
                       </CardContent>
