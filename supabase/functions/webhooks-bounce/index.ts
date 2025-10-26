@@ -38,11 +38,13 @@ Deno.serve(async (req) => {
     ) {
       await sb
         .from("email_suppressions")
-        .upsert({
-          email: payload.Email,
-          reason: payload.RecordType,
-        })
-        .onConflict("email");
+        .upsert(
+          {
+            email: payload.Email,
+            reason: payload.RecordType,
+          },
+          { onConflict: "email" }
+        );
     }
 
     return new Response("OK", { headers: corsHeaders });
