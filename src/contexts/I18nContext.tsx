@@ -79,6 +79,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       
       // If value not found, use fallback (if params is string) or return key
       if (value === undefined) {
+        if (import.meta.env.DEV) {
+          console.warn(`[i18n] Missing key in ${currentLng}:`, key);
+        }
         return typeof params === 'string' ? params : key;
       }
       
@@ -96,6 +99,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     
     // Copy all properties from base to function
     Object.assign(tFunction, base);
+    
+    // Add Proxy for missing key detection in dev mode
+    if (import.meta.env.DEV) {
+      return new Proxy(tFunction, {
+        get(target, prop) {
+          if (typeof prop === 'string' && !(prop in target)) {
+            console.warn(`[i18n] Missing key in ${currentLng}:`, prop);
+          }
+          return target[prop as any];
+        },
+      });
+    }
     
     return tFunction;
   }, [currentLng]);
