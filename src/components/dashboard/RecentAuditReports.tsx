@@ -21,7 +21,9 @@ export default function RecentAuditReports() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => { loadRecentReports(); }, []);
+  useEffect(() => {
+    void loadRecentReports();
+  }, []);
 
   async function loadRecentReports() {
     try {
