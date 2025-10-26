@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 export function VerifyByCodeDialog() {
   const { t } = useTranslation();
@@ -34,13 +35,17 @@ export function VerifyByCodeDialog() {
 
     setIsVerifying(true);
     try {
-      // TODO: Implement actual verification API call
-      // const response = await api.certs.verifyCode(code);
+      const { data, error } = await supabase.functions.invoke('verify-cert', {
+        body: { code }
+      });
       
-      // Mock verification for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (error) throw error;
       
-      toast.success('Zertifikat erfolgreich verifiziert');
+      if (data?.valid) {
+        toast.success('Zertifikat erfolgreich verifiziert');
+      } else {
+        toast.error('Ungültiger Verifizierungscode');
+      }
       setOpen(false);
       setValue('');
     } catch (error) {

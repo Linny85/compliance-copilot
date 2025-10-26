@@ -76,6 +76,10 @@ verify_jwt = false
 name = "helpbot-graph-learn"
 verify_jwt = false
 
+[[functions]]
+name = "verify-cert"
+verify_jwt = false
+
 [[cron.jobs]]
 name = "email-dispatcher"
 schedule = "*/5 * * * *"

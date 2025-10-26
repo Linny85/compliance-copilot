@@ -64,9 +64,9 @@ export function useCreateTrainingCertificate() {
 
       if (!profile?.company_id) throw new Error('No company found');
 
-      // Generate unique filename with tenant/user folder structure
+      // Generate unique filename with tenant folder structure
       const fileExt = input.file.name.split('.').pop();
-      const fileName = `${profile.company_id}/${user.id}/${crypto.randomUUID()}.${fileExt}`;
+      const fileName = `${profile.company_id}/${crypto.randomUUID()}.${fileExt}`;
 
       // Upload file to storage
       const { error: uploadError } = await supabase.storage
@@ -78,23 +78,49 @@ export function useCreateTrainingCertificate() {
 
       if (uploadError) throw uploadError;
 
-      // Calculate retention (e.g., 7 years for compliance records)
+      // Optionally verify code if provided
+      let status: 'pending' | 'verified' = 'pending';
+      let holder_email = user.email || '';
+      let holder_name = user.user_metadata?.full_name || null;
+      
+      if (input.verification_code) {
+        try {
+          const { data: verifyData, error: verifyError } = await supabase.functions.invoke('verify-cert', {
+            body: { code: input.verification_code }
+          });
+          
+          if (!verifyError && verifyData?.valid) {
+            status = 'verified';
+            if (verifyData.holder_email) holder_email = verifyData.holder_email;
+            if (verifyData.holder_name) holder_name = verifyData.holder_name;
+          }
+        } catch (err) {
+          console.warn('Certificate verification failed:', err);
+        }
+      }
+
+      // Calculate retention (7 years for compliance records)
       const retentionDate = new Date();
       retentionDate.setFullYear(retentionDate.getFullYear() + 7);
 
-      // Create database record with file_path
+      // Create database record
       const { data, error } = await supabase
         .from('training_certificates')
         .insert({
           tenant_id: profile.company_id,
           user_id: user.id,
+          holder_email,
+          holder_name,
           title: input.title,
           provider: input.provider,
           date_completed: input.date_completed,
           file_path: fileName,
           training_tag: input.training_tag || null,
+          course_code: input.training_tag || null,
+          verification_code: input.verification_code || null,
           retention_until: retentionDate.toISOString(),
-          status: 'pending',
+          status,
+          source: 'upload',
         })
         .select()
         .single();

@@ -29,6 +29,7 @@ interface FormData {
   date_completed: string;
   file: FileList;
   training_tag?: string;
+  verification_code?: string;
 }
 
 export function UploadCertificateDialog() {
@@ -73,6 +74,7 @@ export function UploadCertificateDialog() {
       date_completed: data.date_completed,
       file: data.file[0],
       training_tag: data.training_tag,
+      verification_code: data.verification_code,
     };
 
     await createMutation.mutateAsync(input);
@@ -206,6 +208,17 @@ export function UploadCertificateDialog() {
             )}
           </div>
 
+          <div>
+            <Label htmlFor="verification_code">Verifizierungscode (optional)</Label>
+            <Input
+              id="verification_code"
+              {...register('verification_code')}
+              placeholder="z.B. ABCDEF123456"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Wenn vorhanden, wird das Zertifikat automatisch verifiziert
+            </p>
+          </div>
 
           <div className="flex justify-end gap-2">
             <Button
