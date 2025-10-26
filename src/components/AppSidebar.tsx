@@ -93,7 +93,7 @@ export function AppSidebar() {
               {mainNavItems
                 .filter(item => !item.adminOnly || isAdmin)
                 .map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuItem key={item.url}>
                     <SidebarMenuButton asChild>
                       <NavLink
                         to={item.url}
@@ -121,7 +121,7 @@ export function AppSidebar() {
               {systemNavItems
                 .filter(item => !item.adminOnly || isAdmin)
                 .map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
