@@ -6,7 +6,7 @@ import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
 import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
-import { AuditReportsCard } from "@/components/dashboard/AuditReportsCard";
+import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useI18n } from "@/contexts/I18nContext";
 
@@ -141,7 +141,7 @@ const Dashboard = () => {
                   sector={companyData.sector}
                 />
                 {userId && <TrainingCertificatesCard userId={userId} />}
-                <AuditReportsCard />
+                <RecentAuditReports />
               </div>
             </div>
           </div>
