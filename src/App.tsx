@@ -28,6 +28,9 @@ import Approvals from "./pages/Approvals";
 import OpsDashboard from "./pages/OpsDashboard";
 import HelpbotManager from "./pages/admin/HelpbotManager";
 import TrainingCertificates from "./pages/admin/TrainingCertificates";
+import AuditTasks from "./pages/audit/AuditTasks";
+import NewAuditTask from "./pages/audit/NewAuditTask";
+import AuditTaskDetail from "./pages/audit/AuditTaskDetail";
 import DPIAList from "./pages/privacy/DPIAList";
 import DPIADetail from "./pages/privacy/DPIADetail";
 import Billing from "./pages/Billing";
@@ -82,6 +85,9 @@ const App = () => (
             <Route path="/admin/ops" element={<OpsDashboard />} />
             <Route path="/admin/helpbot" element={<HelpbotManager />} />
             <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
+            <Route path="/audit" element={<AuditTasks />} />
+            <Route path="/audit/new" element={<NewAuditTask />} />
+            <Route path="/audit/:id" element={<AuditTaskDetail />} />
             <Route path="/privacy/dpia" element={<DPIAList />} />
             <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
             <Route path="/billing" element={<Billing />} />

@@ -271,6 +271,63 @@ export type Database = {
           },
         ]
       }
+      audit_tasks: {
+        Row: {
+          assigned_to: string | null
+          completed_at: string | null
+          corrective_actions: string | null
+          created_at: string | null
+          created_by: string
+          description: string | null
+          due_date: string | null
+          findings: string | null
+          id: string
+          last_report_path: string | null
+          priority: string | null
+          report_generated_at: string | null
+          status: string
+          tenant_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          corrective_actions?: string | null
+          created_at?: string | null
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          findings?: string | null
+          id?: string
+          last_report_path?: string | null
+          priority?: string | null
+          report_generated_at?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          completed_at?: string | null
+          corrective_actions?: string | null
+          created_at?: string | null
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          findings?: string | null
+          id?: string
+          last_report_path?: string | null
+          priority?: string | null
+          report_generated_at?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       check_results: {
         Row: {
           created_at: string
