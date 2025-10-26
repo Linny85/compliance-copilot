@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, CheckCircle, XCircle, Trash2, Download, ExternalLink } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, Trash2, Download, ExternalLink, GraduationCap } from 'lucide-react';
 import { CertificateDownloadButton } from '@/components/training/CertificateDownloadButton';
 import { UploadCertificateDialog } from '@/components/training/UploadCertificateDialog';
 import { VerifyByCodeDialog } from '@/components/training/VerifyByCodeDialog';
@@ -37,11 +37,27 @@ import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
+const COURSES_AVAILABLE_LANGS = ['de'];
+
+const COURSE_DATA = {
+  nis2: {
+    url: 'https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b',
+  },
+  lead: {
+    url: 'https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795',
+  },
+  emp: {
+    url: 'https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6',
+  },
+};
+
 export default function TrainingCertificates() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: certificates = [], isLoading } = useTrainingCertificates();
   const verifyMutation = useVerifyTrainingCertificate();
   const deleteMutation = useDeleteTrainingCertificate();
+
+  const showCourses = COURSES_AVAILABLE_LANGS.includes(i18n.language || 'en');
 
   const [selectedCert, setSelectedCert] = useState<string | null>(null);
   const [action, setAction] = useState<'verify' | 'reject' | null>(null);
@@ -110,6 +126,49 @@ export default function TrainingCertificates() {
                 <ExternalLink className="h-4 w-4" />
               </a>
             </div>
+
+            {/* Course Cards - DE only */}
+            {showCourses ? (
+              <div className="grid gap-4 md:grid-cols-3">
+                {(['nis2', 'lead', 'emp'] as const).map((kind) => (
+                  <Card key={kind} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <GraduationCap className="h-5 w-5 text-primary" />
+                        {t(`training.courses.${kind}.title`)}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <ul className="space-y-2 text-sm">
+                        {(t(`training.courses.${kind}.bullets`, { returnObjects: true }) as string[]).map((bullet, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <a
+                        href={COURSE_DATA[kind].url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+                      >
+                        {t('training.courses.cta')}
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="py-6">
+                  <p className="text-sm text-muted-foreground text-center">
+                    {t('training.notice.deOnly')}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Action Buttons */}
             <div className="flex gap-2">

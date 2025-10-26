@@ -306,5 +306,38 @@
       "title": "Top Priorities",
       "empty": "All tasks up to date"
     }
+  },
+  "training": {
+    "title": "EU AI Act & NIS2 – Online trainings with certificate",
+    "description": "Certificates & uploads are supported here.",
+    "hintBar": {
+      "text": "Courses are currently available in German on our website.",
+      "cta": "Open German course page"
+    },
+    "notice": {
+      "deOnly": "These courses are currently available in German only."
+    },
+    "actions": {
+      "upload": "Upload certificate",
+      "verifyByCode": "Verify by code/link"
+    },
+    "upload": {
+      "title": "Upload certificate",
+      "dragZone": "Drop file here or click to select",
+      "acceptedFormats": "Accepted formats: PDF, JPG, PNG",
+      "holderEmail": "Email of certificate holder",
+      "holderName": "Name of certificate holder",
+      "courseTitle": "Course title",
+      "provider": "Provider",
+      "dateCompleted": "Completion date",
+      "verificationCode": "Verification code (optional)",
+      "cancel": "Cancel",
+      "submit": "Upload"
+    },
+    "uploaded": {
+      "title": "Uploaded certificates",
+      "subtitle": "Review and verify submitted training certificates.",
+      "empty": "No certificates yet."
+    }
   }
 }
