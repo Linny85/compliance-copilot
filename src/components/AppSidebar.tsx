@@ -36,7 +36,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 export function AppSidebar() {
   const { state } = useSidebar();
   const navigate = useNavigate();
-  const { t, ready } = useI18n();
+  const { t, ready, lng } = useI18n();
   const isAdmin = useIsAdmin();
 
   const handleLogout = async () => {
@@ -50,7 +50,7 @@ export function AppSidebar() {
   // Don't render until i18n is ready
   if (!ready) return null;
 
-  // Main Navigation Items
+  // Main Navigation Items - recreate when language changes
   const mainNavItems = [
     { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
     { title: t.nav.risks, url: "/nis2", icon: ShieldAlert },
@@ -63,7 +63,7 @@ export function AppSidebar() {
     { title: t.nav.reports, url: "/admin/ops", icon: BarChart3, adminOnly: true },
   ];
 
-  // System Items
+  // System Items - recreate when language changes
   const systemNavItems = [
     { title: t.nav.organization, url: "/company-profile", icon: Building2 },
     { title: t.nav.integrations, url: "/admin/integrations", icon: Plug, adminOnly: true },
