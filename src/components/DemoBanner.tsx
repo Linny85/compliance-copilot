@@ -1,9 +1,11 @@
 import { useAppMode } from "@/state/AppModeProvider";
+import { useI18n } from "@/contexts/I18nContext";
 import { AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function DemoBanner() {
   const { mode } = useAppMode();
+  const { t } = useI18n();
   
   if (mode !== "demo") return null;
 
@@ -13,7 +15,7 @@ export function DemoBanner() {
         <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>
-            🧪 Demo-Modus: Daten sind nur temporär gespeichert.
+            <strong>{t.banner.demoTitle}</strong> {t.banner.demoText}
           </span>
         </div>
         <Link

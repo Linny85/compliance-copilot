@@ -1,5 +1,11 @@
 export const translations = {
   en: {
+    // Banner
+    banner: {
+      demoTitle: "Demo Mode:",
+      demoText: "Data is stored temporarily only.",
+      trialActive: "Trial version active – 14 days remaining",
+    },
     // Auth
     auth: {
       title: "Welcome Back",
@@ -285,6 +291,12 @@ export const translations = {
     },
   },
   de: {
+    // Banner
+    banner: {
+      demoTitle: "Demo-Modus:",
+      demoText: "Daten werden nur temporär gespeichert.",
+      trialActive: "Testversion aktiv – 14 Tage verbleiben",
+    },
     // Auth
     auth: {
       title: "Willkommen zurück",
@@ -570,6 +582,12 @@ export const translations = {
     },
   },
   sv: {
+    // Banner
+    banner: {
+      demoTitle: "Demoläge:",
+      demoText: "Data lagras endast tillfälligt.",
+      trialActive: "Testversion aktiv – 14 dagar kvar",
+    },
     // Auth
     auth: {
       title: "Välkommen tillbaka",

@@ -165,7 +165,6 @@ const NIS2 = () => {
                     <DialogDescription>
                       {t.nis2.createDesc}
                     </DialogDescription>
-                    </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -175,7 +174,6 @@ const NIS2 = () => {
                         value={newRisk.title}
                         onChange={(e) => setNewRisk({ ...newRisk, title: e.target.value })}
                         placeholder={t.nis2.form.titlePlaceholder}
-                      />
                       />
                     </div>
 
@@ -187,7 +185,6 @@ const NIS2 = () => {
                         onChange={(e) => setNewRisk({ ...newRisk, description: e.target.value })}
                         placeholder={t.nis2.form.descriptionPlaceholder}
                         rows={3}
-                      />
                       />
                     </div>
 
@@ -237,7 +234,6 @@ const NIS2 = () => {
                         onChange={(e) => setNewRisk({ ...newRisk, mitigation_plan: e.target.value })}
                         placeholder={t.nis2.form.mitigationPlanPlaceholder}
                         rows={3}
-                      />
                       />
                     </div>
                   </div>
