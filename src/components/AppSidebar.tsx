@@ -35,12 +35,12 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 export function AppSidebar() {
   const { state } = useSidebar();
   const navigate = useNavigate();
-  const { t, ready, lng } = useI18n();
+  const { t, ready } = useI18n();
   const isAdmin = useIsAdmin();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    toast.success(t.nav.logout);
+    toast.success(t('logout', { ns: 'nav' }));
     navigate("/auth");
   };
 
@@ -49,25 +49,25 @@ export function AppSidebar() {
   // Don't render until i18n is ready
   if (!ready) return null;
 
-  // Main Navigation Items - recreate when language changes
+  // Main Navigation Items
   const mainNavItems = [
-    { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
-    { title: t.nav.risks, url: "/nis2", icon: ShieldAlert },
-    { title: t.nav.ai, url: "/ai-act", icon: Brain },
-    { title: t.nav.controls, url: "/controls", icon: Wrench },
-    { title: t.nav.evidence, url: "/evidence", icon: FileCheck },
-    { title: t.nav.checks, url: "/checks", icon: PlayCircle },
-    { title: t.nav.docs, url: "/documents", icon: FileText },
-    { title: t.nav.certificates, url: "/admin/training-certificates", icon: Award, adminOnly: true },
-    { title: t.nav.reports, url: "/admin/ops", icon: BarChart3, adminOnly: true },
+    { title: t('dashboard', { ns: 'nav' }), url: "/dashboard", icon: LayoutDashboard },
+    { title: t('risks', { ns: 'nav' }), url: "/nis2", icon: ShieldAlert },
+    { title: t('ai', { ns: 'nav' }), url: "/ai-act", icon: Brain },
+    { title: t('controls', { ns: 'nav' }), url: "/controls", icon: Wrench },
+    { title: t('evidence', { ns: 'nav' }), url: "/evidence", icon: FileCheck },
+    { title: t('checks', { ns: 'nav' }), url: "/checks", icon: PlayCircle },
+    { title: t('docs', { ns: 'nav' }), url: "/documents", icon: FileText },
+    { title: t('certificates', { ns: 'nav' }), url: "/admin/training-certificates", icon: Award, adminOnly: true },
+    { title: t('reports', { ns: 'nav' }), url: "/admin/ops", icon: BarChart3, adminOnly: true },
   ];
 
-  // System Items - recreate when language changes
+  // System Items
   const systemNavItems = [
-    { title: t.nav.organization, url: "/company-profile", icon: Building2 },
-    { title: t.nav.integrations, url: "/admin/integrations", icon: Plug, adminOnly: true },
-    { title: t.nav.helpbot_manager, url: "/admin/helpbot", icon: Database, adminOnly: true },
-    ...(isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Settings }] : []),
+    { title: t('organization', { ns: 'nav' }), url: "/company-profile", icon: Building2 },
+    { title: t('integrations', { ns: 'nav' }), url: "/admin/integrations", icon: Plug, adminOnly: true },
+    { title: t('helpbot_manager', { ns: 'nav' }), url: "/admin/helpbot", icon: Database, adminOnly: true },
+    ...(isAdmin ? [{ title: t('admin', { ns: 'nav' }), url: "/admin", icon: Settings }] : []),
   ];
 
   return (
@@ -142,7 +142,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => {}}>
                   <HelpCircle className="h-4 w-4" />
-                  {!isCollapsed && <span>{t.nav.help}</span>}
+                  {!isCollapsed && <span>{t('help', { ns: 'nav' })}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -156,7 +156,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={handleLogout}>
                   <LogOut className="h-4 w-4" />
-                  {!isCollapsed && <span>{t.nav.logout}</span>}
+                  {!isCollapsed && <span>{t('logout', { ns: 'nav' })}</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
