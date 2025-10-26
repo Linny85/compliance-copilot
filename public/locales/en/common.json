@@ -32,13 +32,24 @@
   "training": {
     "title": "Training Certificates",
     "description": "Management and verification of uploaded training certificates",
+    "hintBar": {
+      "text": "Don't have a certificate yet? Book our compliance training courses.",
+      "cta": "View Training Courses"
+    },
+    "actions": {
+      "upload": "Upload Certificate",
+      "verifyByCode": "Verify by Code/Link"
+    },
     "upload": "Upload Certificate",
     "uploadTitle": "Upload Training Certificate",
     "uploadDescription": "Upload your training certificate for review",
+    "dropZone": "Drop file here or click to select",
+    "acceptedFormats": "Accepted formats: PDF, JPG, PNG (max. 10MB)",
     "courseTitle": "Course Title",
     "provider": "Provider",
     "dateCompleted": "Completion Date",
     "file": "Certificate (PDF/Image)",
+    "verificationCode": "Verification Code (optional)",
     "status": {
       "pending": "Under Review",
       "verified": "Verified",
@@ -51,7 +62,12 @@
     "delete": "Delete",
     "notes": "Notes",
     "verifyConfirm": "Confirm that the certificate is valid",
-    "rejectReason": "Provide a reason for rejection"
+    "rejectReason": "Provide a reason for rejection",
+    "verifyDialog": {
+      "title": "Verify by Code/Link",
+      "placeholder": "Enter code or paste certificate link",
+      "submit": "Verify"
+    }
   },
   "dashboard": {
     "welcome": "Welcome",

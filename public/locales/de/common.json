@@ -32,13 +32,24 @@
   "training": {
     "title": "Schulungszertifikate",
     "description": "Verwaltung und Verifizierung hochgeladener Schulungsnachweise",
+    "hintBar": {
+      "text": "Noch kein Zertifikat? Buchen Sie unsere Compliance-Schulungen.",
+      "cta": "Zu den Schulungen"
+    },
+    "actions": {
+      "upload": "Zertifikat hochladen",
+      "verifyByCode": "Per Code/Link verifizieren"
+    },
     "upload": "Zertifikat hochladen",
     "uploadTitle": "Schulungszertifikat hochladen",
     "uploadDescription": "Laden Sie Ihr Schulungszertifikat zur Prüfung hoch",
+    "dropZone": "Datei hier ablegen oder klicken",
+    "acceptedFormats": "Erlaubte Formate: PDF, JPG, PNG (max. 10MB)",
     "courseTitle": "Kurstitel",
     "provider": "Anbieter",
     "dateCompleted": "Abschlussdatum",
     "file": "Zertifikat (PDF/Bild)",
+    "verificationCode": "Verifizierungscode (optional)",
     "status": {
       "pending": "In Prüfung",
       "verified": "Bestätigt",
@@ -51,7 +62,12 @@
     "delete": "Löschen",
     "notes": "Begründung",
     "verifyConfirm": "Bestätigen Sie, dass das Zertifikat gültig ist",
-    "rejectReason": "Geben Sie einen Grund für die Ablehnung an"
+    "rejectReason": "Geben Sie einen Grund für die Ablehnung an",
+    "verifyDialog": {
+      "title": "Per Code/Link verifizieren",
+      "placeholder": "Code eingeben oder Zertifikats-Link einfügen",
+      "submit": "Prüfen"
+    }
   },
   "dashboard": {
     "welcome": "Willkommen",

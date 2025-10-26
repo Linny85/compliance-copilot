@@ -103,6 +103,46 @@
     "admin": "Administratör",
     "member": "Medlem"
   },
+  "training": {
+    "title": "Utbildningsintyg",
+    "description": "Hantering och verifiering av uppladdade utbildningsintyg",
+    "hintBar": {
+      "text": "Har du inget intyg ännu? Boka våra efterlevnadsutbildningar.",
+      "cta": "Se utbildningar"
+    },
+    "actions": {
+      "upload": "Ladda upp intyg",
+      "verifyByCode": "Verifiera med kod/länk"
+    },
+    "upload": "Ladda upp intyg",
+    "uploadTitle": "Ladda upp utbildningsintyg",
+    "uploadDescription": "Ladda upp ditt utbildningsintyg för granskning",
+    "dropZone": "Släpp fil här eller klicka för att välja",
+    "acceptedFormats": "Accepterade format: PDF, JPG, PNG (max. 10MB)",
+    "courseTitle": "Kurstitel",
+    "provider": "Leverantör",
+    "dateCompleted": "Slutförandedatum",
+    "file": "Intyg (PDF/Bild)",
+    "verificationCode": "Verifieringskod (valfritt)",
+    "status": {
+      "pending": "Under granskning",
+      "verified": "Verifierad",
+      "rejected": "Avvisad"
+    },
+    "recommended": "Rekommenderade utbildningar",
+    "noCertificates": "Inga intyg uppladdade ännu",
+    "verify": "Verifiera",
+    "reject": "Avvisa",
+    "delete": "Radera",
+    "notes": "Anteckningar",
+    "verifyConfirm": "Bekräfta att intyget är giltigt",
+    "rejectReason": "Ange en orsak för avvisande",
+    "verifyDialog": {
+      "title": "Verifiera med kod/länk",
+      "placeholder": "Ange kod eller klistra in intygslänk",
+      "submit": "Verifiera"
+    }
+  },
   "common": {
     "save": "Spara",
     "saving": "Sparar…",

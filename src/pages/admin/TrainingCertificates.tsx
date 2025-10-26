@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { FileText, CheckCircle, XCircle, Trash2, Download } from 'lucide-react';
+import { FileText, CheckCircle, XCircle, Trash2, Download, ExternalLink } from 'lucide-react';
 import { CertificateDownloadButton } from '@/components/training/CertificateDownloadButton';
+import { UploadCertificateDialog } from '@/components/training/UploadCertificateDialog';
+import { VerifyByCodeDialog } from '@/components/training/VerifyByCodeDialog';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -35,6 +38,7 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
 export default function TrainingCertificates() {
+  const { t } = useTranslation();
   const { data: certificates = [], isLoading } = useTrainingCertificates();
   const verifyMutation = useVerifyTrainingCertificate();
   const deleteMutation = useDeleteTrainingCertificate();
@@ -85,10 +89,32 @@ export default function TrainingCertificates() {
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto space-y-6">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Schulungszertifikate</h1>
+              <h1 className="text-3xl font-bold mb-2">{t('training.title')}</h1>
               <p className="text-muted-foreground">
-                Verwaltung und Verifizierung hochgeladener Schulungsnachweise
+                {t('training.description')}
               </p>
+            </div>
+
+            {/* Hint Bar with Link to Courses */}
+            <div className="flex items-center justify-between rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <span className="text-sm">
+                {t('training.hintBar.text')}
+              </span>
+              <a
+                href="https://www.norrland-innovate.com/compliance-schulungen/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+              >
+                {t('training.hintBar.cta')}
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              <UploadCertificateDialog />
+              <VerifyByCodeDialog />
             </div>
 
             <Card>
