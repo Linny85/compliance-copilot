@@ -37,7 +37,10 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const tObj = useMemo(() => translations[currentLng] as typeof translations.en, [currentLng]);
+  const tObj = useMemo(() => {
+    const langTranslations = (translations as any)[currentLng];
+    return langTranslations || translations.en;
+  }, [currentLng]);
   
   const value: CtxType = useMemo(() => ({
     t: tObj,
