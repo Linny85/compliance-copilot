@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/contexts/I18nContext";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useHybridTranslation } from "@/hooks/useHybridTranslation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,17 +26,30 @@ interface Control {
 }
 
 export default function Controls() {
-  const { tx } = useI18n();
+  const { tx, language } = useI18n();
   const navigate = useNavigate();
   const [controls, setControls] = useState<Control[]>([]);
   const [frameworks, setFrameworks] = useState<Framework[]>([]);
   const [selectedFramework, setSelectedFramework] = useState<string>("all");
   const [loading, setLoading] = useState(true);
 
+  // Hybrid translation: DB-backed control catalog translations
+  const { t: tDb, prime } = useHybridTranslation(
+    import.meta.env.VITE_SUPABASE_URL!,
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!,
+    language,
+    null // tenantId - null for global translations
+  );
+
   useEffect(() => {
     loadFrameworks();
     loadControls();
   }, [selectedFramework]);
+
+  // Prime DB translations for controls namespace
+  useEffect(() => {
+    prime("controls");
+  }, [language]);
 
   const loadFrameworks = async () => {
     try {
@@ -98,14 +112,16 @@ export default function Controls() {
   const getControlTitle = (control: Control): string => {
     const fw = control.frameworks?.code;
     const code = control.code;
-    return tx(`controls.catalog.${fw}.${code}.title`, { defaultValue: control.title });
+    // Use hybrid translation: DB → i18next → fallback
+    return tDb(`catalog.${fw}.${code}.title`, control.title);
   };
 
   // Helper function to get localized control objective with fallback to catalog
   const getControlObjective = (control: Control): string => {
     const fw = control.frameworks?.code;
     const code = control.code;
-    return tx(`controls.catalog.${fw}.${code}.objective`, { defaultValue: control.objective });
+    // Use hybrid translation: DB → i18next → fallback
+    return tDb(`catalog.${fw}.${code}.objective`, control.objective);
   };
 
   // Helper function to get localized evidence type label
