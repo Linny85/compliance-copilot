@@ -4583,19 +4583,12 @@ export type Database = {
       v_email_next: {
         Row: {
           attempts: number | null
-          created_at: string | null
-          created_by: string | null
           id: string | null
-          last_error: string | null
           payload: Json | null
-          scheduled_at: string | null
-          sent_at: string | null
-          status: Database["public"]["Enums"]["email_status"] | null
           template_code: string | null
           tenant_id: string | null
           to_email: string | null
           to_name: string | null
-          updated_at: string | null
         }
         Relationships: []
       }
