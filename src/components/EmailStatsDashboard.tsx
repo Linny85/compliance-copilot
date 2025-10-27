@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Mail, Send, CheckCircle2, Eye, MousePointerClick, XCircle, Ban } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Mail, Send, CheckCircle2, Eye, MousePointerClick, XCircle, RefreshCw } from "lucide-react";
 
 type EmailStats = {
   template_code: string;
@@ -23,9 +24,15 @@ type EmailStats = {
 export default function EmailStatsDashboard() {
   const [stats, setStats] = useState<EmailStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  async function loadStats() {
-    setLoading(true);
+  async function loadStats(isManualRefresh = false) {
+    if (isManualRefresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
+
     const { data, error } = await supabase
       .from("v_email_stats")
       .select("*")
@@ -33,16 +40,26 @@ export default function EmailStatsDashboard() {
 
     if (error) {
       console.error("Failed to load email stats:", error);
-      setLoading(false);
-      return;
+    } else {
+      setStats(data || []);
     }
 
-    setStats(data || []);
     setLoading(false);
+    setRefreshing(false);
   }
 
+  // Initial load
   useEffect(() => {
     loadStats();
+  }, []);
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadStats();
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const calculatePercentage = (value: number, total: number) => {
@@ -85,10 +102,21 @@ export default function EmailStatsDashboard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Mail className="h-5 w-5" />
-          Email Statistics by Template
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Email Statistics by Template
+          </CardTitle>
+          <Button
+            onClick={() => loadStats(true)}
+            disabled={refreshing}
+            size="sm"
+            variant="outline"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? "Refreshing..." : "Refresh"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {stats.map((template) => (
