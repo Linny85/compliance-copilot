@@ -62,7 +62,6 @@ async function markStatus(
     patch.last_error = typeof meta === "string" ? meta : JSON.stringify(meta ?? {});
     patch.attempts = currentAttempts + 1;
     
-    // Exponential backoff: 1, 4, 9, 16, 25 minutes (max 60)
     const backoffMinutes = Math.min(60, Math.pow(currentAttempts + 1, 2));
     const scheduledAt = new Date(Date.now() + backoffMinutes * 60000);
     patch.scheduled_at = scheduledAt.toISOString();
