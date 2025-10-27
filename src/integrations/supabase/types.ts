@@ -5083,6 +5083,16 @@ export type Database = {
         }
         Relationships: []
       }
+      v_translations_missing: {
+        Row: {
+          from_locale: string | null
+          namespace: string | null
+          tenant_id: string | null
+          tkey: string | null
+          to_locale: string | null
+        }
+        Relationships: []
+      }
       v_vendor_answers_export: {
         Row: {
           assessment_id: string | null
@@ -5426,6 +5436,16 @@ export type Database = {
         }
       }
       svc_evidence_bulk_update: { Args: { p_updates: Json }; Returns: number }
+      sync_missing_translations: {
+        Args: {
+          p_auto_approve?: boolean
+          p_from_locale: string
+          p_namespace: string
+          p_tenant_id?: string
+          p_to_locale: string
+        }
+        Returns: number
+      }
       t_db: {
         Args: {
           p_fallback?: string
