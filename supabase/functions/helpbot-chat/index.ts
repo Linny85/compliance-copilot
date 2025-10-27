@@ -1,40 +1,17 @@
 // supabase/functions/helpbot-chat/index.ts
-// Chat-Endpoint mit CORS, Dual-Provider, Conversational Memory & (optional) Graph-Lernen.
+// Simplified robust version for testing (no DB, no RAG - just CORS + validation + dummy response)
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders, json } from "../_shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 
-/** =========================
- *  Konfiguration
- *  ========================= */
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const json = (body: any, status = 200) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...corsHeaders },
+  });
 
-// Dual-Provider: bevorzugt LOVABLE, sonst OpenAI.
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+const err = (message: string, reqId: string, status = 400) =>
+  json({ error: message, reqId }, status);
 
-const PROVIDER = LOVABLE_API_KEY ? "LOVABLE" : "OPENAI";
-const BASE_URL = PROVIDER === "LOVABLE"
-  ? "https://ai.gateway.lovable.dev/v1"
-  : "https://api.openai.com/v1";
-const API_KEY = PROVIDER === "LOVABLE" ? LOVABLE_API_KEY! : OPENAI_API_KEY!;
-
-// Modelle (ggf. anpassen)
-const MODEL = Deno.env.get("HELPBOT_CHAT_MODEL") ?? "gpt-4o-mini";
-const EMB_MODEL = Deno.env.get("HELPBOT_EMB_MODEL") ?? "text-embedding-3-large";
-const EMB_DIMENSIONS = Number(Deno.env.get("HELPBOT_EMB_DIMENSIONS") ?? "1536");
-
-// RAG/Memory
-const TOP_K = Number(Deno.env.get("HELPBOT_TOP_K") ?? "6");
-const MAX_HISTORY = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "12");
-
-// Optional: Graph-aware RAG nutzen, bei Fehler auf klassisches RAG zurückfallen
-const USE_GRAPH_AWARE = (Deno.env.get("HELPBOT_USE_GRAPH_AWARE") ?? "true") === "true";
-
-/** =========================
- *  Utils
- *  ========================= */
 type Lang = "de" | "en" | "sv";
 const VALID_LANGS: readonly Lang[] = ["de", "en", "sv"];
 
@@ -43,10 +20,7 @@ function normalizeLang(input?: string): Lang {
   return (VALID_LANGS as readonly string[]).includes(two) ? (two as Lang) : "de";
 }
 
-/** =========================
- *  Edge Handler
- *  ========================= */
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   const reqId = crypto.randomUUID();
 
   try {
@@ -56,185 +30,74 @@ Deno.serve(async (req) => {
     }
 
     if (req.method !== "POST") {
-      return json({ error: "Method Not Allowed", reqId }, 405);
+      return err("Method Not Allowed", reqId, 405);
     }
 
     // ✅ Content-Type check
     const ct = req.headers.get("content-type") ?? "";
     if (!ct.toLowerCase().includes("application/json")) {
-      return json({ error: "Unsupported Media Type. Expect application/json", reqId }, 415);
+      return err("Unsupported Media Type. Expect application/json", reqId, 415);
     }
 
     // ✅ Robust JSON parsing
-    let body: unknown;
+    let body: any;
     try {
       body = await req.json();
     } catch {
-      return json({ error: "Invalid JSON body", reqId }, 400);
+      return err("Invalid JSON body", reqId, 400);
     }
 
     // ✅ Input validation
-    const b = body as Partial<{
-      question: string;
-      lang: Lang;
-      session_id: string | null;
-      jurisdiction: string | null;
-      user_id: string | null;
-    }>;
+    const question = (body?.question ?? "").toString().trim();
+    const rawLang = (body?.lang ?? "").toString();
+    const sessionId = body?.session_id ?? null;
 
-    const question = (b?.question ?? "").trim();
     if (!question) {
-      return json({ error: "Question is required", reqId }, 400);
+      return err("Missing field: 'question'", reqId, 400);
     }
+
     if (question.length > 4000) {
-      return json({ error: "Question too long (max 4000 chars)", reqId }, 413);
+      return err("Question too long (max 4000 chars)", reqId, 413);
     }
 
-    const lang = normalizeLang(b?.lang);
-    const jurisdiction = b?.jurisdiction ?? "EU";
+    const lang = normalizeLang(rawLang);
 
-    const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
+    // ✅ Log for diagnostics (appears in Supabase logs)
+    console.log("[helpbot-chat] input", {
+      reqId,
+      lang,
+      sessionId: sessionId ? "set" : "none",
+      hasAuth: !!req.headers.get("authorization"),
+      questionLength: question.length,
+    });
 
-    // 1) Session prüfen/anlegen
-    let sid = b?.session_id ?? null;
-    if (!sid) {
-      const { data: newSession, error: sessErr } = await sb
-        .from("helpbot_sessions")
-        .insert({ user_id: b?.user_id ?? null, lang, jurisdiction })
-        .select("id")
-        .single();
-      if (sessErr) throw sessErr;
-      sid = newSession.id;
-    } else {
-      await sb.from("helpbot_sessions")
-        .update({ last_activity: new Date().toISOString(), lang, jurisdiction })
-        .eq("id", sid);
-    }
+    // ✅ Generate dummy response based on language
+    const replies = {
+      de: `Ich bin Kollege Norrly. Ich habe deine Frage erhalten: "${question.slice(0, 50)}${question.length > 50 ? '...' : ''}". Diese Nachricht kommt aus der Edge Function (Dummy-Modus für Tests).`,
+      en: `I'm Colleague Norrly. I received your question: "${question.slice(0, 50)}${question.length > 50 ? '...' : ''}". This reply comes from the Edge Function (dummy mode for testing).`,
+      sv: `Jag är Kollegan Norrly. Jag har tagit emot din fråga: "${question.slice(0, 50)}${question.length > 50 ? '...' : ''}". Detta svar kommer från Edge-funktionen (dummy-läge för testning).`,
+    };
 
-    // 2) Semantisch relevante Nachrichten besorgen (Eval), Fallback: jüngste N
-    let contextMsgs: Array<{ role: string; content: string }> = [];
-    try {
-      const { data: evalData, error: evalErr } = await sb.functions.invoke(
-        "helpbot-memory-eval",
-        { body: { session_id: sid, question } }
-      );
-      if (evalErr) throw evalErr;
+    const reply = replies[lang] || replies.en;
 
-      contextMsgs = evalData?.top_messages?.map((m: any) => ({
-        role: m.role, content: m.content,
-      })) ?? [];
-      // Falls nix kommt, Fallback holen
-      if (contextMsgs.length === 0) throw new Error("No semantic hits");
-    } catch {
-      const { data: history } = await sb
-        .from("helpbot_messages")
-        .select("role, content")
-        .eq("session_id", sid)
-        .order("created_at", { ascending: false })
-        .limit(MAX_HISTORY);
-      contextMsgs = (history ?? [])
-        .reverse()
-        .map((m) => ({ role: m.role, content: m.content }));
-    }
-
-    // 3) RAG-Aufruf: bevorzugt Graph-aware, ansonsten klassisch
-    let ragAnswer = "";
-    let sources: Array<{ title: string; uri: string }> = [];
-    let disclaimer = disclaimerByLang(lang);
-
-    const userForRag = { question, lang, jurisdiction, top_k: TOP_K };
-
-    if (USE_GRAPH_AWARE) {
-      const { data, error } = await sb.functions.invoke("helpbot-graph-query", {
-        body: userForRag,
-      });
-      if (!error && data?.answer) {
-        ragAnswer = data.answer;
-        sources = data?.sources ?? [];
-        disclaimer = data?.disclaimer ?? disclaimer;
-      } else {
-        // Fallback auf klassisches RAG
-        const { data: data2, error: err2 } = await sb.functions.invoke("helpbot-query", {
-          body: userForRag,
-        });
-        if (err2) throw err2;
-        ragAnswer = data2?.answer ?? "";
-        sources = data2?.sources ?? [];
-        disclaimer = data2?.disclaimer ?? disclaimer;
-      }
-    } else {
-      const { data, error } = await sb.functions.invoke("helpbot-query", {
-        body: userForRag,
-      });
-      if (error) throw error;
-      ragAnswer = data?.answer ?? "";
-      sources = data?.sources ?? [];
-      disclaimer = data?.disclaimer ?? disclaimer;
-    }
-
-    if (!ragAnswer) {
-      ragAnswer = noAnswerByLang(lang);
-    }
-
-    // 4) Verlauf speichern (und IDs zurückgeben)
-    const { data: inserted, error: insErr } = await sb
-      .from("helpbot_messages")
-      .insert([
-        { session_id: sid, role: "user", content: question },
-        { session_id: sid, role: "assistant", content: ragAnswer },
-      ])
-      .select("id,role")
-      .order("created_at", { ascending: true });
-
-    if (insErr) {
-      console.error("[helpbot-chat] Failed to save messages:", insErr);
-    }
-
-    const userMsgId = inserted?.find((m) => m.role === "user")?.id;
-    const assistantMsgId = inserted?.find((m) => m.role === "assistant")?.id;
-
-    // 5) (Optional) Knowledge-Graph-Extraktion "fire & forget"
-    //    — blockiert die Antwort nicht
-    if (userMsgId) {
-      sb.functions.invoke("helpbot-graph-extract", {
-        body: { message_id: userMsgId, content: question, lang },
-      }).catch((e) => console.error("[graph-extract user] ", e));
-    }
-    if (assistantMsgId) {
-      sb.functions.invoke("helpbot-graph-extract", {
-        body: { message_id: assistantMsgId, content: ragAnswer, lang },
-      }).catch((e) => console.error("[graph-extract assistant] ", e));
-    }
-
-    // 6) Antwort
     return json({
       ok: true,
-      provider: PROVIDER,
-      session_id: sid,
-      answer: ragAnswer,
-      sources,
-      disclaimer,
+      provider: "DUMMY",
+      session_id: sessionId || crypto.randomUUID(),
+      answer: reply,
+      sources: [],
+      disclaimer: lang === "de" 
+        ? "⚠️ Testmodus: Keine echte KI-Antwort. Nur für Verbindungstest."
+        : "⚠️ Test mode: No real AI response. For connection testing only.",
       reqId,
-      history: [
-        ...contextMsgs,
-        { role: "user", content: question },
-        { role: "assistant", content: ragAnswer, id: assistantMsgId },
-      ],
+      debug: {
+        receivedLang: rawLang,
+        normalizedLang: lang,
+        questionLength: question.length,
+      },
     });
   } catch (e: any) {
-    console.error("[helpbot-chat] unhandled", { reqId, err: String(e) });
-    return json({ error: "Internal Server Error", reqId }, 500);
+    console.error("[helpbot-chat] fatal error", { reqId, error: String(e), stack: e?.stack });
+    return err(`Internal error: ${e?.message ?? 'Unknown'}`, reqId, 500);
   }
 });
-
-function disclaimerByLang(lang: string) {
-  if (lang === "en") return "Note: not legal advice. Answers are based only on the provided sources.";
-  if (lang === "sv") return "Obs: ingen juridisk rådgivning. Svaren bygger endast på tillhandahållna källor.";
-  return "Hinweis: keine Rechtsberatung. Antworten basieren ausschließlich auf den bereitgestellten Quellen.";
-}
-
-function noAnswerByLang(lang: string) {
-  if (lang === "en") return "I couldn't find a reliable source for that in my knowledge base.";
-  if (lang === "sv") return "Jag hittade ingen tillförlitlig källa för detta i kunskapsbasen.";
-  return "Dafür habe ich in meinen Quellen keine belastbare Stelle gefunden.";
-}
