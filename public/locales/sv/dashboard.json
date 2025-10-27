@@ -40,6 +40,6 @@
   "recentAuditReports": "Senaste granskningsrapporter",
   "recentAuditReportsDesc": "Senast genererade efterlevnadsrapporter",
   "viewAll": "Visa alla",
-  "noReportsYet": "Inga rapporter skapade ännu",
+  "noReportsYet": "Inga rapporter har skapats ännu",
   "createAuditTask": "Skapa granskningsuppgift"
 }

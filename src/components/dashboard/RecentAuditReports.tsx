@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, ExternalLink } from "lucide-react";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 
 type ReportRow = {
   id: string;
@@ -21,7 +21,7 @@ export default function RecentAuditReports() {
   const [reports, setReports] = useState<ReportRow[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { tx } = useI18n();
+  const { t, ready } = useTranslation(['dashboard', 'common']);
 
   useEffect(() => {
     void loadRecentReports();
@@ -63,23 +63,25 @@ export default function RecentAuditReports() {
     }
   }
 
+  if (!ready) return null;
+
   return (
     <Card>
       <CardHeader className="flex items-start justify-between space-y-0">
         <div>
-          <CardTitle>{tx('dashboard.recentAuditReports')}</CardTitle>
-          <CardDescription>{tx('dashboard.recentAuditReportsDesc')}</CardDescription>
+          <CardTitle>{t('dashboard:recentAuditReports')}</CardTitle>
+          <CardDescription>{t('dashboard:recentAuditReportsDesc')}</CardDescription>
         </div>
-        <Button variant="ghost" onClick={() => navigate("/audit")}>{tx('dashboard.viewAll')}</Button>
+        <Button variant="ghost" onClick={() => navigate("/audit")}>{t('dashboard:viewAll')}</Button>
       </CardHeader>
 
       <CardContent>
         {loading ? (
-          <div className="text-sm text-muted-foreground">{tx('common.loading')}</div>
+          <div className="text-sm text-muted-foreground">{t('common:loading')}</div>
         ) : reports.length === 0 ? (
           <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">{tx('dashboard.noReportsYet')}</div>
-            <Button onClick={() => navigate("/audit/new")}>{tx('dashboard.createAuditTask')}</Button>
+            <div className="text-sm text-muted-foreground">{t('dashboard:noReportsYet')}</div>
+            <Button onClick={() => navigate("/audit/new")}>{t('dashboard:createAuditTask')}</Button>
           </div>
         ) : (
           <ul className="space-y-3">

@@ -38,7 +38,7 @@
   "complianceStatusGood": "Guter Fortschritt, weiter so",
   "complianceStatusNeeds": "Verbesserungsbedarf",
   "recentAuditReports": "Aktuelle Audit-Berichte",
-  "recentAuditReportsDesc": "Zuletzt generierte Compliance-Berichte",
+  "recentAuditReportsDesc": "Zuletzt erstellte Compliance-Berichte",
   "viewAll": "Alle anzeigen",
   "noReportsYet": "Noch keine Berichte erstellt",
   "createAuditTask": "Audit-Aufgabe erstellen"
