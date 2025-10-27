@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Mail, Send, CheckCircle2, Eye, MousePointerClick, XCircle, RefreshCw } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Mail, Send, CheckCircle2, Eye, MousePointerClick, XCircle, RefreshCw, AlertCircle } from "lucide-react";
 
 type EmailStats = {
   template_code: string;
@@ -25,27 +26,42 @@ export default function EmailStatsDashboard() {
   const [stats, setStats] = useState<EmailStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [errorCount, setErrorCount] = useState(0);
+  const inFlight = useRef(false);
 
   async function loadStats(isManualRefresh = false) {
+    // Overlap guard: prevent concurrent requests
+    if (inFlight.current) return;
+    
+    inFlight.current = true;
+    
     if (isManualRefresh) {
       setRefreshing(true);
     } else {
       setLoading(true);
     }
 
-    const { data, error } = await supabase
-      .from("v_email_stats")
-      .select("*")
-      .order("total_enqueued", { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from("v_email_stats")
+        .select("*")
+        .order("total_enqueued", { ascending: false });
 
-    if (error) {
-      console.error("Failed to load email stats:", error);
-    } else {
-      setStats(data || []);
+      if (error) {
+        console.error("Failed to load email stats:", error);
+        setErrorCount((n) => Math.min(n + 1, 5));
+      } else {
+        setStats(data || []);
+        setErrorCount(0); // Reset error count on success
+      }
+    } catch (error) {
+      console.error("Exception loading email stats:", error);
+      setErrorCount((n) => Math.min(n + 1, 5));
+    } finally {
+      inFlight.current = false;
+      setLoading(false);
+      setRefreshing(false);
     }
-
-    setLoading(false);
-    setRefreshing(false);
   }
 
   // Initial load
@@ -53,13 +69,38 @@ export default function EmailStatsDashboard() {
     loadStats();
   }, []);
 
-  // Auto-refresh every 30 seconds
+  // Auto-refresh with jitter and tab visibility handling
   useEffect(() => {
-    const interval = setInterval(() => {
-      loadStats();
-    }, 30000);
+    let timer: number | undefined;
 
-    return () => clearInterval(interval);
+    function scheduleNext() {
+      // Add jitter: 30s ±3s to prevent thundering herd
+      const jitterMs = 30000 + Math.floor(Math.random() * 6000) - 3000;
+      
+      timer = window.setTimeout(async () => {
+        // Only refresh if tab is visible
+        if (!document.hidden) {
+          await loadStats();
+        }
+        scheduleNext();
+      }, jitterMs);
+    }
+
+    scheduleNext();
+
+    // Refresh when tab becomes visible again
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadStats();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const calculatePercentage = (value: number, total: number) => {
@@ -103,10 +144,18 @@ export default function EmailStatsDashboard() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Mail className="h-5 w-5" />
-            Email Statistics by Template
-          </CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2">
+              <Mail className="h-5 w-5" />
+              Email Statistics by Template
+            </CardTitle>
+            {errorCount > 0 && (
+              <Badge variant="destructive" className="gap-1">
+                <AlertCircle className="h-3 w-3" />
+                Connection Issues
+              </Badge>
+            )}
+          </div>
           <Button
             onClick={() => loadStats(true)}
             disabled={refreshing}
