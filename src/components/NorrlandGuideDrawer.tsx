@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { detectIntents, type ChatAction } from "@/features/assistant/intents";
+import { canAccess } from "@/lib/rbac";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -44,7 +45,20 @@ export function NorrlandGuideDrawer({
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
+  // User context (Platzhalter bis echter Context genutzt wird)
+  const user = { role: 'admin' } as const;
+
   const supportsTTS = typeof window !== "undefined" && "speechSynthesis" in window;
+
+  // Fire-and-forget Audit-Helper
+  const audit = (event: string, data: Record<string, any>) => {
+    const payload = { event, ...data, ts: new Date().toISOString() };
+    fetch('/functions/v1/audit-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {});
+  };
 
   const speak = (text: string) => {
     if (!supportsTTS) return;
@@ -344,6 +358,17 @@ export function NorrlandGuideDrawer({
               <Button
                 size="sm"
                 onClick={() => {
+                  // RBAC prüfen
+                  if (!canAccess(pendingAction.path, user)) {
+                    console.warn('No permission for', pendingAction.path);
+                    audit('chat.intent_denied', { path: pendingAction.path });
+                    setPendingAction(null);
+                    return;
+                  }
+                  
+                  // Audit loggen (erfolgreiche Ausführung)
+                  audit('chat.intent_confirmed', { path: pendingAction.path });
+                  
                   navigate(pendingAction.path, { replace: false });
                   // Optional highlight
                   setTimeout(() => {
