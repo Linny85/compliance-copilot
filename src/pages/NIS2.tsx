@@ -141,15 +141,15 @@ const NIS2 = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold flex items-center gap-2">
+        <main className="flex-1">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+            <section className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
                   <AlertTriangle className="h-8 w-8 text-primary" />
                   {t.nis2.title}
                 </h1>
-                <p className="text-muted-foreground">{t.nis2.subtitle}</p>
+                <p className="text-muted-foreground max-w-2xl">{t.nis2.subtitle}</p>
               </div>
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -159,7 +159,7 @@ const NIS2 = () => {
                     {t.nis2.addRisk}
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl">
+                <DialogContent className="w-full max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>{t.nis2.createTitle}</DialogTitle>
                     <DialogDescription>
@@ -247,11 +247,12 @@ const NIS2 = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            </div>
+            </section>
 
             {risks.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
+              <section className="flex items-center justify-center">
+                <Card className="w-full max-w-xl">
+                  <CardContent className="p-8 sm:p-12 text-center">
                   <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">{t.nis2.empty.title}</h3>
                   <p className="text-muted-foreground mb-4">
@@ -263,8 +264,9 @@ const NIS2 = () => {
                   </Button>
                 </CardContent>
               </Card>
+              </section>
             ) : (
-              <div className="grid gap-4">
+              <section className="grid gap-4">
                 {risks.map((risk) => (
                   <Card key={risk.id} className="hover:shadow-lg transition-shadow">
                     <CardHeader>
@@ -297,7 +299,7 @@ const NIS2 = () => {
                     )}
                   </Card>
                 ))}
-              </div>
+              </section>
             )}
           </div>
         </main>

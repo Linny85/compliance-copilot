@@ -106,10 +106,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 lg:p-8">
-          <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
-            {/* Header with Language Switcher */}
-            <div className="flex items-start justify-between gap-4">
+    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+      <div className="animate-fade-in space-y-6">
+        {/* Header with Language Switcher */}
+        <div className="flex items-start justify-between gap-4">
               <div className="space-y-1 flex-1">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">
                   {t('dashboard:welcome')}
@@ -121,30 +121,30 @@ const Dashboard = () => {
               <LanguageSwitcher />
             </div>
 
-            {/* Main Cards Grid */}
-            <div className="grid gap-6 lg:grid-cols-2">
-              {/* Left Column */}
-              <div className="space-y-6">
-                <ComplianceProgressCard />
-                <NextStepsCard />
-                <TrialCard 
-                  trialEnd={subscriptionData.trial_end}
-                  subscriptionStatus={subscriptionData.status}
-                />
-              </div>
-
-              {/* Right Column */}
-              <div className="space-y-6">
-                <OrganizationCard
-                  companyName={companyData.name}
-                  country={companyData.country}
-                  sector={companyData.sector}
-                />
-                {userId && <TrainingCertificatesCard userId={userId} />}
-                <RecentAuditReports />
-              </div>
-            </div>
+        {/* Main Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-6">
+            <ComplianceProgressCard />
+            <NextStepsCard />
+            <TrialCard 
+              trialEnd={subscriptionData.trial_end}
+              subscriptionStatus={subscriptionData.status}
+            />
           </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            <OrganizationCard
+              companyName={companyData.name}
+              country={companyData.country}
+              sector={companyData.sector}
+            />
+            {userId && <TrainingCertificatesCard userId={userId} />}
+            <RecentAuditReports />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
