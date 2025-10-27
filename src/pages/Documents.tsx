@@ -91,7 +91,7 @@ const Documents = () => {
           <p className="text-muted-foreground mb-4">
             {t('documents:comingSoonDesc')}
           </p>
-          <Button disabled>
+          <Button onClick={() => navigate('/documents/new')}>
             <Download className="h-4 w-4 mr-2" />
             {t('documents:generate')}
           </Button>
