@@ -125,7 +125,9 @@ export default function DocumentsNew() {
         description: tx("documents.success.generatedDesc"),
       });
       
-      navigate("/documents");
+      // Return to Controls if came from there, otherwise to Documents
+      const returnPath = controlId ? "/controls" : "/documents";
+      navigate(returnPath, { replace: true });
     } catch (error) {
       console.error("Failed to generate document:", error);
       toast({
@@ -154,7 +156,10 @@ export default function DocumentsNew() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate("/documents")}
+          onClick={() => {
+            const returnPath = controlId ? "/controls" : "/documents";
+            navigate(returnPath, { replace: true });
+          }}
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -251,7 +256,10 @@ export default function DocumentsNew() {
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate("/documents")}
+              onClick={() => {
+                const returnPath = controlId ? "/controls" : "/documents";
+                navigate(returnPath, { replace: true });
+              }}
               disabled={generating}
             >
               {tx("common.cancel")}
