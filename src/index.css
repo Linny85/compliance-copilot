@@ -22,6 +22,16 @@ All colors MUST be HSL.
   }
 }
 
+@layer components {
+  /* Reusable card typography classes for consistent text wrapping and hyphenation */
+  .card-title {
+    @apply text-base font-medium leading-tight text-balance break-words hyphens-auto line-clamp-2;
+  }
+  .card-subtitle {
+    @apply mt-1 text-sm text-muted-foreground leading-snug text-pretty break-words hyphens-auto line-clamp-2;
+  }
+}
+
 @layer base {
   :root {
     /* Norrland Brand Colors */

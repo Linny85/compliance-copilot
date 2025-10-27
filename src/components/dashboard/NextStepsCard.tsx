@@ -55,10 +55,10 @@ export function NextStepsCard() {
                   <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0 text-left">
-                  <div className="font-semibold leading-tight text-balance break-words hyphens-auto line-clamp-2">
+                  <div className="card-title">
                     {step.title}
                   </div>
-                  <div className="text-xs text-muted-foreground leading-snug text-pretty break-words hyphens-auto line-clamp-2 mt-0.5">
+                  <div className="card-subtitle">
                     {step.desc}
                   </div>
                 </div>
