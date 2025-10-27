@@ -1240,6 +1240,57 @@ export type Database = {
         }
         Relationships: []
       }
+      email_queue: {
+        Row: {
+          attempts: number
+          created_at: string
+          created_by: string | null
+          id: string
+          last_error: string | null
+          payload: Json
+          scheduled_at: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["email_status"]
+          template_code: string
+          tenant_id: string
+          to_email: string
+          to_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["email_status"]
+          template_code: string
+          tenant_id: string
+          to_email: string
+          to_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          scheduled_at?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["email_status"]
+          template_code?: string
+          tenant_id?: string
+          to_email?: string
+          to_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_suppressions: {
         Row: {
           created_at: string
@@ -1255,6 +1306,36 @@ export type Database = {
           created_at?: string
           email?: string
           reason?: string
+        }
+        Relationships: []
+      }
+      email_templates: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          postmark_template_id: number | null
+          subject: string
+          template_html: string | null
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          postmark_template_id?: number | null
+          subject: string
+          template_html?: string | null
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          postmark_template_id?: number | null
+          subject?: string
+          template_html?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -4452,6 +4533,25 @@ export type Database = {
           },
         ]
       }
+      v_email_next: {
+        Row: {
+          attempts: number | null
+          created_at: string | null
+          created_by: string | null
+          id: string | null
+          last_error: string | null
+          payload: Json | null
+          scheduled_at: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["email_status"] | null
+          template_code: string | null
+          tenant_id: string | null
+          to_email: string | null
+          to_name: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
       v_ensemble_weight_latest: {
         Row: {
           adjusted_at: string | null
@@ -5045,6 +5145,17 @@ export type Database = {
           cnt: number
           err: string
         }[]
+      }
+      enqueue_email: {
+        Args: {
+          p_payload?: Json
+          p_scheduled_at?: string
+          p_template_code: string
+          p_tenant_id: string
+          p_to_email: string
+          p_to_name: string
+        }
+        Returns: string
       }
       enqueue_integration_event: {
         Args: {

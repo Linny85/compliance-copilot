@@ -5,6 +5,10 @@ name = "email-dispatcher"
 verify_jwt = false
 
 [[functions]]
+name = "postmark-dispatch"
+verify_jwt = false
+
+[[functions]]
 name = "send-test"
 verify_jwt = false
 
@@ -91,6 +95,11 @@ APP_MODE = "trial"
 name = "email-dispatcher"
 schedule = "*/5 * * * *"
 endpoint = "/functions/v1/email-dispatcher"
+
+[[cron.jobs]]
+name = "postmark-dispatch"
+schedule = "*/1 * * * *"
+endpoint = "/functions/v1/postmark-dispatch"
 
 [[cron.jobs]]
 name = "integration-dispatcher"

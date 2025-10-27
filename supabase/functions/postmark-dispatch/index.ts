@@ -1,0 +1,134 @@
+// supabase/functions/postmark-dispatch/index.ts
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
+
+type QueueRow = {
+  id: string;
+  tenant_id: string;
+  to_email: string;
+  to_name: string | null;
+  template_code: string;
+  payload: Record<string, unknown>;
+};
+
+const POSTMARK_TOKEN = Deno.env.get("POSTMARK_TOKEN")!;
+const POSTMARK_FROM = Deno.env.get("POSTMARK_FROM")!;
+const POSTMARK_STREAM = Deno.env.get("POSTMARK_MESSAGE_STREAM") ?? "outbound";
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+async function sbFetch(path: string, init?: RequestInit) {
+  return fetch(`${supabaseUrl}/rest/v1/${path}`, {
+    ...init,
+    headers: {
+      apikey: supabaseServiceRoleKey,
+      Authorization: `Bearer ${supabaseServiceRoleKey}`,
+      Prefer: "return=representation",
+      "Content-Type": "application/json",
+      ...(init?.headers || {}),
+    },
+  });
+}
+
+async function fetchTemplate(code: string) {
+  const res = await sbFetch(
+    `email_templates?code=eq.${encodeURIComponent(code)}&limit=1`
+  );
+  const [tpl] = await res.json();
+  return tpl as { subject: string; template_html?: string | null; postmark_template_id?: number | null };
+}
+
+async function markStatus(id: string, status: "sending" | "sent" | "failed", meta?: unknown) {
+  await sbFetch(`email_queue?id=eq.${id}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      status,
+      attempts: status === "failed" ? undefined : undefined,
+      sent_at: status === "sent" ? new Date().toISOString() : null,
+      updated_at: new Date().toISOString(),
+      ...(status === "failed" ? { last_error: typeof meta === "string" ? meta : JSON.stringify(meta ?? {}) } : {}),
+    }),
+  });
+  await sbFetch(`email_events`, {
+    method: "POST",
+    body: JSON.stringify({
+      queue_id: id,
+      event: status,
+      meta: typeof meta === "object" ? meta : (meta ? { error: meta } : {}),
+    }),
+  });
+}
+
+async function sendPostmark(row: QueueRow, tpl: any) {
+  if (tpl?.postmark_template_id) {
+    const payload = {
+      From: POSTMARK_FROM,
+      To: row.to_name ? `${row.to_name} <${row.to_email}>` : row.to_email,
+      TemplateId: tpl.postmark_template_id,
+      TemplateModel: { ...row.payload },
+      MessageStream: POSTMARK_STREAM,
+    };
+    const res = await fetch("https://api.postmarkapp.com/email/withTemplate", {
+      method: "POST",
+      headers: { "X-Postmark-Server-Token": POSTMARK_TOKEN, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Postmark template send failed: ${res.status} ${await res.text()}`);
+    return;
+  } else {
+    const htmlBody = (tpl?.template_html as string) ?? "<p>Hello</p>";
+    const payload = {
+      From: POSTMARK_FROM,
+      To: row.to_name ? `${row.to_name} <${row.to_email}>` : row.to_email,
+      Subject: tpl?.subject ?? "Notification",
+      HtmlBody: htmlBody
+        .replace(/\{\{name\}\}/g, String((row.payload as any)?.name ?? ""))
+        .replace(/\{\{tenant_name\}\}/g, String((row.payload as any)?.tenant_name ?? ""))
+        .replace(/\{\{cta_url\}\}/g, String((row.payload as any)?.cta_url ?? ""))
+        .replace(/\{\{contact_name\}\}/g, String((row.payload as any)?.contact_name ?? ""))
+        .replace(/\{\{dashboard_url\}\}/g, String((row.payload as any)?.dashboard_url ?? "")),
+      MessageStream: POSTMARK_STREAM,
+    };
+    const res = await fetch("https://api.postmarkapp.com/email", {
+      method: "POST",
+      headers: { "X-Postmark-Server-Token": POSTMARK_TOKEN, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`Postmark raw send failed: ${res.status} ${await res.text()}`);
+  }
+}
+
+serve(async (req) => {
+  if (req.method !== "POST") return new Response("Use POST", { status: 405 });
+
+  console.log("[postmark-dispatch] Starting dispatch");
+
+  const res = await sbFetch(`v_email_next`);
+  const rows: QueueRow[] = await res.json();
+
+  console.log(`[postmark-dispatch] Found ${rows?.length ?? 0} emails to send`);
+
+  if (!rows?.length) return new Response(JSON.stringify({ ok: true, processed: 0 }), { status: 200 });
+
+  let processed = 0;
+  for (const row of rows) {
+    try {
+      console.log(`[postmark-dispatch] Processing ${row.id} to ${row.to_email}`);
+      await markStatus(row.id, "sending");
+      const tpl = await fetchTemplate(row.template_code);
+      await sendPostmark(row, tpl);
+      await markStatus(row.id, "sent");
+      processed++;
+    } catch (e) {
+      console.error(`[postmark-dispatch] Failed ${row.id}:`, e);
+      await markStatus(row.id, "failed", String(e));
+    }
+  }
+
+  console.log(`[postmark-dispatch] Processed ${processed}/${rows.length}`);
+
+  return new Response(JSON.stringify({ ok: true, processed }), { 
+    status: 200,
+    headers: { "Content-Type": "application/json" }
+  });
+});
