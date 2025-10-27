@@ -1,0 +1,17 @@
+{
+  "trialActive": "Testperiod aktiv",
+  "allAvailableFeatures": "Alla tillgängliga funktioner upplåsta",
+  "daysLeft_one": "{{count}} dag kvar",
+  "daysLeft_other": "{{count}} dagar kvar",
+  "upgradeNow": "Uppgradera nu",
+  "startTrial": "Starta testperiod",
+  "startingTrial": "Startar...",
+  "trialStarted": "Testperiod startad",
+  "trialStartedDesc": "Du kan nu använda alla funktioner gratis i 14 dagar",
+  "trialStartFailed": "Start misslyckades",
+  "trialStartFailedDesc": "Kunde inte starta testperioden",
+  "billingTitle": "Prenumeration & Fakturering",
+  "planTitle": "Din Plan",
+  "currentPlan": "Nuvarande Plan",
+  "status": "Status"
+}

@@ -25,7 +25,8 @@ const FORBIDDEN_NAMESPACES = [
   'aiSystems',
   'evidence',
   'scope',
-  'nav'
+  'nav',
+  'billing'
 ];
 
 // Pattern: tx("namespace. oder tx('namespace.

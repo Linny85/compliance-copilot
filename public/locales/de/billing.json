@@ -1,0 +1,17 @@
+{
+  "trialActive": "Testversion aktiv",
+  "allAvailableFeatures": "Alle verfügbaren Funktionen freigeschaltet",
+  "daysLeft_one": "Noch {{count}} Tag",
+  "daysLeft_other": "Noch {{count}} Tage",
+  "upgradeNow": "Jetzt upgraden",
+  "startTrial": "Testversion starten",
+  "startingTrial": "Wird gestartet...",
+  "trialStarted": "Testversion gestartet",
+  "trialStartedDesc": "Sie können nun alle Funktionen 14 Tage lang kostenlos nutzen",
+  "trialStartFailed": "Start fehlgeschlagen",
+  "trialStartFailedDesc": "Die Testversion konnte nicht gestartet werden",
+  "billingTitle": "Abonnement & Abrechnung",
+  "planTitle": "Ihr Plan",
+  "currentPlan": "Aktueller Plan",
+  "status": "Status"
+}

@@ -10,7 +10,7 @@ i18n
   .init({
     fallbackLng: 'de',
     debug: false,
-    ns: ['common', 'dashboard', 'documents', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'evidence', 'scope', 'nav'],
+    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'evidence', 'scope', 'nav'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
     backend: {

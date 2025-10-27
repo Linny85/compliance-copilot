@@ -37,11 +37,11 @@ export default tseslint.config(
           message: "Avoid key={i18n.language} remounts."
         },
         {
-          selector: "CallExpression[callee.name='tx'] > Literal[value=/^(dashboard|documents|controls|checks|admin|training|assistant|aiSystems|evidence|scope|nav)\\./]",
+          selector: "CallExpression[callee.name='tx'] > Literal[value=/^(dashboard|documents|controls|checks|admin|training|assistant|aiSystems|evidence|scope|nav|billing)\\./]",
           message: "Use t('namespace:key') with useTranslation(['namespace']) instead of tx('namespace.key') for JSON translations."
         },
         {
-          selector: "CallExpression[callee.name='tx'] > TemplateLiteral[quasis.0.value.cooked=/^(dashboard|documents|controls|checks|admin|training|assistant|aiSystems|evidence|scope|nav)\\./]",
+          selector: "CallExpression[callee.name='tx'] > TemplateLiteral[quasis.0.value.cooked=/^(dashboard|documents|controls|checks|admin|training|assistant|aiSystems|evidence|scope|nav|billing)\\./]",
           message: "Use t('namespace:key') with useTranslation(['namespace']) instead of tx(`namespace.${...}`) for JSON translations."
         }
       ],

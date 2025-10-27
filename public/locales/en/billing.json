@@ -1,0 +1,17 @@
+{
+  "trialActive": "Trial active",
+  "allAvailableFeatures": "All available features unlocked",
+  "daysLeft_one": "{{count}} day left",
+  "daysLeft_other": "{{count}} days left",
+  "upgradeNow": "Upgrade now",
+  "startTrial": "Start trial",
+  "startingTrial": "Starting...",
+  "trialStarted": "Trial started",
+  "trialStartedDesc": "You can now use all features for 14 days free",
+  "trialStartFailed": "Start failed",
+  "trialStartFailedDesc": "Failed to start trial period",
+  "billingTitle": "Subscription & Billing",
+  "planTitle": "Your Plan",
+  "currentPlan": "Current Plan",
+  "status": "Status"
+}
