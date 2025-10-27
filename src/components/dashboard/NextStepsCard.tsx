@@ -2,13 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Calendar, Building2, FileText } from "lucide-react";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function NextStepsCard() {
   const navigate = useNavigate();
-  const { tx } = useI18n();
+  const { t } = useTranslation(['dashboard', 'common']);
   const [counts, setCounts] = useState({ evidence: 0, checks: 0 });
 
   useEffect(() => {
@@ -28,17 +28,17 @@ export function NextStepsCard() {
   }, []);
 
   const steps = [
-    { icon: Upload, title: tx('dashboard.uploadEvidence'), desc: tx('dashboard.uploadEvidenceDesc'), action: () => navigate("/evidence"), show: counts.evidence > 0 },
-    { icon: Calendar, title: tx('dashboard.scheduleChecks'), desc: tx('dashboard.scheduleChecksDesc'), action: () => navigate("/checks"), show: counts.checks < 5 },
-    { icon: Building2, title: tx('dashboard.addRisks'), desc: tx('dashboard.addRisksDesc'), action: () => navigate("/nis2"), show: true },
-    { icon: FileText, title: tx('dashboard.generatePolicy'), desc: tx('dashboard.generatePolicyDesc'), action: () => navigate("/documents"), show: true },
+    { icon: Upload, title: t('dashboard:uploadEvidence'), desc: t('dashboard:uploadEvidenceDesc'), action: () => navigate("/evidence"), show: counts.evidence > 0 },
+    { icon: Calendar, title: t('dashboard:scheduleChecks'), desc: t('dashboard:scheduleChecksDesc'), action: () => navigate("/checks"), show: counts.checks < 5 },
+    { icon: Building2, title: t('dashboard:addRisks'), desc: t('dashboard:addRisksDesc'), action: () => navigate("/nis2"), show: true },
+    { icon: FileText, title: t('dashboard:generatePolicy'), desc: t('dashboard:generatePolicyDesc'), action: () => navigate("/documents"), show: true },
   ].filter(s => s.show).slice(0, 3);
 
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>{tx('dashboard.nextStepsHeader')}</CardTitle>
-        <CardDescription>{tx('dashboard.nextStepsSub')}</CardDescription>
+        <CardTitle>{t('dashboard:nextStepsHeader')}</CardTitle>
+        <CardDescription>{t('dashboard:nextStepsSub')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {steps.map((step, i) => {

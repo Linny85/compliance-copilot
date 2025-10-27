@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, CheckCircle2, TrendingUp, RefreshCw } from "lucide-react";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
 import { useComplianceData } from "@/hooks/useCompliance";
 import { toast } from "sonner";
 
 export function ComplianceProgressCard() {
-  const { tx } = useI18n();
+  const { t } = useTranslation(['dashboard', 'common']);
   const { loading, summary, trend, getFrameworkScorePct, isAdmin, refreshSummary, refreshing } = useComplianceData();
 
   if (loading) {
@@ -38,10 +38,10 @@ export function ComplianceProgressCard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="h-5 w-5" />
-            {tx('dashboard.complianceProgress')}
+            {t('dashboard:complianceProgress')}
           </CardTitle>
           <CardDescription>
-            {tx('dashboard.complianceProgressDesc')}
+            {t('dashboard:complianceProgressDesc')}
           </CardDescription>
         </CardHeader>
       </Card>
@@ -70,9 +70,9 @@ export function ComplianceProgressCard() {
   const handleRefresh = async () => {
     try {
       await refreshSummary();
-      toast.success(tx('dashboard.complianceRefreshSuccess'));
+      toast.success(t('dashboard:complianceRefreshSuccess'));
     } catch (error) {
-      toast.error(tx('dashboard.complianceRefreshError'));
+      toast.error(t('dashboard:complianceRefreshError'));
     }
   };
 
@@ -83,7 +83,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1.5 flex-1">
             <CardTitle className="flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
-              {tx('dashboard.complianceProgress')}
+              {t('dashboard:complianceProgress')}
               {deltaPP !== null && (
                 <span className={`text-xs px-2 py-0.5 rounded-md font-medium ${
                   deltaPP >= 0 ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
@@ -93,7 +93,7 @@ export function ComplianceProgressCard() {
               )}
             </CardTitle>
             <CardDescription>
-              {tx('dashboard.complianceOverallDesc')}
+              {t('dashboard:complianceOverallDesc')}
             </CardDescription>
           </div>
           {isAdmin && (
@@ -159,7 +159,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {tx('dashboard.complianceControls')}
+                {t('dashboard:complianceControls')}
               </span>
               <span className="font-medium">{formatScore(summary.controls_score ?? 0)}</span>
             </div>
@@ -168,7 +168,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {tx('dashboard.complianceEvidence')}
+                {t('dashboard:complianceEvidence')}
               </span>
               <span className="font-medium">{formatScore(summary.evidence_score ?? 0)}</span>
             </div>
@@ -177,7 +177,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {tx('dashboard.complianceTraining')}
+                {t('dashboard:complianceTraining')}
               </span>
               <span className="font-medium">{formatScore(summary.training_score ?? 0)}</span>
             </div>
@@ -186,7 +186,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {tx('dashboard.complianceDpia')}
+                {t('dashboard:complianceDpia')}
               </span>
               <span className="font-medium">{formatScore(summary.dpia_score ?? 0)}</span>
             </div>
@@ -199,19 +199,19 @@ export function ComplianceProgressCard() {
           {scoreVariant === 'success' && (
             <>
               <CheckCircle2 className="h-4 w-4 text-success" />
-              <span className="text-success">{tx('dashboard.complianceStatusExcellent')}</span>
+              <span className="text-success">{t('dashboard:complianceStatusExcellent')}</span>
             </>
           )}
           {scoreVariant === 'warning' && (
             <>
               <AlertCircle className="h-4 w-4 text-warning" />
-              <span className="text-warning">{tx('dashboard.complianceStatusGood')}</span>
+              <span className="text-warning">{t('dashboard:complianceStatusGood')}</span>
             </>
           )}
           {scoreVariant === 'destructive' && (
             <>
               <AlertCircle className="h-4 w-4 text-destructive" />
-              <span className="text-destructive">{tx('dashboard.complianceStatusNeeds')}</span>
+              <span className="text-destructive">{t('dashboard:complianceStatusNeeds')}</span>
             </>
           )}
         </div>
