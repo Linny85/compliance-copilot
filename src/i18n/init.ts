@@ -1,34 +1,43 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import HttpBackend from 'i18next-http-backend';
 import { translations } from '@/lib/i18n';
 
 type Lang = 'de' | 'en' | 'sv';
 const SUPPORTED: Lang[] = ['de', 'en', 'sv'];
-const resources = {
-  de: translations.de,
-  en: translations.en,
-  sv: translations.sv,
-};
 const BOOT_LNG: Lang = (localStorage.getItem('i18nextLng') as Lang) || 'de';
 
 const g = globalThis as any;
 if (!g.__i18n_singleton__) {
-  g.__i18n_singleton__ = i18n.use(initReactI18next).init({
-    lng: BOOT_LNG,
-    fallbackLng: 'en',
-    supportedLngs: SUPPORTED,
-    ns: [...Object.keys(translations.de), 'training'],
-    defaultNS: 'common',
-    resources,
-    load: 'currentOnly',
-    react: { useSuspense: false, bindI18n: 'languageChanged' },
-    interpolation: { escapeValue: false },
-    cleanCode: true,
-    nonExplicitSupportedLngs: true,
-    returnEmptyString: false,
-    returnNull: false,
-    initImmediate: false,
-  });
+  g.__i18n_singleton__ = i18n
+    .use(HttpBackend)
+    .use(initReactI18next)
+    .init({
+      lng: BOOT_LNG,
+      fallbackLng: 'en',
+      supportedLngs: SUPPORTED,
+      ns: [...Object.keys(translations.de), 'training', 'assistant'],
+      defaultNS: 'common',
+      fallbackNS: ['common', 'assistant'],
+      backend: {
+        loadPath: '/locales/{{lng}}/{{ns}}.json',
+      },
+      // Inline resources for static namespaces
+      resources: {
+        de: translations.de,
+        en: translations.en,
+        sv: translations.sv,
+      },
+      partialBundledLanguages: true,
+      load: 'currentOnly',
+      react: { useSuspense: false, bindI18n: 'languageChanged' },
+      interpolation: { escapeValue: false },
+      cleanCode: true,
+      nonExplicitSupportedLngs: true,
+      returnEmptyString: false,
+      returnNull: false,
+      initImmediate: false,
+    });
 }
 
 // Runtime tripwire: log language changes for debugging

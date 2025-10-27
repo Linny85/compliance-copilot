@@ -113,7 +113,15 @@ export function NorrlandGuideDrawer({
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("[NorrlandGuide] Chat function error:", error);
+        setMessages(prev => [...prev, 
+          { role: "user", content: currentQuestion },
+          { role: "assistant", content: `Fehler: ${error.message || "Edge Function antwortet nicht erwartungsgemäß."}` }
+        ]);
+        setLoading(false);
+        return;
+      }
       
       if (data?.session_id && !sessionId) {
         setSessionId(data.session_id);
