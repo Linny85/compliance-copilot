@@ -38,7 +38,7 @@ const USE_GRAPH_AWARE = (Deno.env.get("HELPBOT_USE_GRAPH_AWARE") ?? "true") === 
 Deno.serve(async (req) => {
   // ✅ CORS Preflight
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
@@ -55,11 +55,15 @@ Deno.serve(async (req) => {
     };
 
     const question = (body.question ?? "").trim();
-    const lang = body.lang ?? "de";
+    const lang = (body.lang ?? "de").slice(0, 2).toLowerCase() as "de" | "en" | "sv";
     const jurisdiction = body.jurisdiction ?? "EU";
 
     if (!question) {
       return json({ error: "Question is required" }, 400);
+    }
+    
+    if (!["de", "en", "sv"].includes(lang)) {
+      return json({ error: "Invalid language. Must be de, en, or sv" }, 400);
     }
 
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE);

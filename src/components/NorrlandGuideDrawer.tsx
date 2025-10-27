@@ -100,25 +100,33 @@ export function NorrlandGuideDrawer({
     if (suggested[0]) setPendingAction(suggested[0]);
     
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
       // Normalize language to valid options
       const rawLang = i18n.language?.slice(0, 2)?.toLowerCase() ?? 'de';
       const validLangs = ['de', 'en', 'sv'] as const;
       const currentLang = (validLangs.includes(rawLang as any) ? rawLang : 'en') as 'de' | 'en' | 'sv';
       
+      // Get auth session for authorization header
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token ?? null;
+      
       const { data, error } = await supabase.functions.invoke("helpbot-chat", {
         body: { 
-          question: currentQuestion, 
-          session_id: sessionId,
+          question: currentQuestion,
           lang: currentLang,
+          session_id: sessionId || undefined,
           jurisdiction: "EU",
-          user_id: user?.id ?? null
-        }
+          user_id: sessionData?.session?.user?.id || undefined
+        },
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
       });
 
       if (error) {
-        console.error("[NorrlandGuide] Chat function error:", error);
+        console.error("[NorrlandGuide] Chat function error:", {
+          name: error.name,
+          message: error.message,
+          status: (error as any)?.status,
+          details: error
+        });
         setMessages(prev => [...prev, 
           { role: "user", content: currentQuestion },
           { role: "assistant", content: `Fehler: ${error.message || "Edge Function antwortet nicht erwartungsgemäß."}` }
