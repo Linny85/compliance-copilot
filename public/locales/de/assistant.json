@@ -1,0 +1,18 @@
+{
+  "name": "Kollege Norrly",
+  "tagline": "Dein Begleiter durch den EU-Dschungel 🌿",
+  "greeting": "Hej! Ich bin Kollege Norrly – der Kollege aus dem hohen Norden. Frag mich einfach, ich zeig dir den Weg durch den EU-Dschungel aus NIS2, AI Act und Datenschutz.",
+  "quickPrompts": [
+    "Wo trage ich meine Unternehmensdaten ein?",
+    "Erstelle eine Richtlinie für Backup & Wiederherstellung",
+    "Zeig mir alle Maßnahmen zu NIS2",
+    "Wie lade ich eine:n Mitarbeiter:in ein?"
+  ],
+  "buttons": {
+    "open": "Öffnen",
+    "cancel": "Abbrechen",
+    "speak_on": "Vorlesen an",
+    "speak_off": "Vorlesen aus"
+  },
+  "tooltip": "Kollege Norrly – der Kollege aus dem hohen Norden"
+}

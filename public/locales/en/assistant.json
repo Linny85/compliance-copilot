@@ -1,0 +1,18 @@
+{
+  "name": "Colleague Norrly",
+  "tagline": "Your guide through the EU jungle 🌿",
+  "greeting": "Hej! I'm Colleague Norrly – your teammate from the far North. Ask me anything; I'll guide you through the EU jungle of NIS2, the AI Act, and data protection.",
+  "quickPrompts": [
+    "Where do I enter our company details?",
+    "Draft a Backup & Recovery policy",
+    "Show all measures for NIS2",
+    "How do I invite a team member?"
+  ],
+  "buttons": {
+    "open": "Open",
+    "cancel": "Cancel",
+    "speak_on": "Read aloud on",
+    "speak_off": "Read aloud off"
+  },
+  "tooltip": "Colleague Norrly – from the far North"
+}
