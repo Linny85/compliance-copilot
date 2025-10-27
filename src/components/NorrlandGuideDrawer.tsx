@@ -20,16 +20,20 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const { t, i18n } = useTranslation(["assistant"]);
-  const name = t("assistant:name");
-  const tagline = t("assistant:tagline");
-  const greeting = t("assistant:greeting");
-  const quick = t("assistant:quickPrompts", { returnObjects: true }) as string[];
+  const { t, i18n, ready } = useTranslation("assistant", { useSuspense: false });
+
+  const name = t("name");
+  const tagline = t("tagline");
+  const greeting = t("greeting");
+
+  const quickRaw = t("quickPrompts", { returnObjects: true }) as unknown;
+  const quick = Array.isArray(quickRaw) ? (quickRaw as string[]) : [];
+
   const labels = {
-    open: t("assistant:buttons.open"),
-    cancel: t("assistant:buttons.cancel"),
-    speak_on: t("assistant:buttons.speak_on"),
-    speak_off: t("assistant:buttons.speak_off")
+    open: t("buttons.open"),
+    cancel: t("buttons.cancel"),
+    speak_on: t("buttons.speak_on"),
+    speak_off: t("buttons.speak_off")
   };
 
   const [q, setQ] = useState("");
@@ -218,23 +222,25 @@ export function NorrlandGuideDrawer({
               <div className="text-sm text-muted-foreground leading-relaxed">
                 {greeting}
               </div>
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
-                <div className="flex flex-col gap-2">
-                  {quick.map((prompt) => (
-                    <button
-                      key={prompt}
-                      onClick={() => {
-                        setQ(prompt);
-                        setTimeout(() => ask(), 50);
-                      }}
-                      className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
+              {quick.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
+                  <div className="flex flex-col gap-2">
+                    {quick.map((prompt) => (
+                      <button
+                        key={prompt}
+                        onClick={() => {
+                          setQ(prompt);
+                          setTimeout(() => ask(), 50);
+                        }}
+                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             messages.map((msg, i) => (
