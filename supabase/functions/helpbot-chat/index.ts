@@ -47,20 +47,22 @@ function normalizeLang(input?: string): Lang {
  *  Edge Handler
  *  ========================= */
 Deno.serve(async (req) => {
-  // ✅ CORS Preflight
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
+  const reqId = crypto.randomUUID();
 
   try {
+    // ✅ CORS Preflight
+    if (req.method === "OPTIONS") {
+      return new Response("ok", { headers: corsHeaders });
+    }
+
     if (req.method !== "POST") {
-      return json({ error: "Method Not Allowed" }, 405);
+      return json({ error: "Method Not Allowed", reqId }, 405);
     }
 
     // ✅ Content-Type check
     const ct = req.headers.get("content-type") ?? "";
     if (!ct.toLowerCase().includes("application/json")) {
-      return json({ error: "Unsupported Media Type. Expect application/json" }, 415);
+      return json({ error: "Unsupported Media Type. Expect application/json", reqId }, 415);
     }
 
     // ✅ Robust JSON parsing
@@ -68,7 +70,7 @@ Deno.serve(async (req) => {
     try {
       body = await req.json();
     } catch {
-      return json({ error: "Invalid JSON body" }, 400);
+      return json({ error: "Invalid JSON body", reqId }, 400);
     }
 
     // ✅ Input validation
@@ -82,7 +84,10 @@ Deno.serve(async (req) => {
 
     const question = (b?.question ?? "").trim();
     if (!question) {
-      return json({ error: "Question is required" }, 400);
+      return json({ error: "Question is required", reqId }, 400);
+    }
+    if (question.length > 4000) {
+      return json({ error: "Question too long (max 4000 chars)", reqId }, 413);
     }
 
     const lang = normalizeLang(b?.lang);
@@ -209,6 +214,7 @@ Deno.serve(async (req) => {
       answer: ragAnswer,
       sources,
       disclaimer,
+      reqId,
       history: [
         ...contextMsgs,
         { role: "user", content: question },
@@ -216,8 +222,8 @@ Deno.serve(async (req) => {
       ],
     });
   } catch (e: any) {
-    console.error("[helpbot-chat]", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+    console.error("[helpbot-chat] unhandled", { reqId, err: String(e) });
+    return json({ error: "Internal Server Error", reqId }, 500);
   }
 });
 
