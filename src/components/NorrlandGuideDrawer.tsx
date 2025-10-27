@@ -101,7 +101,11 @@ export function NorrlandGuideDrawer({
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      const currentLang = (i18n.language?.slice(0, 2) ?? 'de') as 'de' | 'en' | 'sv';
+      
+      // Normalize language to valid options
+      const rawLang = i18n.language?.slice(0, 2)?.toLowerCase() ?? 'de';
+      const validLangs = ['de', 'en', 'sv'] as const;
+      const currentLang = (validLangs.includes(rawLang as any) ? rawLang : 'en') as 'de' | 'en' | 'sv';
       
       const { data, error } = await supabase.functions.invoke("helpbot-chat", {
         body: { 
