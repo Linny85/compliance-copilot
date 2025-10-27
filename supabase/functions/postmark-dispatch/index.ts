@@ -66,10 +66,13 @@ async function markStatus(
 
   if (status === "failed") {
     patch.last_error = typeof meta === "string" ? meta : JSON.stringify(meta ?? {});
-    patch.attempts = currentAttempts + 1;
+    const nextAttempts = currentAttempts + 1;
+    patch.attempts = nextAttempts;
     
-    if (currentAttempts + 1 < 5) {
-      const backoffMinutes = Math.min(60, Math.pow(currentAttempts + 1, 2));
+    if (nextAttempts >= 5) {
+      patch.status = "cancelled";
+    } else {
+      const backoffMinutes = Math.min(60, Math.pow(nextAttempts, 2));
       const scheduledAt = new Date(Date.now() + backoffMinutes * 60000);
       patch.scheduled_at = scheduledAt.toISOString();
     }
