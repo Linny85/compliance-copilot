@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -16,6 +17,18 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
+  const { t, i18n } = useTranslation(["assistant"]);
+  const name = t("assistant:name");
+  const tagline = t("assistant:tagline");
+  const greeting = t("assistant:greeting");
+  const quick = t("assistant:quickPrompts", { returnObjects: true }) as string[];
+  const labels = {
+    open: t("assistant:buttons.open"),
+    cancel: t("assistant:buttons.cancel"),
+    speak_on: t("assistant:buttons.speak_on"),
+    speak_off: t("assistant:buttons.speak_off")
+  };
+
   const [q, setQ] = useState("");
   const [lang, setLang] = useState<"de" | "en" | "sv">("de");
   const [loading, setLoading] = useState(false);
@@ -23,8 +36,21 @@ export function NorrlandGuideDrawer({
   const [messages, setMessages] = useState<Message[]>([]);
   const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
   const [disc, setDisc] = useState("");
+  const [ttsOn, setTtsOn] = useState(false);
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const supportsTTS = typeof window !== "undefined" && "speechSynthesis" in window;
+
+  const speak = (text: string) => {
+    if (!supportsTTS) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    if (i18n.language?.startsWith("de")) utterance.lang = "de-DE";
+    else if (i18n.language?.startsWith("sv")) utterance.lang = "sv-SE";
+    else utterance.lang = "en-US";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     if (open && first.current) first.current.focus();
@@ -33,6 +59,13 @@ export function NorrlandGuideDrawer({
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    const last = messages[messages.length - 1];
+    if (ttsOn && last?.role === "assistant") {
+      speak(last.content);
+    }
+  }, [messages, ttsOn]);
 
   async function ask() {
     if (!q.trim()) return;
@@ -116,13 +149,27 @@ export function NorrlandGuideDrawer({
       <div className="absolute right-0 top-0 h-full w-full max-w-lg bg-background border-l border-border flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <div className="flex-1">
-            <h2 className="text-lg font-semibold text-foreground">Norrland Guide</h2>
-            <p className="text-xs text-muted-foreground">
-              {sessionId ? `Session aktiv` : "Neue Session"}
-            </p>
+          <div className="flex items-center gap-3 flex-1">
+            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-xl">
+              🌿
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">{name}</h2>
+              <p className="text-xs text-muted-foreground">{tagline}</p>
+            </div>
           </div>
           <div className="flex gap-2">
+            {supportsTTS && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTtsOn(v => !v)}
+                title={ttsOn ? labels.speak_off : labels.speak_on}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {ttsOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -145,14 +192,26 @@ export function NorrlandGuideDrawer({
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-center">
-              <div>
-                <p className="text-sm text-muted-foreground mb-2">
-                  Stellen Sie Ihre erste Frage
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Der Verlauf wird automatisch gespeichert
-                </p>
+            <div className="space-y-4">
+              <div className="text-sm text-muted-foreground leading-relaxed">
+                {greeting}
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
+                <div className="flex flex-col gap-2">
+                  {quick.map((prompt) => (
+                    <button
+                      key={prompt}
+                      onClick={() => {
+                        setQ(prompt);
+                        setTimeout(() => ask(), 50);
+                      }}
+                      className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -260,7 +319,7 @@ export function NorrlandGuideDrawer({
                 disabled={loading || !q.trim()}
                 className="ml-auto px-4 py-2"
               >
-                {loading ? "Lädt…" : "Fragen"}
+                {loading ? "Lädt…" : labels.open}
               </Button>
             </div>
           </div>
