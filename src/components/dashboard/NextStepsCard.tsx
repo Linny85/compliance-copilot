@@ -44,11 +44,24 @@ export function NextStepsCard() {
         {steps.map((step, i) => {
           const Icon = step.icon;
           return (
-            <Button key={i} variant="outline" className="w-full justify-start h-auto py-4 px-4" onClick={step.action}>
-              <Icon className="h-5 w-5 mr-3 text-primary" />
-              <div className="text-left flex-1">
-                <div className="font-semibold">{step.title}</div>
-                <div className="text-xs text-muted-foreground">{step.desc}</div>
+            <Button 
+              key={i} 
+              variant="outline" 
+              className="w-full justify-start h-auto py-4 px-4" 
+              onClick={step.action}
+            >
+              <div className="flex items-start gap-3 w-full min-w-0">
+                <div className="shrink-0 mt-0.5">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="font-semibold leading-tight text-balance break-words hyphens-auto line-clamp-2">
+                    {step.title}
+                  </div>
+                  <div className="text-xs text-muted-foreground leading-snug text-pretty break-words hyphens-auto line-clamp-2 mt-0.5">
+                    {step.desc}
+                  </div>
+                </div>
               </div>
             </Button>
           );

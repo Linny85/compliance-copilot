@@ -25,4 +25,11 @@ i18n
     },
   });
 
+// Set lang attribute on HTML root for proper hyphenation
+i18n.on('languageChanged', (lng) => {
+  document.documentElement.lang = lng?.slice(0, 2) || 'de';
+});
+// Set initial lang
+document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
+
 export default i18n;

@@ -8,6 +8,20 @@
 All colors MUST be HSL.
 */
 
+@layer utilities {
+  .hyphens-auto { 
+    hyphens: auto; 
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+  }
+  .text-balance { 
+    text-wrap: balance; 
+  }
+  .text-pretty { 
+    text-wrap: pretty; 
+  }
+}
+
 @layer base {
   :root {
     /* Norrland Brand Colors */
