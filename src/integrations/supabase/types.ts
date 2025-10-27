@@ -4629,6 +4629,10 @@ export type Database = {
         }
       }
       svc_evidence_bulk_update: { Args: { p_updates: Json }; Returns: number }
+      upsert_demo_scope_analysis: {
+        Args: { p_created_by?: string; p_tenant_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "master_admin" | "admin" | "member" | "editor"
