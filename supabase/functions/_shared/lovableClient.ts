@@ -66,10 +66,20 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
 export async function embed(text: string): Promise<number[]> {
   const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-small';
   
-  console.log('[embed] Calling embeddings API', { model, textLength: text.length });
+  // Lovable AI Gateway supports NO embedding models - use OpenAI directly
+  const openaiKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openaiKey) {
+    throw new Error('OPENAI_API_KEY required for embeddings (Lovable AI Gateway does not support embedding models)');
+  }
+
+  console.log('[embed] Calling OpenAI embeddings API', { model, textLength: text.length });
   
-  const res = await lovableFetch('/embeddings', {
+  const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openaiKey}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       model,
       input: text
@@ -89,10 +99,20 @@ export async function embed(text: string): Promise<number[]> {
 export async function embedBatch(chunks: string[]): Promise<number[][]> {
   const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-small';
   
-  console.log('[embedBatch] Calling embeddings API', { model, count: chunks.length });
+  // Lovable AI Gateway supports NO embedding models - use OpenAI directly
+  const openaiKey = Deno.env.get('OPENAI_API_KEY');
+  if (!openaiKey) {
+    throw new Error('OPENAI_API_KEY required for embeddings (Lovable AI Gateway does not support embedding models)');
+  }
+
+  console.log('[embedBatch] Calling OpenAI embeddings API', { model, count: chunks.length });
   
-  const res = await lovableFetch('/embeddings', {
+  const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${openaiKey}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
       model,
       input: chunks
