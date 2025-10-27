@@ -5170,6 +5170,14 @@ export type Database = {
         }
       }
       cleanup_notification_deliveries: { Args: never; Returns: undefined }
+      cleanup_old_email_events: {
+        Args: { days_to_keep?: number }
+        Returns: number
+      }
+      cleanup_old_queue_entries: {
+        Args: { days_to_keep?: number }
+        Returns: number
+      }
       cleanup_run_events: { Args: never; Returns: undefined }
       compute_audit_hash: {
         Args: {
@@ -5196,6 +5204,7 @@ export type Database = {
         }
         Returns: string
       }
+      current_tenant_id: { Args: never; Returns: string }
       deadjobs_by_tenant: {
         Args: { since_ts: string }
         Returns: {

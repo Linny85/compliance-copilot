@@ -54,17 +54,27 @@ async function markStatus(
     updated_at: new Date().toISOString(),
   };
 
+  if (status === "sending") {
+    patch.last_error = null;
+    patch.scheduled_at = null;
+  }
+
   if (status === "sent") {
     patch.sent_at = new Date().toISOString();
+    patch.last_error = null;
   }
 
   if (status === "failed") {
     patch.last_error = typeof meta === "string" ? meta : JSON.stringify(meta ?? {});
     patch.attempts = currentAttempts + 1;
     
-    const backoffMinutes = Math.min(60, Math.pow(currentAttempts + 1, 2));
-    const scheduledAt = new Date(Date.now() + backoffMinutes * 60000);
-    patch.scheduled_at = scheduledAt.toISOString();
+    if (currentAttempts + 1 >= 5) {
+      patch.status = "cancelled";
+    } else {
+      const backoffMinutes = Math.min(60, Math.pow(currentAttempts + 1, 2));
+      const scheduledAt = new Date(Date.now() + backoffMinutes * 60000);
+      patch.scheduled_at = scheduledAt.toISOString();
+    }
   }
 
   await sbFetch(`email_queue?id=eq.${id}`, {
