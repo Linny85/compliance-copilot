@@ -7,6 +7,13 @@ type Lang = 'de' | 'en' | 'sv';
 const SUPPORTED: Lang[] = ['de', 'en', 'sv'];
 const BOOT_LNG: Lang = (localStorage.getItem('i18nextLng') as Lang) || 'de';
 
+// Create inline resources that include static translations
+const resources = {
+  de: { ...translations.de },
+  en: { ...translations.en },
+  sv: { ...translations.sv },
+};
+
 const g = globalThis as any;
 if (!g.__i18n_singleton__) {
   g.__i18n_singleton__ = i18n
@@ -18,15 +25,10 @@ if (!g.__i18n_singleton__) {
       supportedLngs: SUPPORTED,
       ns: [...Object.keys(translations.de), 'training', 'assistant'],
       defaultNS: 'common',
-      fallbackNS: ['common', 'assistant'],
+      fallbackNS: ['common'],
+      resources,
       backend: {
         loadPath: '/locales/{{lng}}/{{ns}}.json',
-      },
-      // Inline resources for static namespaces
-      resources: {
-        de: translations.de,
-        en: translations.en,
-        sv: translations.sv,
       },
       partialBundledLanguages: true,
       load: 'currentOnly',
