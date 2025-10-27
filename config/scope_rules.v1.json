@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "rules": {
+    "ti_obligations": {
+      "if": "is_ti_connected == true",
+      "title": "Telematikinfrastruktur (TI) – Pflichten",
+      "obligations": ["gematik_ecc_2026","ti_ops_guideline","kim_messaging","ti_security_controls"],
+      "result": { "ti_status": "in_scope" }
+    },
+    "nis2_in_scope": {
+      "if": "sector in ['health','pharmacy','dentistry','lab','hospital','ehealth_it'] && (employees >= 50 || turnover >= 10000000 || balance >= 10000000)",
+      "title": "NIS2 – Einstufung",
+      "result": { "nis2_status": "in_scope", "classification": "important_or_essential" }
+    },
+    "nis2_watch": {
+      "if": "sector in ['health','pharmacy','dentistry','lab','hospital','ehealth_it'] && !(employees >= 50 || turnover >= 10000000 || balance >= 10000000)",
+      "title": "NIS2 – Monitoring",
+      "result": { "nis2_status": "watch_designation" }
+    },
+    "ai_act_training": {
+      "if": "uses_ai_for_work == true",
+      "title": "EU AI Act – Schulungspflicht (Art. 4)",
+      "result": { "ai_act_training": "required" },
+      "obligations": ["ai_literacy_staff","document_training_records","role_based_curriculum"]
+    },
+    "ai_act_provider": {
+      "if": "ai_role == 'provider'",
+      "title": "EU AI Act – Anbieter",
+      "result": { "ai_act_role": "provider" },
+      "obligations": ["tech_doc","risk_management","data_governance","human_oversight","post_market_monitoring"]
+    },
+    "ai_act_deployer": {
+      "if": "ai_role == 'deployer'",
+      "title": "EU AI Act – Verwender",
+      "result": { "ai_act_role": "deployer" },
+      "obligations": ["usage_policies","training_awareness","incident_reporting_ai","vendor_due_diligence"]
+    }
+  }
+}

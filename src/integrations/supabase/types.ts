@@ -2749,6 +2749,47 @@ export type Database = {
         }
         Relationships: []
       }
+      tenant_analysis: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          input: Json
+          result: Json
+          rules_version: number
+          tenant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          input: Json
+          result: Json
+          rules_version?: number
+          tenant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          input?: Json
+          result?: Json
+          rules_version?: number
+          tenant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_analysis_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_frameworks: {
         Row: {
           activated_at: string
@@ -3387,6 +3428,26 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "check_results_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mv_tenant_scope: {
+        Row: {
+          ai_role: string | null
+          ai_training: string | null
+          nis2_class: string | null
+          nis2_status: string | null
+          tenant_id: string | null
+          ti_status: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_analysis_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "Unternehmen"
@@ -4482,6 +4543,7 @@ export type Database = {
           source_type: string
         }[]
       }
+      get_my_tenant: { Args: never; Returns: string }
       get_user_company: { Args: { _user_id: string }; Returns: string }
       get_user_tenant: { Args: { _user_id: string }; Returns: string }
       has_role: {
