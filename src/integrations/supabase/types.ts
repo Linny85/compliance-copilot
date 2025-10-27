@@ -3381,6 +3381,84 @@ export type Database = {
         }
         Relationships: []
       }
+      translations: {
+        Row: {
+          approved: boolean
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          locale: string
+          namespace: string
+          tenant_id: string | null
+          text: string
+          tkey: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          locale: string
+          namespace: string
+          tenant_id?: string | null
+          text: string
+          tkey: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          approved?: boolean
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          locale?: string
+          namespace?: string
+          tenant_id?: string | null
+          text?: string
+          tkey?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: []
+      }
+      translations_history: {
+        Row: {
+          action: string
+          actor: string | null
+          id: number
+          occurred_at: string
+          snapshot: Json
+          translation_id: string
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          id?: number
+          occurred_at?: string
+          snapshot: Json
+          translation_id: string
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          id?: number
+          occurred_at?: string
+          snapshot?: Json
+          translation_id?: string
+        }
+        Relationships: []
+      }
       Unternehmen: {
         Row: {
           address: string | null
@@ -5197,6 +5275,7 @@ export type Database = {
         }
         Returns: string
       }
+      current_is_editor: { Args: never; Returns: boolean }
       current_tenant_id: { Args: never; Returns: string }
       deadjobs_by_tenant: {
         Args: { since_ts: string }
@@ -5347,6 +5426,15 @@ export type Database = {
         }
       }
       svc_evidence_bulk_update: { Args: { p_updates: Json }; Returns: number }
+      t_db: {
+        Args: {
+          p_fallback?: string
+          p_key: string
+          p_locale: string
+          p_namespace: string
+        }
+        Returns: string
+      }
       upsert_demo_scope_analysis: {
         Args: { p_created_by?: string; p_tenant_id: string }
         Returns: undefined
