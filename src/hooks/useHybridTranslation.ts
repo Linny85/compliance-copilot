@@ -42,7 +42,8 @@ export function useHybridTranslation(
       const rows = await res.json();
       const next: Cache = { ...cache };
       for (const r of rows) {
-        next[`${r.namespace}.${r.tkey}`] = r.text;
+        // Store without namespace prefix since keys already include it
+        next[r.tkey] = r.text;
       }
       setCache(next);
     } catch (error) {
