@@ -37,7 +37,6 @@ export function NorrlandGuideDrawer({
   };
 
   const [q, setQ] = useState("");
-  const [lang, setLang] = useState<"de" | "en" | "sv">("de");
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -102,12 +101,13 @@ export function NorrlandGuideDrawer({
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
+      const currentLang = (i18n.language?.slice(0, 2) ?? 'de') as 'de' | 'en' | 'sv';
       
       const { data, error } = await supabase.functions.invoke("helpbot-chat", {
         body: { 
           question: currentQuestion, 
           session_id: sessionId,
-          lang,
+          lang: currentLang,
           jurisdiction: "EU",
           user_id: user?.id ?? null
         }
@@ -341,8 +341,8 @@ export function NorrlandGuideDrawer({
             />
             <div className="flex gap-2">
               <select 
-                value={lang} 
-                onChange={e => setLang(e.target.value as any)}
+                value={i18n.language?.slice(0, 2) ?? 'de'} 
+                onChange={e => i18n.changeLanguage(e.target.value)}
                 className="border border-border rounded bg-background text-foreground p-2 text-sm"
                 disabled={loading}
               >
