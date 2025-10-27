@@ -35,6 +35,14 @@ export default tseslint.config(
         {
           selector: "JSXAttribute[name.name='key'][value.expression.property.name='language']",
           message: "Avoid key={i18n.language} remounts."
+        },
+        {
+          selector: "CallExpression[callee.name='tx'] > Literal[value=/^(dashboard|documents|controls|checks|admin|training|assistant|aiSystems|evidence|scope|nav)\\./]",
+          message: "Use t('namespace:key') with useTranslation(['namespace']) instead of tx('namespace.key') for JSON translations."
+        },
+        {
+          selector: "CallExpression[callee.name='tx'] > TemplateLiteral[quasis.0.value.cooked=/^(dashboard|documents|controls|checks|admin|training|assistant|aiSystems|evidence|scope|nav)\\./]",
+          message: "Use t('namespace:key') with useTranslation(['namespace']) instead of tx(`namespace.${...}`) for JSON translations."
         }
       ],
       "no-restricted-imports": ["error", {
