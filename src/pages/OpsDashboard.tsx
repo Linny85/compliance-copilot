@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { RefreshCw } from "lucide-react";
+import EmailStatsDashboard from "@/components/EmailStatsDashboard";
 
 type OpsMetrics = {
   pending: number;
@@ -97,6 +98,9 @@ export default function OpsDashboard() {
               </Card>
             ))}
           </div>
+
+          {/* Email Statistics */}
+          <EmailStatsDashboard />
 
           {/* Top Errors */}
           <Card>
