@@ -92,14 +92,14 @@ export default function DocumentsNew() {
 
   // Helper to get translated title
   const getControlTitle = (control: Control): string => {
-    const fw = control.frameworks?.code;
+    const fw = control.frameworks?.code || control.code?.split("-")?.[0];
     if (!fw) return control.title;
     return tDb(`catalog.${fw}.${control.code}.title`, control.title);
   };
 
   // Helper to get translated objective
   const getControlObjective = (control: Control): string => {
-    const fw = control.frameworks?.code;
+    const fw = control.frameworks?.code || control.code?.split("-")?.[0];
     if (!fw) return control.objective;
     return tDb(`catalog.${fw}.${control.code}.objective`, control.objective);
   };
