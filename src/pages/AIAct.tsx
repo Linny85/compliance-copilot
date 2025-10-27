@@ -9,8 +9,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { Plus, Brain } from "lucide-react";
 import { toast } from "sonner";
 import { useI18n } from "@/contexts/I18nContext";
@@ -128,12 +126,9 @@ const AIAct = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
+    <div className="flex-1 p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold flex items-center gap-2">
                   <Brain className="h-8 w-8 text-primary" />
@@ -237,62 +232,60 @@ const AIAct = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            </div>
-
-            {systems.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{tx('aiact.emptyTitle', 'No AI systems registered')}</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {tx('aiact.emptyDesc', 'Start documenting your AI systems for EU AI Act compliance')}
-                  </p>
-                  <Button onClick={() => setDialogOpen(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    {tx('aiact.registerFirst', 'Register First System')}
-                  </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-4">
-                {systems.map((system) => (
-                  <Card key={system.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <CardTitle className="flex items-center gap-2">
-                            {system.name}
-                          </CardTitle>
-                          <CardDescription className="mt-2">
-                            {system.description}
-                          </CardDescription>
-                        </div>
-                        <div className="flex gap-2">
-                          <Badge className={getRiskColor(system.risk_classification)}>
-                            {system.risk_classification}
-                          </Badge>
-                          <Badge variant="outline">
-                            {system.deployment_status}
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    {system.purpose && (
-                      <CardContent>
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-semibold">Purpose:</h4>
-                          <p className="text-sm text-muted-foreground">{system.purpose}</p>
-                        </div>
-                      </CardContent>
-                    )}
-                  </Card>
-                ))}
-              </div>
-            )}
           </div>
-        </main>
+
+        {systems.length === 0 ? (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">{tx('aiact.emptyTitle', 'No AI systems registered')}</h3>
+              <p className="text-muted-foreground mb-4">
+                {tx('aiact.emptyDesc', 'Start documenting your AI systems for EU AI Act compliance')}
+              </p>
+              <Button onClick={() => setDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                {tx('aiact.registerFirst', 'Register First System')}
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4">
+            {systems.map((system) => (
+              <Card key={system.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <CardTitle className="flex items-center gap-2">
+                        {system.name}
+                      </CardTitle>
+                      <CardDescription className="mt-2">
+                        {system.description}
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge className={getRiskColor(system.risk_classification)}>
+                        {system.risk_classification}
+                      </Badge>
+                      <Badge variant="outline">
+                        {system.deployment_status}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                {system.purpose && (
+                  <CardContent>
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Purpose:</h4>
+                      <p className="text-sm text-muted-foreground">{system.purpose}</p>
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 
