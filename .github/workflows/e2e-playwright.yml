@@ -1,0 +1,81 @@
+name: E2E • Playwright (Demo/Trial/Prod)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright • ${{ matrix.mode }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - mode: demo
+            project: demo
+          - mode: trial
+            project: trial
+          - mode: prod
+            project: prod
+
+    env:
+      # für optionale Auth in tests/e2e/utils/auth.ts
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # Hinweis: build/preview wird pro Projekt im playwright.config.ts per webServer erledigt
+      - name: Run Playwright (${{ matrix.project }})
+        run: npx playwright test --project=${{ matrix.project }}
+        env:
+          # optional, falls Tests es direkt lesen
+          VITE_APP_MODE: ${{ matrix.mode }}
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.mode }}
+          path: playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload traces & screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.mode }}
+          path: |
+            test-results
+            **/*-trace.zip
+            **/*.png
+          if-no-files-found: ignore
+          retention-days: 7
