@@ -2,7 +2,7 @@
 // Chat-Endpoint mit CORS, Dual-Provider, Conversational Memory & (optional) Graph-Lernen.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders } from "../_shared/cors.ts";
+import { corsHeaders, json } from "../_shared/cors.ts";
 
 /** =========================
  *  Konfiguration
@@ -31,16 +31,6 @@ const MAX_HISTORY = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "12");
 
 // Optional: Graph-aware RAG nutzen, bei Fehler auf klassisches RAG zurückfallen
 const USE_GRAPH_AWARE = (Deno.env.get("HELPBOT_USE_GRAPH_AWARE") ?? "true") === "true";
-
-/** =========================
- *  Utils
- *  ========================= */
-function json(body: any, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
-}
 
 /** =========================
  *  Edge Handler
