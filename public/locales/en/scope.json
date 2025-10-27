@@ -1,93 +1,26 @@
 {
-  "title": "Scope Matrix",
-  "subtitle": "Define and manage compliance scope across your organization",
-  "empty_state": "No scope units found",
-  "kinds": {
-    "business_unit": "Business Unit",
-    "process": "Process",
-    "system": "System",
-    "vendor": "Vendor"
+  "title": "Tenant Analysis",
+  "form": {
+    "sector": "Sector",
+    "is_ti_connected": "Connected to TI (Telematics Infrastructure)",
+    "employees": "Number of Employees",
+    "turnover": "Turnover (EUR)",
+    "balance": "Balance Sheet (EUR)",
+    "uses_ai_for_work": "Employees use AI functions",
+    "ai_role": "AI Role",
+    "submit": "Run Analysis",
+    "success": "Analysis completed successfully",
+    "error": "Error during analysis"
   },
-  "filters": {
-    "title": "Filter Units",
-    "all": "All Types"
-  },
-  "fields": {
-    "kind": "Type",
-    "name": "Name",
-    "name_placeholder": "Enter unit name",
-    "control": "Control",
-    "control_search_placeholder": "Search by code or title...",
-    "status": "Status",
-    "note": "Note",
-    "note_placeholder": "Optional note or exception reason"
-  },
-  "status": {
-    "in_scope": "In Scope",
-    "out_of_scope": "Out of Scope",
-    "exception": "Exception"
-  },
-  "actions": {
-    "new_unit": "New Unit",
-    "create": "Create Unit",
-    "assign_control": "Assign Control",
-    "assign": "Assign"
-  },
-  "dialogs": {
-    "create_unit": {
-      "title": "Create Scope Unit"
+  "cards": {
+    "ti": {
+      "title": "Telematics Infrastructure"
     },
-    "assign_control": {
-      "title": "Assign Control to Unit"
-    }
-  },
-  "success": {
-    "unit_created": "Scope unit created successfully",
-    "control_assigned": "Control assigned successfully"
-  },
-  "errors": {
-    "load_failed": "Failed to load scope units",
-    "create_failed": "Failed to create unit",
-    "assign_failed": "Failed to assign control",
-    "exception_reason_required": "Exception reason is required"
-  },
-  "matrix": {
-    "title": "Scope Matrix",
-    "subtitle": "Manage controls across scopes",
-    "control": "Control",
-    "framework": "Framework",
-    "owner": "Owner",
-    "mode": "Mode",
-    "actions": "Actions",
-    "search_controls": "Search controls...",
-    "show_conflicts_only": "Conflicts Only",
-    "no_assignments": "No assignments found",
-    "badge": {
-      "direct": "Direct",
-      "override": "Override",
-      "exception": "Exception",
-      "conflict": "Conflict"
+    "nis2": {
+      "title": "NIS2 Classification"
     },
-    "mode": {
-      "inherit": "Inherit",
-      "override": "Override"
-    },
-    "action": {
-      "assign": "Assign",
-      "save": "Save",
-      "set_exception": "Set Exception",
-      "fix_conflicts": "Fix Conflicts"
-    },
-    "dialog": {
-      "assign_title": "Assign Control",
-      "exception_title": "Set Exception"
-    },
-    "exception_reason_placeholder": "Reason for exception...",
-    "success": {
-      "assigned": "Assignment successful",
-      "unassigned": "Assignment removed",
-      "exception_set": "Exception set",
-      "conflicts_fixed": "{{count}} conflicts fixed"
+    "ai": {
+      "title": "EU AI Act – Training"
     }
   }
 }

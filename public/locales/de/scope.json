@@ -1,93 +1,26 @@
 {
-  "title": "Scope-Matrix",
-  "subtitle": "Definieren und verwalten Sie den Compliance-Umfang in Ihrer Organisation",
-  "empty_state": "Keine Scope-Einheiten gefunden",
-  "kinds": {
-    "business_unit": "Geschäftsbereich",
-    "process": "Prozess",
-    "system": "System",
-    "vendor": "Lieferant"
+  "title": "Mandanten-Analyse",
+  "form": {
+    "sector": "Sektor",
+    "is_ti_connected": "An TI (Telematikinfrastruktur) angeschlossen",
+    "employees": "Mitarbeiterzahl",
+    "turnover": "Umsatz (EUR)",
+    "balance": "Bilanzsumme (EUR)",
+    "uses_ai_for_work": "Mitarbeitende nutzen KI-Funktionen",
+    "ai_role": "KI-Rolle",
+    "submit": "Analyse durchführen",
+    "success": "Analyse erfolgreich durchgeführt",
+    "error": "Fehler bei der Analyse"
   },
-  "filters": {
-    "title": "Einheiten filtern",
-    "all": "Alle Typen"
-  },
-  "fields": {
-    "kind": "Typ",
-    "name": "Name",
-    "name_placeholder": "Einheitenname eingeben",
-    "control": "Kontrolle",
-    "control_search_placeholder": "Nach Code oder Titel suchen...",
-    "status": "Status",
-    "note": "Notiz",
-    "note_placeholder": "Optional: Notiz oder Ausnahmegründe"
-  },
-  "status": {
-    "in_scope": "Im Umfang",
-    "out_of_scope": "Außerhalb des Umfangs",
-    "exception": "Ausnahme"
-  },
-  "actions": {
-    "new_unit": "Neue Einheit",
-    "create": "Einheit erstellen",
-    "assign_control": "Kontrolle zuweisen",
-    "assign": "Zuweisen"
-  },
-  "dialogs": {
-    "create_unit": {
-      "title": "Scope-Einheit erstellen"
+  "cards": {
+    "ti": {
+      "title": "Telematikinfrastruktur"
     },
-    "assign_control": {
-      "title": "Kontrolle zu Einheit zuweisen"
-    }
-  },
-  "success": {
-    "unit_created": "Scope-Einheit erfolgreich erstellt",
-    "control_assigned": "Kontrolle erfolgreich zugewiesen"
-  },
-  "errors": {
-    "load_failed": "Laden der Scope-Einheiten fehlgeschlagen",
-    "create_failed": "Erstellen der Einheit fehlgeschlagen",
-    "assign_failed": "Zuweisung der Kontrolle fehlgeschlagen",
-    "exception_reason_required": "Ausnahmegründung ist erforderlich"
-  },
-  "matrix": {
-    "title": "Scope-Matrix",
-    "subtitle": "Kontrollen über Scopes verwalten",
-    "control": "Kontrolle",
-    "framework": "Framework",
-    "owner": "Verantwortlicher",
-    "mode": "Modus",
-    "actions": "Aktionen",
-    "search_controls": "Kontrollen suchen...",
-    "show_conflicts_only": "Nur Konflikte",
-    "no_assignments": "Keine Zuweisungen gefunden",
-    "badge": {
-      "direct": "Direkt",
-      "override": "Override",
-      "exception": "Ausnahme",
-      "conflict": "Konflikt"
+    "nis2": {
+      "title": "NIS2 Einstufung"
     },
-    "mode": {
-      "inherit": "Vererben",
-      "override": "Überschreiben"
-    },
-    "action": {
-      "assign": "Zuweisen",
-      "save": "Speichern",
-      "set_exception": "Ausnahme setzen",
-      "fix_conflicts": "Konflikte beheben"
-    },
-    "dialog": {
-      "assign_title": "Kontrolle zuweisen",
-      "exception_title": "Ausnahme setzen"
-    },
-    "exception_reason_placeholder": "Begründung für die Ausnahme...",
-    "success": {
-      "assigned": "Zuweisung erfolgreich",
-      "unassigned": "Zuweisung entfernt",
-      "exception_set": "Ausnahme gesetzt",
-      "conflicts_fixed": "{{count}} Konflikte behoben"
+    "ai": {
+      "title": "EU AI Act – Schulung"
     }
   }
 }
