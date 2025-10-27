@@ -33,6 +33,17 @@ const MAX_HISTORY = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "12");
 const USE_GRAPH_AWARE = (Deno.env.get("HELPBOT_USE_GRAPH_AWARE") ?? "true") === "true";
 
 /** =========================
+ *  Utils
+ *  ========================= */
+type Lang = "de" | "en" | "sv";
+const VALID_LANGS: readonly Lang[] = ["de", "en", "sv"];
+
+function normalizeLang(input?: string): Lang {
+  const two = (input ?? "de").toLowerCase().slice(0, 2);
+  return (VALID_LANGS as readonly string[]).includes(two) ? (two as Lang) : "de";
+}
+
+/** =========================
  *  Edge Handler
  *  ========================= */
 Deno.serve(async (req) => {
@@ -46,34 +57,45 @@ Deno.serve(async (req) => {
       return json({ error: "Method Not Allowed" }, 405);
     }
 
-    const body = await req.json() as {
+    // ✅ Content-Type check
+    const ct = req.headers.get("content-type") ?? "";
+    if (!ct.toLowerCase().includes("application/json")) {
+      return json({ error: "Unsupported Media Type. Expect application/json" }, 415);
+    }
+
+    // ✅ Robust JSON parsing
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400);
+    }
+
+    // ✅ Input validation
+    const b = body as Partial<{
       question: string;
-      session_id?: string | null;
-      lang?: "de" | "en" | "sv";
-      jurisdiction?: string | null;
-      user_id?: string | null;
-    };
+      lang: Lang;
+      session_id: string | null;
+      jurisdiction: string | null;
+      user_id: string | null;
+    }>;
 
-    const question = (body.question ?? "").trim();
-    const lang = (body.lang ?? "de").slice(0, 2).toLowerCase() as "de" | "en" | "sv";
-    const jurisdiction = body.jurisdiction ?? "EU";
-
+    const question = (b?.question ?? "").trim();
     if (!question) {
       return json({ error: "Question is required" }, 400);
     }
-    
-    if (!["de", "en", "sv"].includes(lang)) {
-      return json({ error: "Invalid language. Must be de, en, or sv" }, 400);
-    }
+
+    const lang = normalizeLang(b?.lang);
+    const jurisdiction = b?.jurisdiction ?? "EU";
 
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
 
     // 1) Session prüfen/anlegen
-    let sid = body.session_id ?? null;
+    let sid = b?.session_id ?? null;
     if (!sid) {
       const { data: newSession, error: sessErr } = await sb
         .from("helpbot_sessions")
-        .insert({ user_id: body.user_id ?? null, lang, jurisdiction })
+        .insert({ user_id: b?.user_id ?? null, lang, jurisdiction })
         .select("id")
         .single();
       if (sessErr) throw sessErr;
