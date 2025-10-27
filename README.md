@@ -76,6 +76,7 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 
 This project uses a **fully automated i18n validation system** with CI enforcement to ensure translation consistency across all supported locales.
 
+[![E2E • Playwright](https://github.com/Linny85/nis2-ai-guard/actions/workflows/e2e-playwright.yml/badge.svg)](https://github.com/Linny85/nis2-ai-guard/actions/workflows/e2e-playwright.yml)
 [![i18n Sync Guard](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-sync-enhanced.yml/badge.svg)](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-sync-enhanced.yml)
 [![i18n Health Check](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-health-check.yml/badge.svg)](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-health-check.yml)
 [![i18n Consistency](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-check.yml/badge.svg)](https://github.com/Linny85/nis2-ai-guard/actions/workflows/i18n-check.yml)
