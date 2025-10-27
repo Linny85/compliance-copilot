@@ -26,8 +26,6 @@ export function useHybridTranslation(
         ? `${base}?${qs}&tenant_id=eq.${tenantId}` 
         : `${base}?${qs}&tenant_id=is.null`;
       
-      console.log('[useHybridTranslation] Priming namespace:', namespace, 'locale:', locale, 'URL:', route);
-      
       const res = await fetch(route, {
         headers: { 
           apikey: anonKey, 
@@ -42,14 +40,10 @@ export function useHybridTranslation(
       }
       
       const rows = await res.json();
-      console.log('[useHybridTranslation] Loaded rows:', rows.length, 'Sample:', rows.slice(0, 3));
-      
       const next: Cache = { ...cache };
       for (const r of rows) {
         next[r.tkey] = r.text;
       }
-      
-      console.log('[useHybridTranslation] Cache keys:', Object.keys(next).slice(0, 10));
       setCache(next);
     } catch (error) {
       console.error("Error priming translations:", error);
