@@ -154,7 +154,7 @@ export default function DocumentsNew() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/documents")}
         >
           <ArrowLeft className="h-5 w-5" />
         </Button>
@@ -251,7 +251,7 @@ export default function DocumentsNew() {
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/documents")}
               disabled={generating}
             >
               {tx("common.cancel")}
