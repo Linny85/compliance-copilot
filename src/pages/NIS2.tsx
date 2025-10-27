@@ -136,7 +136,7 @@ const NIS2 = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+    <div data-testid="page-root" className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
       <section className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
@@ -245,7 +245,7 @@ const NIS2 = () => {
 
       {risks.length === 0 ? (
         <section className="flex items-center justify-center py-10">
-          <Card className="w-full max-w-xl">
+          <Card data-testid="empty-state" className="w-full max-w-xl">
             <CardContent className="p-8 sm:p-12 text-center">
               <AlertTriangle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">{t.nis2.empty.title}</h3>

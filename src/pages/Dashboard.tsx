@@ -106,7 +106,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+    <div data-testid="page-root" className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
       <div className="animate-fade-in space-y-6">
         {/* Header with Language Switcher */}
         <div className="flex items-start justify-between gap-4">
