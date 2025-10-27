@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useHybridTranslation } from "@/hooks/useHybridTranslation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +21,8 @@ interface Control {
 }
 
 export default function DocumentsNew() {
-  const { tx, language } = useI18n();
+  const { t, i18n } = useTranslation(['common', 'documents']);
+  const language = i18n.language as 'de' | 'en' | 'sv';
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -67,8 +68,8 @@ export default function DocumentsNew() {
       if (error) throw error;
       if (!data) {
         toast({
-          title: tx("common.error"),
-          description: tx("documents.errors.loadControl"),
+          title: t("common:error"),
+          description: t("documents:errors.loadControl"),
           variant: "destructive",
         });
         setLoading(false);
@@ -76,13 +77,13 @@ export default function DocumentsNew() {
       }
       
       setControl(data);
-      setTitle(`${data.code} - ${tx("documents.policyDocument")}`);
+      setTitle(`${data.code} - ${t("documents:policyDocument")}`);
       setDescription(data.objective || "");
     } catch (error) {
       console.error("Failed to load control:", error);
       toast({
-        title: tx("common.error"),
-        description: tx("documents.errors.loadControl"),
+        title: t("common:error"),
+        description: t("documents:errors.loadControl"),
         variant: "destructive",
       });
     } finally {
@@ -107,8 +108,8 @@ export default function DocumentsNew() {
   const handleGenerate = async () => {
     if (!title.trim()) {
       toast({
-        title: tx("documents.errors.validation"),
-        description: tx("documents.errors.titleRequired"),
+        title: t("documents:errors.validation"),
+        description: t("documents:errors.titleRequired"),
         variant: "destructive",
       });
       return;
@@ -121,8 +122,8 @@ export default function DocumentsNew() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
-        title: tx("documents.success.generated"),
-        description: tx("documents.success.generatedDesc"),
+        title: t("documents:success.generated"),
+        description: t("documents:success.generatedDesc"),
       });
       
       // Return to Controls if came from there, otherwise to Documents
@@ -131,8 +132,8 @@ export default function DocumentsNew() {
     } catch (error) {
       console.error("Failed to generate document:", error);
       toast({
-        title: tx("documents.errors.generateFailed"),
-        description: tx("documents.errors.generateFailedDesc"),
+        title: t("documents:errors.generateFailed"),
+        description: t("documents:errors.generateFailedDesc"),
         variant: "destructive",
       });
     } finally {
@@ -164,9 +165,9 @@ export default function DocumentsNew() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">{tx("documents.generateTitle")}</h1>
+          <h1 className="text-3xl font-bold">{t("documents:generateTitle")}</h1>
           <p className="text-muted-foreground mt-2">
-            {tx("documents.generateSubtitle")}
+            {t("documents:generateSubtitle")}
           </p>
         </div>
       </div>
@@ -174,20 +175,20 @@ export default function DocumentsNew() {
       {control && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">{tx("documents.selectedControl")}</CardTitle>
+            <CardTitle className="text-lg">{t("documents:selectedControl")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">{tx("documents.fields.code")}:</span>
+                <span className="text-sm font-medium">{t("documents:fields.code")}:</span>
                 <span className="text-sm text-muted-foreground">{control.code}</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium">{tx("documents.fields.title")}:</span>
+                <span className="text-sm font-medium">{t("documents:fields.title")}:</span>
                 <span className="text-sm text-muted-foreground">{getControlTitle(control)}</span>
               </div>
               <div className="flex items-start gap-2">
-                <span className="text-sm font-medium">{tx("documents.fields.objective")}:</span>
+                <span className="text-sm font-medium">{t("documents:fields.objective")}:</span>
                 <span className="text-sm text-muted-foreground">{getControlObjective(control)}</span>
               </div>
             </div>
@@ -197,41 +198,41 @@ export default function DocumentsNew() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{tx("documents.documentDetails")}</CardTitle>
+          <CardTitle>{t("documents:documentDetails")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="documentType">{tx("documents.fields.documentType")}</Label>
+            <Label htmlFor="documentType">{t("documents:fields.documentType")}</Label>
             <Select value={documentType} onValueChange={setDocumentType}>
               <SelectTrigger id="documentType">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="policy">{tx("documents.types.policy")}</SelectItem>
-                <SelectItem value="procedure">{tx("documents.types.procedure")}</SelectItem>
-                <SelectItem value="guideline">{tx("documents.types.guideline")}</SelectItem>
-                <SelectItem value="report">{tx("documents.types.report")}</SelectItem>
+                <SelectItem value="policy">{t("documents:types.policy")}</SelectItem>
+                <SelectItem value="procedure">{t("documents:types.procedure")}</SelectItem>
+                <SelectItem value="guideline">{t("documents:types.guideline")}</SelectItem>
+                <SelectItem value="report">{t("documents:types.report")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">{tx("documents.fields.documentTitle")} *</Label>
+            <Label htmlFor="title">{t("documents:fields.documentTitle")} *</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder={tx("documents.placeholders.title")}
+              placeholder={t("documents:placeholders.title")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{tx("documents.fields.description")}</Label>
+            <Label htmlFor="description">{t("documents:fields.description")}</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder={tx("documents.placeholders.description")}
+              placeholder={t("documents:placeholders.description")}
               rows={5}
             />
           </div>
@@ -245,12 +246,12 @@ export default function DocumentsNew() {
               {generating ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {tx("documents.generating")}
+                  {t("documents:generating")}
                 </>
               ) : (
                 <>
                   <FileText className="h-4 w-4 mr-2" />
-                  {tx("documents.generateButton")}
+                  {t("documents:generateButton")}
                 </>
               )}
             </Button>
@@ -262,7 +263,7 @@ export default function DocumentsNew() {
               }}
               disabled={generating}
             >
-              {tx("common.cancel")}
+              {t("common:cancel")}
             </Button>
           </div>
         </CardContent>
@@ -274,10 +275,10 @@ export default function DocumentsNew() {
             <FileText className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
               <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                {tx("documents.aiPoweredTitle")}
+                {t("documents:aiPoweredTitle")}
               </p>
               <p className="text-sm text-blue-700 dark:text-blue-300">
-                {tx("documents.aiPoweredDesc")}
+                {t("documents:aiPoweredDesc")}
               </p>
             </div>
           </div>
