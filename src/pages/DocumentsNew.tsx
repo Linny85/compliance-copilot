@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useI18n } from "@/contexts/I18nContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useHybridTranslation } from "@/hooks/useHybridTranslation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,13 +17,22 @@ interface Control {
   code: string;
   title: string;
   objective: string;
+  frameworks?: { code: string };
 }
 
 export default function DocumentsNew() {
-  const { tx } = useI18n();
+  const { tx, language } = useI18n();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+
+  // Hybrid translation for control catalog
+  const { t: tDb, prime } = useHybridTranslation(
+    import.meta.env.VITE_SUPABASE_URL!,
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!,
+    language,
+    null
+  );
   
   const controlId = searchParams.get("controlId");
   const [control, setControl] = useState<Control | null>(null);
@@ -41,15 +51,29 @@ export default function DocumentsNew() {
     }
   }, [controlId]);
 
+  // Prime DB translations
+  useEffect(() => {
+    prime("controls");
+  }, [language]);
+
   const loadControl = async (id: string) => {
     try {
       const { data, error } = await supabase
         .from("controls")
-        .select("id, code, title, objective")
+        .select("id, code, title, objective, frameworks(code)")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      if (!data) {
+        toast({
+          title: tx("common.error"),
+          description: tx("documents.errors.loadControl"),
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
       
       setControl(data);
       setTitle(`${data.code} - ${tx("documents.policyDocument")}`);
@@ -64,6 +88,20 @@ export default function DocumentsNew() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper to get translated title
+  const getControlTitle = (control: Control): string => {
+    const fw = control.frameworks?.code;
+    if (!fw) return control.title;
+    return tDb(`catalog.${fw}.${control.code}.title`, control.title);
+  };
+
+  // Helper to get translated objective
+  const getControlObjective = (control: Control): string => {
+    const fw = control.frameworks?.code;
+    if (!fw) return control.objective;
+    return tDb(`catalog.${fw}.${control.code}.objective`, control.objective);
   };
 
   const handleGenerate = async () => {
@@ -141,11 +179,11 @@ export default function DocumentsNew() {
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-sm font-medium">{tx("documents.fields.title")}:</span>
-                <span className="text-sm text-muted-foreground">{control.title}</span>
+                <span className="text-sm text-muted-foreground">{getControlTitle(control)}</span>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-sm font-medium">{tx("documents.fields.objective")}:</span>
-                <span className="text-sm text-muted-foreground">{control.objective}</span>
+                <span className="text-sm text-muted-foreground">{getControlObjective(control)}</span>
               </div>
             </div>
           </CardContent>
