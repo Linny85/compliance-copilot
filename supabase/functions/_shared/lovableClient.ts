@@ -1,4 +1,6 @@
 // Central Lovable AI Gateway Client
+import { getTenantOpenAIKey } from './openaiClient.ts';
+
 export function getLovableBaseUrl(): string {
   const url =
     (Deno.env.get('LOVABLE_API_BASE_URL') ?? 
@@ -63,16 +65,17 @@ export async function lovableFetch(path: string, init: RequestInit = {}): Promis
   }
 }
 
-export async function embed(text: string): Promise<number[]> {
+export async function embed(text: string, tenantId?: string): Promise<number[]> {
   const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-small';
   
   // Lovable AI Gateway supports NO embedding models - use OpenAI directly
-  const openaiKey = Deno.env.get('OPENAI_API_KEY');
+  // Supports optional tenant-specific keys via FEATURE_TENANT_OPENAI_KEYS flag
+  const openaiKey = await getTenantOpenAIKey(tenantId);
   if (!openaiKey) {
-    throw new Error('OPENAI_API_KEY required for embeddings (Lovable AI Gateway does not support embedding models)');
+    throw new Error('No OpenAI key configured for embeddings (global or tenant)');
   }
 
-  console.log('[embed] Calling OpenAI embeddings API', { model, textLength: text.length });
+  console.log('[embed] Calling OpenAI embeddings API', { model, textLength: text.length, tenantId: tenantId ? 'set' : 'none' });
   
   const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
@@ -96,16 +99,17 @@ export async function embed(text: string): Promise<number[]> {
   return data.data[0].embedding as number[];
 }
 
-export async function embedBatch(chunks: string[]): Promise<number[][]> {
+export async function embedBatch(chunks: string[], tenantId?: string): Promise<number[][]> {
   const model = Deno.env.get('EMB_MODEL') ?? 'text-embedding-3-small';
   
   // Lovable AI Gateway supports NO embedding models - use OpenAI directly
-  const openaiKey = Deno.env.get('OPENAI_API_KEY');
+  // Supports optional tenant-specific keys via FEATURE_TENANT_OPENAI_KEYS flag
+  const openaiKey = await getTenantOpenAIKey(tenantId);
   if (!openaiKey) {
-    throw new Error('OPENAI_API_KEY required for embeddings (Lovable AI Gateway does not support embedding models)');
+    throw new Error('No OpenAI key configured for embeddings (global or tenant)');
   }
 
-  console.log('[embedBatch] Calling OpenAI embeddings API', { model, count: chunks.length });
+  console.log('[embedBatch] Calling OpenAI embeddings API', { model, count: chunks.length, tenantId: tenantId ? 'set' : 'none' });
   
   const res = await fetch('https://api.openai.com/v1/embeddings', {
     method: 'POST',
