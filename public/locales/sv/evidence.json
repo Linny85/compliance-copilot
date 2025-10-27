@@ -45,5 +45,19 @@
     "create_failed": "Misslyckades att skapa förfrågan",
     "upload_failed": "Uppladdning misslyckades",
     "review_failed": "Misslyckades att spara granskning"
+  },
+  "types": {
+    "policy": "Policy",
+    "procedure": "Rutin",
+    "guideline": "Riktlinje",
+    "report": "Rapport",
+    "audit_log": "Revisionlogg",
+    "risk_log": "Risklogg",
+    "ticket": "Supportärende",
+    "contract": "Avtal",
+    "training_record": "Utbildningsintyg",
+    "screenshot": "Skärmdump",
+    "dataset": "Dataset",
+    "assessment": "Bedömning"
   }
 }

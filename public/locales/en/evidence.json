@@ -45,5 +45,19 @@
     "create_failed": "Failed to create request",
     "upload_failed": "Upload failed",
     "review_failed": "Failed to save review"
+  },
+  "types": {
+    "policy": "Policy",
+    "procedure": "Procedure",
+    "guideline": "Guideline",
+    "report": "Report",
+    "audit_log": "Audit log",
+    "risk_log": "Risk log",
+    "ticket": "Support ticket",
+    "contract": "Contract",
+    "training_record": "Training record",
+    "screenshot": "Screenshot",
+    "dataset": "Dataset",
+    "assessment": "Assessment"
   }
 }

@@ -45,5 +45,19 @@
     "create_failed": "Erstellen fehlgeschlagen",
     "upload_failed": "Upload fehlgeschlagen",
     "review_failed": "Speichern der Prüfung fehlgeschlagen"
+  },
+  "types": {
+    "policy": "Richtlinie",
+    "procedure": "Verfahrensanweisung",
+    "guideline": "Leitlinie",
+    "report": "Bericht",
+    "audit_log": "Audit-Log",
+    "risk_log": "Risikoprotokoll",
+    "ticket": "Support-Ticket",
+    "contract": "Vertrag",
+    "training_record": "Schulungsnachweis",
+    "screenshot": "Screenshot",
+    "dataset": "Datensatz",
+    "assessment": "Bewertung"
   }
 }
