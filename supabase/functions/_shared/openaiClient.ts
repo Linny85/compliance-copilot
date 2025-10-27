@@ -19,28 +19,51 @@ export async function getTenantOpenAIKey(tenantId?: string): Promise<string | nu
     return globalKey;
   }
 
-  try {
-    // Use service role to access tenant settings
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    );
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  );
 
+  // Try 1: tenant_settings
+  try {
+    const { data, error } = await supabase
+      .from('tenant_settings')
+      .select('openai_api_key')
+      .eq('tenant_id', tenantId)
+      .maybeSingle();
+    if (!error && data?.openai_api_key) return data.openai_api_key;
+  } catch {}
+
+  // Try 2: tenants
+  try {
     const { data, error } = await supabase
       .from('tenants')
       .select('openai_api_key')
       .eq('id', tenantId)
-      .single();
+      .maybeSingle();
+    if (!error && data?.openai_api_key) return data.openai_api_key;
+  } catch {}
 
-    if (error) {
-      console.error('[getTenantOpenAIKey] lookup failed for tenant', tenantId, '(using global fallback)');
-      return globalKey; // Guaranteed fallback
-    }
-
-    // Return tenant key if exists, otherwise global key
-    return data?.openai_api_key || globalKey;
-  } catch (e) {
-    console.error('[getTenantOpenAIKey] exception', String(e), '(using global fallback)');
-    return globalKey;
+  // Try 3: unternehmen
+  try {
+    const { data, error } = await supabase
+      .from('unternehmen')
+      .select('openai_api_key')
+      .eq('id', tenantId)
+      .maybeSingle();
+    if (!error && data?.openai_api_key) return data.openai_api_key;
+  } catch {
+    // Try 4: "Unternehmen" (quoted)
+    try {
+      const { data, error } = await supabase
+        .from('Unternehmen')
+        .select('openai_api_key')
+        .eq('id', tenantId)
+        .maybeSingle();
+      if (!error && data?.openai_api_key) return data.openai_api_key;
+    } catch {}
   }
+
+  // Fallback to global key
+  return globalKey;
 }

@@ -3238,6 +3238,7 @@ export type Database = {
           integration_slack_webhook_url: string | null
           notification_email: string | null
           notification_webhook_url: string | null
+          openai_api_key: string | null
           settings: Json
           tenant_id: string
           updated_at: string
@@ -3256,6 +3257,7 @@ export type Database = {
           integration_slack_webhook_url?: string | null
           notification_email?: string | null
           notification_webhook_url?: string | null
+          openai_api_key?: string | null
           settings?: Json
           tenant_id: string
           updated_at?: string
@@ -3274,6 +3276,7 @@ export type Database = {
           integration_slack_webhook_url?: string | null
           notification_email?: string | null
           notification_webhook_url?: string | null
+          openai_api_key?: string | null
           settings?: Json
           tenant_id?: string
           updated_at?: string
@@ -3479,6 +3482,7 @@ export type Database = {
           onboarding_completed_at: string | null
           onboarding_done: boolean | null
           onboarding_progress: number | null
+          openai_api_key: string | null
           sector: string | null
           street: string | null
           subscription_status: string | null
@@ -3507,6 +3511,7 @@ export type Database = {
           onboarding_completed_at?: string | null
           onboarding_done?: boolean | null
           onboarding_progress?: number | null
+          openai_api_key?: string | null
           sector?: string | null
           street?: string | null
           subscription_status?: string | null
@@ -3535,6 +3540,7 @@ export type Database = {
           onboarding_completed_at?: string | null
           onboarding_done?: boolean | null
           onboarding_progress?: number | null
+          openai_api_key?: string | null
           sector?: string | null
           street?: string | null
           subscription_status?: string | null
