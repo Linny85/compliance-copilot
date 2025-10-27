@@ -1,45 +1,45 @@
 {
   "title": "Documents",
-  "subtitle": "Generate and manage compliance documentation",
+  "subtitle": "Generate and manage your compliance documentation",
   "comingSoon": "Document generation coming soon",
-  "comingSoonDesc": "Generate NIS2 policies, AI Act reports, and compliance certificates",
-  "generate": "Generate Document",
-  "generateTitle": "Generate Policy Document",
-  "generateSubtitle": "Create compliance documentation based on control requirements",
-  "generateButton": "Generate Document",
-  "generating": "Generating...",
+  "comingSoonDesc": "Generate NIS2 policies, AI Act reports, and conformity certificates.",
+  "generate": "Generate document",
+  "generateTitle": "Generate document",
+  "generateSubtitle": "Create policies, procedures, or reports based on your controls.",
+  "generateButton": "Generate now",
+  "generating": "Generating document …",
   "policyDocument": "Policy Document",
-  "selectedControl": "Selected Control",
-  "documentDetails": "Document Details",
+  "selectedControl": "Selected control",
+  "documentDetails": "Document details",
   "aiPoweredTitle": "AI-Powered Document Generation",
   "aiPoweredDesc": "This feature uses AI to generate compliance documentation based on the selected control requirements. The generated document will include relevant policies, procedures, and implementation guidelines.",
   "fields": {
-    "code": "Code",
-    "title": "Title",
+    "code": "Control code",
+    "title": "Control title",
     "objective": "Objective",
-    "documentType": "Document Type",
-    "documentTitle": "Document Title",
+    "documentType": "Document type",
+    "documentTitle": "Title",
     "description": "Description"
   },
   "types": {
-    "policy": "Policy Document",
+    "policy": "Policy",
     "procedure": "Procedure",
     "guideline": "Guideline",
-    "report": "Compliance Report"
+    "report": "Report"
   },
   "placeholders": {
-    "title": "Enter document title...",
-    "description": "Enter document description or objectives..."
+    "title": "e.g. Information Security Policy",
+    "description": "Short description or context for this document …"
   },
   "success": {
-    "generated": "Document Generated",
-    "generatedDesc": "Your policy document has been created successfully"
+    "generated": "Document created",
+    "generatedDesc": "Your document has been generated and saved."
   },
   "errors": {
     "loadControl": "Failed to load control information",
-    "validation": "Validation Error",
-    "titleRequired": "Please provide a document title",
-    "generateFailed": "Generation Failed",
-    "generateFailedDesc": "Failed to generate the document. Please try again."
+    "validation": "Please check your inputs",
+    "titleRequired": "A document title is required.",
+    "generateFailed": "Document could not be created",
+    "generateFailedDesc": "Please try again or contact support."
   }
 }
