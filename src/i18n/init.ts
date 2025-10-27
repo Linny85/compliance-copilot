@@ -14,6 +14,7 @@ const resources = {
   sv: { ...translations.sv },
 };
 
+const cacheBust = Date.now();
 const g = globalThis as any;
 if (!g.__i18n_singleton__) {
   g.__i18n_singleton__ = i18n
@@ -23,12 +24,12 @@ if (!g.__i18n_singleton__) {
       lng: BOOT_LNG,
       fallbackLng: 'en',
       supportedLngs: SUPPORTED,
-      ns: [...Object.keys(translations.de), 'training', 'assistant'],
+      ns: [...Object.keys(translations.de), 'dashboard', 'training', 'assistant'],
       defaultNS: 'common',
       fallbackNS: ['common'],
       resources,
       backend: {
-        loadPath: '/locales/{{lng}}/{{ns}}.json',
+        loadPath: `/locales/{{lng}}/{{ns}}.json?v=${cacheBust}`,
       },
       partialBundledLanguages: true,
       load: 'currentOnly',
@@ -39,6 +40,11 @@ if (!g.__i18n_singleton__) {
       returnEmptyString: false,
       returnNull: false,
       initImmediate: false,
+      saveMissing: true,
+      parseMissingKeyHandler: (key) => {
+        console.warn('[i18n] missing key:', key);
+        return key;
+      },
     });
 }
 

@@ -112,7 +112,7 @@ const Dashboard = () => {
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-1 flex-1">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                  {t('dashboard.welcome')}
+                  {t('dashboard:welcome')}
                 </h1>
                 <p className="text-muted-foreground">
                   {companyData.name}

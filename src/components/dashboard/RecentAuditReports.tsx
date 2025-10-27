@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, ExternalLink } from "lucide-react";
+import { useI18n } from "@/contexts/I18nContext";
 
 type ReportRow = {
   id: string;
@@ -20,6 +21,7 @@ export default function RecentAuditReports() {
   const [reports, setReports] = useState<ReportRow[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { tx } = useI18n();
 
   useEffect(() => {
     void loadRecentReports();
@@ -65,19 +67,19 @@ export default function RecentAuditReports() {
     <Card>
       <CardHeader className="flex items-start justify-between space-y-0">
         <div>
-          <CardTitle>Recent Audit Reports</CardTitle>
-          <CardDescription>Latest generated compliance reports</CardDescription>
+          <CardTitle>{tx('dashboard.recentAuditReports')}</CardTitle>
+          <CardDescription>{tx('dashboard.recentAuditReportsDesc')}</CardDescription>
         </div>
-        <Button variant="ghost" onClick={() => navigate("/audit")}>View All</Button>
+        <Button variant="ghost" onClick={() => navigate("/audit")}>{tx('dashboard.viewAll')}</Button>
       </CardHeader>
 
       <CardContent>
         {loading ? (
-          <div className="text-sm text-muted-foreground">Loading...</div>
+          <div className="text-sm text-muted-foreground">{tx('common.loading')}</div>
         ) : reports.length === 0 ? (
           <div className="flex items-center justify-between">
-            <div className="text-sm text-muted-foreground">No reports generated yet</div>
-            <Button onClick={() => navigate("/audit/new")}>Create Audit Task</Button>
+            <div className="text-sm text-muted-foreground">{tx('dashboard.noReportsYet')}</div>
+            <Button onClick={() => navigate("/audit/new")}>{tx('dashboard.createAuditTask')}</Button>
           </div>
         ) : (
           <ul className="space-y-3">

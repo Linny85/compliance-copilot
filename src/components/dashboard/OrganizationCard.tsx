@@ -28,15 +28,15 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>{t('dashboard.organization')}</CardTitle>
-        <CardDescription>{t('dashboard.organizationDesc')}</CardDescription>
+        <CardTitle>{t('dashboard:organization')}</CardTitle>
+        <CardDescription>{t('dashboard:organizationDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div className="flex items-center space-x-3">
             <Building2 className="h-5 w-5 text-muted-foreground" />
             <div>
-              <div className="text-sm text-muted-foreground">{t('dashboard.companyName')}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:companyName')}</div>
               <div className="font-medium">{companyName}</div>
             </div>
           </div>
@@ -44,7 +44,7 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
           <div className="flex items-center space-x-3">
             <MapPin className="h-5 w-5 text-muted-foreground" />
             <div>
-              <div className="text-sm text-muted-foreground">{t('dashboard.country')}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:country')}</div>
               <div className="font-medium">{country}</div>
             </div>
           </div>
@@ -52,7 +52,7 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
           <div className="flex items-center space-x-3">
             <Briefcase className="h-5 w-5 text-muted-foreground" />
             <div>
-              <div className="text-sm text-muted-foreground">{t('dashboard.sector')}</div>
+              <div className="text-sm text-muted-foreground">{t('dashboard:sector')}</div>
               <div className="font-medium">{getSectorLabel(sector)}</div>
             </div>
           </div>
@@ -63,7 +63,7 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
           className="w-full"
           onClick={() => navigate("/company-profile")}
         >
-          {t('dashboard.editOrganization')}
+          {t('dashboard:editOrganization')}
         </Button>
       </CardContent>
     </Card>

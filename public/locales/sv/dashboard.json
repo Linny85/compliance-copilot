@@ -36,5 +36,10 @@
   "complianceDpia": "DPIA",
   "complianceStatusExcellent": "Utmärkt efterlevnadsstatus",
   "complianceStatusGood": "Goda framsteg, fortsätt förbättra",
-  "complianceStatusNeeds": "Behöver förbättring"
+  "complianceStatusNeeds": "Behöver förbättring",
+  "recentAuditReports": "Senaste granskningsrapporter",
+  "recentAuditReportsDesc": "Senast genererade efterlevnadsrapporter",
+  "viewAll": "Visa alla",
+  "noReportsYet": "Inga rapporter skapade ännu",
+  "createAuditTask": "Skapa granskningsuppgift"
 }

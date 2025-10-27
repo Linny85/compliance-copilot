@@ -36,5 +36,10 @@
   "complianceDpia": "DPIA",
   "complianceStatusExcellent": "Excellent compliance status",
   "complianceStatusGood": "Good progress, keep improving",
-  "complianceStatusNeeds": "Needs improvement"
+  "complianceStatusNeeds": "Needs improvement",
+  "recentAuditReports": "Recent Audit Reports",
+  "recentAuditReportsDesc": "Latest generated compliance reports",
+  "viewAll": "View All",
+  "noReportsYet": "No reports generated yet",
+  "createAuditTask": "Create Audit Task"
 }
