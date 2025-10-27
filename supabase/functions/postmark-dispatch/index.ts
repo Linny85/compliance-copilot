@@ -8,6 +8,7 @@ type QueueRow = {
   to_name: string | null;
   template_code: string;
   payload: Record<string, unknown>;
+  attempts: number;
 };
 
 const POSTMARK_TOKEN = Deno.env.get("POSTMARK_TOKEN")!;
@@ -38,17 +39,40 @@ async function fetchTemplate(code: string) {
   return tpl as { subject: string; template_html?: string | null; postmark_template_id?: number | null };
 }
 
-async function markStatus(id: string, status: "sending" | "sent" | "failed", meta?: unknown) {
+function render(html: string, model: Record<string, unknown>): string {
+  return html.replace(/\{\{(\w+)\}\}/g, (_, k) => String(model[k] ?? ""));
+}
+
+async function markStatus(
+  id: string,
+  status: "sending" | "sent" | "failed",
+  meta?: unknown,
+  currentAttempts = 0
+) {
+  const patch: Record<string, unknown> = {
+    status,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (status === "sent") {
+    patch.sent_at = new Date().toISOString();
+  }
+
+  if (status === "failed") {
+    patch.last_error = typeof meta === "string" ? meta : JSON.stringify(meta ?? {});
+    patch.attempts = currentAttempts + 1;
+    
+    // Exponential backoff: 1, 4, 9, 16, 25 minutes (max 60)
+    const backoffMinutes = Math.min(60, Math.pow(currentAttempts + 1, 2));
+    const scheduledAt = new Date(Date.now() + backoffMinutes * 60000);
+    patch.scheduled_at = scheduledAt.toISOString();
+  }
+
   await sbFetch(`email_queue?id=eq.${id}`, {
     method: "PATCH",
-    body: JSON.stringify({
-      status,
-      attempts: status === "failed" ? undefined : undefined,
-      sent_at: status === "sent" ? new Date().toISOString() : null,
-      updated_at: new Date().toISOString(),
-      ...(status === "failed" ? { last_error: typeof meta === "string" ? meta : JSON.stringify(meta ?? {}) } : {}),
-    }),
+    body: JSON.stringify(patch),
   });
+
   await sbFetch(`email_events`, {
     method: "POST",
     body: JSON.stringify({
@@ -76,17 +100,15 @@ async function sendPostmark(row: QueueRow, tpl: any) {
     if (!res.ok) throw new Error(`Postmark template send failed: ${res.status} ${await res.text()}`);
     return;
   } else {
-    const htmlBody = (tpl?.template_html as string) ?? "<p>Hello</p>";
+    const htmlBody = render(
+      (tpl?.template_html as string) ?? "<p>Hello</p>",
+      row.payload as any
+    );
     const payload = {
       From: POSTMARK_FROM,
       To: row.to_name ? `${row.to_name} <${row.to_email}>` : row.to_email,
       Subject: tpl?.subject ?? "Notification",
-      HtmlBody: htmlBody
-        .replace(/\{\{name\}\}/g, String((row.payload as any)?.name ?? ""))
-        .replace(/\{\{tenant_name\}\}/g, String((row.payload as any)?.tenant_name ?? ""))
-        .replace(/\{\{cta_url\}\}/g, String((row.payload as any)?.cta_url ?? ""))
-        .replace(/\{\{contact_name\}\}/g, String((row.payload as any)?.contact_name ?? ""))
-        .replace(/\{\{dashboard_url\}\}/g, String((row.payload as any)?.dashboard_url ?? "")),
+      HtmlBody: htmlBody,
       MessageStream: POSTMARK_STREAM,
     };
     const res = await fetch("https://api.postmarkapp.com/email", {
@@ -114,14 +136,14 @@ serve(async (req) => {
   for (const row of rows) {
     try {
       console.log(`[postmark-dispatch] Processing ${row.id} to ${row.to_email}`);
-      await markStatus(row.id, "sending");
+      await markStatus(row.id, "sending", undefined, row.attempts ?? 0);
       const tpl = await fetchTemplate(row.template_code);
       await sendPostmark(row, tpl);
-      await markStatus(row.id, "sent");
+      await markStatus(row.id, "sent", undefined, row.attempts ?? 0);
       processed++;
     } catch (e) {
       console.error(`[postmark-dispatch] Failed ${row.id}:`, e);
-      await markStatus(row.id, "failed", String(e));
+      await markStatus(row.id, "failed", String(e), row.attempts ?? 0);
     }
   }
 
