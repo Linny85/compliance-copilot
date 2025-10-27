@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { detectIntents, type ChatAction } from "@/features/assistant/intents";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -37,8 +39,10 @@ export function NorrlandGuideDrawer({
   const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
   const [disc, setDisc] = useState("");
   const [ttsOn, setTtsOn] = useState(false);
+  const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   const supportsTTS = typeof window !== "undefined" && "speechSynthesis" in window;
 
@@ -73,6 +77,11 @@ export function NorrlandGuideDrawer({
     const currentQuestion = q.trim();
     setQ(""); // Clear input immediately
     setLoading(true);
+    
+    // Check for intents locally
+    const lang3 = (i18n.language?.slice(0,2) ?? 'de') as 'de'|'en'|'sv';
+    const suggested = detectIntents(currentQuestion, lang3);
+    if (suggested[0]) setPendingAction(suggested[0]);
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -324,6 +333,44 @@ export function NorrlandGuideDrawer({
             </div>
           </div>
         </div>
+
+        {/* Navigation Confirmation */}
+        {pendingAction && pendingAction.type === 'NAVIGATE' && (
+          <div className="fixed bottom-4 right-4 z-50 rounded-xl border border-border bg-background/95 backdrop-blur p-3 shadow-lg max-w-sm">
+            <div className="mb-2 text-sm text-foreground">
+              {labels.open}: <code className="text-xs bg-muted px-1 py-0.5 rounded">{pendingAction.path}</code>?
+            </div>
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                onClick={() => {
+                  navigate(pendingAction.path, { replace: false });
+                  // Optional highlight
+                  setTimeout(() => {
+                    if (pendingAction.highlight) {
+                      const el = document.querySelector(pendingAction.highlight);
+                      el?.classList.add('ring-2','ring-primary');
+                      setTimeout(() => {
+                        el?.classList.remove('ring-2','ring-primary');
+                      }, 3000);
+                    }
+                  }, 60);
+                  setPendingAction(null);
+                  setOpen(false);
+                }}
+              >
+                {labels.open}
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setPendingAction(null)}
+              >
+                {labels.cancel}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
