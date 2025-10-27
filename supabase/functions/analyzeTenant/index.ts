@@ -1,14 +1,11 @@
 import { serve } from "https://deno.land/std@0.192.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-// Import rules from config
-const rulesUrl = new URL("../../config/scope_rules.v1.json", import.meta.url);
-const rulesText = await Deno.readTextFile(rulesUrl);
-const rules = JSON.parse(rulesText);
+import rules from "../../config/scope_rules.v1.json" assert { type: "json" };
 
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS"
 };
 
 type Input = {
@@ -46,54 +43,45 @@ function evalExpr(expr: string, ctx: Input): boolean {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
+  // CORS preflight
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  if (req.method !== 'POST') {
-    return new Response('Method Not Allowed', { 
-      status: 405,
-      headers: corsHeaders 
-    });
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405, headers: corsHeaders });
   }
 
   try {
     const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: req.headers.get("Authorization")! } } }
     );
 
     const { data: { user }, error: userErr } = await supabase.auth.getUser();
     if (userErr || !user) {
-      console.error('Auth error:', userErr);
-      return new Response('Unauthorized', { 
-        status: 401,
-        headers: corsHeaders 
-      });
+      console.error("Auth error:", userErr);
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     }
 
     const body: { tenant_id: string; input: Input } = await req.json();
-    console.log('Analyzing tenant:', body.tenant_id, 'Input:', body.input);
+    console.log("Analyzing tenant:", body.tenant_id);
 
     const results: Record<string, unknown> = {};
     const obligations: Record<string, string[]> = {};
 
-    for (const [key, rule] of Object.entries(rules.rules)) {
+    for (const [key, rule] of Object.entries((rules as any).rules)) {
       const r: any = rule;
       if (evalExpr(r.if, body.input)) {
-        console.log('Rule matched:', key, r.title);
+        console.log("Rule matched:", key, r.title);
         Object.assign(results, r.result ?? {});
         if (r.obligations) obligations[key] = r.obligations;
       }
     }
 
-    console.log('Analysis results:', results);
-    console.log('Obligations:', obligations);
-
     const { data, error } = await supabase
-      .from('tenant_analysis')
+      .from("tenant_analysis")
       .insert({
         tenant_id: body.tenant_id,
         created_by: user.id,
@@ -101,30 +89,23 @@ serve(async (req) => {
         result: { ...results, obligations },
         rules_version: (rules as any).version ?? 1
       })
-      .select('*')
+      .select("*")
       .single();
 
     if (error) {
-      console.error('DB insert error:', error);
-      return new Response(JSON.stringify({ error: error.message }), { 
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      console.error("DB insert error:", error);
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
 
-    console.log('Analysis saved successfully:', data.id);
-    return new Response(
-      JSON.stringify({ analysis: data }), 
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
-  } catch (err) {
-    console.error('Function error:', err);
-    return new Response(
-      JSON.stringify({ error: err.message }), 
-      { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    return new Response(JSON.stringify({ analysis: data }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
+  } catch (err: any) {
+    console.error("Function error:", err);
+    return new Response(JSON.stringify({ error: err.message ?? String(err) }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
   }
 });
