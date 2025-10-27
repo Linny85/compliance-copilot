@@ -1171,27 +1171,33 @@ export type Database = {
       email_events: {
         Row: {
           email: string | null
+          event: string | null
           event_type: string
           id: number
           message_id: string | null
           occurred_at: string
           payload: Json
+          queue_id: string | null
         }
         Insert: {
           email?: string | null
+          event?: string | null
           event_type: string
           id?: number
           message_id?: string | null
           occurred_at?: string
           payload?: Json
+          queue_id?: string | null
         }
         Update: {
           email?: string | null
+          event?: string | null
           event_type?: string
           id?: number
           message_id?: string | null
           occurred_at?: string
           payload?: Json
+          queue_id?: string | null
         }
         Relationships: []
       }
@@ -4533,6 +4539,47 @@ export type Database = {
           },
         ]
       }
+      v_email_events_norm: {
+        Row: {
+          created_at: string | null
+          event_type: string | null
+          id: number | null
+          meta: Json | null
+          queue_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_type?: never
+          id?: number | null
+          meta?: Json | null
+          queue_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_type?: never
+          id?: number | null
+          meta?: Json | null
+          queue_id?: string | null
+        }
+        Relationships: []
+      }
+      v_email_last_status: {
+        Row: {
+          attempts: number | null
+          last_event_at: string | null
+          queue_id: string | null
+          queue_status: Database["public"]["Enums"]["email_status"] | null
+          queued_at: string | null
+          sent_at: string | null
+          template_code: string | null
+          to_email: string | null
+          was_bounced: boolean | null
+          was_clicked: boolean | null
+          was_delivered: boolean | null
+          was_opened: boolean | null
+        }
+        Relationships: []
+      }
       v_email_next: {
         Row: {
           attempts: number | null
@@ -4549,6 +4596,23 @@ export type Database = {
           to_email: string | null
           to_name: string | null
           updated_at: string | null
+        }
+        Relationships: []
+      }
+      v_email_stats: {
+        Row: {
+          bounce_rate_pct: number | null
+          bounced: number | null
+          click_rate_pct: number | null
+          clicked: number | null
+          delivered: number | null
+          delivery_rate_pct: number | null
+          last_activity_at: string | null
+          open_rate_pct: number | null
+          opened: number | null
+          template_code: string | null
+          total_enqueued: number | null
+          total_sent: number | null
         }
         Relationships: []
       }

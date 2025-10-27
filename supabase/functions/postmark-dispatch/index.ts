@@ -90,6 +90,7 @@ async function sendPostmark(row: QueueRow, tpl: any) {
       TemplateId: tpl.postmark_template_id,
       TemplateModel: { ...row.payload },
       MessageStream: POSTMARK_STREAM,
+      Headers: [{ Name: "X-Queue-Id", Value: row.id }],
     };
     const res = await fetch("https://api.postmarkapp.com/email/withTemplate", {
       method: "POST",
@@ -109,6 +110,7 @@ async function sendPostmark(row: QueueRow, tpl: any) {
       Subject: tpl?.subject ?? "Notification",
       HtmlBody: htmlBody,
       MessageStream: POSTMARK_STREAM,
+      Headers: [{ Name: "X-Queue-Id", Value: row.id }],
     };
     const res = await fetch("https://api.postmarkapp.com/email", {
       method: "POST",
