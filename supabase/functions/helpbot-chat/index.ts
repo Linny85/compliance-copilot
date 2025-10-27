@@ -33,6 +33,16 @@ const MAX_HISTORY = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "12");
 const USE_GRAPH_AWARE = (Deno.env.get("HELPBOT_USE_GRAPH_AWARE") ?? "true") === "true";
 
 /** =========================
+ *  Utils
+ *  ========================= */
+function json(body: any, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
+
+/** =========================
  *  Edge Handler
  *  ========================= */
 Deno.serve(async (req) => {
@@ -198,16 +208,6 @@ Deno.serve(async (req) => {
     return json({ error: e?.message ?? "Internal error" }, 500);
   }
 });
-
-/** =========================
- *  Utils
- *  ========================= */
-function json(body: any, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
-}
 
 function disclaimerByLang(lang: string) {
   if (lang === "en") return "Note: not legal advice. Answers are based only on the provided sources.";

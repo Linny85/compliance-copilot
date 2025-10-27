@@ -127,6 +127,25 @@ export function NorrlandGuideDrawer({
           status: (error as any)?.status,
           details: error
         });
+        
+        // Debug raw response for troubleshooting
+        if (import.meta.env.DEV) {
+          try {
+            const rawRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/helpbot-chat`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({ question: currentQuestion, lang: currentLang }),
+            });
+            const rawText = await rawRes.text();
+            console.log('[RAW DEBUG]', rawRes.status, rawText);
+          } catch (e) {
+            console.log('[RAW DEBUG] network error', e);
+          }
+        }
+        
         setMessages(prev => [...prev, 
           { role: "user", content: currentQuestion },
           { role: "assistant", content: `Fehler: ${error.message || "Edge Function antwortet nicht erwartungsgemäß."}` }
