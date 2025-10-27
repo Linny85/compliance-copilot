@@ -41,6 +41,13 @@
     "upload": "Zertifikat hochladen",
     "verifyByCode": "Per Code verifizieren"
   },
+  "dropZone": "Datei hier ablegen oder klicken zum Auswählen",
+  "acceptedFormats": "Akzeptierte Formate: PDF, JPG, PNG (max. 10MB)",
+  "verifyDialog": {
+    "title": "Per Code/Link verifizieren",
+    "placeholder": "Verifizierungscode eingeben oder Zertifikatslink einfügen",
+    "submit": "Zertifikat verifizieren"
+  },
   "sections": {
     "uploaded": {
       "title": "Hochgeladene Zertifikate",

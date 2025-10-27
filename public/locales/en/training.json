@@ -41,6 +41,13 @@
     "upload": "Upload certificate",
     "verifyByCode": "Verify by code"
   },
+  "dropZone": "Drop file here or click to select",
+  "acceptedFormats": "Accepted formats: PDF, JPG, PNG (max. 10MB)",
+  "verifyDialog": {
+    "title": "Verify by Code/Link",
+    "placeholder": "Enter verification code or paste certificate link",
+    "submit": "Verify Certificate"
+  },
   "sections": {
     "uploaded": {
       "title": "Uploaded certificates",

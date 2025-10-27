@@ -41,6 +41,13 @@
     "upload": "Ladda upp intyg",
     "verifyByCode": "Verifiera med kod"
   },
+  "dropZone": "Släpp fil här eller klicka för att välja",
+  "acceptedFormats": "Accepterade format: PDF, JPG, PNG (max. 10MB)",
+  "verifyDialog": {
+    "title": "Verifiera med kod/länk",
+    "placeholder": "Ange verifieringskod eller klistra in intygslänk",
+    "submit": "Verifiera intyg"
+  },
   "sections": {
     "uploaded": {
       "title": "Uppladdade intyg",
