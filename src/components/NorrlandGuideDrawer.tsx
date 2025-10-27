@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { detectIntents, type ChatAction } from "@/features/assistant/intents";
 import { canAccess } from "@/lib/rbac";
+import { navigateGlobal } from "@/lib/navigation";
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -43,7 +43,6 @@ export function NorrlandGuideDrawer({
   const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
@@ -369,7 +368,7 @@ export function NorrlandGuideDrawer({
                   // Audit loggen (erfolgreiche Ausführung)
                   audit('chat.intent_confirmed', { path: pendingAction.path });
                   
-                  navigate(pendingAction.path, { replace: false });
+                  navigateGlobal(pendingAction.path, false);
                   // Optional highlight
                   setTimeout(() => {
                     if (pendingAction.highlight) {

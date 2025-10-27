@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import Landing from "./pages/Landing";
@@ -44,11 +45,25 @@ import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 
 installDomGuards();
 
+function GlobalNavigationBridge() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { path, replace } = (e as CustomEvent).detail || {};
+      if (typeof path === 'string') navigate(path, { replace: !!replace });
+    };
+    window.addEventListener('norrly:navigate', handler);
+    return () => window.removeEventListener('norrly:navigate', handler);
+  }, [navigate]);
+  return null;
+}
+
 const App = () => (
   <TooltipProvider>
     <Toaster position="top-right" richColors closeButton expand duration={3500} />
     <NorrlandGuide />
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <GlobalNavigationBridge />
       <AuthGuard>
         <FeatureFlagProvider>
           <Routes>
