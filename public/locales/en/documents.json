@@ -1,8 +1,8 @@
 {
   "title": "Documents",
   "subtitle": "Generate and manage your compliance documentation",
-  "comingSoon": "Document generation coming soon",
-  "comingSoonDesc": "Generate NIS2 policies, AI Act reports, and conformity certificates.",
+  "comingSoon": "Document generation active",
+  "comingSoonDesc": "Create policies, reports, and conformity certificates directly in the app.",
   "generate": "Generate document",
   "generateTitle": "Generate document",
   "generateSubtitle": "Create policies, procedures, or reports based on your controls.",

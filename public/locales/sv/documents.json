@@ -1,8 +1,8 @@
 {
   "title": "Dokument",
   "subtitle": "Skapa och hantera er regelefterlevnadsdokumentation",
-  "comingSoon": "Dokumentgenerering kommer snart",
-  "comingSoonDesc": "Skapa NIS2-riktlinjer, AI-förordningsrapporter och överensstämmelseintyg.",
+  "comingSoon": "Dokumentgenerering aktiv",
+  "comingSoonDesc": "Skapa policyer, rapporter och överensstämmelseintyg direkt i appen.",
   "generate": "Skapa dokument",
   "generateTitle": "Skapa dokument",
   "generateSubtitle": "Skapa policyer, rutiner eller rapporter baserat på era kontroller.",
