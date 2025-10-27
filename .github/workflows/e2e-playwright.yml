@@ -1,4 +1,4 @@
-name: E2E • Playwright (Demo/Trial/Prod)
+name: E2E • Playwright (Demo/Trial/Prod × Browsers)
 
 on:
   push:
@@ -18,25 +18,50 @@ concurrency:
 
 jobs:
   e2e:
-    name: Playwright • ${{ matrix.mode }}
+    name: ${{ matrix.mode }} • ${{ matrix.browser }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 35
 
     strategy:
       fail-fast: false
       matrix:
         include:
+          # --- DEMO ---
           - mode: demo
             project: demo
+            browser: chromium
+          - mode: demo
+            project: demo
+            browser: firefox
+          - mode: demo
+            project: demo
+            browser: webkit
+          # --- TRIAL ---
           - mode: trial
             project: trial
+            browser: chromium
+          - mode: trial
+            project: trial
+            browser: firefox
+          - mode: trial
+            project: trial
+            browser: webkit
+          # --- PROD ---
           - mode: prod
             project: prod
+            browser: chromium
+          - mode: prod
+            project: prod
+            browser: firefox
+          - mode: prod
+            project: prod
+            browser: webkit
 
     env:
-      # für optionale Auth in tests/e2e/utils/auth.ts
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      PW_BROWSER: ${{ matrix.browser }}
+      VITE_APP_MODE: ${{ matrix.mode }}
 
     steps:
       - name: Checkout
@@ -55,17 +80,14 @@ jobs:
         run: npx playwright install --with-deps
 
       # Hinweis: build/preview wird pro Projekt im playwright.config.ts per webServer erledigt
-      - name: Run Playwright (${{ matrix.project }})
+      - name: Run Playwright (${{ matrix.project }} • ${{ matrix.browser }})
         run: npx playwright test --project=${{ matrix.project }}
-        env:
-          # optional, falls Tests es direkt lesen
-          VITE_APP_MODE: ${{ matrix.mode }}
 
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.mode }}
+          name: report-${{ matrix.mode }}-${{ matrix.browser }}
           path: playwright-report
           if-no-files-found: ignore
           retention-days: 7
@@ -74,7 +96,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts-${{ matrix.mode }}
+          name: artifacts-${{ matrix.mode }}-${{ matrix.browser }}
           path: |
             test-results
             **/*-trace.zip
@@ -94,5 +116,47 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `${status} E2E Tests abgeschlossen für **${{ matrix.mode }}**\n\n[Siehe Details](${runUrl})`
+              body: `${status} E2E Tests abgeschlossen für **${{ matrix.mode }} • ${{ matrix.browser }}**\n\n[Siehe Details](${runUrl})`
             });
+
+      # -------- Alerts bei Fehlschlag --------
+      - name: Slack Notification (on failure)
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          payload=$(cat <<'JSON'
+          {
+            "text": "❌ E2E failed: ${MODE} • ${BROWSER}\nRepo: ${REPO}\nRun: ${RUN_URL}"
+          }
+          JSON
+          )
+          curl -X POST -H 'Content-type: application/json' \
+            --data "$(echo "$payload" | MODE='${{ matrix.mode }}' BROWSER='${{ matrix.browser }}' REPO='${{ github.repository }}' RUN_URL='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' envsubst)" \
+            "$SLACK_WEBHOOK_URL"
+
+      - name: Teams Notification (on failure)
+        if: failure() && env.TEAMS_WEBHOOK_URL != ''
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+        run: |
+          payload=$(cat <<'JSON'
+          {
+            "@type": "MessageCard",
+            "@context": "http://schema.org/extensions",
+            "summary": "E2E failed",
+            "themeColor": "FF0000",
+            "title": "❌ E2E failed: ${MODE} • ${BROWSER}",
+            "sections": [{
+              "facts": [
+                {"name": "Repository", "value": "${REPO}"},
+                {"name": "Workflow", "value": "${RUN_URL}"}
+              ],
+              "markdown": true
+            }]
+          }
+          JSON
+          )
+          curl -X POST -H 'Content-Type: application/json' \
+            --data "$(echo "$payload" | MODE='${{ matrix.mode }}' BROWSER='${{ matrix.browser }}' REPO='${{ github.repository }}' RUN_URL='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' envsubst)" \
+            "$TEAMS_WEBHOOK_URL"

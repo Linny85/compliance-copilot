@@ -1,11 +1,14 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const browserName = (process.env.PW_BROWSER ?? 'chromium') as 'chromium'|'firefox'|'webkit';
+
 export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 60_000,
   retries: 0,
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:5173',
+    browserName,
     trace: 'on-first-retry',
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
