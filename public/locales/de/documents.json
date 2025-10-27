@@ -1,0 +1,45 @@
+{
+  "title": "Dokumente",
+  "subtitle": "Compliance-Dokumentation generieren und verwalten",
+  "comingSoon": "Dokumentengenerierung in Kürze verfügbar",
+  "comingSoonDesc": "Generieren Sie NIS2-Richtlinien, AI Act-Berichte und Konformitätszertifikate",
+  "generate": "Dokument generieren",
+  "generateTitle": "Richtliniendokument erstellen",
+  "generateSubtitle": "Erstellen Sie Compliance-Dokumentation basierend auf Kontrollanforderungen",
+  "generateButton": "Dokument generieren",
+  "generating": "Generierung läuft...",
+  "policyDocument": "Richtliniendokument",
+  "selectedControl": "Ausgewählte Kontrolle",
+  "documentDetails": "Dokumentdetails",
+  "aiPoweredTitle": "KI-gestützte Dokumentgenerierung",
+  "aiPoweredDesc": "Diese Funktion verwendet KI, um Compliance-Dokumentation basierend auf den ausgewählten Kontrollanforderungen zu generieren. Das generierte Dokument enthält relevante Richtlinien, Verfahren und Implementierungsrichtlinien.",
+  "fields": {
+    "code": "Code",
+    "title": "Titel",
+    "objective": "Zielsetzung",
+    "documentType": "Dokumenttyp",
+    "documentTitle": "Dokumenttitel",
+    "description": "Beschreibung"
+  },
+  "types": {
+    "policy": "Richtliniendokument",
+    "procedure": "Verfahren",
+    "guideline": "Richtlinie",
+    "report": "Compliance-Bericht"
+  },
+  "placeholders": {
+    "title": "Dokumenttitel eingeben...",
+    "description": "Dokumentbeschreibung oder Ziele eingeben..."
+  },
+  "success": {
+    "generated": "Dokument generiert",
+    "generatedDesc": "Ihr Richtliniendokument wurde erfolgreich erstellt"
+  },
+  "errors": {
+    "loadControl": "Fehler beim Laden der Kontrollinformationen",
+    "validation": "Validierungsfehler",
+    "titleRequired": "Bitte geben Sie einen Dokumenttitel ein",
+    "generateFailed": "Generierung fehlgeschlagen",
+    "generateFailedDesc": "Fehler beim Generieren des Dokuments. Bitte versuchen Sie es erneut."
+  }
+}

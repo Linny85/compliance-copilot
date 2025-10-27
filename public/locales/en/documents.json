@@ -1,0 +1,45 @@
+{
+  "title": "Documents",
+  "subtitle": "Generate and manage compliance documentation",
+  "comingSoon": "Document generation coming soon",
+  "comingSoonDesc": "Generate NIS2 policies, AI Act reports, and compliance certificates",
+  "generate": "Generate Document",
+  "generateTitle": "Generate Policy Document",
+  "generateSubtitle": "Create compliance documentation based on control requirements",
+  "generateButton": "Generate Document",
+  "generating": "Generating...",
+  "policyDocument": "Policy Document",
+  "selectedControl": "Selected Control",
+  "documentDetails": "Document Details",
+  "aiPoweredTitle": "AI-Powered Document Generation",
+  "aiPoweredDesc": "This feature uses AI to generate compliance documentation based on the selected control requirements. The generated document will include relevant policies, procedures, and implementation guidelines.",
+  "fields": {
+    "code": "Code",
+    "title": "Title",
+    "objective": "Objective",
+    "documentType": "Document Type",
+    "documentTitle": "Document Title",
+    "description": "Description"
+  },
+  "types": {
+    "policy": "Policy Document",
+    "procedure": "Procedure",
+    "guideline": "Guideline",
+    "report": "Compliance Report"
+  },
+  "placeholders": {
+    "title": "Enter document title...",
+    "description": "Enter document description or objectives..."
+  },
+  "success": {
+    "generated": "Document Generated",
+    "generatedDesc": "Your policy document has been created successfully"
+  },
+  "errors": {
+    "loadControl": "Failed to load control information",
+    "validation": "Validation Error",
+    "titleRequired": "Please provide a document title",
+    "generateFailed": "Generation Failed",
+    "generateFailedDesc": "Failed to generate the document. Please try again."
+  }
+}

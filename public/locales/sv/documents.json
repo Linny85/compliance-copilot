@@ -1,0 +1,45 @@
+{
+  "title": "Dokument",
+  "subtitle": "Generera och hantera efterlevnadsdokumentation",
+  "comingSoon": "Dokumentgenerering kommer snart",
+  "comingSoonDesc": "Generera NIS2-policyer, AI Act-rapporter och efterlevnadscertifikat",
+  "generate": "Generera dokument",
+  "generateTitle": "Generera policydokument",
+  "generateSubtitle": "Skapa efterlevnadsdokumentation baserad på kontrollkrav",
+  "generateButton": "Generera dokument",
+  "generating": "Genererar...",
+  "policyDocument": "Policydokument",
+  "selectedControl": "Vald kontroll",
+  "documentDetails": "Dokumentdetaljer",
+  "aiPoweredTitle": "AI-driven dokumentgenerering",
+  "aiPoweredDesc": "Denna funktion använder AI för att generera efterlevnadsdokumentation baserad på de valda kontrollkraven. Det genererade dokumentet kommer att innehålla relevanta policyer, procedurer och implementeringsriktlinjer.",
+  "fields": {
+    "code": "Kod",
+    "title": "Titel",
+    "objective": "Målsättning",
+    "documentType": "Dokumenttyp",
+    "documentTitle": "Dokumenttitel",
+    "description": "Beskrivning"
+  },
+  "types": {
+    "policy": "Policydokument",
+    "procedure": "Procedur",
+    "guideline": "Riktlinje",
+    "report": "Efterlevnadsrapport"
+  },
+  "placeholders": {
+    "title": "Ange dokumenttitel...",
+    "description": "Ange dokumentbeskrivning eller målsättningar..."
+  },
+  "success": {
+    "generated": "Dokument genererat",
+    "generatedDesc": "Ditt policydokument har skapats framgångsrikt"
+  },
+  "errors": {
+    "loadControl": "Misslyckades med att ladda kontrollinformation",
+    "validation": "Valideringsfel",
+    "titleRequired": "Vänligen ange en dokumenttitel",
+    "generateFailed": "Generering misslyckades",
+    "generateFailedDesc": "Misslyckades med att generera dokumentet. Försök igen."
+  }
+}

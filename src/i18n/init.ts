@@ -24,7 +24,7 @@ if (!g.__i18n_singleton__) {
       lng: BOOT_LNG,
       fallbackLng: 'en',
       supportedLngs: SUPPORTED,
-      ns: [...Object.keys(translations.de), 'dashboard', 'training', 'assistant'],
+      ns: [...Object.keys(translations.de), 'dashboard', 'documents', 'training', 'assistant'],
       defaultNS: 'common',
       fallbackNS: ['common'],
       resources,
