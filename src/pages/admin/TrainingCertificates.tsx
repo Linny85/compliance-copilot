@@ -100,64 +100,61 @@ export default function TrainingCertificates() {
 
   return (
     <AdminLayout>
-      <div data-qa="page-training-certificates"
-        className="relative w-full"
-      >
-        {/* HEADER */}
-        <header className="text-center space-y-2">
-          <h1 className="section-title">{t('title', { ns: 'training' })}</h1>
-          <p className="section-subtitle">{t('description', { ns: 'training' })}</p>
-        </header>
+      {/* HEADER - centered only */}
+      <header className="mb-6 text-center">
+        <h1 className="section-title">{t('title', { ns: 'training' })}</h1>
+        <p className="section-subtitle">{t('description', { ns: 'training' })}</p>
+      </header>
 
-        {/* Hint Bar with Link to Courses */}
-        <div className="mt-6 mx-auto max-w-3xl rounded-xl border bg-card p-4 sm:p-6 text-center">
-          <p className="text-sm sm:text-base mb-3">
-            {t('hintBar.text', { ns: 'training' })}
-          </p>
-          <div className="flex justify-center">
-            <a
-              href="https://www.norrland-innovate.com/compliance-schulungen/"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm sm:text-base hover:bg-accent transition-colors"
-            >
-              {t('hintBar.cta', { ns: 'training' })}
-              <ExternalLink className="h-4 w-4" />
-            </a>
-          </div>
+      {/* Hint Bar with Link to Courses */}
+      <div className="mb-6 mx-auto max-w-3xl rounded-xl border bg-card p-4 sm:p-6 text-center">
+        <p className="text-sm sm:text-base mb-3">
+          {t('hintBar.text', { ns: 'training' })}
+        </p>
+        <div className="flex justify-center">
+          <a
+            href="https://www.norrland-innovate.com/compliance-schulungen/"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm sm:text-base hover:bg-accent transition-colors"
+          >
+            {t('hintBar.cta', { ns: 'training' })}
+            <ExternalLink className="h-4 w-4" />
+          </a>
         </div>
+      </div>
 
-        {/* Course Cards - DE only */}
-        <section className="mt-6">
-          {showCourses ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
-              {(['nis2', 'lead', 'emp'] as const).map((kind) => (
-                <CourseCard key={kind} kind={kind} />
-              ))}
-            </div>
-          ) : (
-            <div className="mx-auto max-w-xl text-center rounded-2xl border bg-card p-6">
-              <p className="text-sm text-muted-foreground">
-                {t('notice.deOnly', { ns: 'training' })}
-              </p>
-            </div>
-          )}
+      {/* Course Cards - Clean Grid, no center inheritance */}
+      {showCourses ? (
+        <section className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {(['nis2', 'lead', 'emp'] as const).map((kind) => (
+            <CourseCard key={kind} kind={kind} />
+          ))}
         </section>
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex justify-center gap-3 flex-wrap">
-          <UploadCertificateDialog />
-          <VerifyByCodeDialog />
+      ) : (
+        <div className="mb-6 mx-auto max-w-xl text-center rounded-2xl border bg-card p-6">
+          <p className="text-sm text-muted-foreground">
+            {t('notice.deOnly', { ns: 'training' })}
+          </p>
         </div>
+      )}
 
-        {/* Uploaded Certificates Table */}
-        <Card className="mt-6 p-4 sm:p-6">
+      {/* Action Buttons - separate from grid */}
+      <div className="mb-6 flex flex-wrap gap-3 justify-center">
+        <UploadCertificateDialog />
+        <VerifyByCodeDialog />
+      </div>
+
+      {/* Uploaded Certificates Table - no position fixed/absolute */}
+      <section>
+        <h2 className="text-xl font-semibold mb-4">{t('sections.uploaded.title', { ns: 'training' })}</h2>
+        <Card className="p-4 sm:p-6">
           <CardHeader className="px-0 pt-0">
-            <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
               <FileText className="h-5 w-5" />
               {t('sections.uploaded.title', { ns: 'training' })}
             </CardTitle>
-            <CardDescription className="text-sm sm:text-base">
+            <CardDescription className="text-sm">
               {t('sections.uploaded.subtitle', { ns: 'training' })}
             </CardDescription>
           </CardHeader>
@@ -239,61 +236,61 @@ export default function TrainingCertificates() {
             )}
           </CardContent>
         </Card>
+      </section>
 
-        {/* Verify/Reject Dialog */}
-        <Dialog
-          open={!!selectedCert && !!action}
-          onOpenChange={() => {
-            setSelectedCert(null);
-            setAction(null);
-            setNotes('');
-          }}
-        >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {action === 'verify' ? 'Zertifikat bestätigen' : 'Zertifikat ablehnen'}
-              </DialogTitle>
-              <DialogDescription>
-                {action === 'verify'
-                  ? 'Bestätigen Sie, dass das Zertifikat gültig ist.'
-                  : 'Geben Sie einen Grund für die Ablehnung an.'}
-              </DialogDescription>
-            </DialogHeader>
-            {action === 'reject' && (
-              <div>
-                <Label htmlFor="notes">Begründung *</Label>
-                <Textarea
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Grund für die Ablehnung..."
-                  rows={4}
-                />
-              </div>
-            )}
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setSelectedCert(null);
-                  setAction(null);
-                  setNotes('');
-                }}
-              >
-                Abbrechen
-              </Button>
-              <Button
-                onClick={handleVerify}
-                disabled={action === 'reject' && !notes.trim()}
-                variant={action === 'verify' ? 'default' : 'destructive'}
-              >
-                {action === 'verify' ? 'Bestätigen' : 'Ablehnen'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+      {/* Verify/Reject Dialog */}
+      <Dialog
+        open={!!selectedCert && !!action}
+        onOpenChange={() => {
+          setSelectedCert(null);
+          setAction(null);
+          setNotes('');
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {action === 'verify' ? 'Zertifikat bestätigen' : 'Zertifikat ablehnen'}
+            </DialogTitle>
+            <DialogDescription>
+              {action === 'verify'
+                ? 'Bestätigen Sie, dass das Zertifikat gültig ist.'
+                : 'Geben Sie einen Grund für die Ablehnung an.'}
+            </DialogDescription>
+          </DialogHeader>
+          {action === 'reject' && (
+            <div>
+              <Label htmlFor="notes">Begründung *</Label>
+              <Textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Grund für die Ablehnung..."
+                rows={4}
+              />
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSelectedCert(null);
+                setAction(null);
+                setNotes('');
+              }}
+            >
+              Abbrechen
+            </Button>
+            <Button
+              onClick={handleVerify}
+              disabled={action === 'reject' && !notes.trim()}
+              variant={action === 'verify' ? 'default' : 'destructive'}
+            >
+              {action === 'verify' ? 'Bestätigen' : 'Ablehnen'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 }

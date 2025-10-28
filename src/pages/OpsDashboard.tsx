@@ -52,60 +52,61 @@ export default function OpsDashboard() {
 
   return (
     <AdminLayout maxWidth="wide">
-      <div data-qa="page-ops-dashboard" className="relative w-full">
-        {/* HEADER: zentriert auf Mobile/Tablet, links auf großen Screens optional */}
-        <header className="text-center lg:text-left space-y-2 lg:space-y-0 lg:flex lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Ops Dashboard</h1>
+      {/* HEADER - centered on mobile, left-aligned on large screens */}
+      <header className="mb-6 text-center lg:text-left lg:flex lg:items-center lg:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Ops Dashboard</h1>
+        </div>
+        <div className="mt-3 lg:mt-0 flex justify-center lg:justify-end items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium">Lookback</label>
+            <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
+              <SelectTrigger className="w-24">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="6">6h</SelectItem>
+                <SelectItem value="12">12h</SelectItem>
+                <SelectItem value="24">24h</SelectItem>
+                <SelectItem value="48">48h</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="flex justify-center lg:justify-end items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium">Lookback</label>
-              <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
-                <SelectTrigger className="w-24">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="6">6h</SelectItem>
-                  <SelectItem value="12">12h</SelectItem>
-                  <SelectItem value="24">24h</SelectItem>
-                  <SelectItem value="48">48h</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Button onClick={load} disabled={loading} size="sm" variant="outline">
-              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              {loading ? "Loading..." : "Refresh"}
-            </Button>
-          </div>
-        </header>
+          <Button onClick={load} disabled={loading} size="sm" variant="outline">
+            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+            {loading ? "Loading..." : "Refresh"}
+          </Button>
+        </div>
+      </header>
 
-        {/* KPI Cards */}
-        <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {cards.map((c) => (
-            <Card 
-              key={c.label} 
-              className={c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}
-              onClick={() => c.href && (window.location.href = c.href)}
-            >
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{c.label}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{c.value}</div>
-                <p className="text-xs text-muted-foreground mt-1">{c.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </section>
 
-        {/* Email Statistics */}
-        <section className="mt-6">
-          <EmailStatsDashboard />
-        </section>
+      {/* KPI Cards - clean grid without flex-wrap to prevent overlap */}
+      <section className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {cards.map((c) => (
+          <Card 
+            key={c.label} 
+            className={c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}
+            onClick={() => c.href && (window.location.href = c.href)}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">{c.label}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{c.value}</div>
+              <p className="text-xs text-muted-foreground mt-1">{c.description}</p>
+            </CardContent>
+          </Card>
+        ))}
+      </section>
 
-        {/* Top Errors */}
-        <Card className="mt-6">
+      {/* Email Statistics */}
+      <section className="mb-6">
+        <EmailStatsDashboard />
+      </section>
+
+      {/* Top Errors */}
+      <section>
+        <Card>
           <CardHeader>
             <CardTitle>Top Errors (24h)</CardTitle>
           </CardHeader>
@@ -141,7 +142,7 @@ export default function OpsDashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </section>
     </AdminLayout>
   );
 }
