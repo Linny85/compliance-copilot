@@ -100,18 +100,18 @@ export default function TrainingCertificates() {
 
   return (
     <AdminLayout>
-      {/* HEADER - centered only */}
+      {/* Header - centered */}
       <header className="mb-6 text-center">
-        <h1 className="section-title">{t('title', { ns: 'training' })}</h1>
-        <p className="section-subtitle">{t('description', { ns: 'training' })}</p>
+        <h1 className="text-3xl font-bold">{t('title', { ns: 'training' })}</h1>
+        <p className="text-muted-foreground">{t('description', { ns: 'training' })}</p>
       </header>
 
       {/* Hint Bar with Link to Courses */}
-      <div className="mb-6 mx-auto max-w-3xl rounded-xl border bg-card p-4 sm:p-6 text-center">
-        <p className="text-sm sm:text-base mb-3">
-          {t('hintBar.text', { ns: 'training' })}
-        </p>
-        <div className="flex justify-center">
+      <div className="mb-6 rounded-xl border bg-card p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-sm sm:text-base">
+            {t('hintBar.text', { ns: 'training' })}
+          </p>
           <a
             href="https://www.norrland-innovate.com/compliance-schulungen/"
             target="_blank"
@@ -124,16 +124,18 @@ export default function TrainingCertificates() {
         </div>
       </div>
 
-      {/* Course Cards - Clean Grid, no center inheritance */}
+      {/* Course Cards - stable grid, no center inheritance */}
       {showCourses ? (
         <section className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {(['nis2', 'lead', 'emp'] as const).map((kind) => (
-            <CourseCard key={kind} kind={kind} />
+            <div key={kind} className="min-w-0">
+              <CourseCard kind={kind} />
+            </div>
           ))}
         </section>
       ) : (
-        <div className="mb-6 mx-auto max-w-xl text-center rounded-2xl border bg-card p-6">
-          <p className="text-sm text-muted-foreground">
+        <div className="mb-6 mx-auto max-w-xl rounded-2xl border bg-card p-6">
+          <p className="text-sm text-muted-foreground text-center">
             {t('notice.deOnly', { ns: 'training' })}
           </p>
         </div>
@@ -147,7 +149,9 @@ export default function TrainingCertificates() {
 
       {/* Uploaded Certificates Table - no position fixed/absolute */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">{t('sections.uploaded.title', { ns: 'training' })}</h2>
+        <h2 className="text-xl font-semibold mb-2">{t('sections.uploaded.title', { ns: 'training' })}</h2>
+        <p className="text-sm text-muted-foreground mb-3">{t('sections.uploaded.subtitle', { ns: 'training' })}</p>
+        
         <Card className="p-4 sm:p-6">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">

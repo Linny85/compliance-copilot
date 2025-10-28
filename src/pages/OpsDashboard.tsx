@@ -51,41 +51,17 @@ export default function OpsDashboard() {
   ]), [data]);
 
   return (
-    <AdminLayout maxWidth="wide">
-      {/* HEADER - centered on mobile, left-aligned on large screens */}
-      <header className="mb-6 text-center lg:text-left lg:flex lg:items-center lg:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Ops Dashboard</h1>
-        </div>
-        <div className="mt-3 lg:mt-0 flex justify-center lg:justify-end items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <label className="text-sm font-medium">Lookback</label>
-            <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
-              <SelectTrigger className="w-24">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="6">6h</SelectItem>
-                <SelectItem value="12">12h</SelectItem>
-                <SelectItem value="24">24h</SelectItem>
-                <SelectItem value="48">48h</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <Button onClick={load} disabled={loading} size="sm" variant="outline">
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? "Loading..." : "Refresh"}
-          </Button>
-        </div>
+    <AdminLayout>
+      <header className="mb-6 text-center">
+        <h1 className="text-3xl font-bold">Ops Dashboard</h1>
       </header>
 
-
-      {/* KPI Cards - clean grid without flex-wrap to prevent overlap */}
-      <section className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPI Cards - clean grid instead of flex-wrap to prevent overlap */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {cards.map((c) => (
           <Card 
             key={c.label} 
-            className={c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}
+            className={`min-w-0 ${c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}`}
             onClick={() => c.href && (window.location.href = c.href)}
           >
             <CardHeader className="pb-2">
@@ -143,6 +119,28 @@ export default function OpsDashboard() {
           </CardContent>
         </Card>
       </section>
+
+      {/* Lookback & Refresh Controls - moved to bottom */}
+      <div className="mt-6 flex justify-center items-center gap-4 flex-wrap">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Lookback</label>
+          <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
+            <SelectTrigger className="w-24">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="6">6h</SelectItem>
+              <SelectItem value="12">12h</SelectItem>
+              <SelectItem value="24">24h</SelectItem>
+              <SelectItem value="48">48h</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <Button onClick={load} disabled={loading} size="sm" variant="outline">
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          {loading ? "Loading..." : "Refresh"}
+        </Button>
+      </div>
     </AdminLayout>
   );
 }
