@@ -28,7 +28,7 @@ interface AISystem {
 
 const AIAct = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation(['aiSystems']);
+  const { t, i18n, ready } = useTranslation(['aiAct', 'common']);
   const { tx } = useI18n();
   const [loading, setLoading] = useState(true);
   const [systems, setSystems] = useState<AISystem[]>([]);
@@ -45,7 +45,12 @@ const AIAct = () => {
 
   useEffect(() => {
     loadData();
-  }, [navigate]);
+    // Ensure namespace is loaded
+    const lng = i18n.language?.slice(0, 2) || 'de';
+    if (!i18n.hasResourceBundle(lng, 'aiAct')) {
+      i18n.loadNamespaces(['aiAct']).catch(console.error);
+    }
+  }, [navigate, i18n]);
 
   const loadData = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -118,12 +123,12 @@ const AIAct = () => {
     }
   };
 
-  if (loading) {
+  if (loading || !ready) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">Loading AI systems...</p>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -139,23 +144,23 @@ const AIAct = () => {
               <div>
                 <h1 className="text-3xl font-bold flex items-center gap-2">
                   <Brain className="h-8 w-8 text-primary" />
-                  {t('aiSystems:title')}
+                  {t('aiAct:title')}
                 </h1>
-                <p className="text-muted-foreground">{t('aiSystems:subtitle')}</p>
+                <p className="text-muted-foreground">{t('aiAct:subtitle')}</p>
               </div>
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    {t('aiSystems:actions.register')}
+                    {t('aiAct:actions.register')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>{t('aiSystems:dialog.title')}</DialogTitle>
+                    <DialogTitle>{t('aiAct:dialog.title')}</DialogTitle>
                     <DialogDescription>
-                      {t('aiSystems:dialog.description')}
+                      {t('aiAct:dialog.description')}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
@@ -231,10 +236,10 @@ const AIAct = () => {
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      {t('aiSystems:actions.cancel')}
+                      {t('aiAct:actions.cancel')}
                     </Button>
                     <Button onClick={handleCreateSystem} disabled={!newSystem.name}>
-                      {t('aiSystems:actions.register')}
+                      {t('aiAct:actions.register')}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -245,13 +250,13 @@ const AIAct = () => {
               <Card>
                 <CardContent className="p-12 text-center">
                   <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{t('aiSystems:empty.title')}</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t('aiAct:empty.title')}</h3>
                   <p className="text-muted-foreground mb-4">
-                    {t('aiSystems:empty.description')}
+                    {t('aiAct:empty.description')}
                   </p>
                   <Button onClick={() => setDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    {t('aiSystems:empty.button')}
+                    {t('aiAct:empty.button')}
                   </Button>
                 </CardContent>
               </Card>
