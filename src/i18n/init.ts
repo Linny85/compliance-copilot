@@ -9,26 +9,36 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'de',
-    debug: false,
+    debug: true, // Enable debug to see what's happening
     ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
+    load: 'currentOnly',
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
-      allowMultiLoading: true,
+      allowMultiLoading: false,
       crossDomain: false
     },
     interpolation: { escapeValue: false },
     returnEmptyString: false,
-    saveMissing: true,
+    saveMissing: false,
+    react: {
+      useSuspense: false
+    },
     parseMissingKeyHandler: (key) => {
       console.warn('[i18n] missing key:', key);
       return key;
     },
   });
 
-// Set lang attribute on HTML root for proper hyphenation
+// Debug: Log when namespaces are loaded
+i18n.on('loaded', (loaded) => {
+  console.log('[i18n] Successfully loaded:', loaded);
+});
+
+// Debug: Log when language changes
 i18n.on('languageChanged', (lng) => {
+  console.log('[i18n] Language changed to:', lng);
   document.documentElement.lang = lng?.slice(0, 2) || 'de';
 });
 // Set initial lang
