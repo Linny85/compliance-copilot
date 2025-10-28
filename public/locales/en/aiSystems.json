@@ -1,6 +1,19 @@
 {
   "title": "Document Generation",
-  "subtitle": "Create and manage policies, reports, and certificates for AI Act and NIS2 compliance.",
+  "subtitle": "Create and manage policies, reports, and certificates for your organization.",
+  "actions": {
+    "register": "Create new document",
+    "cancel": "Cancel"
+  },
+  "empty": {
+    "title": "No documents yet",
+    "description": "Start by creating your first policy or report.",
+    "button": "Create first document"
+  },
+  "dialog": {
+    "title": "Create document",
+    "description": "Document a new compliance artifact for your organization"
+  },
   "register": {
     "title": "Register AI System",
     "description": "Document a new AI system for EU AI Act compliance.",

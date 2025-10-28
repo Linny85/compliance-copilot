@@ -1,6 +1,19 @@
 {
   "title": "Dokumentengenerierung",
-  "subtitle": "Erstellen und verwalten Sie Richtlinien, Berichte und Zertifikate nach AI Act und NIS2.",
+  "subtitle": "Erstellen und verwalten Sie Richtlinien, Berichte und Zertifikate für Ihre Organisation.",
+  "actions": {
+    "register": "Neues Dokument erstellen",
+    "cancel": "Abbrechen"
+  },
+  "empty": {
+    "title": "Noch keine Dokumente vorhanden",
+    "description": "Beginnen Sie mit der Erstellung Ihrer ersten Richtlinie oder Ihres ersten Berichts.",
+    "button": "Erstes Dokument erstellen"
+  },
+  "dialog": {
+    "title": "Dokument erstellen",
+    "description": "Dokumentieren Sie ein neues Compliance-Artefakt für Ihre Organisation"
+  },
   "register": {
     "title": "KI-System registrieren",
     "description": "Dokumentiere ein neues KI-System zur EU-KI-Gesetz-Compliance.",

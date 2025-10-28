@@ -13,6 +13,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Plus, Brain } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { useI18n } from "@/contexts/I18nContext";
 
 interface AISystem {
@@ -27,6 +28,7 @@ interface AISystem {
 
 const AIAct = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation(['aiSystems']);
   const { tx } = useI18n();
   const [loading, setLoading] = useState(true);
   const [systems, setSystems] = useState<AISystem[]>([]);
@@ -137,23 +139,23 @@ const AIAct = () => {
               <div>
                 <h1 className="text-3xl font-bold flex items-center gap-2">
                   <Brain className="h-8 w-8 text-primary" />
-                  AI Act System Registry
+                  {t('aiSystems:title')}
                 </h1>
-                <p className="text-muted-foreground">Register and classify AI systems</p>
+                <p className="text-muted-foreground">{t('aiSystems:subtitle')}</p>
               </div>
 
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    {tx('aiact.register', 'Register System')}
+                    {t('aiSystems:actions.register')}
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>Register AI System</DialogTitle>
+                    <DialogTitle>{t('aiSystems:dialog.title')}</DialogTitle>
                     <DialogDescription>
-                      Document a new AI system for EU AI Act compliance
+                      {t('aiSystems:dialog.description')}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
@@ -229,10 +231,10 @@ const AIAct = () => {
                   </div>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      Cancel
+                      {t('aiSystems:actions.cancel')}
                     </Button>
                     <Button onClick={handleCreateSystem} disabled={!newSystem.name}>
-                      Register System
+                      {t('aiSystems:actions.register')}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -243,13 +245,13 @@ const AIAct = () => {
               <Card>
                 <CardContent className="p-12 text-center">
                   <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{tx('aiact.emptyTitle', 'No AI systems registered')}</h3>
+                  <h3 className="text-lg font-semibold mb-2">{t('aiSystems:empty.title')}</h3>
                   <p className="text-muted-foreground mb-4">
-                    {tx('aiact.emptyDesc', 'Start documenting your AI systems for EU AI Act compliance')}
+                    {t('aiSystems:empty.description')}
                   </p>
                   <Button onClick={() => setDialogOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" />
-                    {tx('aiact.registerFirst', 'Register First System')}
+                    {t('aiSystems:empty.button')}
                   </Button>
                 </CardContent>
               </Card>

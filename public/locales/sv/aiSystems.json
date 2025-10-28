@@ -1,6 +1,19 @@
 {
   "title": "Dokumentgenerering",
-  "subtitle": "Skapa och hantera policyer, rapporter och certifikat enligt AI-förordningen och NIS2.",
+  "subtitle": "Skapa och hantera policyer, rapporter och certifikat för din organisation.",
+  "actions": {
+    "register": "Skapa nytt dokument",
+    "cancel": "Avbryt"
+  },
+  "empty": {
+    "title": "Inga dokument ännu",
+    "description": "Börja med att skapa din första policy eller rapport.",
+    "button": "Skapa första dokumentet"
+  },
+  "dialog": {
+    "title": "Skapa dokument",
+    "description": "Dokumentera ett nytt efterlevnadsartefakt för din organisation"
+  },
   "register": {
     "title": "Registrera AI-system",
     "description": "Dokumentera ett nytt AI-system för EU AI Act-efterlevnad.",
