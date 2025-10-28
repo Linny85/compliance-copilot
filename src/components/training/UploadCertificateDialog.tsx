@@ -33,7 +33,7 @@ interface FormData {
 }
 
 export function UploadCertificateDialog() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'training']);
   const [open, setOpen] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

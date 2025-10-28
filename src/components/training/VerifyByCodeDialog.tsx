@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 export function VerifyByCodeDialog() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['common', 'training']);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
