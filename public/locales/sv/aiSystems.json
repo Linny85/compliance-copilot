@@ -14,37 +14,29 @@
     "title": "Skapa dokument",
     "description": "Dokumentera ett nytt efterlevnadsartefakt för din organisation"
   },
-  "register": {
-    "title": "Registrera AI-system",
-    "description": "Dokumentera ett nytt AI-system för EU AI Act-efterlevnad.",
-    "fields": {
-      "system_name": "Systemnamn",
-      "custom_name": "Eget namn (valfritt)",
-      "custom_name_ph": "Ange ett eget systemnamn",
-      "description": "Beskrivning",
-      "purpose": "Syfte",
-      "risk": "Riskklassificering",
-      "deployment": "Driftsättningsstatus"
-    },
-    "presets": {
-      "label": "Snabbmallar",
-      "custom": "Annat / Eget",
-      "hintText": "Välj en vanlig AI-systemtyp för att förifyll fält eller välj \"Eget\"."
-    },
-    "actions": { 
-      "submit": "Registrera system",
-      "cancel": "Avbryt"
-    }
+  "fields": {
+    "system_name": "Systemnamn",
+    "custom_name": "Eget namn (valfritt)",
+    "custom_name_ph": "Ange ett eget systemnamn",
+    "description": "Beskrivning",
+    "purpose": "Syfte",
+    "risk": "Riskklassificering",
+    "deployment": "Driftsättningsstatus"
   },
-  "risk": { 
-    "minimal": "Minimal risk", 
-    "limited": "Begränsad risk", 
-    "high": "Hög risk" 
+  "presets": {
+    "label": "Snabbmallar",
+    "custom": "Annat / Eget",
+    "hintText": "Välj en vanlig AI-systemtyp för att förifyll fält eller välj \"Eget\"."
   },
-  "deploy": { 
-    "planned": "Planerad", 
-    "testing": "Testning", 
-    "live": "Live", 
-    "retired": "Avvecklad" 
+  "risk": {
+    "minimal": "Minimal risk",
+    "limited": "Begränsad risk",
+    "high": "Hög risk"
+  },
+  "deploy": {
+    "planned": "Planerad",
+    "testing": "Testning",
+    "live": "Live",
+    "retired": "Avvecklad"
   }
 }
