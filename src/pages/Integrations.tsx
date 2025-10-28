@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from '@/layouts/AdminLayout';
+import { AppSidebar } from '@/components/AppSidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -185,171 +186,181 @@ export default function Integrations() {
 
   if (loading) {
     return (
-      <AdminLayout>
-        <div className="animate-pulse">
-          <div className="h-8 w-64 bg-muted rounded mb-4" />
-          <div className="h-32 bg-muted rounded" />
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <AppSidebar />
+          <main className="flex-1 p-6">
+            <div className="animate-pulse">
+              <div className="h-8 w-64 bg-muted rounded mb-4" />
+              <div className="h-32 bg-muted rounded" />
+            </div>
+          </main>
         </div>
-      </AdminLayout>
+      </SidebarProvider>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">🔗 Integrationen</h1>
-        <p className="text-muted-foreground">
-          Slack, Jira und Webhook-Verbindungen mit Retry-Logik
-        </p>
-      </div>
-
-      <Tabs defaultValue="settings" className="w-full">
-        <TabsList>
-          <TabsTrigger value="settings">Einstellungen</TabsTrigger>
-          <TabsTrigger value="outbox">Outbox ({outboxJobs.length})</TabsTrigger>
-          <TabsTrigger value="dlq">DLQ ({dlqJobs.length})</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="settings">
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Slack</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Aktiviert</Label>
-                  <Switch
-                    checked={settings?.integration_slack_enabled || false}
-                    onCheckedChange={(checked) =>
-                      setSettings({ ...settings!, integration_slack_enabled: checked })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label>Webhook URL</Label>
-                  <Input
-                    type="url"
-                    placeholder="https://hooks.slack.com/services/..."
-                    value={settings?.integration_slack_webhook_url || ''}
-                    onChange={(e) =>
-                      setSettings({ ...settings!, integration_slack_webhook_url: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold mb-4">Jira</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <Label>Aktiviert</Label>
-                  <Switch
-                    checked={settings?.integration_jira_enabled || false}
-                    onCheckedChange={(checked) =>
-                      setSettings({ ...settings!, integration_jira_enabled: checked })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label>Base URL</Label>
-                  <Input
-                    type="url"
-                    placeholder="https://your-domain.atlassian.net"
-                    value={settings?.integration_jira_base_url || ''}
-                    onChange={(e) =>
-                      setSettings({ ...settings!, integration_jira_base_url: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <Label>Projekt Key</Label>
-                  <Input
-                    placeholder="COMP"
-                    value={settings?.integration_jira_project_key || ''}
-                    onChange={(e) =>
-                      setSettings({ ...settings!, integration_jira_project_key: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-            </Card>
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <main className="flex-1 p-6">
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold mb-2">🔗 Integrationen</h1>
+            <p className="text-muted-foreground">
+              Slack, Jira und Webhook-Verbindungen mit Retry-Logik
+            </p>
           </div>
 
-          <Button onClick={handleSaveSettings} className="mt-6">
-            Einstellungen speichern
-          </Button>
-        </TabsContent>
+          <Tabs defaultValue="settings" className="w-full">
+            <TabsList>
+              <TabsTrigger value="settings">Einstellungen</TabsTrigger>
+              <TabsTrigger value="outbox">Outbox ({outboxJobs.length})</TabsTrigger>
+              <TabsTrigger value="dlq">DLQ ({dlqJobs.length})</TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="outbox">
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Outbox Queue</h2>
-            {outboxJobs.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Keine ausstehenden Jobs</p>
-            ) : (
-              <div className="space-y-2">
-                {outboxJobs.map((job) => (
-                  <div key={job.id} className="p-3 border rounded bg-muted/30 text-sm">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(job.status)}
-                        <span className="font-medium">{job.channel}</span>
-                        <Badge variant="outline">{job.event_type}</Badge>
-                        <Badge>{job.status}</Badge>
-                      </div>
-                      <span className="text-xs text-muted-foreground">
-                        Versuche: {job.attempts}
-                      </span>
+            <TabsContent value="settings">
+              <div className="grid gap-6 md:grid-cols-2">
+                <Card className="p-6">
+                  <h2 className="text-lg font-semibold mb-4">Slack</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label>Aktiviert</Label>
+                      <Switch
+                        checked={settings?.integration_slack_enabled || false}
+                        onCheckedChange={(checked) =>
+                          setSettings({ ...settings!, integration_slack_enabled: checked })
+                        }
+                      />
                     </div>
-                    {job.last_error && (
-                      <p className="text-xs text-red-600 mt-1">{job.last_error}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Erstellt: {new Date(job.created_at).toLocaleString()}
-                    </p>
+                    <div>
+                      <Label>Webhook URL</Label>
+                      <Input
+                        type="url"
+                        placeholder="https://hooks.slack.com/services/..."
+                        value={settings?.integration_slack_webhook_url || ''}
+                        onChange={(e) =>
+                          setSettings({ ...settings!, integration_slack_webhook_url: e.target.value })
+                        }
+                      />
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </Card>
-        </TabsContent>
+                </Card>
 
-        <TabsContent value="dlq">
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Dead Letter Queue</h2>
-            {dlqJobs.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Keine fehlgeschlagenen Jobs</p>
-            ) : (
-              <div className="space-y-2">
-                {dlqJobs.map((job) => (
-                  <div key={job.id} className="p-3 border rounded bg-muted/30 text-sm">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className="flex items-center gap-2">
-                        <XCircle className="h-4 w-4 text-red-600" />
-                        <span className="font-medium">{job.channel}</span>
-                        <Badge variant="outline">{job.event_type}</Badge>
-                      </div>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleRequeue(job.id)}
-                      >
-                        <RotateCcw className="h-4 w-4 mr-1" />
-                        Requeue
-                      </Button>
+                <Card className="p-6">
+                  <h2 className="text-lg font-semibold mb-4">Jira</h2>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label>Aktiviert</Label>
+                      <Switch
+                        checked={settings?.integration_jira_enabled || false}
+                        onCheckedChange={(checked) =>
+                          setSettings({ ...settings!, integration_jira_enabled: checked })
+                        }
+                      />
                     </div>
-                    {job.last_error && (
-                      <p className="text-xs text-red-600 mt-1">{job.last_error}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Versuche: {job.attempts} • Erstellt: {new Date(job.created_at).toLocaleString()}
-                    </p>
+                    <div>
+                      <Label>Base URL</Label>
+                      <Input
+                        type="url"
+                        placeholder="https://your-domain.atlassian.net"
+                        value={settings?.integration_jira_base_url || ''}
+                        onChange={(e) =>
+                          setSettings({ ...settings!, integration_jira_base_url: e.target.value })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <Label>Projekt Key</Label>
+                      <Input
+                        placeholder="COMP"
+                        value={settings?.integration_jira_project_key || ''}
+                        onChange={(e) =>
+                          setSettings({ ...settings!, integration_jira_project_key: e.target.value })
+                        }
+                      />
+                    </div>
                   </div>
-                ))}
+                </Card>
               </div>
-            )}
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </AdminLayout>
+
+              <Button onClick={handleSaveSettings} className="mt-6">
+                Einstellungen speichern
+              </Button>
+            </TabsContent>
+
+            <TabsContent value="outbox">
+              <Card className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Outbox Queue</h2>
+                {outboxJobs.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Keine ausstehenden Jobs</p>
+                ) : (
+                  <div className="space-y-2">
+                    {outboxJobs.map((job) => (
+                      <div key={job.id} className="p-3 border rounded bg-muted/30 text-sm">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(job.status)}
+                            <span className="font-medium">{job.channel}</span>
+                            <Badge variant="outline">{job.event_type}</Badge>
+                            <Badge>{job.status}</Badge>
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            Versuche: {job.attempts}
+                          </span>
+                        </div>
+                        {job.last_error && (
+                          <p className="text-xs text-red-600 mt-1">{job.last_error}</p>
+                        )}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Erstellt: {new Date(job.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="dlq">
+              <Card className="p-6">
+                <h2 className="text-lg font-semibold mb-4">Dead Letter Queue</h2>
+                {dlqJobs.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Keine fehlgeschlagenen Jobs</p>
+                ) : (
+                  <div className="space-y-2">
+                    {dlqJobs.map((job) => (
+                      <div key={job.id} className="p-3 border rounded bg-muted/30 text-sm">
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <XCircle className="h-4 w-4 text-red-600" />
+                            <span className="font-medium">{job.channel}</span>
+                            <Badge variant="outline">{job.event_type}</Badge>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleRequeue(job.id)}
+                          >
+                            <RotateCcw className="h-4 w-4 mr-1" />
+                            Requeue
+                          </Button>
+                        </div>
+                        {job.last_error && (
+                          <p className="text-xs text-red-600 mt-1">{job.last_error}</p>
+                        )}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Versuche: {job.attempts} • Erstellt: {new Date(job.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }
