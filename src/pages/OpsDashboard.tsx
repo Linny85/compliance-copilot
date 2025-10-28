@@ -4,8 +4,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AppSidebar } from "@/components/AppSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import AdminLayout from "@/layouts/AdminLayout";
 import { RefreshCw } from "lucide-react";
 import EmailStatsDashboard from "@/components/EmailStatsDashboard";
 
@@ -52,108 +51,97 @@ export default function OpsDashboard() {
   ]), [data]);
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1 overflow-y-auto">
-          <div
-            data-qa="page-ops-dashboard"
-            className="relative w-full"
-          >
-            {/* Content-Container */}
-            <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6">
-              {/* HEADER: zentriert auf Mobile/Tablet, links auf großen Screens optional */}
-              <header className="text-center lg:text-left space-y-2 lg:space-y-0 lg:flex lg:items-center lg:justify-between">
-                <div>
-                  <h1 className="text-3xl font-bold">Ops Dashboard</h1>
-                </div>
-                <div className="flex justify-center lg:justify-end items-center gap-4 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <label className="text-sm font-medium">Lookback</label>
-                    <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
-                      <SelectTrigger className="w-24">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="6">6h</SelectItem>
-                        <SelectItem value="12">12h</SelectItem>
-                        <SelectItem value="24">24h</SelectItem>
-                        <SelectItem value="48">48h</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button onClick={load} disabled={loading} size="sm" variant="outline">
-                    <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                    {loading ? "Loading..." : "Refresh"}
-                  </Button>
-                </div>
-              </header>
-
-              {/* KPI Cards */}
-              <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {cards.map((c) => (
-                  <Card 
-                    key={c.label} 
-                    className={c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}
-                    onClick={() => c.href && (window.location.href = c.href)}
-                  >
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">{c.label}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-3xl font-bold">{c.value}</div>
-                      <p className="text-xs text-muted-foreground mt-1">{c.description}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </section>
-
-              {/* Email Statistics */}
-              <section className="mt-6">
-                <EmailStatsDashboard />
-              </section>
-
-              {/* Top Errors */}
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Top Errors (24h)</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {!data?.topErrors24h?.length ? (
-                    <div className="text-sm text-muted-foreground">No errors in the lookback window.</div>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="border-b">
-                            <th className="text-left py-3 font-medium">Error</th>
-                            <th className="text-right py-3 font-medium w-24">Count</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.topErrors24h.map((e, i) => (
-                            <tr key={i} className="border-b last:border-0">
-                              <td className="py-3 pr-4 font-mono text-xs">
-                                <a 
-                                  href={`/admin/integrations?tab=dead&q=${encodeURIComponent(e.error)}`}
-                                  className="underline hover:text-primary"
-                                >
-                                  {e.error}
-                                </a>
-                              </td>
-                              <td className="py-3 text-right font-semibold">{e.cnt}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+    <AdminLayout maxWidth="wide">
+      <div data-qa="page-ops-dashboard" className="relative w-full">
+        {/* HEADER: zentriert auf Mobile/Tablet, links auf großen Screens optional */}
+        <header className="text-center lg:text-left space-y-2 lg:space-y-0 lg:flex lg:items-center lg:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Ops Dashboard</h1>
           </div>
-        </main>
+          <div className="flex justify-center lg:justify-end items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium">Lookback</label>
+              <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
+                <SelectTrigger className="w-24">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="6">6h</SelectItem>
+                  <SelectItem value="12">12h</SelectItem>
+                  <SelectItem value="24">24h</SelectItem>
+                  <SelectItem value="48">48h</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={load} disabled={loading} size="sm" variant="outline">
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              {loading ? "Loading..." : "Refresh"}
+            </Button>
+          </div>
+        </header>
+
+        {/* KPI Cards */}
+        <section className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {cards.map((c) => (
+            <Card 
+              key={c.label} 
+              className={c.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}
+              onClick={() => c.href && (window.location.href = c.href)}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{c.label}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{c.value}</div>
+                <p className="text-xs text-muted-foreground mt-1">{c.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+
+        {/* Email Statistics */}
+        <section className="mt-6">
+          <EmailStatsDashboard />
+        </section>
+
+        {/* Top Errors */}
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Top Errors (24h)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!data?.topErrors24h?.length ? (
+              <div className="text-sm text-muted-foreground">No errors in the lookback window.</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 font-medium">Error</th>
+                      <th className="text-right py-3 font-medium w-24">Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.topErrors24h.map((e, i) => (
+                      <tr key={i} className="border-b last:border-0">
+                        <td className="py-3 pr-4 font-mono text-xs">
+                          <a 
+                            href={`/admin/integrations?tab=dead&q=${encodeURIComponent(e.error)}`}
+                            className="underline hover:text-primary"
+                          >
+                            {e.error}
+                          </a>
+                        </td>
+                        <td className="py-3 text-right font-semibold">{e.cnt}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
-    </SidebarProvider>
+    </AdminLayout>
   );
 }
