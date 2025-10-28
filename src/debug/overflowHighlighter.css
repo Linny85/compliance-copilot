@@ -1,0 +1,5 @@
+/* markiert Elemente im main, die breiter als der Viewport sind */
+[data-overflow-offender="true"] {
+  outline: 2px solid #ff2d55 !important;
+  outline-offset: 2px;
+}
