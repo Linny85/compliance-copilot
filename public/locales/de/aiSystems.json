@@ -1,4 +1,6 @@
 {
+  "title": "Dokumentengenerierung",
+  "subtitle": "Erstellen und verwalten Sie Richtlinien, Berichte und Zertifikate nach AI Act und NIS2.",
   "register": {
     "title": "KI-System registrieren",
     "description": "Dokumentiere ein neues KI-System zur EU-KI-Gesetz-Compliance.",

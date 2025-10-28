@@ -1,4 +1,6 @@
 {
+  "title": "Document Generation",
+  "subtitle": "Create and manage policies, reports, and certificates for AI Act and NIS2 compliance.",
   "register": {
     "title": "Register AI System",
     "description": "Document a new AI system for EU AI Act compliance.",

@@ -1,8 +1,8 @@
 {
   "dashboard": "Overview",
   "risks": "Risks",
-  "ai": "AI Systems",
-  "ai_systems": "AI Systems",
+  "ai": "Document Generation",
+  "ai_systems": "Document Generation",
   "controls": "Controls",
   "scope": "Scope",
   "evidence": "Evidence",

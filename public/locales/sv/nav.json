@@ -1,8 +1,8 @@
 {
   "dashboard": "Instrumentpanel",
   "risks": "NIS2-risker",
-  "ai": "AI-system",
-  "ai_systems": "AI-system",
+  "ai": "Dokumentgenerering",
+  "ai_systems": "Dokumentgenerering",
   "controls": "Kontroller",
   "scope": "Omfattning",
   "evidence": "Bevis",

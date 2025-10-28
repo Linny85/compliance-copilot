@@ -1,4 +1,6 @@
 {
+  "title": "Dokumentgenerering",
+  "subtitle": "Skapa och hantera policyer, rapporter och certifikat enligt AI-förordningen och NIS2.",
   "register": {
     "title": "Registrera AI-system",
     "description": "Dokumentera ett nytt AI-system för EU AI Act-efterlevnad.",
