@@ -138,24 +138,22 @@ const AIAct = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AppSidebar />
-        <main className="flex-1 p-8">
-          <div className="max-w-7xl mx-auto space-y-8">
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-bold flex items-center gap-2">
-                  <Brain className="h-8 w-8 text-primary" />
-                  {t('aiAct:title')}
-                </h1>
-                <p className="text-muted-foreground">{t('aiAct:subtitle')}</p>
-              </div>
-
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t('aiAct:actions.register')}
-                  </Button>
-                </DialogTrigger>
+        <main className="flex-1">
+          <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-6">
+            <header className="text-center space-y-2">
+              <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
+                <Brain className="h-8 w-8 text-primary" />
+                {t('aiAct:title')}
+              </h1>
+              <p className="text-muted-foreground">{t('aiAct:subtitle')}</p>
+              <div className="mt-3 flex justify-center">
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      {t('aiAct:actions.register')}
+                    </Button>
+                  </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
                     <DialogTitle>{t('aiAct:dialog.title')}</DialogTitle>
@@ -244,25 +242,29 @@ const AIAct = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
-            </div>
+              </div>
+            </header>
 
             {systems.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
+              <section className="mt-6">
+                <div className="mx-auto max-w-xl rounded-2xl border bg-card p-6 sm:p-8 text-center">
                   <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{t('aiAct:empty.title')}</h3>
+                  <h2 className="text-lg font-semibold mb-2">{t('aiAct:empty.title')}</h2>
                   <p className="text-muted-foreground mb-4">
                     {t('aiAct:empty.description')}
                   </p>
-                  <Button onClick={() => setDialogOpen(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t('aiAct:empty.button')}
-                  </Button>
-                </CardContent>
-              </Card>
+                  <div className="flex justify-center">
+                    <Button onClick={() => setDialogOpen(true)}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      {t('aiAct:empty.button')}
+                    </Button>
+                  </div>
+                </div>
+              </section>
             ) : (
-              <div className="grid gap-4">
-                {systems.map((system) => (
+              <section className="mt-6">
+                <div className="grid gap-4">
+                  {systems.map((system) => (
                   <Card key={system.id} className="hover:shadow-lg transition-shadow">
                     <CardHeader>
                       <div className="flex justify-between items-start">
@@ -293,8 +295,9 @@ const AIAct = () => {
                       </CardContent>
                     )}
                   </Card>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </section>
             )}
           </div>
         </main>
