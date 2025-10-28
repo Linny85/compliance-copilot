@@ -170,73 +170,75 @@ export default function TrainingCertificates() {
                 {t('sections.uploaded.empty', { ns: 'training' })}
               </p>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Titel</TableHead>
-                    <TableHead>Anbieter</TableHead>
-                    <TableHead>Abschlussdatum</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Datei</TableHead>
-                    <TableHead className="text-right">Aktionen</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {certificates.map((cert) => (
-                    <TableRow key={cert.id}>
-                      <TableCell className="font-medium">{cert.title}</TableCell>
-                      <TableCell>{cert.provider}</TableCell>
-                      <TableCell>
-                        {format(new Date(cert.date_completed), 'dd.MM.yyyy', { locale: de })}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(cert.status)}</TableCell>
-                      <TableCell>
-                        <CertificateDownloadButton 
-                          filePath={cert.file_path} 
-                          title={cert.title}
-                        />
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          {cert.status === 'pending' && (
-                            <>
-                              <Button
-                                size="sm"
-                                variant="default"
-                                onClick={() => {
-                                  setSelectedCert(cert.id);
-                                  setAction('verify');
-                                }}
-                              >
-                                <CheckCircle className="h-4 w-4 mr-1" />
-                                Bestätigen
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => {
-                                  setSelectedCert(cert.id);
-                                  setAction('reject');
-                                }}
-                              >
-                                <XCircle className="h-4 w-4 mr-1" />
-                                Ablehnen
-                              </Button>
-                            </>
-                          )}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDelete(cert.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              <div className="table-responsive -mx-4 sm:mx-0">
+                <Table className="min-w-full">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Titel</TableHead>
+                      <TableHead>Anbieter</TableHead>
+                      <TableHead>Abschlussdatum</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Datei</TableHead>
+                      <TableHead className="text-right">Aktionen</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {certificates.map((cert) => (
+                      <TableRow key={cert.id}>
+                        <TableCell className="font-medium">{cert.title}</TableCell>
+                        <TableCell>{cert.provider}</TableCell>
+                        <TableCell>
+                          {format(new Date(cert.date_completed), 'dd.MM.yyyy', { locale: de })}
+                        </TableCell>
+                        <TableCell>{getStatusBadge(cert.status)}</TableCell>
+                        <TableCell>
+                          <CertificateDownloadButton 
+                            filePath={cert.file_path} 
+                            title={cert.title}
+                          />
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            {cert.status === 'pending' && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() => {
+                                    setSelectedCert(cert.id);
+                                    setAction('verify');
+                                  }}
+                                >
+                                  <CheckCircle className="h-4 w-4 mr-1" />
+                                  Bestätigen
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => {
+                                    setSelectedCert(cert.id);
+                                    setAction('reject');
+                                  }}
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  Ablehnen
+                                </Button>
+                              </>
+                            )}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDelete(cert.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>

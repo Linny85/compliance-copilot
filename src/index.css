@@ -178,4 +178,20 @@ All colors MUST be HSL.
   input:-webkit-autofill:focus {
     transition: background-color 9999s ease-out, color 9999s ease-out;
   }
+
+  /* --- Layout Guards: verhindern horizontales „Wachsen" des Hauptinhalts --- */
+  [data-app-main] {
+    /* Clip statt hidden: vermeidet horizontales Zappeln, verhindert aber Drift */
+    overflow-x: clip;
+  }
+  /* Optional – falls Komponenten mit langen Inhalten das Parent nach rechts drücken: */
+  [data-app-main] .grid,
+  [data-app-main] .flex {
+    min-width: 0;
+  }
+  /* Tabellen nur innerhalb einer Scrollhülle */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }

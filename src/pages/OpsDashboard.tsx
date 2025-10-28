@@ -90,8 +90,8 @@ export default function OpsDashboard() {
             {!data?.topErrors24h?.length ? (
               <div className="text-sm text-muted-foreground">No errors in the lookback window.</div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+              <div className="table-responsive -mx-4 sm:mx-0">
+                <table className="min-w-full text-sm">
                   <thead>
                     <tr className="border-b">
                       <th className="text-left py-3 font-medium">Error</th>
