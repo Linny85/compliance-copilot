@@ -100,6 +100,9 @@ export default function TrainingCertificates() {
 
   return (
     <AdminLayout>
+      {process.env.NODE_ENV !== "production" && (
+        <div data-probe="certs-probe" style={{position:'fixed',bottom:8,left:8,zIndex:99999,background:'#000',color:'#fff',padding:6,borderRadius:8}}>certs</div>
+      )}
       {/* Header - centered */}
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-bold">{t('title', { ns: 'training' })}</h1>
@@ -141,8 +144,8 @@ export default function TrainingCertificates() {
         </div>
       )}
 
-      {/* Action Buttons - centered, not right-aligned */}
-      <div className="mb-10 flex flex-wrap gap-3 justify-center">
+      {/* Action Buttons - centered */}
+      <div className="mb-10 flex justify-center gap-3 flex-wrap">
         <UploadCertificateDialog />
         <VerifyByCodeDialog />
       </div>

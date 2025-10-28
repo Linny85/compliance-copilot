@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useEffect } from 'react';
+import React, { ReactNode, useMemo, useEffect } from 'react';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import LayoutDiagnosticsPanel from '@/debug/LayoutDiagnosticsPanel';
@@ -23,12 +23,23 @@ export default function AdminLayout({ children }: Props) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        {/* data-app-main: einfacher Haken für spätere Diagnostik/Styles */}
+        {process.env.NODE_ENV !== "production" && (
+          <div style={{position:'fixed',top:6,right:6,zIndex:99999,background:'#111',color:'#0f0',padding:'4px 8px',borderRadius:6}}>
+            AdminLayout ACTIVE
+          </div>
+        )}
+        {/* Erzwinge die „Breiten-Bremse" unabhängig von Tailwind */}
         <main
           data-app-main
-          className="min-w-0 w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6 overflow-x-clip"
+          className="min-w-0 w-full mx-auto px-4 sm:px-6 lg:px-8 py-6"
+          style={{
+            maxWidth: "1280px",
+            overflowX: "clip",
+            display: "block",
+          }}
         >
-          {children}
+          {/* zusätzliches Min-Wrap, damit Kinder nicht „aufblähen" */}
+          <div className="min-w-0">{children}</div>
         </main>
 
         <LayoutDiagnosticsPanel enabled={!!debugLayout} />

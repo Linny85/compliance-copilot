@@ -52,12 +52,15 @@ export default function OpsDashboard() {
 
   return (
     <AdminLayout>
+      {process.env.NODE_ENV !== "production" && (
+        <div data-probe="ops-probe" style={{position:'fixed',bottom:8,left:8,zIndex:99999,background:'#000',color:'#fff',padding:6,borderRadius:8}}>ops</div>
+      )}
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-bold">Ops Dashboard</h1>
       </header>
 
       {/* KPI Cards - grid constrained by parent */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 min-w-0">
         {cards.map((c) => (
           <Card 
             key={c.label} 
