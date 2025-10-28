@@ -159,6 +159,10 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    font-size: 15px; /* Kompaktere Schriftgröße für konsistentes Layout */
+  }
+
   html, body, #root {
     overflow-x: hidden;
   }
