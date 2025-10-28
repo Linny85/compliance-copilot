@@ -1,4 +1,14 @@
 {
+  "name": "Name",
+  "tagline": "Your compliance, effortlessly automated",
+  "greeting": "Welcome back!",
+  "quickPrompts": "Quick prompts",
+  "buttons": {
+    "open": "Open",
+    "cancel": "Cancel",
+    "speak_on": "Voice on",
+    "speak_off": "Voice off"
+  },
   "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",

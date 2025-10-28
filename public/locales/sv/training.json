@@ -41,12 +41,15 @@
     "upload": "Ladda upp intyg",
     "verifyByCode": "Verifiera med kod"
   },
+  "viewCourse": "Visa kurs",
+  "uploadTitle": "Ladda upp certifikat",
+  "uploadDescription": "Ladda upp ditt utbildningsintyg som PDF eller bild.",
   "dropZone": "Släpp fil här eller klicka för att välja",
-  "acceptedFormats": "Accepterade format: PDF, JPG, PNG (max. 10MB)",
+  "acceptedFormats": "Godkända format: PDF, JPG, PNG (max. 10MB)",
   "verifyDialog": {
-    "title": "Verifiera med kod/länk",
-    "placeholder": "Ange verifieringskod eller klistra in intygslänk",
-    "submit": "Verifiera intyg"
+    "title": "Verifiera certifikat",
+    "placeholder": "Ange verifieringskod",
+    "submit": "Verifiera"
   },
   "sections": {
     "uploaded": {

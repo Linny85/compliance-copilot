@@ -1,4 +1,14 @@
 {
+  "name": "Namn",
+  "tagline": "Er efterlevnad, enkelt automatiserad",
+  "greeting": "Välkommen tillbaka!",
+  "quickPrompts": "Snabba kommandon",
+  "buttons": {
+    "open": "Öppna",
+    "cancel": "Avbryt",
+    "speak_on": "Röst på",
+    "speak_off": "Röst av"
+  },
   "auth": {
     "signIn": "Logga in",
     "signUp": "Registrera",

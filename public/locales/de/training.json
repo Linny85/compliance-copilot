@@ -41,7 +41,10 @@
     "upload": "Zertifikat hochladen",
     "verifyByCode": "Per Code verifizieren"
   },
-  "dropZone": "Datei hier ablegen oder klicken zum Auswählen",
+  "viewCourse": "Kurs ansehen",
+  "uploadTitle": "Zertifikat hochladen",
+  "uploadDescription": "Laden Sie Ihr Trainingszertifikat als PDF oder Bild hoch.",
+  "dropZone": "Datei hier ablegen oder klicken, um auszuwählen",
   "acceptedFormats": "Akzeptierte Formate: PDF, JPG, PNG (max. 10MB)",
   "verifyDialog": {
     "title": "Per Code/Link verifizieren",

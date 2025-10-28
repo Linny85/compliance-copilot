@@ -41,6 +41,9 @@
     "upload": "Upload certificate",
     "verifyByCode": "Verify by code"
   },
+  "viewCourse": "View course",
+  "uploadTitle": "Upload certificate",
+  "uploadDescription": "Upload your training certificate as a PDF or image.",
   "dropZone": "Drop file here or click to select",
   "acceptedFormats": "Accepted formats: PDF, JPG, PNG (max. 10MB)",
   "verifyDialog": {

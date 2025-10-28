@@ -1,4 +1,14 @@
 {
+  "name": "Name",
+  "tagline": "Ihre Compliance, einfach automatisiert",
+  "greeting": "Willkommen zurück!",
+  "quickPrompts": "Schnelle Eingaben",
+  "buttons": {
+    "open": "Öffnen",
+    "cancel": "Abbrechen",
+    "speak_on": "Sprachausgabe an",
+    "speak_off": "Sprachausgabe aus"
+  },
   "auth": {
     "signIn": "Anmelden",
     "signUp": "Registrieren",
