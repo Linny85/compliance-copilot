@@ -56,8 +56,8 @@ export default function OpsDashboard() {
         <h1 className="text-3xl font-bold">Ops Dashboard</h1>
       </header>
 
-      {/* KPI Cards - clean grid instead of flex-wrap to prevent overlap */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {/* KPI Cards - stable grid prevents overlap and drift */}
+      <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8 min-w-0">
         {cards.map((c) => (
           <Card 
             key={c.label} 

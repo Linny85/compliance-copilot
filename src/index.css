@@ -167,6 +167,11 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 
+  /* Prevent flex/grid items from pushing parents to the right */
+  .min-w-0 {
+    min-width: 0 !important;
+  }
+
   /* Chrome Autofill flickering fix */
   input:-webkit-autofill,
   input:-webkit-autofill:hover,

@@ -37,7 +37,7 @@ export function CourseCard({ kind }: { kind: CourseKind }) {
                       "EU-AIACT-EMP";
 
   return (
-    <div className="relative flex flex-col rounded-2xl border bg-card/80 backdrop-blur shadow-sm p-4 sm:p-6 min-h-[220px] sm:min-h-[260px] transition md:hover:shadow-md md:hover:bg-accent/5">
+    <div className="relative flex flex-col rounded-2xl border bg-card/80 backdrop-blur shadow-sm p-4 sm:p-6 min-h-[220px] sm:min-h-[260px] min-w-0 transition md:hover:shadow-md md:hover:bg-accent/5">
       <div className="flex items-center gap-2">
         <div className="text-primary">{ICONS[kind]}</div>
         <div className="text-xs sm:text-sm font-medium uppercase tracking-wide text-muted-foreground">{code}</div>

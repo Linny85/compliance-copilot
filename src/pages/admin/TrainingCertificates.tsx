@@ -124,9 +124,9 @@ export default function TrainingCertificates() {
         </div>
       </div>
 
-      {/* Course Cards - stable grid, no center inheritance */}
+      {/* Course Cards - stable grid with min-w-0 on items */}
       {showCourses ? (
-        <section className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0">
           {(['nis2', 'lead', 'emp'] as const).map((kind) => (
             <div key={kind} className="min-w-0">
               <CourseCard kind={kind} />
@@ -134,15 +134,15 @@ export default function TrainingCertificates() {
           ))}
         </section>
       ) : (
-        <div className="mb-6 mx-auto max-w-xl rounded-2xl border bg-card p-6">
+        <div className="mb-8 mx-auto max-w-xl rounded-2xl border bg-card p-6">
           <p className="text-sm text-muted-foreground text-center">
             {t('notice.deOnly', { ns: 'training' })}
           </p>
         </div>
       )}
 
-      {/* Action Buttons - separate from grid */}
-      <div className="mb-6 flex flex-wrap gap-3 justify-center">
+      {/* Action Buttons - centered, not right-aligned */}
+      <div className="mb-10 flex flex-wrap gap-3 justify-center">
         <UploadCertificateDialog />
         <VerifyByCodeDialog />
       </div>
