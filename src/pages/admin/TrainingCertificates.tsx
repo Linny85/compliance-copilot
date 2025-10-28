@@ -101,7 +101,10 @@ export default function TrainingCertificates() {
   return (
     <AdminLayout>
       {process.env.NODE_ENV !== "production" && (
-        <div data-probe="certs-probe" style={{position:'fixed',bottom:8,left:8,zIndex:99999,background:'#000',color:'#fff',padding:6,borderRadius:8}}>certs</div>
+        <div style={{
+          position:"fixed",bottom:8,left:8,zIndex:99999,
+          background:"#000",color:"#fff",padding:6,borderRadius:8
+        }}>certs</div>
       )}
       {/* Header - centered */}
       <header className="mb-6 text-center">

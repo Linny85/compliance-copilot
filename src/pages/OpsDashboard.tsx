@@ -53,7 +53,10 @@ export default function OpsDashboard() {
   return (
     <AdminLayout>
       {process.env.NODE_ENV !== "production" && (
-        <div data-probe="ops-probe" style={{position:'fixed',bottom:8,left:8,zIndex:99999,background:'#000',color:'#fff',padding:6,borderRadius:8}}>ops</div>
+        <div style={{
+          position:"fixed",bottom:8,left:48,zIndex:99999,
+          background:"#000",color:"#fff",padding:6,borderRadius:8
+        }}>ops</div>
       )}
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-bold">Ops Dashboard</h1>

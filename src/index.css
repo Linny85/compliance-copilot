@@ -180,21 +180,54 @@ All colors MUST be HSL.
   }
 
   /* --- Layout Guards: verhindern horizontales „Wachsen" des Hauptinhalts --- */
-  /* Harte CSS-Guards mit hoher Spezifität (überschreiben Komponenten-Klassen) */
-  :root [data-app-main] {
+  
+  /* SidebarInset darf nichts nach rechts schieben */
+  :root [data-sidebar-inset]{
+    margin: 0 !important;
+    padding-inline-start: 0 !important;
+    inset-inline-start: 0 !important;
+    transform: none !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    /* falls CSS-Variablen genutzt werden: neutralisieren */
+    --sidebar-inset: 0px !important;
+    --inset-inline-start: 0px !important;
+  }
+
+  /* Harter Hauptkanal – verhindert jedes „Wachsen" */
+  :root [data-app-main]{
     max-width: 1280px !important;
     overflow-x: clip !important;
     display: block !important;
+    position: relative !important;
     min-width: 0 !important;
   }
-  /* Eltern-Flex/Grid dürfen nie breiter „ziehen" */
+
+  /* Flex/Grid-Eltern und -Kinder dürfen niemals den Parent aufblähen */
   :root [data-app-main] .grid,
-  :root [data-app-main] .flex {
+  :root [data-app-main] .flex,
+  :root [data-app-main] .grid > *,
+  :root [data-app-main] .flex > *{
     min-width: 0 !important;
   }
-  /* Tabellen bekommen lokalen horizontalen Scroll */
-  .table-responsive {
+
+  /* Tabellen: lokaler Scroll statt Layout verschieben */
+  .table-responsive{
     overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Sofort-Probe: CSS ist geladen */
+  body::after{
+    content: "INDEX CSS ACTIVE";
+    position: fixed;
+    bottom: 6px;
+    right: 6px;
+    z-index: 999999;
+    background: #111;
+    color: #0ff;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 }

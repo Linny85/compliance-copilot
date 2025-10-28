@@ -23,12 +23,17 @@ export default function AdminLayout({ children }: Props) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
+        {/* DEBUG-Badge: zeigt, ob dieses Layout wirklich aktiv ist */}
         {process.env.NODE_ENV !== "production" && (
-          <div style={{position:'fixed',top:6,right:6,zIndex:99999,background:'#111',color:'#0f0',padding:'4px 8px',borderRadius:6}}>
+          <div style={{
+            position:"fixed", top:6, right:6, zIndex:99999,
+            background:"#111", color:"#0f0", padding:"4px 8px", borderRadius:6
+          }}>
             AdminLayout ACTIVE
           </div>
         )}
-        {/* Erzwinge die „Breiten-Bremse" unabhängig von Tailwind */}
+
+        {/* HARTER KANAL – unabhängig von Tailwind */}
         <main
           data-app-main
           className="min-w-0 w-full mx-auto px-4 sm:px-6 lg:px-8 py-6"
@@ -36,6 +41,7 @@ export default function AdminLayout({ children }: Props) {
             maxWidth: "1280px",
             overflowX: "clip",
             display: "block",
+            position: "relative"
           }}
         >
           {/* zusätzliches Min-Wrap, damit Kinder nicht „aufblähen" */}
