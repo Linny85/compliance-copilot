@@ -103,28 +103,28 @@ export default function TrainingCertificates() {
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <AppSidebar />
-        <main className="flex-1 px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="max-w-7xl mx-auto space-y-6">
-            <div>
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight text-balance">
+        <main className="flex-1">
+          <div className="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
+            <header className="text-center space-y-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
                 {t('title', { ns: 'training' })}
               </h1>
-              <p className="mt-1 text-sm sm:text-base text-muted-foreground text-pretty">
+              <p className="text-muted-foreground">
                 {t('description', { ns: 'training' })}
               </p>
-            </div>
+            </header>
 
             {/* Hint Bar with Link to Courses */}
-            <div className="rounded-xl border bg-card p-3 sm:p-4">
-              <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-                <span className="text-sm sm:text-base">
-                  {t('hintBar.text', { ns: 'training' })}
-                </span>
+            <div className="mt-6 mx-auto max-w-3xl rounded-xl border bg-card p-4 sm:p-6 text-center">
+              <p className="text-sm sm:text-base mb-3">
+                {t('hintBar.text', { ns: 'training' })}
+              </p>
+              <div className="flex justify-center">
                 <a
                   href="https://www.norrland-innovate.com/compliance-schulungen/"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm sm:text-base w-full sm:w-auto hover:bg-accent transition-colors"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm sm:text-base hover:bg-accent transition-colors"
                 >
                   {t('hintBar.cta', { ns: 'training' })}
                   <ExternalLink className="h-4 w-4" />
@@ -133,24 +133,24 @@ export default function TrainingCertificates() {
             </div>
 
             {/* Course Cards - DE only */}
-            {showCourses ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-                {(['nis2', 'lead', 'emp'] as const).map((kind) => (
-                  <CourseCard key={kind} kind={kind} />
-                ))}
-              </div>
-            ) : (
-              <Card>
-                <CardContent className="py-6">
-                  <p className="text-sm text-muted-foreground text-center">
+            <section className="mt-6">
+              {showCourses ? (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
+                  {(['nis2', 'lead', 'emp'] as const).map((kind) => (
+                    <CourseCard key={kind} kind={kind} />
+                  ))}
+                </div>
+              ) : (
+                <div className="mx-auto max-w-xl text-center rounded-2xl border bg-card p-6">
+                  <p className="text-sm text-muted-foreground">
                     {t('notice.deOnly', { ns: 'training' })}
                   </p>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+              )}
+            </section>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="mt-6 flex justify-center gap-3 flex-wrap">
               <UploadCertificateDialog />
               <VerifyByCodeDialog />
             </div>

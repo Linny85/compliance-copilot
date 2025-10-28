@@ -53,35 +53,38 @@ export default function OpsDashboard() {
 
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="container mx-auto p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold">Ops Dashboard</h1>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-medium">Lookback</label>
-                <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
-                  <SelectTrigger className="w-24">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="6">6h</SelectItem>
-                    <SelectItem value="12">12h</SelectItem>
-                    <SelectItem value="24">24h</SelectItem>
-                    <SelectItem value="48">48h</SelectItem>
-                  </SelectContent>
-                </Select>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar />
+        <main className="flex-1 overflow-y-auto">
+          <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+            <header className="text-center lg:text-left space-y-2 lg:space-y-0 lg:flex lg:items-center lg:justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Ops Dashboard</h1>
               </div>
-              <Button onClick={load} disabled={loading} size="sm" variant="outline">
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                {loading ? "Loading..." : "Refresh"}
-              </Button>
-            </div>
-          </div>
+              <div className="flex justify-center lg:justify-end items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium">Lookback</label>
+                  <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
+                    <SelectTrigger className="w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="6">6h</SelectItem>
+                      <SelectItem value="12">12h</SelectItem>
+                      <SelectItem value="24">24h</SelectItem>
+                      <SelectItem value="48">48h</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button onClick={load} disabled={loading} size="sm" variant="outline">
+                  <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  {loading ? "Loading..." : "Refresh"}
+                </Button>
+              </div>
+            </header>
 
           {/* KPI Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {cards.map((c) => (
               <Card 
                 key={c.label} 
@@ -97,7 +100,7 @@ export default function OpsDashboard() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </section>
 
           {/* Email Statistics */}
           <EmailStatsDashboard />
@@ -139,8 +142,9 @@ export default function OpsDashboard() {
               )}
             </CardContent>
           </Card>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </SidebarProvider>
   );
 }
