@@ -33,16 +33,10 @@ export default function AdminLayout({ children }: Props) {
           </div>
         )}
 
-        {/* HARTER KANAL – unabhängig von Tailwind */}
+        {/* HARTER KANAL – OHNE peer-data Klassen */}
         <main
           data-app-main
-          className="min-w-0 w-full mx-auto px-4 sm:px-6 lg:px-8 py-6"
-          style={{
-            maxWidth: "1280px",
-            overflowX: "clip",
-            display: "block",
-            position: "relative"
-          }}
+          className="min-w-0 w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
         >
           {/* zusätzliches Min-Wrap, damit Kinder nicht „aufblähen" */}
           <div className="min-w-0">{children}</div>

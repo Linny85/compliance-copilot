@@ -230,4 +230,11 @@ All colors MUST be HSL.
     border-radius: 6px;
     font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
+
+  /* Falls versehentlich peer-data-Klassen noch am <main> hängen, neutralisiere sie */
+  main[class*="peer-data-[variant=inset]"] {
+    margin: 0 !important;
+    inset-inline-start: 0 !important;
+    transform: none !important;
+  }
 }
