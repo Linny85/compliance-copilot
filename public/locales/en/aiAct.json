@@ -1,0 +1,17 @@
+{
+  "title": "Document Generation",
+  "subtitle": "Create and manage policies, reports, and certificates for your organization.",
+  "actions": {
+    "register": "Create new document",
+    "cancel": "Cancel"
+  },
+  "empty": {
+    "title": "No documents yet",
+    "description": "Start by creating your first policy or report.",
+    "button": "Create first document"
+  },
+  "dialog": {
+    "title": "Create document",
+    "description": "Document a new compliance artifact for your organization"
+  }
+}
