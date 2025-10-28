@@ -3,6 +3,7 @@
   "risks": "NIS2-risker",
   "ai": "Dokumentgenerering",
   "ai_systems": "Dokumentgenerering",
+  "aiAct": "Dokumentgenerering",
   "controls": "Kontroller",
   "scope": "Omfattning",
   "evidence": "Bevis",
