@@ -159,10 +159,6 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
-  html {
-    font-size: 15px; /* Kompaktere Schriftgröße für konsistentes Layout */
-  }
-
   html, body, #root {
     overflow-x: hidden;
   }
@@ -235,10 +231,14 @@ All colors MUST be HSL.
     font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
-  /* Falls versehentlich peer-data-Klassen noch am <main> hängen, neutralisiere sie */
-  main[class*="peer-data-[variant=inset]"] {
+  /* DRIFT-NEUTRALISIERUNG — sofort wirksam, überschreibt fehlerhafte peer-Regeln */
+  main[class*="peer-data["] {
     margin: 0 !important;
     inset-inline-start: 0 !important;
     transform: none !important;
+  }
+  /* Falls peer-Regeln am falschen Knoten sitzen, alles Inline-Start neutralisieren */
+  [data-sidebar-inset] main {
+    margin-left: 0 !important;
   }
 }

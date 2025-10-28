@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import { AppSidebar } from '@/components/AppSidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
+import AdminLayout from '@/layouts/AdminLayout';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -136,159 +135,149 @@ export default function Approvals() {
 
   if (loading) {
     return (
-      <SidebarProvider>
-        <div className="flex min-h-screen w-full">
-          <AppSidebar />
-          <main className="flex-1 p-6">
-            <div className="animate-pulse">
-              <div className="h-8 w-64 bg-muted rounded mb-4" />
-              <div className="h-32 bg-muted rounded" />
-            </div>
-          </main>
+      <AdminLayout>
+        <div className="animate-pulse">
+          <div className="h-8 w-64 bg-muted rounded mb-4" />
+          <div className="h-32 bg-muted rounded" />
         </div>
-      </SidebarProvider>
+      </AdminLayout>
     );
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AppSidebar />
-        <main className="flex-1 p-6">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold mb-2">✅ Freigaben</h1>
-            <p className="text-muted-foreground">
-              Verwaltung ausstehender Genehmigungen
-            </p>
-          </div>
+    <AdminLayout>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">✅ Freigaben</h1>
+        <p className="text-muted-foreground">
+          Verwaltung ausstehender Genehmigungen
+        </p>
+      </div>
 
-          <div className="grid gap-4 md:grid-cols-3 mb-6">
-            <Card className="p-4">
-              <div className="text-sm text-muted-foreground">Ausstehend</div>
-              <div className="text-2xl font-bold text-yellow-600">
-                {approvals.filter(a => a.status === 'pending').length}
-              </div>
-            </Card>
-            <Card className="p-4">
-              <div className="text-sm text-muted-foreground">Freigegeben (Heute)</div>
-              <div className="text-2xl font-bold text-green-600">
-                {approvals.filter(a => a.status === 'approved').length}
-              </div>
-            </Card>
-            <Card className="p-4">
-              <div className="text-sm text-muted-foreground">Abgelehnt (Heute)</div>
-              <div className="text-2xl font-bold text-red-600">
-                {approvals.filter(a => a.status === 'rejected').length}
-              </div>
-            </Card>
+      <div className="grid gap-4 md:grid-cols-3 mb-6">
+        <Card className="p-4">
+          <div className="text-sm text-muted-foreground">Ausstehend</div>
+          <div className="text-2xl font-bold text-yellow-600">
+            {approvals.filter(a => a.status === 'pending').length}
           </div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-sm text-muted-foreground">Freigegeben (Heute)</div>
+          <div className="text-2xl font-bold text-green-600">
+            {approvals.filter(a => a.status === 'approved').length}
+          </div>
+        </Card>
+        <Card className="p-4">
+          <div className="text-sm text-muted-foreground">Abgelehnt (Heute)</div>
+          <div className="text-2xl font-bold text-red-600">
+            {approvals.filter(a => a.status === 'rejected').length}
+          </div>
+        </Card>
+      </div>
 
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Ausstehende Freigaben</h2>
-            {approvals.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Keine ausstehenden Freigaben</p>
-            ) : (
-              <div className="space-y-3">
-                {approvals.map((approval) => (
-                  <div key={approval.id} className="p-4 border rounded bg-muted/30">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(approval.status)}
-                        <div>
-                          <span className="text-sm font-medium">
-                            {approval.resource_type} • {approval.action}
-                          </span>
-                          <Badge variant="outline" className="ml-2">{approval.status}</Badge>
-                        </div>
-                      </div>
-                      {approval.status === 'pending' && (
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="default"
-                            onClick={() => {
-                              setSelectedApproval(approval);
-                              setActionType('approve');
-                            }}
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            Freigeben
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => {
-                              setSelectedApproval(approval);
-                              setActionType('reject');
-                            }}
-                          >
-                            <XCircle className="h-4 w-4 mr-1" />
-                            Ablehnen
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                    {approval.reason && (
-                      <p className="text-xs text-muted-foreground mb-2">
-                        Begründung: {approval.reason}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <span>Von: {approval.requester_name || approval.requester_email}</span>
-                      <span>Erstellt: {new Date(approval.created_at).toLocaleString()}</span>
-                      {approval.expires_at && (
-                        <span>Läuft ab: {new Date(approval.expires_at).toLocaleString()}</span>
-                      )}
+      <Card className="p-6">
+        <h2 className="text-lg font-semibold mb-4">Ausstehende Freigaben</h2>
+        {approvals.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Keine ausstehenden Freigaben</p>
+        ) : (
+          <div className="space-y-3">
+            {approvals.map((approval) => (
+              <div key={approval.id} className="p-4 border rounded bg-muted/30">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(approval.status)}
+                    <div>
+                      <span className="text-sm font-medium">
+                        {approval.resource_type} • {approval.action}
+                      </span>
+                      <Badge variant="outline" className="ml-2">{approval.status}</Badge>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </Card>
-
-          <Dialog open={!!selectedApproval} onOpenChange={(open) => !open && setSelectedApproval(null)}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {actionType === 'approve' ? 'Freigabe bestätigen' : 'Ablehnung bestätigen'}
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Ressource: {selectedApproval?.resource_type} • {selectedApproval?.action}
-                  </p>
-                  {selectedApproval?.reason && (
-                    <p className="text-sm mb-2">
-                      <strong>Begründung:</strong> {selectedApproval.reason}
-                    </p>
+                  {approval.status === 'pending' && (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="default"
+                        onClick={() => {
+                          setSelectedApproval(approval);
+                          setActionType('approve');
+                        }}
+                      >
+                        <CheckCircle className="h-4 w-4 mr-1" />
+                        Freigeben
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => {
+                          setSelectedApproval(approval);
+                          setActionType('reject');
+                        }}
+                      >
+                        <XCircle className="h-4 w-4 mr-1" />
+                        Ablehnen
+                      </Button>
+                    </div>
                   )}
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Kommentar (optional)</label>
-                  <Textarea
-                    placeholder="Optionaler Kommentar zur Entscheidung..."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    rows={3}
-                  />
+                {approval.reason && (
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Begründung: {approval.reason}
+                  </p>
+                )}
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>Von: {approval.requester_name || approval.requester_email}</span>
+                  <span>Erstellt: {new Date(approval.created_at).toLocaleString()}</span>
+                  {approval.expires_at && (
+                    <span>Läuft ab: {new Date(approval.expires_at).toLocaleString()}</span>
+                  )}
                 </div>
               </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setSelectedApproval(null)}>
-                  Abbrechen
-                </Button>
-                <Button
-                  variant={actionType === 'approve' ? 'default' : 'destructive'}
-                  onClick={handleAction}
-                >
-                  {actionType === 'approve' ? 'Freigeben' : 'Ablehnen'}
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </main>
-      </div>
-    </SidebarProvider>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      <Dialog open={!!selectedApproval} onOpenChange={(open) => !open && setSelectedApproval(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {actionType === 'approve' ? 'Freigabe bestätigen' : 'Ablehnung bestätigen'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">
+                Ressource: {selectedApproval?.resource_type} • {selectedApproval?.action}
+              </p>
+              {selectedApproval?.reason && (
+                <p className="text-sm mb-2">
+                  <strong>Begründung:</strong> {selectedApproval.reason}
+                </p>
+              )}
+            </div>
+            <div>
+              <label className="text-sm font-medium">Kommentar (optional)</label>
+              <Textarea
+                placeholder="Optionaler Kommentar zur Entscheidung..."
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSelectedApproval(null)}>
+              Abbrechen
+            </Button>
+            <Button
+              variant={actionType === 'approve' ? 'default' : 'destructive'}
+              onClick={handleAction}
+            >
+              {actionType === 'approve' ? 'Freigeben' : 'Ablehnen'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </AdminLayout>
   );
 }
