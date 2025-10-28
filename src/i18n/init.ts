@@ -14,7 +14,9 @@ i18n
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
     backend: {
-      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${buildId}`
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      allowMultiLoading: true,
+      crossDomain: false
     },
     interpolation: { escapeValue: false },
     returnEmptyString: false,
