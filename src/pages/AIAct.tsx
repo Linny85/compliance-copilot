@@ -9,9 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
 import { Plus, Brain } from "lucide-react";
+import AdminLayout from "@/layouts/AdminLayout";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useI18n } from "@/contexts/I18nContext";
@@ -135,174 +134,169 @@ const AIAct = () => {
   }
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar />
-        <main className="flex-1">
-          <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-6">
-            <header className="text-center space-y-2">
-              <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
-                <Brain className="h-8 w-8 text-primary" />
-                {t('aiAct:title')}
-              </h1>
-              <p className="text-muted-foreground">{t('aiAct:subtitle')}</p>
-              <div className="mt-3 flex justify-center">
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button>
-                      <Plus className="h-4 w-4 mr-2" />
-                      {t('aiAct:actions.register')}
-                    </Button>
-                  </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>{t('aiAct:dialog.title')}</DialogTitle>
-                    <DialogDescription>
-                      {t('aiAct:dialog.description')}
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">System Name *</Label>
-                      <Input
-                        id="name"
-                        value={newSystem.name}
-                        onChange={(e) => setNewSystem({ ...newSystem, name: e.target.value })}
-                        placeholder="Customer Service Chatbot"
-                      />
-                    </div>
+    <AdminLayout>
+      <div className="container mx-auto max-w-4xl">
+        <header className="text-center space-y-2">
+          <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
+            <Brain className="h-8 w-8 text-primary" />
+            {t('aiAct:title')}
+          </h1>
+          <p className="text-muted-foreground">{t('aiAct:subtitle')}</p>
+          <div className="mt-3 flex justify-center">
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('aiAct:actions.register')}
+                </Button>
+              </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>{t('aiAct:dialog.title')}</DialogTitle>
+                <DialogDescription>
+                  {t('aiAct:dialog.description')}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">System Name *</Label>
+                  <Input
+                    id="name"
+                    value={newSystem.name}
+                    onChange={(e) => setNewSystem({ ...newSystem, name: e.target.value })}
+                    placeholder="Customer Service Chatbot"
+                  />
+                </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea
-                        id="description"
-                        value={newSystem.description}
-                        onChange={(e) => setNewSystem({ ...newSystem, description: e.target.value })}
-                        placeholder="Detailed description of the AI system..."
-                        rows={3}
-                      />
-                    </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={newSystem.description}
+                    onChange={(e) => setNewSystem({ ...newSystem, description: e.target.value })}
+                    placeholder="Detailed description of the AI system..."
+                    rows={3}
+                  />
+                </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="purpose">Purpose</Label>
-                      <Textarea
-                        id="purpose"
-                        value={newSystem.purpose}
-                        onChange={(e) => setNewSystem({ ...newSystem, purpose: e.target.value })}
-                        placeholder="Business purpose and use case..."
-                        rows={2}
-                      />
-                    </div>
+                <div className="space-y-2">
+                  <Label htmlFor="purpose">Purpose</Label>
+                  <Textarea
+                    id="purpose"
+                    value={newSystem.purpose}
+                    onChange={(e) => setNewSystem({ ...newSystem, purpose: e.target.value })}
+                    placeholder="Business purpose and use case..."
+                    rows={2}
+                  />
+                </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="risk">Risk Classification</Label>
-                        <Select
-                          value={newSystem.risk_classification}
-                          onValueChange={(value) => setNewSystem({ ...newSystem, risk_classification: value })}
-                        >
-                          <SelectTrigger id="risk">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="minimal">Minimal Risk</SelectItem>
-                            <SelectItem value="limited">Limited Risk</SelectItem>
-                            <SelectItem value="high">High Risk</SelectItem>
-                            <SelectItem value="unacceptable">Unacceptable Risk</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="deployment">Deployment Status</Label>
-                        <Select
-                          value={newSystem.deployment_status}
-                          onValueChange={(value) => setNewSystem({ ...newSystem, deployment_status: value })}
-                        >
-                          <SelectTrigger id="deployment">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="planned">Planned</SelectItem>
-                            <SelectItem value="development">Development</SelectItem>
-                            <SelectItem value="deployed">Deployed</SelectItem>
-                            <SelectItem value="retired">Retired</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="risk">Risk Classification</Label>
+                    <Select
+                      value={newSystem.risk_classification}
+                      onValueChange={(value) => setNewSystem({ ...newSystem, risk_classification: value })}
+                    >
+                      <SelectTrigger id="risk">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="minimal">Minimal Risk</SelectItem>
+                        <SelectItem value="limited">Limited Risk</SelectItem>
+                        <SelectItem value="high">High Risk</SelectItem>
+                        <SelectItem value="unacceptable">Unacceptable Risk</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setDialogOpen(false)}>
-                      {t('aiAct:actions.cancel')}
-                    </Button>
-                    <Button onClick={handleCreateSystem} disabled={!newSystem.name}>
-                      {t('aiAct:actions.register')}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="deployment">Deployment Status</Label>
+                    <Select
+                      value={newSystem.deployment_status}
+                      onValueChange={(value) => setNewSystem({ ...newSystem, deployment_status: value })}
+                    >
+                      <SelectTrigger id="deployment">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="planned">Planned</SelectItem>
+                        <SelectItem value="development">Development</SelectItem>
+                        <SelectItem value="deployed">Deployed</SelectItem>
+                        <SelectItem value="retired">Retired</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
-            </header>
-
-            {systems.length === 0 ? (
-              <section className="mt-6">
-                <div className="mx-auto max-w-xl rounded-2xl border bg-card p-6 sm:p-8 text-center">
-                  <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h2 className="text-lg font-semibold mb-2">{t('aiAct:empty.title')}</h2>
-                  <p className="text-muted-foreground mb-4">
-                    {t('aiAct:empty.description')}
-                  </p>
-                  <div className="flex justify-center">
-                    <Button onClick={() => setDialogOpen(true)}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      {t('aiAct:empty.button')}
-                    </Button>
-                  </div>
-                </div>
-              </section>
-            ) : (
-              <section className="mt-6">
-                <div className="grid gap-4">
-                  {systems.map((system) => (
-                  <Card key={system.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <CardTitle className="flex items-center gap-2">
-                            {system.name}
-                          </CardTitle>
-                          <CardDescription className="mt-2">
-                            {system.description}
-                          </CardDescription>
-                        </div>
-                        <div className="flex gap-2">
-                          <Badge className={getRiskColor(system.risk_classification)}>
-                            {system.risk_classification}
-                          </Badge>
-                          <Badge variant="outline">
-                            {system.deployment_status}
-                          </Badge>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    {system.purpose && (
-                      <CardContent>
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-semibold">Purpose:</h4>
-                          <p className="text-sm text-muted-foreground">{system.purpose}</p>
-                        </div>
-                      </CardContent>
-                    )}
-                  </Card>
-                  ))}
-                </div>
-              </section>
-            )}
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDialogOpen(false)}>
+                  {t('aiAct:actions.cancel')}
+                </Button>
+                <Button onClick={handleCreateSystem} disabled={!newSystem.name}>
+                  {t('aiAct:actions.register')}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           </div>
-        </main>
+        </header>
+
+        {systems.length === 0 ? (
+          <section className="mt-6">
+            <div className="mx-auto max-w-xl rounded-2xl border bg-card p-6 sm:p-8 text-center">
+              <Brain className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-lg font-semibold mb-2">{t('aiAct:empty.title')}</h2>
+              <p className="text-muted-foreground mb-4">
+                {t('aiAct:empty.description')}
+              </p>
+              <div className="flex justify-center">
+                <Button onClick={() => setDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  {t('aiAct:empty.button')}
+                </Button>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="mt-6">
+            <div className="grid gap-4">
+              {systems.map((system) => (
+              <Card key={system.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <CardTitle className="flex items-center gap-2">
+                        {system.name}
+                      </CardTitle>
+                      <CardDescription className="mt-2">
+                        {system.description}
+                      </CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Badge className={getRiskColor(system.risk_classification)}>
+                        {system.risk_classification}
+                      </Badge>
+                      <Badge variant="outline">
+                        {system.deployment_status}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                {system.purpose && (
+                  <CardContent>
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-semibold">Purpose:</h4>
+                      <p className="text-sm text-muted-foreground">{system.purpose}</p>
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
-    </SidebarProvider>
+    </AdminLayout>
   );
 };
 
