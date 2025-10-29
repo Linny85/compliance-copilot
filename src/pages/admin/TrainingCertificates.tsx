@@ -4,7 +4,7 @@ import { CertificateDownloadButton } from '@/components/training/CertificateDown
 import { UploadCertificateDialog } from '@/components/training/UploadCertificateDialog';
 import { VerifyByCodeDialog } from '@/components/training/VerifyByCodeDialog';
 import { CourseCard } from '@/components/training/CourseCard';
-import AdminLayout from '@/layouts/AdminLayout';
+import AdminPage from '@/components/layout/AdminPage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -98,26 +98,13 @@ export default function TrainingCertificates() {
     }
   };
 
-  if (!ready) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-            <p className="mt-4 text-muted-foreground">Loading…</p>
-          </div>
-        </div>
-      </AdminLayout>
-    );
-  }
+  let content: React.ReactNode;
 
-  return (
-    <AdminLayout>
-      {/* Header - centered */}
-      <header className="mb-6 text-center">
-        <h1 className="text-3xl font-bold">{t('title', { ns: 'training' })}</h1>
-        <p className="text-muted-foreground">{t('description', { ns: 'training' })}</p>
-      </header>
+  if (!ready) {
+    content = <div className="text-sm">{t('common:loading')}</div>;
+  } else {
+    content = (
+      <>
 
       {/* Hint Bar with Link to Courses */}
       <div className="mb-6 rounded-xl border bg-card p-4 sm:p-6">
@@ -317,6 +304,16 @@ export default function TrainingCertificates() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </AdminLayout>
+      </>
+    );
+  }
+
+  return (
+    <AdminPage 
+      title={ready ? t('title', { ns: 'training' }) : ''}
+      subtitle={ready ? t('description', { ns: 'training' }) : ''}
+    >
+      {content}
+    </AdminPage>
   );
 }

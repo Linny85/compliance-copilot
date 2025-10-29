@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import AdminLayout from "@/layouts/AdminLayout";
+import AdminPage from "@/components/layout/AdminPage";
 import { RefreshCw } from "lucide-react";
 import EmailStatsDashboard from "@/components/EmailStatsDashboard";
 
@@ -60,21 +60,10 @@ export default function OpsDashboard() {
   let content: React.ReactNode;
   
   if (!ready || loading) {
-    content = (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
-          <p className="mt-4 text-muted-foreground">Loading…</p>
-        </div>
-      </div>
-    );
+    content = <div className="text-sm">{t('common:loading')}</div>;
   } else {
     content = (
       <>
-        <header className="mb-6 text-center">
-          <h1 className="text-3xl font-bold">{t('reports:title')}</h1>
-        </header>
-
         {/* KPI Cards */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 min-w-0">
           {cards.map((c) => (
@@ -157,7 +146,7 @@ export default function OpsDashboard() {
           </div>
           <Button onClick={load} disabled={loading} size="sm" variant="outline">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? 'Loading…' : t('reports:controls.refresh')}
+            {loading ? t('common:loading') : t('reports:controls.refresh')}
           </Button>
         </div>
       </>
@@ -165,8 +154,8 @@ export default function OpsDashboard() {
   }
 
   return (
-    <AdminLayout>
+    <AdminPage title={ready ? t('reports:title') : ''}>
       {content}
-    </AdminLayout>
+    </AdminPage>
   );
 }
