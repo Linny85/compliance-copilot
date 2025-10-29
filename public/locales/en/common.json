@@ -39,46 +39,6 @@
     "finish": "Finish",
     "step": "Step {{current}} of {{total}}"
   },
-  "training": {
-    "title": "Training Certificates",
-    "description": "Management and verification of uploaded training certificates",
-    "hintBar": {
-      "text": "Don't have a certificate yet? Book our compliance training courses.",
-      "cta": "View Training Courses"
-    },
-    "actions": {
-      "upload": "Upload Certificate",
-      "verifyByCode": "Verify by Code/Link"
-    },
-    "upload": "Upload Certificate",
-    "uploadTitle": "Upload Training Certificate",
-    "uploadDescription": "Upload your training certificate for review",
-    "dropZone": "Drop file here or click to select",
-    "acceptedFormats": "Accepted formats: PDF, JPG, PNG (max. 10MB)",
-    "courseTitle": "Course Title",
-    "provider": "Provider",
-    "dateCompleted": "Completion Date",
-    "file": "Certificate (PDF/Image)",
-    "verificationCode": "Verification Code (optional)",
-    "status": {
-      "pending": "Under Review",
-      "verified": "Verified",
-      "rejected": "Rejected"
-    },
-    "recommended": "Recommended Training",
-    "noCertificates": "No certificates uploaded yet",
-    "verify": "Verify",
-    "reject": "Reject",
-    "delete": "Delete",
-    "notes": "Notes",
-    "verifyConfirm": "Confirm that the certificate is valid",
-    "rejectReason": "Provide a reason for rejection",
-    "verifyDialog": {
-      "title": "Verify by Code/Link",
-      "placeholder": "Enter code or paste certificate link",
-      "submit": "Verify"
-    }
-  },
   "dashboard": {
     "welcome": "Welcome",
     "nextSteps": "Next Steps",
@@ -315,39 +275,6 @@
     "todos": {
       "title": "Top Priorities",
       "empty": "All tasks up to date"
-    }
-  },
-  "training": {
-    "title": "EU AI Act & NIS2 – Online trainings with certificate",
-    "description": "Certificates & uploads are supported here.",
-    "hintBar": {
-      "text": "Courses are currently available in German on our website.",
-      "cta": "Open German course page"
-    },
-    "notice": {
-      "deOnly": "These courses are currently available in German only."
-    },
-    "actions": {
-      "upload": "Upload certificate",
-      "verifyByCode": "Verify by code/link"
-    },
-    "upload": {
-      "title": "Upload certificate",
-      "dragZone": "Drop file here or click to select",
-      "acceptedFormats": "Accepted formats: PDF, JPG, PNG",
-      "holderEmail": "Email of certificate holder",
-      "holderName": "Name of certificate holder",
-      "courseTitle": "Course title",
-      "provider": "Provider",
-      "dateCompleted": "Completion date",
-      "verificationCode": "Verification code (optional)",
-      "cancel": "Cancel",
-      "submit": "Upload"
-    },
-    "uploaded": {
-      "title": "Uploaded certificates",
-      "subtitle": "Review and verify submitted training certificates.",
-      "empty": "No certificates yet."
     }
   }
 }

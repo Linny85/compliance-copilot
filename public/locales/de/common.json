@@ -39,46 +39,6 @@
     "finish": "Abschließen",
     "step": "Schritt {{current}} von {{total}}"
   },
-  "training": {
-    "title": "Schulungszertifikate",
-    "description": "Verwaltung und Verifizierung hochgeladener Schulungsnachweise",
-    "hintBar": {
-      "text": "Noch kein Zertifikat? Buchen Sie unsere Compliance-Schulungen.",
-      "cta": "Zu den Schulungen"
-    },
-    "actions": {
-      "upload": "Zertifikat hochladen",
-      "verifyByCode": "Per Code/Link verifizieren"
-    },
-    "upload": "Zertifikat hochladen",
-    "uploadTitle": "Schulungszertifikat hochladen",
-    "uploadDescription": "Laden Sie Ihr Schulungszertifikat zur Prüfung hoch",
-    "dropZone": "Datei hier ablegen oder klicken",
-    "acceptedFormats": "Erlaubte Formate: PDF, JPG, PNG (max. 10MB)",
-    "courseTitle": "Kurstitel",
-    "provider": "Anbieter",
-    "dateCompleted": "Abschlussdatum",
-    "file": "Zertifikat (PDF/Bild)",
-    "verificationCode": "Verifizierungscode (optional)",
-    "status": {
-      "pending": "In Prüfung",
-      "verified": "Bestätigt",
-      "rejected": "Abgelehnt"
-    },
-    "recommended": "Empfohlene Schulungen",
-    "noCertificates": "Noch keine Zertifikate hochgeladen",
-    "verify": "Bestätigen",
-    "reject": "Ablehnen",
-    "delete": "Löschen",
-    "notes": "Begründung",
-    "verifyConfirm": "Bestätigen Sie, dass das Zertifikat gültig ist",
-    "rejectReason": "Geben Sie einen Grund für die Ablehnung an",
-    "verifyDialog": {
-      "title": "Per Code/Link verifizieren",
-      "placeholder": "Code eingeben oder Zertifikats-Link einfügen",
-      "submit": "Prüfen"
-    }
-  },
   "dashboard": {
     "welcome": "Willkommen",
     "nextSteps": "Nächste Schritte",
@@ -288,65 +248,5 @@
     "manufacturing": "Industrie",
     "public": "Öffentlicher Sektor",
     "other": "Sonstiges"
-  },
-  "training": {
-    "title": "EU AI Act & NIS2 – Online-Schulungen mit Zertifikat",
-    "description": "Praxisnahe Online-Trainings mit Wissenstest, Zertifikat und Vorlagen-Toolbox.",
-    "hintBar": {
-      "text": "Noch kein Zertifikat? Buchen Sie jetzt eine Schulung bei Norrland Innovate.",
-      "cta": "Zu den Kursen"
-    },
-    "notice": {
-      "deOnly": "Die Kursübersicht ist in Ihrer aktuellen Sprache nicht verfügbar."
-    },
-    "courses": {
-      "cta": "Kurs buchen",
-      "nis2": {
-        "title": "NIS2 Compliance Zertifizierung",
-        "bullets": [
-          "10 Mindestmaßnahmen umsetzen",
-          "Incident-Response & Meldewege trainieren",
-          "11 Vorlagen + 12-Monats-Updates"
-        ]
-      },
-      "lead": {
-        "title": "EU KI Gesetz – Compliance für Unternehmen",
-        "bullets": [
-          "Risikoklassen & Pflichten verstehen",
-          "CE-Konformität & Dokumentation",
-          "AI-Literacy-Pflichten umsetzen"
-        ]
-      },
-      "emp": {
-        "title": "EU KI Gesetz – Mitarbeiterschulung",
-        "bullets": [
-          "Do's & Don'ts im Arbeitsalltag",
-          "Datenschutz & Bias verständlich erklärt",
-          "Teilnahmezertifikat nach Quiz"
-        ]
-      }
-    },
-    "actions": {
-      "upload": "Zertifikat hochladen",
-      "verifyByCode": "Per Code/Link verifizieren"
-    },
-    "upload": {
-      "title": "Zertifikat hochladen",
-      "dragZone": "Datei hier ablegen oder klicken zum Auswählen",
-      "acceptedFormats": "Akzeptierte Formate: PDF, JPG, PNG",
-      "holderEmail": "E-Mail des Inhabers",
-      "holderName": "Name des Inhabers",
-      "courseTitle": "Kurstitel",
-      "provider": "Anbieter",
-      "dateCompleted": "Abschlussdatum",
-      "verificationCode": "Verifizierungscode (optional)",
-      "cancel": "Abbrechen",
-      "submit": "Hochladen"
-    },
-    "uploaded": {
-      "title": "Hochgeladene Zertifikate",
-      "subtitle": "Überprüfen und verifizieren Sie eingereichte Schulungszertifikate.",
-      "empty": "Keine Zertifikate vorhanden."
-    }
   }
 }
