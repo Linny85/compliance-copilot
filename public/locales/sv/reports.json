@@ -19,5 +19,17 @@
   "controls": {
     "lookback": "Tidsfönster",
     "refresh": "Uppdatera"
+  },
+  "emailStats": {
+    "title": "E-poststatistik per mall",
+    "noData": "Ingen e-postdata tillgänglig.",
+    "connectionIssues": "Anslutningsproblem",
+    "refreshing": "Uppdaterar...",
+    "total": "totalt",
+    "sent": "Skickade",
+    "delivered": "Levererade",
+    "opens": "Öppningar",
+    "clicks": "Klick",
+    "bounces": "Studsar"
   }
 }

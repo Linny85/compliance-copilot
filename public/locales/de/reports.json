@@ -19,5 +19,17 @@
   "controls": {
     "lookback": "Zeitfenster",
     "refresh": "Aktualisieren"
+  },
+  "emailStats": {
+    "title": "E-Mail-Statistiken nach Vorlage",
+    "noData": "Keine E-Mail-Daten verfügbar.",
+    "connectionIssues": "Verbindungsprobleme",
+    "refreshing": "Aktualisiere...",
+    "total": "gesamt",
+    "sent": "Gesendet",
+    "delivered": "Zugestellt",
+    "opens": "Öffnungen",
+    "clicks": "Klicks",
+    "bounces": "Bounces"
   }
 }

@@ -19,5 +19,17 @@
   "controls": {
     "lookback": "Lookback",
     "refresh": "Refresh"
+  },
+  "emailStats": {
+    "title": "Email Statistics by Template",
+    "noData": "No email data available.",
+    "connectionIssues": "Connection Issues",
+    "refreshing": "Refreshing...",
+    "total": "total",
+    "sent": "Sent",
+    "delivered": "Delivered",
+    "opens": "Opens",
+    "clicks": "Clicks",
+    "bounces": "Bounces"
   }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -23,6 +24,7 @@ type EmailStats = {
 };
 
 export default function EmailStatsDashboard() {
+  const { t, ready } = useTranslation(['reports', 'common'], { useSuspense: false });
   const [stats, setStats] = useState<EmailStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -107,13 +109,13 @@ export default function EmailStatsDashboard() {
     return total > 0 ? Math.round((value / total) * 100) : 0;
   };
 
-  if (loading) {
+  if (!ready || loading) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            Email Statistics
+            {ready ? t('reports:emailStats.title') : 'Loading...'}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -130,11 +132,11 @@ export default function EmailStatsDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            Email Statistics
+            {t('reports:emailStats.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No email data available.</p>
+          <p className="text-sm text-muted-foreground">{t('reports:emailStats.noData')}</p>
         </CardContent>
       </Card>
     );
@@ -147,12 +149,12 @@ export default function EmailStatsDashboard() {
           <div className="flex items-center gap-2">
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5" />
-              Email Statistics by Template
+              {t('reports:emailStats.title')}
             </CardTitle>
             {errorCount > 0 && (
               <Badge variant="destructive" className="gap-1">
                 <AlertCircle className="h-3 w-3" />
-                Connection Issues
+                {t('reports:emailStats.connectionIssues')}
               </Badge>
             )}
           </div>
@@ -163,7 +165,7 @@ export default function EmailStatsDashboard() {
             variant="outline"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? "Refreshing..." : "Refresh"}
+            {refreshing ? t('reports:emailStats.refreshing') : t('reports:controls.refresh')}
           </Button>
         </div>
       </CardHeader>
@@ -173,7 +175,7 @@ export default function EmailStatsDashboard() {
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-base">{template.template_code}</h3>
               <span className="text-sm text-muted-foreground">
-                {template.total_enqueued} total
+                {template.total_enqueued} {t('reports:emailStats.total')}
               </span>
             </div>
 
@@ -181,7 +183,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Send className="h-3.5 w-3.5" />
-                  <span>Sent</span>
+                  <span>{t('reports:emailStats.sent')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.total_sent}</span>
@@ -195,7 +197,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  <span>Delivered</span>
+                  <span>{t('reports:emailStats.delivered')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.delivered}</span>
@@ -209,7 +211,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Eye className="h-3.5 w-3.5" />
-                  <span>Opens</span>
+                  <span>{t('reports:emailStats.opens')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.opened}</span>
@@ -223,7 +225,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <MousePointerClick className="h-3.5 w-3.5" />
-                  <span>Clicks</span>
+                  <span>{t('reports:emailStats.clicks')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.clicked}</span>
@@ -237,7 +239,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <XCircle className="h-3.5 w-3.5" />
-                  <span>Bounces</span>
+                  <span>{t('reports:emailStats.bounces')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.bounced}</span>
