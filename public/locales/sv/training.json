@@ -44,7 +44,21 @@
   "viewCourse": "Visa kurs",
   "actions": {
     "upload": "Ladda upp",
-    "verifyByCode": "Verifiera med kod"
+    "verifyByCode": "Verifiera med kod",
+    "verify": "Bekräfta",
+    "reject": "Avvisa"
+  },
+  "modals": {
+    "verify": {
+      "title": "Bekräfta intyg",
+      "desc": "Bekräfta att intyget är giltigt."
+    },
+    "reject": {
+      "title": "Avvisa intyg",
+      "desc": "Ange en orsak till avvisningen.",
+      "reasonLabel": "Motivering *",
+      "reasonPlaceholder": "Orsak till avvisning..."
+    }
   },
   "uploadTitle": "Ladda upp certifikat",
   "uploadDescription": "Ladda upp ditt utbildningsintyg som PDF eller bild.",

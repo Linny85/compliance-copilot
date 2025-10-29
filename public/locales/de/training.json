@@ -44,7 +44,21 @@
   "viewCourse": "Kurs ansehen",
   "actions": {
     "upload": "Hochladen",
-    "verifyByCode": "Per Code prüfen"
+    "verifyByCode": "Per Code prüfen",
+    "verify": "Bestätigen",
+    "reject": "Ablehnen"
+  },
+  "modals": {
+    "verify": {
+      "title": "Zertifikat bestätigen",
+      "desc": "Bestätigen Sie, dass das Zertifikat gültig ist."
+    },
+    "reject": {
+      "title": "Zertifikat ablehnen",
+      "desc": "Geben Sie einen Grund für die Ablehnung an.",
+      "reasonLabel": "Begründung *",
+      "reasonPlaceholder": "Grund für die Ablehnung..."
+    }
   },
   "uploadTitle": "Zertifikat hochladen",
   "uploadDescription": "Lade dein Trainingszertifikat als PDF oder Bild hoch.",

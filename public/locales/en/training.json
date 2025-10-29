@@ -44,7 +44,21 @@
   "viewCourse": "View course",
   "actions": {
     "upload": "Upload",
-    "verifyByCode": "Verify by code"
+    "verifyByCode": "Verify by code",
+    "verify": "Verify",
+    "reject": "Reject"
+  },
+  "modals": {
+    "verify": {
+      "title": "Confirm certificate",
+      "desc": "Confirm that the certificate is valid."
+    },
+    "reject": {
+      "title": "Reject certificate",
+      "desc": "Please provide a reason for the rejection.",
+      "reasonLabel": "Reason *",
+      "reasonPlaceholder": "Reason for rejection..."
+    }
   },
   "uploadTitle": "Upload certificate",
   "uploadDescription": "Upload your training certificate as a PDF or image.",
