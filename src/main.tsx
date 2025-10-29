@@ -20,6 +20,11 @@ const queryClient = new QueryClient({
   },
 });
 
+// Debug-Badge: CSS-Klasse setzen bei DEV + localStorage flag
+if (import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem('debugBadges') === '1') {
+  document.documentElement.classList.add('debug-index-badge');
+}
+
 createRoot(document.getElementById("root")!).render(
   // StrictMode can be re-enabled later for testing
   // <React.StrictMode>
