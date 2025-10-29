@@ -1,62 +1,58 @@
 {
-  "title": "Compliance Training & Certificates",
-  "description": "Complete your trainings and manage certificates across frameworks.",
+  "title": "Training & Certificates",
+  "description": "Manage course records, upload certificates, and verify training codes.",
   "hintBar": {
-    "text": "Courses are currently available in German on our website.",
-    "cta": "Open German course page"
-  },
-  "notice": {
-    "deOnly": "These courses are currently available in German only."
-  },
-  "courses": {
-    "nis2": {
-      "title": "NIS2 Compliance Certification",
-      "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
-      "bullets": [
-        "Implement 10 minimum measures",
-        "Train incident response & reporting paths",
-        "11 templates + 12-month updates"
-      ]
-    },
-    "lead": {
-      "title": "EU AI Act – Compliance for Companies",
-      "url": "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
-      "bullets": [
-        "Understand risk classes & obligations",
-        "CE conformity & documentation",
-        "Implement AI literacy requirements"
-      ]
-    },
-    "emp": {
-      "title": "EU AI Act – Employee Training",
-      "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
-      "bullets": [
-        "Do's & don'ts in daily work",
-        "Data protection & bias explained",
-        "Certificate after quiz"
-      ]
-    }
-  },
-  "actions": {
-    "upload": "Upload",
-    "verifyByCode": "Verify by code"
-  },
-  "viewCourse": "View course",
-  "uploadTitle": "Upload certificate",
-  "uploadDescription": "Upload your training certificate as a PDF or image.",
-  "dropZone": "Drop file here or click to select",
-  "acceptedFormats": "Accepted formats: PDF, JPG, PNG (max. 10MB)",
-  "verifyDialog": {
-    "title": "Verify by Code/Link",
-    "placeholder": "Enter verification code or paste certificate link",
-    "submit": "Verify Certificate"
+    "text": "Demo version active: All features unlocked.",
+    "cta": "Upgrade now"
   },
   "sections": {
     "uploaded": {
       "title": "Uploaded certificates",
-      "subtitle": "Review and verify submitted training certificates",
-      "empty": "No certificates available"
+      "subtitle": "Here you'll find all verified or uploaded records.",
+      "empty": "No certificates yet."
     }
+  },
+  "courses": {
+    "nis2": {
+      "title": "NIS2 Core",
+      "url": "#",
+      "bullets": [
+        "NIS2 basics & obligations",
+        "Roles & responsibilities",
+        "Practical implementation"
+      ]
+    },
+    "lead": {
+      "title": "EU AI Act – Leadership",
+      "url": "#",
+      "bullets": [
+        "Liability & governance",
+        "Risk classes & duties",
+        "Implementation roadmap"
+      ]
+    },
+    "emp": {
+      "title": "EU AI Act – Employees",
+      "url": "#",
+      "bullets": [
+        "Using AI safely & productively",
+        "Data & prompting best practices",
+        "Everyday do's & don'ts"
+      ]
+    }
+  },
+  "viewCourse": "View course",
+  "actions": {
+    "upload": "Upload",
+    "verifyByCode": "Verify by code"
+  },
+  "uploadTitle": "Upload certificate",
+  "uploadDescription": "Upload your training certificate as a PDF or image.",
+  "dropZone": "Drop file here or click to select",
+  "acceptedFormats": "Accepted formats: PDF, JPG, PNG",
+  "verifyDialog": {
+    "title": "Verify certificate",
+    "placeholder": "Enter verification code",
+    "submit": "Verify"
   }
-}
 }

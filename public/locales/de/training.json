@@ -1,62 +1,58 @@
 {
-  "title": "Compliance-Schulungen & Zertifikate",
-  "description": "Schulungen absolvieren und Zertifikate framework-übergreifend verwalten.",
+  "title": "Schulungen & Zertifikate",
+  "description": "Verwalte Kursnachweise, lade Zertifikate hoch und verifiziere Trainingscodes.",
   "hintBar": {
-    "text": "Die Kurse sind derzeit auf Deutsch auf unserer Website verfügbar.",
-    "cta": "Deutsche Kursseite öffnen"
-  },
-  "notice": {
-    "deOnly": "Diese Kurse sind derzeit nur auf Deutsch verfügbar."
-  },
-  "courses": {
-    "nis2": {
-      "title": "NIS2 Compliance Zertifizierung",
-      "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
-      "bullets": [
-        "10 Mindestmaßnahmen umsetzen",
-        "Incident Response & Meldewege schulen",
-        "11 Vorlagen + 12 Monate Updates"
-      ]
-    },
-    "lead": {
-      "title": "EU KI Gesetz – Compliance für Unternehmen",
-      "url": "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
-      "bullets": [
-        "Risikoklassen & Pflichten verstehen",
-        "CE-Konformität & Dokumentation",
-        "AI-Literacy-Pflichten umsetzen"
-      ]
-    },
-    "emp": {
-      "title": "EU KI Gesetz – Mitarbeiterschulung",
-      "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
-      "bullets": [
-        "Do's & Don'ts im Arbeitsalltag",
-        "Datenschutz & Bias erklärt",
-        "Zertifikat nach Quiz"
-      ]
-    }
-  },
-  "actions": {
-    "upload": "Hochladen",
-    "verifyByCode": "Per Code prüfen"
-  },
-  "viewCourse": "Kurs ansehen",
-  "uploadTitle": "Zertifikat hochladen",
-  "uploadDescription": "Laden Sie Ihr Trainingszertifikat als PDF oder Bild hoch.",
-  "dropZone": "Datei hier ablegen oder klicken, um auszuwählen",
-  "acceptedFormats": "Akzeptierte Formate: PDF, JPG, PNG (max. 10MB)",
-  "verifyDialog": {
-    "title": "Zertifikat überprüfen",
-    "placeholder": "Verifizierungscode eingeben",
-    "submit": "Überprüfen"
+    "text": "Demo-Version aktiv: Alle Funktionen freigeschaltet.",
+    "cta": "Jetzt Upgrade buchen"
   },
   "sections": {
     "uploaded": {
       "title": "Hochgeladene Zertifikate",
-      "subtitle": "Eingereichte Schulungszertifikate prüfen und verifizieren",
-      "empty": "Keine Zertifikate vorhanden"
+      "subtitle": "Hier findest du alle bereits verifizierten oder hochgeladenen Nachweise.",
+      "empty": "Noch keine Zertifikate vorhanden."
     }
+  },
+  "courses": {
+    "nis2": {
+      "title": "NIS2-Core",
+      "url": "#",
+      "bullets": [
+        "Grundlagen & Pflichten nach NIS2",
+        "Rollen & Verantwortlichkeiten",
+        "Praktische Umsetzung im Unternehmen"
+      ]
+    },
+    "lead": {
+      "title": "EU AI Act – Führung",
+      "url": "#",
+      "bullets": [
+        "Haftung & Governance",
+        "Risikoklassen & Pflichten",
+        "Implementierungsfahrplan"
+      ]
+    },
+    "emp": {
+      "title": "EU AI Act – Mitarbeitende",
+      "url": "#",
+      "bullets": [
+        "KI sicher & produktiv einsetzen",
+        "Daten & Prompting-Best-Practices",
+        "Do's & Don'ts im Alltag"
+      ]
+    }
+  },
+  "viewCourse": "Kurs ansehen",
+  "actions": {
+    "upload": "Hochladen",
+    "verifyByCode": "Per Code prüfen"
+  },
+  "uploadTitle": "Zertifikat hochladen",
+  "uploadDescription": "Lade dein Trainingszertifikat als PDF oder Bild hoch.",
+  "dropZone": "Datei hier ablegen oder klicken, um auszuwählen",
+  "acceptedFormats": "Akzeptierte Formate: PDF, JPG, PNG",
+  "verifyDialog": {
+    "title": "Zertifikat überprüfen",
+    "placeholder": "Verifizierungscode eingeben",
+    "submit": "Überprüfen"
   }
-}
 }

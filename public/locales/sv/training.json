@@ -1,62 +1,58 @@
 {
-  "title": "Utbildningar & intyg",
-  "description": "Slutför utbildningar och hantera intyg över alla ramverk.",
+  "title": "Utbildning & Intyg",
+  "description": "Hantera kursintyg, ladda upp certifikat och verifiera träningskoder.",
   "hintBar": {
-    "text": "Kurserna finns för närvarande endast på tyska.",
-    "cta": "Öppna den tyska kurssidan"
+    "text": "Demoversion aktiv: Alla funktioner upplåsta.",
+    "cta": "Uppgradera nu"
   },
-  "notice": {
-    "deOnly": "Dessa kurser finns just nu endast på tyska."
+  "sections": {
+    "uploaded": {
+      "title": "Uppladdade certifikat",
+      "subtitle": "Här finns alla verifierade eller uppladdade intyg.",
+      "empty": "Inga certifikat ännu."
+    }
   },
   "courses": {
     "nis2": {
-      "title": "NIS2 Grund",
-      "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
+      "title": "NIS2-Kärna",
+      "url": "#",
       "bullets": [
-        "Risk, styrning & rapportering",
-        "Incidenthantering & kontinuitet",
-        "Praktiska uppgifter för småföretag"
+        "Grunder & skyldigheter enligt NIS2",
+        "Roller & ansvar",
+        "Praktiskt genomförande"
       ]
     },
     "lead": {
-      "title": "EU AI-akten – Ledning",
-      "url": "https://myablefy.com/s/norrland-innovate/zertifizierter-online-kurs-eu-ki-gesetz-compliance-fuer-unternehmen-5b90e795",
+      "title": "EU AI-lagen – Ledarskap",
+      "url": "#",
       "bullets": [
-        "Skyldigheter & riskklasser",
-        "Policies & ansvar",
-        "Tillsyn av leverantörer & system"
+        "Ansvar & styrning",
+        "Riskklasser & skyldigheter",
+        "Vägkarta för införande"
       ]
     },
     "emp": {
-      "title": "EU AI-akten – Medarbetare",
-      "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
+      "title": "EU AI-lagen – Medarbetare",
+      "url": "#",
       "bullets": [
-        "Säker & ansvarsfull AI-användning",
-        "Dataskydd & prompts",
-        "Gör & gör inte på jobbet"
+        "Använd AI säkert & effektivt",
+        "Data & prompting-praxis",
+        "Gör & gör inte i vardagen"
       ]
     }
   },
+  "viewCourse": "Visa kurs",
   "actions": {
     "upload": "Ladda upp",
     "verifyByCode": "Verifiera med kod"
   },
-  "viewCourse": "Visa kurs",
   "uploadTitle": "Ladda upp certifikat",
   "uploadDescription": "Ladda upp ditt utbildningsintyg som PDF eller bild.",
   "dropZone": "Släpp fil här eller klicka för att välja",
-  "acceptedFormats": "Godkända format: PDF, JPG, PNG (max. 10MB)",
+  "acceptedFormats": "Godkända format: PDF, JPG, PNG",
   "verifyDialog": {
     "title": "Verifiera certifikat",
     "placeholder": "Ange verifieringskod",
     "submit": "Verifiera"
-  },
-  "sections": {
-    "uploaded": {
-      "title": "Uppladdade intyg",
-      "subtitle": "Granska och verifiera inskickade utbildningsintyg",
-      "empty": "Inga intyg ännu"
-    }
   }
-}
 }

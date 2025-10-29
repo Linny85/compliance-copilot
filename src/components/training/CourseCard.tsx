@@ -62,7 +62,7 @@ export function CourseCard({ kind }: { kind: CourseKind }) {
             rel="noreferrer"
             className="inline-flex w-full sm:w-auto items-center justify-center rounded-lg border px-3 py-2 text-sm sm:text-base font-medium hover:bg-accent transition-colors"
           >
-            {t("viewCourse", { ns: "common", defaultValue: "View course" })}
+            {t("training:viewCourse")}
           </a>
         )}
       </div>
