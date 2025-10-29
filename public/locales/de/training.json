@@ -1,12 +1,12 @@
 {
-  "title": "Schulungen & Zertifikate",
-  "description": "Absolviere Schulungen und verwalte Zertifikate über alle Frameworks.",
+  "title": "Compliance-Schulungen & Zertifikate",
+  "description": "Schulungen absolvieren und Zertifikate framework-übergreifend verwalten.",
   "hintBar": {
-    "text": "Noch kein Zertifikat? Buchen Sie jetzt eine Schulung bei Norrland Innovate.",
-    "cta": "Zu den Kursen"
+    "text": "Die Kurse sind derzeit auf Deutsch auf unserer Website verfügbar.",
+    "cta": "Deutsche Kursseite öffnen"
   },
   "notice": {
-    "deOnly": "Die Kursübersicht ist in Ihrer aktuellen Sprache nicht verfügbar."
+    "deOnly": "Diese Kurse sind derzeit nur auf Deutsch verfügbar."
   },
   "courses": {
     "nis2": {
@@ -14,8 +14,8 @@
       "url": "https://myablefy.com/s/norrland-innovate/nis2-compliance-zertifizierung-6c5e3c3b",
       "bullets": [
         "10 Mindestmaßnahmen umsetzen",
-        "Incident-Response & Meldewege trainieren",
-        "11 Vorlagen + 12-Monats-Updates"
+        "Incident Response & Meldewege schulen",
+        "11 Vorlagen + 12 Monate Updates"
       ]
     },
     "lead": {
@@ -32,14 +32,14 @@
       "url": "https://myablefy.com/s/norrland-innovate/eu-ai-act-mitarbeiter-schulung-866722a6",
       "bullets": [
         "Do's & Don'ts im Arbeitsalltag",
-        "Datenschutz & Bias verständlich erklärt",
-        "Teilnahmezertifikat nach Quiz"
+        "Datenschutz & Bias erklärt",
+        "Zertifikat nach Quiz"
       ]
     }
   },
   "actions": {
-    "upload": "Zertifikat hochladen",
-    "verifyByCode": "Per Code verifizieren"
+    "upload": "Hochladen",
+    "verifyByCode": "Per Code prüfen"
   },
   "viewCourse": "Kurs ansehen",
   "uploadTitle": "Zertifikat hochladen",
@@ -47,15 +47,16 @@
   "dropZone": "Datei hier ablegen oder klicken, um auszuwählen",
   "acceptedFormats": "Akzeptierte Formate: PDF, JPG, PNG (max. 10MB)",
   "verifyDialog": {
-    "title": "Per Code/Link verifizieren",
-    "placeholder": "Verifizierungscode eingeben oder Zertifikatslink einfügen",
-    "submit": "Zertifikat verifizieren"
+    "title": "Zertifikat überprüfen",
+    "placeholder": "Verifizierungscode eingeben",
+    "submit": "Überprüfen"
   },
   "sections": {
     "uploaded": {
       "title": "Hochgeladene Zertifikate",
-      "subtitle": "Überprüfen und verifizieren Sie eingereichte Schulungszertifikate",
+      "subtitle": "Eingereichte Schulungszertifikate prüfen und verifizieren",
       "empty": "Keine Zertifikate vorhanden"
     }
   }
+}
 }

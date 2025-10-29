@@ -38,7 +38,7 @@
     }
   },
   "actions": {
-    "upload": "Ladda upp intyg",
+    "upload": "Ladda upp",
     "verifyByCode": "Verifiera med kod"
   },
   "viewCourse": "Visa kurs",
@@ -58,4 +58,5 @@
       "empty": "Inga intyg ännu"
     }
   }
+}
 }

@@ -38,7 +38,7 @@
     }
   },
   "actions": {
-    "upload": "Upload certificate",
+    "upload": "Upload",
     "verifyByCode": "Verify by code"
   },
   "viewCourse": "View course",
@@ -58,4 +58,5 @@
       "empty": "No certificates available"
     }
   }
+}
 }
