@@ -77,10 +77,10 @@ const Landing = () => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button variant="ghost" onClick={() => navigate("/auth")}>
+            <Button variant="ghost" onClick={handleViewDemo}>
               {t("header.signIn")}
             </Button>
-            <Button onClick={() => navigate("/auth")}>
+            <Button onClick={handleViewDemo}>
               {t("header.getStarted")}
             </Button>
           </div>
@@ -97,8 +97,8 @@ const Landing = () => {
             {t("hero.subtext")}
           </p>
           <div className="flex gap-4 justify-center pt-4">
-            <Button size="lg" onClick={() => navigate("/auth")} className="shadow-glow">
-              {t("hero.startTrial")} <ArrowRight className="ml-2 h-5 w-5" />
+            <Button size="lg" onClick={handleViewDemo} className="shadow-glow" disabled={demoLoading}>
+              {demoLoading ? t("hero.demoLoading") : t("hero.startTrial")} <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button size="lg" variant="outline" onClick={handleViewDemo} disabled={demoLoading}>
               {demoLoading ? t("hero.demoLoading") : t("hero.viewDemo")}
@@ -167,8 +167,8 @@ const Landing = () => {
           <p className="text-xl text-muted-foreground">
             {t("cta.subtitle")}
           </p>
-          <Button size="lg" onClick={() => navigate("/auth")} className="shadow-glow">
-            {t("cta.startTrial")}
+          <Button size="lg" onClick={handleViewDemo} className="shadow-glow" disabled={demoLoading}>
+            {demoLoading ? t("hero.demoLoading") : t("cta.startTrial")}
           </Button>
         </div>
       </section>
