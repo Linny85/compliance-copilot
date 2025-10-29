@@ -85,10 +85,10 @@ export function VerifyByCodeDialog() {
               onClick={() => setOpen(false)}
               disabled={isVerifying}
             >
-              {t('common.cancel')}
+              {t('common:buttons.cancel')}
             </Button>
             <Button onClick={handleSubmit} disabled={isVerifying || !value.trim()}>
-              {isVerifying ? t('common.loading') : t('training:verifyDialog.submit')}
+              {isVerifying ? t('common:loading') : t('training:verifyDialog.submit')}
             </Button>
           </div>
         </div>

@@ -292,7 +292,7 @@ export default function ScopeMatrix() {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-muted-foreground">{t('common.loading')}</div>
+            <div className="text-center py-8 text-muted-foreground">{t('common:loading')}</div>
           ) : matrixItems.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">{t('matrix.no_assignments')}</div>
           ) : (

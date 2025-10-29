@@ -218,7 +218,7 @@ export default function Vendors() {
       {/* Table */}
       <Card>
         {loading ? (
-          <div className="p-8 text-center text-muted-foreground">{t('common.loading')}</div>
+          <div className="p-8 text-center text-muted-foreground">{t('common:loading')}</div>
         ) : vendors.length === 0 ? (
           <div className="p-8 text-center">
             <Building2 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />

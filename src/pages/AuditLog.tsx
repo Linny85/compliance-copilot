@@ -78,7 +78,7 @@ export default function AuditLog() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>{t("common.loading")}</p>
+            <p>{t("common:loading")}</p>
           ) : (
             <Table>
               <TableHeader>
