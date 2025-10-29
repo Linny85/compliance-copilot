@@ -26,7 +26,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -36,7 +35,6 @@ import { useFeatures } from "@/contexts/FeatureFlagContext";
 import { isDemo } from "@/config/appMode";
 
 export function AppSidebar() {
-  const { state } = useSidebar();
   const navigate = useNavigate();
   const { t, ready, lng } = useI18n();
   const isAdmin = useIsAdmin();
@@ -47,8 +45,6 @@ export function AppSidebar() {
     toast.success(t.nav.logout);
     navigate("/auth");
   };
-
-  const isCollapsed = state === "collapsed";
 
   // Don't render until i18n is ready
   if (!ready) return null;
@@ -77,16 +73,14 @@ export function AppSidebar() {
   ].filter(item => !item.feature || hasFeature(item.feature as any));
 
   return (
-    <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon">
+    <Sidebar className="w-full h-full" collapsible="none">
       {/* Logo Header */}
-      {!isCollapsed && (
-        <div className="p-4 border-b border-sidebar-border flex items-center gap-3">
-          <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground font-bold text-lg">
-            N
-          </div>
-          <span className="font-semibold text-sidebar-foreground">NIS2 AI Guard</span>
+      <div className="p-4 border-b border-sidebar-border flex items-center gap-3">
+        <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground font-bold text-lg">
+          N
         </div>
-      )}
+        <span className="font-semibold text-sidebar-foreground">NIS2 AI Guard</span>
+      </div>
       
       
 
@@ -108,10 +102,10 @@ export function AppSidebar() {
                             ? "bg-sidebar-accent text-sidebar-accent-foreground"
                             : ""
                         }
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {!isCollapsed && <span>{item.title}</span>}
-                      </NavLink>
+                       >
+                         <item.icon className="h-4 w-4" />
+                         <span>{item.title}</span>
+                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -136,21 +130,21 @@ export function AppSidebar() {
                           ? "bg-sidebar-accent text-sidebar-accent-foreground"
                           : ""
                       }
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
+                     >
+                       <item.icon className="h-4 w-4" />
+                       <span>{item.title}</span>
+                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               
               {/* Help Button (opens guide drawer) */}
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => {}}>
-                  <HelpCircle className="h-4 w-4" />
-                  {!isCollapsed && <span>{t.nav.help}</span>}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+               <SidebarMenuItem>
+                 <SidebarMenuButton onClick={() => {}}>
+                   <HelpCircle className="h-4 w-4" />
+                   <span>{t.nav.help}</span>
+                 </SidebarMenuButton>
+               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -159,12 +153,12 @@ export function AppSidebar() {
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleLogout}>
-                  <LogOut className="h-4 w-4" />
-                  {!isCollapsed && <span>{t.nav.logout}</span>}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+               <SidebarMenuItem>
+                 <SidebarMenuButton onClick={handleLogout}>
+                   <LogOut className="h-4 w-4" />
+                   <span>{t.nav.logout}</span>
+                 </SidebarMenuButton>
+               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
