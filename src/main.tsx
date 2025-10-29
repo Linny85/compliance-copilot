@@ -25,6 +25,16 @@ if (import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem
   document.documentElement.classList.add('debug-index-badge');
 }
 
+// --- DEMO Hard-Bypass: Nie /auth in Demo zulassen ---
+(function demoHardBypass() {
+  try {
+    const mode = localStorage.getItem('appMode');
+    if (mode === 'demo' && location.pathname === '/auth') {
+      history.replaceState(null, '', '/dashboard');
+    }
+  } catch {}
+})();
+
 createRoot(document.getElementById("root")!).render(
   // StrictMode can be re-enabled later for testing
   // <React.StrictMode>
