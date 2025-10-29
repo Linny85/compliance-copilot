@@ -44,7 +44,7 @@ export const useAuthGuard = () => {
         setUserInfo(null);
         setLoading(false);
         if (location.pathname !== '/auth' && location.pathname !== '/') {
-          navigate('/auth');
+          navigate('/auth', { replace: true });
         }
       }
     });
@@ -54,6 +54,12 @@ export const useAuthGuard = () => {
 
   const checkAuthAndRedirect = async () => {
     try {
+      // Demo short-circuit: never redirect or query auth in demo
+      if (mode === 'demo') {
+        setUserInfo(DEMO_USER);
+        setLoading(false);
+        return;
+      }
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
