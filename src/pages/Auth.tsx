@@ -11,21 +11,10 @@ import { toast } from "sonner";
 import { Session } from "@supabase/supabase-js";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { useAppMode } from "@/state/AppModeProvider";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
-  const { mode } = useAppMode();
-
-  // ⛳️ Demo darf Auth nicht sehen - redirect via useEffect
-  useEffect(() => {
-    if (mode === "demo") {
-      navigate("/demo", { replace: true });
-    }
-  }, [mode, navigate]);
-
-  if (mode === "demo") return null; // nichts rendern während redirect läuft
 
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(false);
@@ -38,11 +27,6 @@ const Auth = () => {
   const [signupFullName, setSignupFullName] = useState("");
 
   useEffect(() => {
-    // In Demo mode, skip auth listeners entirely (already redirected above)
-    const currentMode = mode as any; // mode can be 'demo' at runtime
-    if (currentMode === 'demo') {
-      return;
-    }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       if (session) {
@@ -58,7 +42,7 @@ const Auth = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [mode]);
+  }, []);
 
   const checkUserProfile = async (userId: string) => {
     const { data: profile } = await supabase
