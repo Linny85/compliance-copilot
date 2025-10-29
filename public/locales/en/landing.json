@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Compliance-Copilot – EU Compliance Made Simple",
+    "description": "Navigate NIS2 Directive and AI Act requirements with confidence. Manage risks, document systems, and ensure regulatory compliance."
+  },
+  "header": {
+    "signIn": "Sign In",
+    "getStarted": "Get Started"
+  },
+  "hero": {
+    "headline": "EU Compliance Made Simple",
+    "subtext": "Navigate NIS2 Directive and AI Act requirements with confidence. Manage risks, document systems, and ensure regulatory compliance.",
+    "startTrial": "Start Free Trial",
+    "viewDemo": "View Demo",
+    "demoLoading": "Preparing demo…",
+    "noCreditCard": "14-day free trial • No credit card required"
+  },
+  "features": {
+    "nis2": {
+      "title": "NIS2 Compliance",
+      "description": "Track and manage cybersecurity risks with comprehensive risk assessment tools."
+    },
+    "aiAct": {
+      "title": "AI Act Registry",
+      "description": "Document and classify AI systems according to EU AI Act requirements."
+    },
+    "documents": {
+      "title": "Document Generation",
+      "description": "Auto-generate compliance policies, reports, and audit documentation."
+    },
+    "multiUser": {
+      "title": "Multi-User Access",
+      "description": "Collaborate with your team under secure, company-level isolation."
+    }
+  },
+  "benefits": {
+    "title": "Why Compliance-Copilot?",
+    "items": {
+      "isolation": "Complete multi-tenant isolation for data security",
+      "trial": "14-day free trial with full feature access",
+      "scoring": "Automated risk scoring and compliance tracking",
+      "admin": "Master code-based admin control",
+      "storage": "EU data storage and GDPR compliance",
+      "incident": "Incident management and audit logging"
+    }
+  },
+  "cta": {
+    "title": "Ready to Get Compliant?",
+    "subtitle": "Join organizations already using Compliance-Copilot to meet EU regulatory requirements.",
+    "startTrial": "Start Your Free Trial"
+  },
+  "footer": {
+    "copyright": "© 2024 Compliance-Copilot. Built for EU NIS2 & AI Act compliance."
+  }
+}

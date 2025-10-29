@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Compliance-Copilot – EU-efterlevnad på ett enkelt sätt",
+    "description": "Navigera tryggt genom NIS2 och AI Act. Hantera risker, dokumentera system och säkerställ regelefterlevnad."
+  },
+  "header": {
+    "signIn": "Logga in",
+    "getStarted": "Kom igång"
+  },
+  "hero": {
+    "headline": "EU-efterlevnad på ett enkelt sätt",
+    "subtext": "Navigera tryggt genom NIS2-direktivet och AI Act-kraven. Hantera risker, dokumentera system och säkerställ regelefterlevnad.",
+    "startTrial": "Börja gratis test",
+    "viewDemo": "Visa demo",
+    "demoLoading": "Förbereder demo…",
+    "noCreditCard": "14 dagars gratis test • Inget kreditkort krävs"
+  },
+  "features": {
+    "nis2": {
+      "title": "NIS2-efterlevnad",
+      "description": "Spåra och hantera cybersäkerhetsrisker med omfattande riskbedömningsverktyg."
+    },
+    "aiAct": {
+      "title": "AI Act-register",
+      "description": "Dokumentera och klassificera AI-system enligt EU AI Act-kraven."
+    },
+    "documents": {
+      "title": "Dokumentgenerering",
+      "description": "Generera automatiskt efterlevnadspolicyer, rapporter och revisionsdokumentation."
+    },
+    "multiUser": {
+      "title": "Fleranvändaråtkomst",
+      "description": "Samarbeta med ditt team under säker, företagsnivåisolering."
+    }
+  },
+  "benefits": {
+    "title": "Varför Compliance-Copilot?",
+    "items": {
+      "isolation": "Fullständig multi-tenant-isolering för datasäkerhet",
+      "trial": "14 dagars gratis test med full funktionsåtkomst",
+      "scoring": "Automatiserad riskbedömning och efterlevnadsspårning",
+      "admin": "Huvudkodbaserad administratörskontroll",
+      "storage": "EU-datalagring och GDPR-efterlevnad",
+      "incident": "Incidenthantering och granskningsloggning"
+    }
+  },
+  "cta": {
+    "title": "Redo att bli kompatibel?",
+    "subtitle": "Gå med i organisationer som redan använder Compliance-Copilot för att uppfylla EU:s regelkrav.",
+    "startTrial": "Starta din kostnadsfria provperiod"
+  },
+  "footer": {
+    "copyright": "© 2024 Compliance-Copilot. Byggd för EU NIS2 & AI Act-efterlevnad."
+  }
+}
