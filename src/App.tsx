@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useNavigate, useSearchParams } from "reac
 import { useEffect } from "react";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useLocation } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
@@ -61,6 +62,23 @@ function GlobalNavigationBridge() {
 }
 
 /**
+ * Global guard: Demo darf niemals auf /auth* bleiben
+ */
+function DemoAuthBypass() {
+  const { mode } = useAppMode();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (mode === "demo" && location.pathname.startsWith("/auth")) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [mode, location.pathname, navigate]);
+
+  return null;
+}
+
+/**
  * URL-Schalter für Demo: ?demo=1 aktiviert Demo-Modus und navigiert zu /dashboard
  */
 function DemoUrlSwitch() {
@@ -89,6 +107,7 @@ const App = () => (
     <NorrlandGuide />
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <GlobalNavigationBridge />
+      <DemoAuthBypass />
       <DemoUrlSwitch />
       <Routes>
         {/* Public routes - OUTSIDE AuthGuard */}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAppMode } from "@/state/AppModeProvider";
+import { getAppMode } from "@/config/appMode";
 
 interface UserInfo {
   userId: string;
@@ -22,11 +23,12 @@ const DEMO_USER: UserInfo = {
 export const useAuthGuard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { mode } = useAppMode();
   const [loading, setLoading] = useState(true);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
+    const mode = getAppMode();
+    
     // ✅ DEMO: gar keinen Listener registrieren
     if (mode === 'demo') {
       setUserInfo(DEMO_USER);
@@ -43,17 +45,21 @@ export const useAuthGuard = () => {
       } else if (event === 'SIGNED_OUT') {
         setUserInfo(null);
         setLoading(false);
-        if (location.pathname !== '/auth' && location.pathname !== '/') {
+        // ❌ KEIN Redirect in Demo
+        const currentMode = getAppMode();
+        if (currentMode !== 'demo' && location.pathname !== '/auth' && location.pathname !== '/') {
           navigate('/auth', { replace: true });
         }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname, mode]);
+  }, [location.pathname]);
 
   const checkAuthAndRedirect = async () => {
     try {
+      const mode = getAppMode();
+      
       // ✅ DEMO: synthetischen User setzen, keine Supabase-Calls
       if (mode === 'demo') {
         setUserInfo(DEMO_USER);
