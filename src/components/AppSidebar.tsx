@@ -44,6 +44,8 @@ export function AppSidebar() {
     try {
       if (isDemo()) {
         // In demo mode, don't actually sign out (no session to destroy)
+        const { setDemoMode } = require('@/lib/isDemo');
+        setDemoMode(false);
         toast.success(t.nav.logout || 'Demo beendet');
         navigate('/auth/neu', { replace: true });
         return;

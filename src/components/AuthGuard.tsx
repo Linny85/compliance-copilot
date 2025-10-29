@@ -24,8 +24,14 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   const lastPath = useRef(location.pathname);
 
   useEffect(() => {
-    // Demo: never redirect
-    if (mode === "demo") return;
+    // Demo: Set flag when entering /auth/neu, never redirect
+    if (mode === "demo") {
+      if (location.pathname.startsWith('/auth/neu')) {
+        const { setDemoMode } = require('@/lib/isDemo');
+        setDemoMode(true);
+      }
+      return;
+    }
     
     // Wait for session state to be stable
     if (loading) return;
