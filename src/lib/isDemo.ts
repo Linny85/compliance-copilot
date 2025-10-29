@@ -7,11 +7,14 @@ export function isDemo(): boolean {
   return ls || p.startsWith('/auth/neu') || q.has('demo') || import.meta.env.VITE_DEMO === 'true';
 }
 
-export function setDemoMode(active: boolean) {
-  if (typeof window === 'undefined') return;
-  if (active) {
+export function enableDemo() {
+  if (typeof window !== 'undefined') {
     localStorage.setItem('demoMode', '1');
-  } else {
+  }
+}
+
+export function disableDemo() {
+  if (typeof window !== 'undefined') {
     localStorage.removeItem('demoMode');
   }
 }

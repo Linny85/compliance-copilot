@@ -25,10 +25,10 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
 
   useEffect(() => {
     // Demo: Set flag when entering /auth/neu, never redirect
-    if (mode === "demo") {
+    if (mode === "demo" || isDemo()) {
       if (location.pathname.startsWith('/auth/neu')) {
-        const { setDemoMode } = require('@/lib/isDemo');
-        setDemoMode(true);
+        const { enableDemo } = require('@/lib/isDemo');
+        enableDemo();
       }
       return;
     }

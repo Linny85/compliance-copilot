@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppMode } from "@/config/appMode";
+import { isDemo } from "@/lib/isDemo";
+import { demoUser, demoTenant } from "@/demo/demoData";
 
 interface UserInfo {
   userId: string;
@@ -11,10 +13,10 @@ interface UserInfo {
 }
 
 const DEMO_USER: UserInfo = {
-  userId: "demo-user-id",
-  email: "demo@company.example",
-  tenantId: "demo-tenant-id",
-  role: "admin",
+  userId: demoUser.id,
+  email: demoUser.email,
+  tenantId: demoTenant.id,
+  role: "owner",
   subscriptionStatus: "active",
 };
 
@@ -26,8 +28,8 @@ export const useAuthGuard = () => {
   useEffect(() => {
     const mode = getAppMode();
     
-    // Demo: return synthetic user immediately
-    if (mode === 'demo') {
+    // Demo: return synthetic user immediately (treat as logged in)
+    if (mode === 'demo' || isDemo()) {
       setUserInfo(DEMO_USER);
       setLoading(false);
       return;

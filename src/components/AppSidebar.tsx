@@ -44,8 +44,8 @@ export function AppSidebar() {
     try {
       if (isDemo()) {
         // In demo mode, don't actually sign out (no session to destroy)
-        const { setDemoMode } = require('@/lib/isDemo');
-        setDemoMode(false);
+        const { disableDemo } = await import('@/lib/isDemo');
+        disableDemo();
         toast.success(t.nav.logout || 'Demo beendet');
         navigate('/auth/neu', { replace: true });
         return;
@@ -92,7 +92,14 @@ export function AppSidebar() {
         <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground font-bold text-lg">
           N
         </div>
-        <span className="font-semibold text-sidebar-foreground">NIS2 AI Guard</span>
+        <div className="flex flex-col flex-1">
+          <span className="font-semibold text-sidebar-foreground">NIS2 AI Guard</span>
+          {isDemo() && (
+            <span className="text-xs text-amber-600 dark:text-amber-400">
+              Demo · read-only
+            </span>
+          )}
+        </div>
       </div>
       
       
