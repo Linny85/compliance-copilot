@@ -41,14 +41,20 @@ export function AppSidebar() {
   const { hasFeature } = useFeatures();
 
   const handleLogout = async () => {
-    if (isDemo()) {
-      toast.success(t.nav.logout);
-      navigate("/");
-      return;
+    try {
+      if (isDemo()) {
+        // In demo mode, don't actually sign out (no session to destroy)
+        toast.success(t.nav.logout || 'Demo beendet');
+        navigate('/auth/neu', { replace: true });
+        return;
+      }
+      await supabase.auth.signOut();
+      toast.success(t.nav.logout || 'Abgemeldet');
+      navigate('/auth', { replace: true });
+    } catch (e) {
+      console.error(e);
+      toast.error(t.common?.error || 'Etwas ist schiefgelaufen.');
     }
-    await supabase.auth.signOut();
-    toast.success(t.nav.logout);
-    navigate("/auth");
   };
 
   // Don't render until i18n is ready

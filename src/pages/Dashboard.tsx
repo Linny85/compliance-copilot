@@ -42,8 +42,8 @@ const Dashboard = () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
-        if (isDemo()) { setLoading(false); return; }
-        navigate("/auth");
+        // No navigation - AuthGuard handles redirects
+        setLoading(false);
         return;
       }
 

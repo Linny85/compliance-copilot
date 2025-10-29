@@ -30,7 +30,10 @@ const OnboardingWizard = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { if (isDemo()) return; navigate("/auth"); return; }
+      if (!session) {
+        // No navigation - AuthGuard handles redirects
+        return;
+      }
       setUserId(session.user.id);
     };
     checkAuth();

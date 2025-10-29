@@ -27,21 +27,13 @@ const Auth = () => {
   const [signupFullName, setSignupFullName] = useState("");
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      if (session) {
-        checkUserProfile(session.user.id);
-      }
-    });
-
+    // Only check for existing session - navigation is handled by AuthGuard
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
         checkUserProfile(session.user.id);
       }
     });
-
-    return () => subscription.unsubscribe();
   }, []);
 
   const checkUserProfile = async (userId: string) => {
