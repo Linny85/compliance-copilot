@@ -21,20 +21,8 @@ export function NorrlandGuideDrawer({
   setOpen: (v: boolean) => void 
 }) {
   const { t, i18n, ready } = useTranslation("assistant", { useSuspense: false });
-
-  const name = t("name");
-  const tagline = t("tagline");
-  const greeting = t("greeting");
-
-  const quickRaw = t("quickPrompts", { returnObjects: true }) as unknown;
-  const quick = Array.isArray(quickRaw) ? (quickRaw as string[]) : [];
-
-  const labels = {
-    open: t("buttons.open"),
-    cancel: t("buttons.cancel"),
-    speak_on: t("buttons.speak_on"),
-    speak_off: t("buttons.speak_off")
-  };
+  
+  if (!ready && open) return null;
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
@@ -46,6 +34,19 @@ export function NorrlandGuideDrawer({
   const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Translations - only access after ready
+  const name = ready ? t("name") : "";
+  const tagline = ready ? t("tagline") : "";
+  const greeting = ready ? t("greeting") : "";
+  const quickRaw = ready ? t("quickPrompts", { returnObjects: true }) : [];
+  const quick = Array.isArray(quickRaw) ? (quickRaw as string[]) : [];
+  const labels = ready ? {
+    open: t("buttons.open"),
+    cancel: t("buttons.cancel"),
+    speak_on: t("buttons.speak_on"),
+    speak_off: t("buttons.speak_off")
+  } : { open: "", cancel: "", speak_on: "", speak_off: "" };
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;

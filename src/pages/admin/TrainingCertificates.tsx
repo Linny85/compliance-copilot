@@ -52,8 +52,10 @@ const COURSE_DATA = {
 };
 
 export default function TrainingCertificates() {
-  const { t, i18n } = useTranslation(['training', 'common']);
+  const { t, i18n, ready } = useTranslation(['training', 'common']);
   const { data: certificates = [], isLoading } = useTrainingCertificates();
+  
+  if (!ready) return null;
   const verifyMutation = useVerifyTrainingCertificate();
   const deleteMutation = useDeleteTrainingCertificate();
 
@@ -80,7 +82,7 @@ export default function TrainingCertificates() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Möchten Sie dieses Zertifikat wirklich löschen?')) {
+    if (confirm(t('common:confirmDelete', { defaultValue: 'Möchten Sie dieses Zertifikat wirklich löschen?' }))) {
       await deleteMutation.mutateAsync(id);
     }
   };
@@ -88,11 +90,11 @@ export default function TrainingCertificates() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'verified':
-        return <Badge className="bg-green-500">Bestätigt</Badge>;
+        return <Badge className="bg-green-500">{t('common:verified', { defaultValue: 'Bestätigt' })}</Badge>;
       case 'pending':
-        return <Badge variant="secondary">Ausstehend</Badge>;
+        return <Badge variant="secondary">{t('common:pending', { defaultValue: 'Ausstehend' })}</Badge>;
       case 'rejected':
-        return <Badge variant="destructive">Abgelehnt</Badge>;
+        return <Badge variant="destructive">{t('common:rejected', { defaultValue: 'Abgelehnt' })}</Badge>;
       default:
         return null;
     }
@@ -177,15 +179,15 @@ export default function TrainingCertificates() {
               </p>
             ) : (
               <div className="table-responsive -mx-4 sm:mx-0">
-                <Table className="min-w-full">
+                  <Table className="min-w-full">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Titel</TableHead>
-                      <TableHead>Anbieter</TableHead>
-                      <TableHead>Abschlussdatum</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Datei</TableHead>
-                      <TableHead className="text-right">Aktionen</TableHead>
+                      <TableHead>{t('common:title', { defaultValue: 'Titel' })}</TableHead>
+                      <TableHead>{t('common:provider', { defaultValue: 'Anbieter' })}</TableHead>
+                      <TableHead>{t('common:completionDate', { defaultValue: 'Abschlussdatum' })}</TableHead>
+                      <TableHead>{t('common:status', { defaultValue: 'Status' })}</TableHead>
+                      <TableHead>{t('common:file', { defaultValue: 'Datei' })}</TableHead>
+                      <TableHead className="text-right">{t('common:actions', { defaultValue: 'Aktionen' })}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -216,7 +218,7 @@ export default function TrainingCertificates() {
                                   }}
                                 >
                                   <CheckCircle className="h-4 w-4 mr-1" />
-                                  Bestätigen
+                                  {t('common:verify', { defaultValue: 'Bestätigen' })}
                                 </Button>
                                 <Button
                                   size="sm"
@@ -227,7 +229,7 @@ export default function TrainingCertificates() {
                                   }}
                                 >
                                   <XCircle className="h-4 w-4 mr-1" />
-                                  Ablehnen
+                                  {t('common:reject', { defaultValue: 'Ablehnen' })}
                                 </Button>
                               </>
                             )}
@@ -262,22 +264,26 @@ export default function TrainingCertificates() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {action === 'verify' ? 'Zertifikat bestätigen' : 'Zertifikat ablehnen'}
+              {action === 'verify' 
+                ? t('common:verifyCertificate', { defaultValue: 'Zertifikat bestätigen' })
+                : t('common:rejectCertificate', { defaultValue: 'Zertifikat ablehnen' })
+              }
             </DialogTitle>
             <DialogDescription>
               {action === 'verify'
-                ? 'Bestätigen Sie, dass das Zertifikat gültig ist.'
-                : 'Geben Sie einen Grund für die Ablehnung an.'}
+                ? t('common:verifyCertificateDesc', { defaultValue: 'Bestätigen Sie, dass das Zertifikat gültig ist.' })
+                : t('common:rejectCertificateDesc', { defaultValue: 'Geben Sie einen Grund für die Ablehnung an.' })
+              }
             </DialogDescription>
           </DialogHeader>
           {action === 'reject' && (
             <div>
-              <Label htmlFor="notes">Begründung *</Label>
+              <Label htmlFor="notes">{t('common:reasonLabel', { defaultValue: 'Begründung *' })}</Label>
               <Textarea
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Grund für die Ablehnung..."
+                placeholder={t('common:reasonPlaceholder', { defaultValue: 'Grund für die Ablehnung...' })}
                 rows={4}
               />
             </div>
@@ -291,14 +297,17 @@ export default function TrainingCertificates() {
                 setNotes('');
               }}
             >
-              Abbrechen
+              {t('common:cancel', { defaultValue: 'Abbrechen' })}
             </Button>
             <Button
               onClick={handleVerify}
               disabled={action === 'reject' && !notes.trim()}
               variant={action === 'verify' ? 'default' : 'destructive'}
             >
-              {action === 'verify' ? 'Bestätigen' : 'Ablehnen'}
+              {action === 'verify' 
+                ? t('common:verify', { defaultValue: 'Bestätigen' })
+                : t('common:reject', { defaultValue: 'Ablehnen' })
+              }
             </Button>
           </DialogFooter>
         </DialogContent>
