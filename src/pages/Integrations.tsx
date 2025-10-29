@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle2, XCircle, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
+import { isDemo } from "@/config/appMode";
 
 type OutboxJob = {
   id: string;
@@ -44,6 +45,7 @@ export default function Integrations() {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        if (isDemo()) return;
         navigate('/auth');
         return;
       }

@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { isDemo } from "@/config/appMode";
 
 interface Risk {
   id: string;
@@ -47,6 +48,7 @@ const NIS2 = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
+      if (isDemo()) { setLoading(false); return; }
       navigate("/auth");
       return;
     }

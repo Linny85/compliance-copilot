@@ -41,6 +41,11 @@ export function AppSidebar() {
   const { hasFeature } = useFeatures();
 
   const handleLogout = async () => {
+    if (isDemo()) {
+      toast.success(t.nav.logout);
+      navigate("/");
+      return;
+    }
     await supabase.auth.signOut();
     toast.success(t.nav.logout);
     navigate("/auth");

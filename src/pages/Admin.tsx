@@ -19,6 +19,7 @@ import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { OpsDashboardCard } from "@/components/dashboard/OpsDashboardCard";
 import { ForecastCard } from "@/components/dashboard/ForecastCard";
 import GraphManager from "@/pages/admin/GraphManager";
+import { isDemo } from "@/config/appMode";
 
 interface User {
   id: string;
@@ -61,6 +62,7 @@ const Admin = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
+      if (isDemo()) { setLoading(false); return; }
       navigate("/auth");
       return;
     }

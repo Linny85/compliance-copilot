@@ -9,6 +9,7 @@ import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgres
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import { isDemo } from "@/config/appMode";
 
 interface CompanyData {
   name: string;
@@ -41,6 +42,7 @@ const Dashboard = () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
+        if (isDemo()) { setLoading(false); return; }
         navigate("/auth");
         return;
       }

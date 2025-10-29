@@ -14,6 +14,7 @@ import AdminPage from "@/components/layout/AdminPage";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useI18n } from "@/contexts/I18nContext";
+import { isDemo } from "@/config/appMode";
 
 interface AISystem {
   id: string;
@@ -55,6 +56,7 @@ const AIAct = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
+      if (isDemo()) { setLoading(false); return; }
       navigate("/auth");
       return;
     }
