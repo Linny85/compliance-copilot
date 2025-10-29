@@ -3,6 +3,7 @@
   "tagline": "Your compliance, effortlessly automated",
   "greeting": "Welcome back!",
   "quickPrompts": "Quick prompts",
+  "loading": "Loading…",
   "buttons": {
     "open": "Open",
     "cancel": "Cancel",
@@ -121,7 +122,6 @@
     "edit": "Edit",
     "close": "Close",
     "confirm": "Confirm",
-    "loading": "Loading...",
     "error": "Error",
     "success": "Success",
     "language": "Language",

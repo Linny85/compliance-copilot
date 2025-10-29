@@ -3,6 +3,7 @@
   "tagline": "Er efterlevnad, enkelt automatiserad",
   "greeting": "Välkommen tillbaka!",
   "quickPrompts": "Snabba kommandon",
+  "loading": "Laddar…",
   "buttons": {
     "open": "Öppna",
     "cancel": "Avbryt",
@@ -121,7 +122,6 @@
     "edit": "Redigera",
     "close": "Stäng",
     "confirm": "Bekräfta",
-    "loading": "Laddar...",
     "error": "Fel",
     "success": "Framgång",
     "language": "Språk",

@@ -3,6 +3,7 @@
   "tagline": "Ihre Compliance, einfach automatisiert",
   "greeting": "Willkommen zurück!",
   "quickPrompts": "Schnelle Eingaben",
+  "loading": "Laden…",
   "buttons": {
     "open": "Öffnen",
     "cancel": "Abbrechen",
@@ -121,7 +122,6 @@
     "edit": "Bearbeiten",
     "close": "Schließen",
     "confirm": "Bestätigen",
-    "loading": "Lädt...",
     "error": "Fehler",
     "success": "Erfolg",
     "language": "Sprache",
