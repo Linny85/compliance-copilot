@@ -12,16 +12,23 @@ export default function AdminPage({
 }) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main className="flex-1">
-        <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 md:pr-[var(--sidebar-width)]">
-          {title && <h1 className="text-2xl font-semibold text-center">{title}</h1>}
-          {subtitle && (
-            <p className="text-muted-foreground text-center mt-1">{subtitle}</p>
-          )}
-          {children}
+      <div className="grid grid-cols-[var(--sidebar-width)_1fr] min-h-screen">
+        <aside className="col-start-1 col-end-2">
+          <AppSidebar />
+        </aside>
+        
+        <div className="col-start-2 col-end-3 min-w-0">
+          <main className="flex-1">
+            <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6">
+              {title && <h1 className="text-2xl font-semibold text-center">{title}</h1>}
+              {subtitle && (
+                <p className="text-muted-foreground text-center mt-1">{subtitle}</p>
+              )}
+              {children}
+            </div>
+          </main>
         </div>
-      </main>
+      </div>
       
       {/* Debug badges - only visible when localStorage.debugBadges='1' in DEV mode */}
       {import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem('debugBadges') === '1' && (
