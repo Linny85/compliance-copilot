@@ -11,6 +11,14 @@ interface UserInfo {
   subscriptionStatus?: string | null;
 }
 
+const DEMO_USER: UserInfo = {
+  userId: "demo-user-id",
+  email: "demo@norrland.example",
+  tenantId: "demo-tenant-id",
+  role: "viewer",
+  subscriptionStatus: "active",
+};
+
 export const useAuthGuard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,6 +27,13 @@ export const useAuthGuard = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
+    // Skip all auth checks in demo mode
+    if (mode === 'demo') {
+      setUserInfo(DEMO_USER);
+      setLoading(false);
+      return;
+    }
+
     checkAuthAndRedirect();
 
     // Listen for auth state changes
@@ -35,17 +50,10 @@ export const useAuthGuard = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname]);
+  }, [location.pathname, mode]);
 
   const checkAuthAndRedirect = async () => {
     try {
-      // If in demo mode, skip all auth checks
-      if (mode === 'demo') {
-        setLoading(false);
-        setUserInfo(null);
-        return;
-      }
-
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
