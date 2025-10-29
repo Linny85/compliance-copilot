@@ -1,3 +1,5 @@
+import { useLayoutGuard } from "@/hooks/useLayoutGuard";
+
 export default function AdminPage({
   title,
   subtitle,
@@ -7,6 +9,7 @@ export default function AdminPage({
   subtitle?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  useLayoutGuard("AdminPage");
   return (
     <div className="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
       {title && <h1 className="text-center text-2xl font-semibold">{title}</h1>}

@@ -3,12 +3,14 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppModeBanner } from "@/components/AppModeBanner";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useLayoutGuard } from "@/hooks/useLayoutGuard";
 
 /**
  * Shared layout for all authenticated routes
  * Grid-based layout: Sidebar (sticky) | Content
  */
 export function AppLayout() {
+  useLayoutGuard("AppLayout");
   const { userInfo } = useAuthGuard();
   
   return (
@@ -23,6 +25,13 @@ export function AppLayout() {
         <main id="app-main" className="col-start-1 md:col-start-2 md:row-start-1">
           <AppModeBanner />
           <Outlet />
+          
+          {/* Dev Badge */}
+          {import.meta.env.DEV && (
+            <div className="fixed bottom-2 right-2 z-50 rounded bg-muted px-2 py-1 text-xs text-muted-foreground shadow">
+              Layout ✅
+            </div>
+          )}
         </main>
       </div>
     </SidebarProvider>
