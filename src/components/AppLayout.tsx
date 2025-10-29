@@ -1,30 +1,27 @@
 import { Outlet } from "react-router-dom";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { AppModeBanner } from "@/components/AppModeBanner";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 /**
  * Shared layout for all authenticated routes
- * Provides persistent sidebar navigation across all pages
+ * Grid-based layout: Sidebar (sticky) | Content
  */
 export function AppLayout() {
   const { userInfo } = useAuthGuard();
   
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
+    <div className="grid min-h-svh w-full [--sidebar-width:16rem] grid-cols-1 md:grid-cols-[var(--sidebar-width)_1fr]">
+      {/* Col 1: Sidebar */}
+      <aside className="hidden md:block md:col-start-1 md:row-start-1 sticky top-0 h-svh overflow-y-auto border-r bg-background">
         <AppSidebar />
-        <div className="flex-1 flex flex-col overflow-auto">
-          <header className="h-12 flex items-center border-b border-border bg-background sticky top-0 z-40">
-            <SidebarTrigger className="ml-2" />
-          </header>
-          <main className="flex-1 flex flex-col overflow-auto">
-            <AppModeBanner />
-            <Outlet />
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+      </aside>
+
+      {/* Col 2: Content */}
+      <main id="app-main" className="col-start-1 md:col-start-2 md:row-start-1">
+        <AppModeBanner />
+        <Outlet />
+      </main>
+    </div>
   );
 }
