@@ -17,7 +17,16 @@ const Landing = () => {
   const navigate = useNavigate();
   const { switchTo } = useAppMode();
   const [demoLoading, setDemoLoading] = useState(false);
-  const { t, i18n } = useTranslation("landing");
+  const { t, i18n, ready } = useTranslation("landing", { useSuspense: false });
+
+  // Wait for i18n to load landing namespace
+  if (!ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-muted-foreground animate-pulse">Loading...</div>
+      </div>
+    );
+  }
 
   const handleViewDemo = async () => {
     try {
