@@ -157,6 +157,13 @@
     },
     "none": "—"
   },
+  "banner": {
+    "demoTitle": "Demo-Modus",
+    "demoText": "Nur Ansicht · Änderungen werden nicht gespeichert",
+    "exitDemo": "Demo verlassen"
+  },
+  "readOnly": "Nur Lesen (Demo)",
+  "demoOnly": "In der Demo sind Änderungen deaktiviert.",
   "status": {
     "running": "Laufend",
     "success": "Erfolgreich",

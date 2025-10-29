@@ -22,9 +22,10 @@ const Landing = () => {
   const handleViewDemo = async () => {
     try {
       setDemoLoading(true);
-      await seedDemo();
       switchTo("demo");
-      await new Promise((r) => requestAnimationFrame(() => r(null)));
+      await seedDemo();
+      // Wait for mode to propagate
+      await new Promise((r) => setTimeout(() => r(null), 100));
       navigate("/dashboard", { replace: true });
     } catch (error) {
       console.error("Demo start failed:", error);

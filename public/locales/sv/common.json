@@ -135,6 +135,13 @@
     },
     "none": "—"
   },
+  "banner": {
+    "demoTitle": "Demo-läge",
+    "demoText": "Endast läsning · Inga ändringar sparas",
+    "exitDemo": "Lämna demo"
+  },
+  "readOnly": "Endast läsning (Demo)",
+  "demoOnly": "Ändringar är inaktiverade i demoläget.",
   "status": {
     "running": "Pågår",
     "success": "Klart",
