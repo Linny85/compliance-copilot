@@ -22,6 +22,18 @@ export default function AdminPage({
           {children}
         </div>
       </main>
+      
+      {/* Debug badges - only visible when localStorage.debugBadges='1' in DEV mode */}
+      {import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem('debugBadges') === '1' && (
+        <>
+          <div className="fixed bottom-4 right-4 z-50 rounded bg-emerald-700 px-2 py-1 text-xs text-white shadow">
+            AdminPage ACTIVE
+          </div>
+          <div className="fixed bottom-12 right-4 z-50 rounded bg-blue-700 px-2 py-1 text-xs text-white shadow">
+            INDEX CSS ACTIVE
+          </div>
+        </>
+      )}
     </SidebarProvider>
   );
 }
