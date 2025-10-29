@@ -1,8 +1,8 @@
 {
   "title": "Ops Dashboard",
   "metrics": {
-    "pending": "Ausstehend",
-    "pendingDesc": "Wartende Jobs",
+    "pending": "Wartende Jobs",
+    "pendingDesc": "Jobs in der Warteschlange",
     "dead24h": "Fehlgeschlagen (24h)",
     "dead24hDesc": "Fehlgeschlagene Jobs in den letzten 24h",
     "delivered24h": "Zugestellt (24h)",
@@ -12,19 +12,19 @@
   },
   "errors": {
     "title": "Top-Fehler (24h)",
-    "empty": "Keine Fehler im Zeitfenster.",
+    "empty": "Keine Fehler im gewählten Zeitraum.",
     "error": "Fehler",
     "count": "Anzahl"
   },
   "controls": {
-    "lookback": "Zeitfenster",
+    "lookback": "Zeitraum",
     "refresh": "Aktualisieren"
   },
   "emailStats": {
     "title": "E-Mail-Statistiken nach Vorlage",
-    "noData": "Keine E-Mail-Daten verfügbar.",
+    "noData": "Keine E-Mail-Daten vorhanden.",
     "connectionIssues": "Verbindungsprobleme",
-    "refreshing": "Aktualisiere...",
+    "refreshing": "Aktualisiere…",
     "total": "gesamt",
     "sent": "Gesendet",
     "delivered": "Zugestellt",

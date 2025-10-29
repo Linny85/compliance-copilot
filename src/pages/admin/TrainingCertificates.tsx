@@ -52,18 +52,16 @@ const COURSE_DATA = {
 };
 
 export default function TrainingCertificates() {
-  const { t, i18n, ready } = useTranslation(['training', 'common']);
+  const { t, i18n, ready } = useTranslation(['training', 'common'], { useSuspense: false });
   const { data: certificates = [], isLoading } = useTrainingCertificates();
-  
-  if (!ready) return null;
   const verifyMutation = useVerifyTrainingCertificate();
   const deleteMutation = useDeleteTrainingCertificate();
-
-  const showCourses = COURSES_AVAILABLE_LANGS.includes(i18n.language || 'en');
 
   const [selectedCert, setSelectedCert] = useState<string | null>(null);
   const [action, setAction] = useState<'verify' | 'reject' | null>(null);
   const [notes, setNotes] = useState('');
+
+  const showCourses = ready ? COURSES_AVAILABLE_LANGS.includes(i18n.language || 'en') : false;
 
   const handleVerify = async () => {
     if (!selectedCert || !action) return;
@@ -100,14 +98,21 @@ export default function TrainingCertificates() {
     }
   };
 
+  if (!ready) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+            <p className="mt-4 text-muted-foreground">Loading…</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout>
-      {process.env.NODE_ENV !== "production" && (
-        <div style={{
-          position:"fixed",bottom:8,left:8,zIndex:99999,
-          background:"#000",color:"#fff",padding:6,borderRadius:8
-        }}>certs</div>
-      )}
       {/* Header - centered */}
       <header className="mb-6 text-center">
         <h1 className="text-3xl font-bold">{t('title', { ns: 'training' })}</h1>

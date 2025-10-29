@@ -1,9 +1,9 @@
 {
   "title": "Ops Dashboard",
   "metrics": {
-    "pending": "Pending",
+    "pending": "Pending Jobs",
     "pendingDesc": "Jobs waiting to be processed",
-    "dead24h": "Dead (24h)",
+    "dead24h": "Failed (24h)",
     "dead24hDesc": "Failed jobs in last 24h",
     "delivered24h": "Delivered (24h)",
     "delivered24hDesc": "Successfully delivered",
@@ -12,19 +12,19 @@
   },
   "errors": {
     "title": "Top Errors (24h)",
-    "empty": "No errors in the lookback window.",
+    "empty": "No errors in the selected period.",
     "error": "Error",
     "count": "Count"
   },
   "controls": {
-    "lookback": "Lookback",
+    "lookback": "Period",
     "refresh": "Refresh"
   },
   "emailStats": {
     "title": "Email Statistics by Template",
     "noData": "No email data available.",
     "connectionIssues": "Connection Issues",
-    "refreshing": "Refreshing...",
+    "refreshing": "Refreshing…",
     "total": "total",
     "sent": "Sent",
     "delivered": "Delivered",

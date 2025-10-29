@@ -1,7 +1,7 @@
 {
   "title": "Ops Dashboard",
   "metrics": {
-    "pending": "Väntande",
+    "pending": "Väntande jobb",
     "pendingDesc": "Jobb som väntar på behandling",
     "dead24h": "Misslyckade (24h)",
     "dead24hDesc": "Misslyckade jobb senaste 24h",
@@ -12,19 +12,19 @@
   },
   "errors": {
     "title": "Topp-fel (24h)",
-    "empty": "Inga fel i tidsfönstret.",
+    "empty": "Inga fel i vald period.",
     "error": "Fel",
     "count": "Antal"
   },
   "controls": {
-    "lookback": "Tidsfönster",
+    "lookback": "Period",
     "refresh": "Uppdatera"
   },
   "emailStats": {
     "title": "E-poststatistik per mall",
     "noData": "Ingen e-postdata tillgänglig.",
     "connectionIssues": "Anslutningsproblem",
-    "refreshing": "Uppdaterar...",
+    "refreshing": "Uppdaterar…",
     "total": "totalt",
     "sent": "Skickade",
     "delivered": "Levererade",
