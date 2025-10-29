@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,7 @@ type OpsMetrics = {
 };
 
 export default function OpsDashboard() {
+  const { t, ready } = useTranslation(['reports', 'common']);
   const { toast } = useToast();
   const [data, setData] = useState<OpsMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -33,7 +35,11 @@ export default function OpsDashboard() {
     setLoading(true);
     const { data, error } = await supabase.rpc("ops_metrics", { p_lookback_hours: sinceHours });
     if (error) {
-      toast({ title: "Failed to load", description: error.message, variant: "destructive" });
+      toast({ 
+        title: ready ? t('common:error.title') : 'Failed to load', 
+        description: error.message, 
+        variant: "destructive" 
+      });
       setLoading(false);
       return;
     }
@@ -43,23 +49,30 @@ export default function OpsDashboard() {
 
   useEffect(() => { load(); }, [sinceHours, tick]);
 
-  const cards = useMemo(() => ([
-    { label: "Pending", value: data?.pending ?? 0, description: "Jobs waiting to be processed", href: "/admin/integrations?tab=pending" },
-    { label: "Dead (24h)", value: data?.dead24h ?? 0, description: "Failed jobs in last 24h", href: "/admin/integrations?tab=dead" },
-    { label: "Delivered (24h)", value: data?.delivered24h ?? 0, description: "Successfully delivered", href: "/admin/integrations?tab=delivered" },
-    { label: "Avg Attempts (7d)", value: data?.avgAttempts7d ?? 0, description: "Average retries needed", href: undefined }
-  ]), [data]);
+  const cards = useMemo(() => ready ? [
+    { label: t('reports:metrics.pending'), value: data?.pending ?? 0, description: t('reports:metrics.pendingDesc'), href: "/admin/integrations?tab=pending" },
+    { label: t('reports:metrics.dead24h'), value: data?.dead24h ?? 0, description: t('reports:metrics.dead24hDesc'), href: "/admin/integrations?tab=dead" },
+    { label: t('reports:metrics.delivered24h'), value: data?.delivered24h ?? 0, description: t('reports:metrics.delivered24hDesc'), href: "/admin/integrations?tab=delivered" },
+    { label: t('reports:metrics.avgAttempts7d'), value: data?.avgAttempts7d ?? 0, description: t('reports:metrics.avgAttempts7dDesc'), href: undefined }
+  ] : [], [data, t, ready]);
+
+  if (!ready) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto" />
+            <p className="mt-4 text-muted-foreground">{t('common:loading')}</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
-      {process.env.NODE_ENV !== "production" && (
-        <div style={{
-          position:"fixed",bottom:8,left:48,zIndex:99999,
-          background:"#000",color:"#fff",padding:6,borderRadius:8
-        }}>ops</div>
-      )}
       <header className="mb-6 text-center">
-        <h1 className="text-3xl font-bold">Ops Dashboard</h1>
+        <h1 className="text-3xl font-bold">{t('reports:title')}</h1>
       </header>
 
       {/* KPI Cards - grid constrained by parent */}
@@ -90,18 +103,18 @@ export default function OpsDashboard() {
       <section>
         <Card>
           <CardHeader>
-            <CardTitle>Top Errors (24h)</CardTitle>
+            <CardTitle>{t('reports:errors.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             {!data?.topErrors24h?.length ? (
-              <div className="text-sm text-muted-foreground">No errors in the lookback window.</div>
+              <div className="text-sm text-muted-foreground">{t('reports:errors.empty')}</div>
             ) : (
               <div className="table-responsive -mx-4 sm:mx-0">
                 <table className="min-w-full text-sm">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-3 font-medium">Error</th>
-                      <th className="text-right py-3 font-medium w-24">Count</th>
+                      <th className="text-left py-3 font-medium">{t('reports:errors.error')}</th>
+                      <th className="text-right py-3 font-medium w-24">{t('reports:errors.count')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -129,7 +142,7 @@ export default function OpsDashboard() {
       {/* Lookback & Refresh Controls - moved to bottom */}
       <div className="mt-6 flex justify-center items-center gap-4 flex-wrap">
         <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Lookback</label>
+          <label className="text-sm font-medium">{t('reports:controls.lookback')}</label>
           <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
             <SelectTrigger className="w-24">
               <SelectValue />
@@ -144,7 +157,7 @@ export default function OpsDashboard() {
         </div>
         <Button onClick={load} disabled={loading} size="sm" variant="outline">
           <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? "Loading..." : "Refresh"}
+          {loading ? t('common:loading') : t('reports:controls.refresh')}
         </Button>
       </div>
     </AdminLayout>

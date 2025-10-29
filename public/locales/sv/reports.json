@@ -1,0 +1,23 @@
+{
+  "title": "Ops Dashboard",
+  "metrics": {
+    "pending": "Väntande",
+    "pendingDesc": "Jobb som väntar på behandling",
+    "dead24h": "Misslyckade (24h)",
+    "dead24hDesc": "Misslyckade jobb senaste 24h",
+    "delivered24h": "Levererade (24h)",
+    "delivered24hDesc": "Framgångsrikt levererade",
+    "avgAttempts7d": "Snitt försök (7d)",
+    "avgAttempts7dDesc": "Genomsnittliga återförsök"
+  },
+  "errors": {
+    "title": "Topp-fel (24h)",
+    "empty": "Inga fel i tidsfönstret.",
+    "error": "Fel",
+    "count": "Antal"
+  },
+  "controls": {
+    "lookback": "Tidsfönster",
+    "refresh": "Uppdatera"
+  }
+}

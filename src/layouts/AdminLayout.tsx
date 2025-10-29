@@ -23,8 +23,8 @@ export default function AdminLayout({ children }: Props) {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        {/* DEBUG-Badge: zeigt, ob dieses Layout wirklich aktiv ist */}
-        {process.env.NODE_ENV !== "production" && (
+        {/* DEBUG-Badge: nur mit localStorage.debugBadges='1' */}
+        {import.meta.env.DEV && typeof window !== "undefined" && localStorage.getItem('debugBadges') === '1' && (
           <div style={{
             position:"fixed", top:6, right:6, zIndex:99999,
             background:"#111", color:"#0f0", padding:"4px 8px", borderRadius:6

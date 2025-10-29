@@ -10,7 +10,7 @@ i18n
   .init({
     fallbackLng: 'de',
     debug: true, // Enable debug to see what's happening
-    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav'],
+    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',

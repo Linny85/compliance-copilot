@@ -1,0 +1,23 @@
+{
+  "title": "Ops Dashboard",
+  "metrics": {
+    "pending": "Pending",
+    "pendingDesc": "Jobs waiting to be processed",
+    "dead24h": "Dead (24h)",
+    "dead24hDesc": "Failed jobs in last 24h",
+    "delivered24h": "Delivered (24h)",
+    "delivered24hDesc": "Successfully delivered",
+    "avgAttempts7d": "Avg Attempts (7d)",
+    "avgAttempts7dDesc": "Average retries needed"
+  },
+  "errors": {
+    "title": "Top Errors (24h)",
+    "empty": "No errors in the lookback window.",
+    "error": "Error",
+    "count": "Count"
+  },
+  "controls": {
+    "lookback": "Lookback",
+    "refresh": "Refresh"
+  }
+}
