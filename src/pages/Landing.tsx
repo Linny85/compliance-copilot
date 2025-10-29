@@ -31,13 +31,10 @@ const Landing = () => {
   const handleViewDemo = async () => {
     try {
       setDemoLoading(true);
-      // 1) Demo-Modus aktivieren
       switchTo("demo");
-      // 2) Daten füllen
       await seedDemo();
-      // 3) kurzen Tick, dann in die App
-      await new Promise((r) => setTimeout(() => r(null), 80));
-      navigate("/dashboard", { replace: true });
+      await new Promise((r) => setTimeout(() => r(null), 60));
+      navigate("/demo", { replace: true });
     } catch (error) {
       console.error("Demo start failed:", error);
     } finally {

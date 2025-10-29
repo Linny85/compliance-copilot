@@ -29,11 +29,11 @@ export const useAuthGuard = () => {
   useEffect(() => {
     const mode = getAppMode();
     
-    // ✅ DEMO: gar keinen Listener registrieren
+    // ✅ DEMO: gar keinen Listener registrieren, sofort fertig
     if (mode === 'demo') {
       setUserInfo(DEMO_USER);
       setLoading(false);
-      return;
+      return; // Kein Supabase-Listener, kein checkAuthAndRedirect
     }
 
     checkAuthAndRedirect();

@@ -44,9 +44,15 @@ import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 import { useAppMode } from "./state/AppModeProvider";
+import { getAppMode } from "./config/appMode";
 import { seedDemo } from "./data/seed";
 
 installDomGuards();
+
+function Protected({ children }: { children: React.ReactNode }) {
+  if (getAppMode() === "demo") return <>{children}</>;
+  return <AuthGuard>{children}</AuthGuard>;
+}
 
 function GlobalNavigationBridge() {
   const navigate = useNavigate();
@@ -114,14 +120,26 @@ const App = () => (
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
         
-        {/* Protected routes - INSIDE AuthGuard + AppLayout */}
+        {/* Demo route - NO AuthGuard */}
+        <Route 
+          path="/demo" 
+          element={
+            <FeatureFlagProvider>
+              <AppLayout />
+            </FeatureFlagProvider>
+          }
+        >
+          <Route index element={<Dashboard />} />
+        </Route>
+        
+        {/* Protected routes - INSIDE Protected + AppLayout */}
         <Route
           element={
-            <AuthGuard>
+            <Protected>
               <FeatureFlagProvider>
                 <AppLayout />
               </FeatureFlagProvider>
-            </AuthGuard>
+            </Protected>
           }
         >
           <Route path="/onboarding" element={<Onboarding />} />

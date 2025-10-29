@@ -21,7 +21,7 @@ const Auth = () => {
   // ⛳️ Demo darf Auth nicht sehen - redirect via useEffect
   useEffect(() => {
     if (mode === "demo") {
-      navigate("/dashboard", { replace: true });
+      navigate("/demo", { replace: true });
     }
   }, [mode, navigate]);
 
