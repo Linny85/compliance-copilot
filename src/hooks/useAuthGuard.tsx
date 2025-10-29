@@ -13,9 +13,9 @@ interface UserInfo {
 
 const DEMO_USER: UserInfo = {
   userId: "demo-user-id",
-  email: "demo@norrland.example",
+  email: "demo@company.example",
   tenantId: "demo-tenant-id",
-  role: "viewer",
+  role: "admin",
   subscriptionStatus: "active",
 };
 
@@ -27,7 +27,7 @@ export const useAuthGuard = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    // Skip all auth checks in demo mode
+    // ✅ DEMO: gar keinen Listener registrieren
     if (mode === 'demo') {
       setUserInfo(DEMO_USER);
       setLoading(false);
@@ -36,7 +36,7 @@ export const useAuthGuard = () => {
 
     checkAuthAndRedirect();
 
-    // Listen for auth state changes
+    // Listen for auth state changes (nur außerhalb Demo)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         checkAuthAndRedirect();
@@ -54,7 +54,7 @@ export const useAuthGuard = () => {
 
   const checkAuthAndRedirect = async () => {
     try {
-      // Demo short-circuit: never redirect or query auth in demo
+      // ✅ DEMO: synthetischen User setzen, keine Supabase-Calls
       if (mode === 'demo') {
         setUserInfo(DEMO_USER);
         setLoading(false);

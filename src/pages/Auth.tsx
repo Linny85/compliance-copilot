@@ -16,6 +16,14 @@ import { getAppMode } from "@/config/appMode";
 const Auth = () => {
   const navigate = useNavigate();
   const { t } = useI18n();
+  
+  // ✅ In Demo nie /auth anzeigen - sofort zurück zu /dashboard
+  const mode = getAppMode();
+  if (mode === 'demo') {
+    navigate("/dashboard", { replace: true });
+    return null;
+  }
+
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(false);
   
