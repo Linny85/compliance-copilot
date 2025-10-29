@@ -15,7 +15,8 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 
 export function VerifyByCodeDialog() {
-  const { t } = useTranslation(['common', 'training']);
+  const { t, ready } = useTranslation(['common', 'training']);
+  if (!ready) return null;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -60,21 +61,21 @@ export function VerifyByCodeDialog() {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <CheckCircle className="h-4 w-4 mr-2" />
-          {t('training.actions.verifyByCode')}
+          {t('training:actions.verifyByCode')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{t('training.verifyDialog.title')}</DialogTitle>
+          <DialogTitle>{t('training:verifyDialog.title')}</DialogTitle>
           <DialogDescription>
-            {t('training.verifyDialog.placeholder')}
+            {t('training:verifyDialog.placeholder')}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <Input
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            placeholder={t('training.verifyDialog.placeholder')}
+            placeholder={t('training:verifyDialog.placeholder')}
             className="w-full"
           />
           <div className="flex justify-end gap-2">
@@ -87,7 +88,7 @@ export function VerifyByCodeDialog() {
               {t('common.cancel')}
             </Button>
             <Button onClick={handleSubmit} disabled={isVerifying || !value.trim()}>
-              {isVerifying ? t('common.loading') : t('training.verifyDialog.submit')}
+              {isVerifying ? t('common.loading') : t('training:verifyDialog.submit')}
             </Button>
           </div>
         </div>

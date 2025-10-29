@@ -33,7 +33,8 @@ interface FormData {
 }
 
 export function UploadCertificateDialog() {
-  const { t } = useTranslation(['common', 'training']);
+  const { t, ready } = useTranslation(['common', 'training']);
+  if (!ready) return null;
   const [open, setOpen] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -90,14 +91,14 @@ export function UploadCertificateDialog() {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Upload className="h-4 w-4 mr-2" />
-          {t('training.actions.upload')}
+          {t('training:actions.upload')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{t('training.uploadTitle')}</DialogTitle>
+          <DialogTitle>{t('training:uploadTitle')}</DialogTitle>
           <DialogDescription>
-            {t('training.uploadDescription')}
+            {t('training:uploadDescription')}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -149,8 +150,8 @@ export function UploadCertificateDialog() {
             ) : (
               <div className="text-center">
                 <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
-                <p className="mt-2 text-sm font-medium">{t('training.dropZone')}</p>
-                <p className="text-xs text-muted-foreground mt-1">{t('training.acceptedFormats')}</p>
+                <p className="mt-2 text-sm font-medium">{t('training:dropZone')}</p>
+                <p className="text-xs text-muted-foreground mt-1">{t('training:acceptedFormats')}</p>
               </div>
             )}
           </div>
