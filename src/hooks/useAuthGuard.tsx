@@ -22,18 +22,15 @@ const DEMO_USER: UserInfo = {
 
 // Simplified: only provides session state, NO navigation
 export const useAuthGuard = () => {
-  const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState(!isDemo());
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(() => {
+    // ⚡️ Synchronously seed demo as logged-in to avoid first-render redirects
+    return isDemo() ? DEMO_USER : null;
+  });
 
   useEffect(() => {
-    const mode = getAppMode();
-    
-    // Demo: return synthetic user immediately (treat as logged in)
-    if (mode === 'demo' || isDemo()) {
-      setUserInfo(DEMO_USER);
-      setLoading(false);
-      return;
-    }
+    // Demo: already seeded synchronously, skip async checks
+    if (isDemo()) return;
 
     // Prod/Trial: check session
     const checkSession = async () => {
