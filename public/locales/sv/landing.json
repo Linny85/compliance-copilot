@@ -36,12 +36,12 @@
   "benefits": {
     "title": "Varför Compliance-Copilot?",
     "items": {
-      "a": "Fullständig multi-tenant-isolering för datasäkerhet",
-      "b": "14 dagars gratis test med full funktionsåtkomst",
-      "c": "Automatiserad riskbedömning och efterlevnadsspårning",
-      "d": "Huvudkodbaserad administratörskontroll",
-      "e": "EU-datalagring och GDPR-efterlevnad",
-      "f": "Incidenthantering och granskningsloggning"
+      "isolation": "Fullständig multi-tenant-isolering för datasäkerhet",
+      "trial": "14 dagars gratis test med full funktionsåtkomst",
+      "scoring": "Automatiserad riskbedömning och efterlevnadsspårning",
+      "admin": "Huvudkodbaserad administratörskontroll",
+      "storage": "EU-datalagring och GDPR-efterlevnad",
+      "incident": "Incidenthantering och granskningsloggning"
     }
   },
   "cta": {

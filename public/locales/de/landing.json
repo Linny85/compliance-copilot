@@ -36,12 +36,12 @@
   "benefits": {
     "title": "Warum Compliance-Copilot?",
     "items": {
-      "a": "Vollständige Mandantenisolation für Datensicherheit",
-      "b": "14 Tage kostenlos mit vollem Funktionsumfang",
-      "c": "Automatisches Risiko-Scoring und Compliance-Tracking",
-      "d": "Master-Code-basierte Admin-Kontrolle",
-      "e": "EU-Datenspeicherung und DSGVO-Konformität",
-      "f": "Incident-Management und Audit-Logging"
+      "isolation": "Vollständige Mandantenisolation für Datensicherheit",
+      "trial": "14 Tage kostenlos mit vollem Funktionsumfang",
+      "scoring": "Automatisches Risiko-Scoring und Compliance-Tracking",
+      "admin": "Master-Code-basierte Admin-Kontrolle",
+      "storage": "EU-Datenspeicherung und DSGVO-Konformität",
+      "incident": "Incident-Management und Audit-Logging"
     }
   },
   "cta": {

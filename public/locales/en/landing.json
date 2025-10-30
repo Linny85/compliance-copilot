@@ -36,12 +36,12 @@
   "benefits": {
     "title": "Why Compliance-Copilot?",
     "items": {
-      "a": "Complete multi-tenant isolation for data security",
-      "b": "14-day free trial with full feature access",
-      "c": "Automated risk scoring and compliance tracking",
-      "d": "Master code-based admin control",
-      "e": "EU data storage and GDPR compliance",
-      "f": "Incident management and audit logging"
+      "isolation": "Complete multi-tenant isolation for data security",
+      "trial": "14-day free trial with full feature access",
+      "scoring": "Automated risk scoring and compliance tracking",
+      "admin": "Master code-based admin control",
+      "storage": "EU data storage and GDPR compliance",
+      "incident": "Incident management and audit logging"
     }
   },
   "cta": {

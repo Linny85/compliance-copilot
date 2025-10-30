@@ -4,20 +4,14 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppModeBanner } from "@/components/AppModeBanner";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { useLayoutGuard } from "@/hooks/useLayoutGuard";
-import { getAppMode } from "@/config/appMode";
 
 /**
  * Shared layout for all authenticated routes
  * Grid-based layout: Sidebar (sticky) | Content
  */
 export function AppLayout() {
-  const mode = getAppMode();
-  
-  // Demo: skip guards entirely
-  if (mode !== 'demo') {
-    useLayoutGuard("AppLayout");
-    useAuthGuard();
-  }
+  useLayoutGuard("AppLayout");
+  const { userInfo } = useAuthGuard();
   
   return (
     <SidebarProvider>
