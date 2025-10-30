@@ -52,7 +52,13 @@ Verhalten:
 - Prüfe bei NIS2-Fragen, ob "Essential Entity" oder "Important Entity" betroffen ist
 - Bei KI-Bezug: erläutere AI-Act-Artikel (z. B. Art. 4, 29, 52)
 - Wenn unklar: bitte kurz um Konkretisierung
-- Verwende offizielle EU-Links (keine Blogs)`,
+- Verwende offizielle EU-Links (keine Blogs)
+
+Proaktive Lösungen:
+- Stelle Lösungen proaktiv bereit (kein "Screenshot bitte", keine Nachfragen, außer absolut blockierend)
+- Gib präzise, kopierbare Snippets (Header, Nginx, Konfig, Code)
+- Wenn eine bekannte Fehlermeldung im Text steht (z. B. CSP/WASM/wasm-unsafe-eval, 404 SPA-Rewrite, PostgREST 406/Accept), antworte sofort mit der passenden Lösung ohne weitere Rückfragen
+- Antwortformat: 1) Kurzdiagnose, 2) Fix-Schritte, 3) Snippet, 4) Verifikation (1–2 Befehle)`,
   en: `You are Colleague Norrly – a friendly, expert compliance assistant for NIS2 and the EU AI Act.
 
 Your role:
@@ -65,7 +71,13 @@ Behavior:
 - For NIS2: check if "Essential Entity" or "Important Entity" is affected
 - For AI: explain AI Act articles (e.g., Art. 4, 29, 52)
 - If unclear: ask briefly for clarification
-- Use official EU links (no blogs)`,
+- Use official EU links (no blogs)
+
+Proactive solutions:
+- Provide solutions proactively (no "please screenshot", no follow-up questions unless absolutely blocking)
+- Give precise, copy-paste snippets (headers, Nginx, config, code)
+- If a known error message appears in the text (e.g., CSP/WASM/wasm-unsafe-eval, 404 SPA rewrite, PostgREST 406/Accept), respond immediately with the appropriate solution without asking further questions
+- Response format: 1) Quick diagnosis, 2) Fix steps, 3) Snippet, 4) Verification (1–2 commands)`,
   sv: `Du är Kollegan Norrly – en vänlig och kunnig compliance-assistent för NIS2 och EU AI Act.
 
 Din roll:
@@ -77,7 +89,13 @@ Din roll:
 Beteende:
 - För NIS2: kontrollera om "Essential Entity" eller "Important Entity" berörs
 - För AI: förklara artiklar i AI Act (t.ex. Art. 4, 29, 52)
-- Använd officiella EU-länkar (inga bloggar)`,
+- Använd officiella EU-länkar (inga bloggar)
+
+Proaktiva lösningar:
+- Ge lösningar proaktivt (ingen "skärmdump tack", inga följdfrågor om inte absolut nödvändigt)
+- Ge exakta, kopieringsklara snippets (headers, Nginx, config, kod)
+- Om ett känt felmeddelande finns i texten (t.ex. CSP/WASM/wasm-unsafe-eval, 404 SPA rewrite, PostgREST 406/Accept), svara omedelbart med lämplig lösning utan att ställa fler frågor
+- Svarsformat: 1) Snabbdiagnos, 2) Fix-steg, 3) Snippet, 4) Verifiering (1–2 kommandon)`,
 };
 
 // === DB ===
@@ -168,6 +186,139 @@ const CONTACT: Record<Lang, string> = {
   sv: "📧 **Kontakt:**\nFör support, kontakta ditt compliance-team eller support@nis2-ai-guard.eu",
 };
 
+// === Known Fixes (Pattern Matching für häufige Fehler) ===
+type Fix = (lang: Lang) => string;
+
+const KNOWN_FIXES: { test: RegExp; answer: Fix }[] = [
+  {
+    // CSP / WASM / unsafe-eval
+    test: /(Refused to compile|instantiate) WebAssembly|wasm-unsafe-eval|Content Security Policy.+script-src/i,
+    answer: (lang: Lang): string => {
+      const messages: Record<Lang, string> = {
+        de: `**Kurzdiagnose:** Deine CSP blockiert WebAssembly (WASM). Viele SDKs brauchen JIT.  
+**Fix (minimal-invasiv):** Füge \`'wasm-unsafe-eval'\` zu \`script-src\` hinzu (ohne \`unsafe-eval\`).  
+**CSP-Header:**
+\`\`\`
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'nonce-{NONCE}' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self';
+  connect-src 'self' https: wss:;
+  img-src 'self' https: data:;
+  style-src 'self' 'unsafe-inline' https:;
+  font-src 'self' https: data:;
+  frame-src 'self' https:;
+  object-src 'none';
+  base-uri 'none';
+  frame-ancestors 'none';
+\`\`\`
+**Nginx (Beispiel):**
+\`\`\`nginx
+add_header Content-Security-Policy "
+  default-src 'self';
+  script-src 'nonce-$request_id' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self';
+  connect-src 'self' https: wss:;
+  img-src 'self' https: data:;
+  style-src 'self' 'unsafe-inline' https:;
+  font-src 'self' https: data:;
+  frame-src 'self' https:;
+  object-src 'none';
+  base-uri 'none';
+  frame-ancestors 'none';
+" always;
+\`\`\`
+**Verifikation:** Browser-Console neu laden (Strg+Shift+R). Fehler verschwindet.`,
+        en: `**Diagnosis:** Your CSP blocks WebAssembly (WASM). Add \`'wasm-unsafe-eval'\` to \`script-src\`.  
+**CSP header and Nginx snippet:** See German block above for complete examples.
+**Verification:** Reload browser console (Ctrl+Shift+R). Error should disappear.`,
+        sv: `**Diagnos:** Din CSP blockerar WASM. Lägg till \`'wasm-unsafe-eval'\` i \`script-src\`.  
+**CSP-header och Nginx-snippet:** Se tyska blocket ovan för fullständiga exempel.
+**Verifiering:** Ladda om webbläsarkonsolen (Ctrl+Shift+R). Felet försvinner.`,
+      };
+      return messages[lang];
+    },
+  },
+  {
+    // SPA 404 / missing rewrite
+    test: /Failed to load resource: the server responded with a status of 404.*\/(controls|billing)|try_files|index\.html/i,
+    answer: (lang: Lang): string => {
+      const messages: Record<Lang, string> = {
+        de: `**Kurzdiagnose:** SPA-Routing ohne Fallback → 404 auf Unterseiten.  
+**Fix (Nginx):**
+\`\`\`nginx
+location / {
+  try_files $uri /index.html;
+}
+\`\`\`
+**Check:** Seite /controls direkt aufrufen → sollte index.html laden.`,
+        en: `**Diagnosis:** SPA needs rewrite to index.html. 
+**Nginx fix:** See snippet in German block above.
+**Verification:** Access /controls directly → should load index.html.`,
+        sv: `**Diagnos:** SPA behöver rewrite till index.html. 
+**Nginx-fix:** Se snippet i tyska blocket ovan.
+**Verifiering:** Öppna /controls direkt → bör ladda index.html.`,
+      };
+      return messages[lang];
+    },
+  },
+  {
+    // PostgREST 406/400/401
+    test: /rest\/v1\/.*(406|400|401)|Accept:\s*text\/html|missing Accept header/i,
+    answer: (lang: Lang): string => {
+      const messages: Record<Lang, string> = {
+        de: `**Kurzdiagnose:** PostgREST-Header unvollständig oder Spaltenname falsch.  
+**Fix:**
+- Headers im Browser-Request:
+\`\`\`http
+apikey: {SUPABASE_ANON_KEY}
+Authorization: Bearer {ACCESS_TOKEN oder SUPABASE_ANON_KEY}
+Accept: application/json
+\`\`\`
+- Prüfe Query-Parameter & Spalten (z. B. \`company_id\` vs \`tenant_id\`).  
+**Check:** Request erneut senden → 200/206 erwartet.`,
+        en: `**Diagnosis:** PostgREST headers incomplete or column name incorrect.
+**Fix:** Set \`Accept: application/json\`, send \`apikey\` and \`Authorization\`. Verify column names.
+**Verification:** Resend request → expect 200/206.`,
+        sv: `**Diagnos:** PostgREST-headers ofullständiga eller kolumnnamn felaktigt.
+**Fix:** Sätt \`Accept: application/json\`, skicka \`apikey\` och \`Authorization\`. Verifiera kolumnnamn.
+**Verifiering:** Skicka request igen → förvänta 200/206.`,
+      };
+      return messages[lang];
+    },
+  },
+  {
+    // HMR/WS noise in prod
+    test: /WebSocket connection.*failed|dev-server: 404|HMR/i,
+    answer: (lang: Lang): string => {
+      const messages: Record<Lang, string> = {
+        de: `**Kurzdiagnose:** HMR/Dev-WebSocket läuft in Produktion.  
+**Fix (Frontend):**
+\`\`\`ts
+if (import.meta.env.DEV) {
+  // initialisiere HMR/WS nur in DEV
+}
+\`\`\`
+**Ergebnis:** WS-Fehler verschwinden in Prod.`,
+        en: `**Diagnosis:** HMR/Dev-WebSocket running in production.
+**Fix:** Initialize HMR/WebSocket only in \`import.meta.env.DEV\`.
+**Result:** WS errors disappear in prod.`,
+        sv: `**Diagnos:** HMR/Dev-WebSocket körs i produktion.
+**Fix:** Initiera HMR/WS endast i \`import.meta.env.DEV\`.
+**Resultat:** WS-fel försvinner i prod.`,
+      };
+      return messages[lang];
+    },
+  },
+];
+
+function tryKnownFix(question: string, lang: Lang): string | null {
+  for (const k of KNOWN_FIXES) {
+    if (k.test.test(question)) {
+      return k.answer(lang);
+    }
+  }
+  return null;
+}
+
 // === Serve ===
 Deno.serve(async (req: Request) => {
   const reqId = crypto.randomUUID();
@@ -231,7 +382,65 @@ Deno.serve(async (req: Request) => {
         return json({ ok: true, session_id: sessionId, agent: AGENT, answer: translated, sources: [], history: [], reqId }, 200);
       }
 
+      if (cmd === "/csp") {
+        const answer = `**Empfohlene CSP (WASM erlaubt, kein unsafe-eval):**
+\`\`\`
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'nonce-{NONCE}' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self';
+  connect-src 'self' https: wss:;
+  img-src 'self' https: data:;
+  style-src 'self' 'unsafe-inline' https:;
+  font-src 'self' https: data:;
+  frame-src 'self' https:;
+  object-src 'none';
+  base-uri 'none';
+  frame-ancestors 'none';
+\`\`\``;
+        return json({ ok: true, session_id: sessionId, agent: AGENT, answer, sources: [], history: [], reqId }, 200);
+      }
+
+      if (cmd === "/headers") {
+        const answer = `**CSP + Permissions-Policy + Nginx:**
+\`\`\`
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'nonce-{NONCE}' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self';
+  connect-src 'self' https: wss:;
+  img-src 'self' https: data:;
+  style-src 'self' 'unsafe-inline' https:;
+  font-src 'self' https: data:;
+  frame-src 'self' https:;
+  object-src 'none';
+  base-uri 'none';
+  frame-ancestors 'none';
+
+Permissions-Policy:
+  geolocation=(), microphone=(), camera=(),
+  accelerometer=(), gyroscope=(), magnetometer=(),
+  usb=(), bluetooth=(), interest-cohort=()
+
+# Nginx
+add_header Content-Security-Policy "default-src 'self'; script-src 'nonce-$request_id' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self'; connect-src 'self' https: wss:; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https: data:; frame-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none';" always;
+add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), accelerometer=(), gyroscope=(), magnetometer=(), usb=(), bluetooth=(), interest-cohort=()" always;
+\`\`\``;
+        return json({ ok: true, session_id: sessionId, agent: AGENT, answer, sources: [], history: [], reqId }, 200);
+      }
+
       return json({ ok: false, error: `Unknown command: ${cmd}`, reqId }, 400);
+    }
+
+    // === Known Pattern Detection (vor AI-Call) ===
+    const quickFix = tryKnownFix(question, lang);
+    if (quickFix) {
+      await saveMsg(sessionId, "user", question, userId);
+      await saveMsg(sessionId, "assistant", quickFix, userId);
+      const { data: fullHistory } = await sbAdmin
+        .from("helpbot_messages")
+        .select("role, content, id, created_at")
+        .eq("session_id", sessionId)
+        .order("created_at", { ascending: true });
+      return json({ ok: true, session_id: sessionId, agent: AGENT, answer: quickFix, sources: [], history: fullHistory ?? [], reqId }, 200);
     }
 
     // Kontext + Persistenz
