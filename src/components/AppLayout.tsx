@@ -22,7 +22,11 @@ export function AppLayout() {
         </aside>
 
         {/* Col 2: Content */}
-        <main id="app-main" className="col-start-1 md:col-start-2 md:row-start-1">
+        <main 
+          id="app-main" 
+          data-layout-shell="app-layout"
+          className="col-start-1 md:col-start-2 md:row-start-1"
+        >
           <AppModeBanner />
           <Outlet />
           
