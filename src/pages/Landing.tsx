@@ -17,7 +17,9 @@ const Landing = () => {
   const navigate = useNavigate();
   const { switchTo } = useAppMode();
   const [demoLoading, setDemoLoading] = useState(false);
-  const { t, i18n } = useTranslation("landing");
+  const { t, i18n, ready } = useTranslation("landing");
+
+  if (!ready) return null;
 
   const handleViewDemo = async () => {
     try {
