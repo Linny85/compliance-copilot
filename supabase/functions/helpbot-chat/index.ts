@@ -164,6 +164,70 @@ Proaktiva lösningar:
 - Svarsformat: 1) Snabbdiagnos, 2) Fix-steg, 3) Snippet, 4) Verifiering (1–2 kommandon)`,
 };
 
+// === Offline Fallback Generator ===
+function offlineFallbackAnswer(q: string, lang: Lang): string {
+  const RES = {
+    de: {
+      head: "🔒 Offline-Antwort (ohne KI)",
+      body: "Ich gebe dir eine klare, praxisnahe Einschätzung und verlinke offizielle Quellen.",
+      tip: "Norrly-Tipp: Formuliere Verantwortlichkeiten (wer macht was bis wann?) und dokumentiere Entscheidungen kurz im Risikoregister.",
+      src: "📚 Quellen: NIS2 (EUR-Lex), EU AI Act (Amtsblatt/konsolidiert), ENISA, EU-Kommission",
+    },
+    en: {
+      head: "🔒 Offline response (no AI)",
+      body: "Here's a clear, practical assessment with official sources.",
+      tip: "Norrly tip: Assign owners and deadlines, and log decisions in the risk register.",
+      src: "📚 Sources: NIS2 (EUR-Lex), EU AI Act (OJ/consolidated), ENISA, EU Commission",
+    },
+    sv: {
+      head: "🔒 Offline-svar (utan AI)",
+      body: "Här är en tydlig, praktisk bedömning med officiella källor.",
+      tip: "Norrly-tips: Sätt ansvar och tidsfrister och logga beslut i riskregistret.",
+      src: "📚 Källor: NIS2 (EUR-Lex), EU AI Act (EUT/konsoliderad), ENISA, EU-kommissionen",
+    },
+  }[lang];
+
+  const isNis2 = /nis2/i.test(q);
+  const isAi   = /\b(ai act|art\.?\s*\d+|artikel\s*\d+|ki)\b/i.test(q);
+  const isGdpr = /\b(gdpr|dsgvo)\b/i.test(q);
+  const isDora = /\bdora\b/i.test(q);
+
+  const bullets: string[] = [];
+  if (isNis2) bullets.push(lang === "de"
+    ? "NIS2: Prüfe, ob ihr **Essential** oder **Important Entity** seid; setze Kernmaßnahmen (Risikomanagement, Vorfälle ≤24 h melden, Lieferkettenkontrollen)."
+    : lang === "sv"
+    ? "NIS2: Kontrollera om ni är **Essential** eller **Important Entity**; införa kärnåtgärder (riskhantering, incidentrapport ≤24 h, leverantörskontroller)."
+    : "NIS2: Check if you are an **Essential** or **Important Entity**; implement core measures (risk mgmt, incident reporting ≤24h, supplier controls).");
+
+  if (isAi) bullets.push(lang === "de"
+    ? "EU AI Act: Ordne das System (z. B. **Hochrisiko**), führe Risikomanagement/Monitoring, Daten-Governance, Logging und Nutzerhinweise durch."
+    : lang === "sv"
+    ? "EU AI Act: Klassificera systemet (t.ex. **högrisk**), gör riskhantering/övervakning, datastyrning, loggning och användarinformation."
+    : "EU AI Act: Classify the system (e.g., **high-risk**), do risk mgmt/monitoring, data governance, logging and user notices.");
+
+  if (isGdpr) bullets.push(lang === "de"
+    ? "GDPR: Prüfe Rechtsgrundlage, Transparenz, DPIA (falls nötig) und Auftragsverarbeitung mit Anbietern."
+    : lang === "sv"
+    ? "GDPR: Säkerställ rättslig grund, transparens, DPIA (vid behov) och personuppgiftsbiträdesavtal."
+    : "GDPR: Ensure legal basis, transparency, DPIA (if needed) and processor agreements.");
+
+  if (isDora) bullets.push(lang === "de"
+    ? "DORA: Für Finanz: IKT-Risiko-Mgmt, Tests, Drittparteiensteuerung, Meldungen."
+    : lang === "sv"
+    ? "DORA: För finans: IKT-riskhantering, tester, tredjepartsstyrning, rapportering."
+    : "DORA: For finance: ICT risk mgmt, testing, third-party oversight, reporting.");
+
+  if (bullets.length === 0) {
+    bullets.push(lang === "de"
+      ? "Bitte präzisiere kurz (Kontext/Branche/Ziel) – dann gebe ich dir konkrete Schritte mit Quellen."
+      : lang === "sv"
+      ? "Förtydliga gärna (kontext/bransch/mål) – så ger jag konkreta steg med källor."
+      : "Please add a bit of context (sector/goal) and I'll give concrete steps with sources.");
+  }
+
+  return `**${RES.head}**\n${RES.body}\n\n${bullets.map(b => "• " + b).join("\n")}\n\n${RES.src}\n\n_${RES.tip}_`;
+}
+
 // === DB ===
 const sbAdmin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
@@ -216,29 +280,40 @@ async function checkRate(sessionId: string): Promise<{ ok: true } | { ok: false;
 }
 
 // === Lovable Chat Call ===
-async function chat(messages: { role: "system" | "user" | "assistant"; content: string }[]): Promise<string> {
+async function chat(
+  messages: { role: "system" | "user" | "assistant"; content: string }[], 
+  lang: Lang, 
+  question: string
+): Promise<string> {
   if (!LOVABLE_API_KEY) {
-    return "🧪 [Testmodus] Kein AI-Provider konfiguriert. Bitte LOVABLE_API_KEY als Environment Variable setzen.";
+    return offlineFallbackAnswer(question, lang);
   }
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
-      temperature: 0.7,
-      max_tokens: 1000,
-      messages,
-    }),
-  });
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error(`Lovable AI error ${res.status}: ${t}`);
+  
+  try {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        temperature: 0.7,
+        max_tokens: 1000,
+        messages,
+      }),
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error(`Lovable AI error ${res.status}: ${t}`);
+    }
+    const data = await res.json();
+    return data?.choices?.[0]?.message?.content ?? "";
+  } catch (e) {
+    console.error("[helpbot-chat] AI call failed, using fallback", e);
+    // Bei Ausfall des Providers: elegant auf Fallback wechseln
+    return offlineFallbackAnswer(question, lang);
   }
-  const data = await res.json();
-  return data?.choices?.[0]?.message?.content ?? "";
 }
 
 // === Commands ===
@@ -445,7 +520,7 @@ Deno.serve(async (req: Request) => {
         const translated = await chat([
           { role: "system", content: "Translate the following text faithfully. Do not add explanations." },
           { role: "user", content: `Target language: ${target}\n\nText:\n${lastAssistant}` },
-        ]);
+        ], target, lastAssistant);
         await saveMsg(sessionId, "assistant", translated, userId);
         return json(successEnvelope({ sessionId, answer: translated, reqId, agent: AGENT }), 200);
       }
@@ -539,7 +614,7 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
       { role: "user", content: question },
     ] as { role: "system" | "user" | "assistant"; content: string }[];
 
-    let answer = await chat(messages);
+    let answer = await chat(messages, lang, question);
 
     // Intro nur beim ersten Turn einblenden
     if (isFirstTurn) {
