@@ -3944,6 +3944,14 @@ export type Database = {
       }
     }
     Views: {
+      alert_history: {
+        Row: {
+          message: string | null
+          tenant_id: string | null
+          triggered_at: string | null
+        }
+        Relationships: []
+      }
       evidences_current: {
         Row: {
           control_id: string | null
@@ -4016,6 +4024,14 @@ export type Database = {
           },
         ]
       }
+      insight_history: {
+        Row: {
+          generated_at: string | null
+          success_rate: number | null
+          tenant_id: string | null
+        }
+        Relationships: []
+      }
       mv_compliance_summary: {
         Row: {
           failed: number | null
@@ -4055,6 +4071,13 @@ export type Database = {
           tenant_name: string | null
           ti_obligations: Json | null
           ti_status: string | null
+        }
+        Relationships: []
+      }
+      ops_dashboard: {
+        Row: {
+          status: string | null
+          tenant_id: string | null
         }
         Relationships: []
       }
