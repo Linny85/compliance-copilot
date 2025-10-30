@@ -4,7 +4,8 @@ import { corsHeaders } from "../_shared/cors.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+const OFFLINE_MODE = !LOVABLE_API_KEY;
 
 // Helper functions
 function json(body: unknown, status = 200) {
@@ -216,7 +217,9 @@ async function checkRate(sessionId: string): Promise<{ ok: true } | { ok: false;
 
 // === Lovable Chat Call ===
 async function chat(messages: { role: "system" | "user" | "assistant"; content: string }[]): Promise<string> {
-  if (!LOVABLE_API_KEY) throw new Error("AI service not configured");
+  if (!LOVABLE_API_KEY) {
+    return "🧪 [Testmodus] Kein AI-Provider konfiguriert. Bitte LOVABLE_API_KEY als Environment Variable setzen.";
+  }
   const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -490,6 +493,22 @@ add_header Content-Security-Policy "default-src 'self'; script-src 'nonce-$reque
 add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), accelerometer=(), gyroscope=(), magnetometer=(), usb=(), bluetooth=(), interest-cohort=()" always;
 \`\`\``;
         return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200);
+      }
+
+      if (cmd === "/health") {
+        const health = {
+          provider: LOVABLE_API_KEY ? "LOVABLE_AI" : "OFFLINE",
+          env: {
+            SUPABASE_URL: !!SUPABASE_URL,
+            SERVICE_ROLE: !!SERVICE_ROLE,
+            LOVABLE_API_KEY: !!LOVABLE_API_KEY,
+          },
+          rate_limit: "30 req / 5 min per session",
+          time: new Date().toISOString(),
+        };
+        const statusLabel = lang === "de" ? "✅ Systemstatus:" : lang === "sv" ? "✅ Systemstatus:" : "✅ System status:";
+        const answer = `${statusLabel}\n\`\`\`json\n${JSON.stringify(health, null, 2)}\n\`\`\``;
+        return json(successEnvelope({ sessionId, answer, history: [], reqId, provider: health.provider, agent: AGENT }), 200);
       }
 
       return json({ ok: false, error: `Unknown command: ${cmd}`, reqId }, 400);
