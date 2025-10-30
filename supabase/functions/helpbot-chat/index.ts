@@ -1,25 +1,21 @@
-// deno-lint-ignore-file no-explicit-any
-// === Imports & ENV ===
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.46.1";
+// Kollege Norrly - Hardened AI Compliance Assistant
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { corsHeaders } from "../_shared/cors.ts";
+
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!; // Lovable Gateway Key
+const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY")!;
 
-// === CORS ===
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
-
-// === Helpers ===
-function json(body: any, status = 200) {
+// Helper functions
+function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { "Content-Type": "application/json", ...corsHeaders },
   });
 }
-const err = (message: string, reqId: string, status = 400) => json({ ok: false, error: message, reqId }, status);
+
+const err = (message: string, reqId: string, status = 400) => 
+  json({ ok: false, error: message, reqId }, status);
 
 // === Typen & Sprache ===
 type Lang = "de" | "en" | "sv";
