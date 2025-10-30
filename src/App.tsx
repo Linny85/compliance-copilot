@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -132,6 +132,7 @@ const App = () => (
             <Route path="/privacy/dpia" element={<DPIAList />} />
             <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
             <Route path="/billing" element={<Billing />} />
+            <Route path="/upgrade" element={<Navigate to="/billing" replace />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/ai-systems/register" element={<RegisterAISystem />} />
           </Route>
