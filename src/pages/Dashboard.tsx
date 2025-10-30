@@ -9,9 +9,7 @@ import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgres
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
-import { isDemo } from "@/lib/isDemo";
-import { getSessionShim } from "@/lib/sessionShim";
-import { demoTenant } from "@/demo/demoData";
+import { isDemo } from "@/config/appMode";
 
 interface CompanyData {
   name: string;
@@ -41,23 +39,11 @@ const Dashboard = () => {
 
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
-      const { data: { session } } = await getSessionShim(supabase);
+      const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
-        if (isDemo()) {
-          // Load demo data
-          setCompanyData({
-            name: demoTenant.name,
-            country: demoTenant.country,
-            sector: demoTenant.sector,
-          });
-          setSubscriptionData({
-            status: 'active',
-            trial_end: null,
-          });
-          setUserId('demo-user');
-        }
-        setLoading(false);
+        if (isDemo()) { setLoading(false); return; }
+        navigate("/auth");
         return;
       }
 

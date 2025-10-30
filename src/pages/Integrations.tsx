@@ -45,7 +45,8 @@ export default function Integrations() {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        // No navigation - AuthGuard handles redirects
+        if (isDemo()) return;
+        navigate('/auth');
         return;
       }
 

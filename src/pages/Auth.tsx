@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,6 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Auth = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { t } = useI18n();
 
   const [session, setSession] = useState<Session | null>(null);
@@ -28,13 +27,21 @@ const Auth = () => {
   const [signupFullName, setSignupFullName] = useState("");
 
   useEffect(() => {
-    // Only check for existing session - navigation is handled by AuthGuard
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      if (session) {
+        checkUserProfile(session.user.id);
+      }
+    });
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
         checkUserProfile(session.user.id);
       }
     });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const checkUserProfile = async (userId: string) => {
@@ -44,11 +51,10 @@ const Auth = () => {
       .eq("id", userId)
       .maybeSingle();
 
-    const from = (location.state as any)?.from?.pathname ?? '/dashboard';
     if (profile?.company_id) {
-      navigate(from, { replace: true });
+      navigate("/dashboard");
     } else {
-      navigate("/onboarding", { replace: true });
+      navigate("/onboarding");
     }
   };
 

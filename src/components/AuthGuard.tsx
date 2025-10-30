@@ -3,16 +3,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { getAppMode } from "@/config/appMode";
 import { Loader2 } from "lucide-react";
-import { isDemo } from "@/lib/isDemo";
 
 interface AuthGuardProps {
   children: ReactNode;
 }
-
-// Public + Demo routes that don't require authentication
-const PUBLIC_ROUTES = new Set<string>([
-  '/', '/auth', '/auth/neu', '/legal/imprint', '/privacy', '/terms'
-]);
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
   const { loading, userInfo } = useAuthGuard();
@@ -24,14 +18,8 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   const lastPath = useRef(location.pathname);
 
   useEffect(() => {
-    // Demo: Set flag when entering /auth/neu, never redirect
-    if (mode === "demo" || isDemo()) {
-      if (location.pathname.startsWith('/auth/neu')) {
-        const { enableDemo } = require('@/lib/isDemo');
-        enableDemo();
-      }
-      return;
-    }
+    // Demo: never redirect
+    if (mode === "demo") return;
     
     // Wait for session state to be stable
     if (loading) return;
@@ -39,17 +27,12 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     // Prevent double-fire
     if (redirecting.current) return;
 
-    // 1) Not logged in → only redirect if route is NOT public and NOT demo
-    if (!userInfo) {
-      const path = location.pathname;
-      const isPublic = PUBLIC_ROUTES.has(path) || path.startsWith('/public/');
-      if (!isPublic && !isDemo()) {
-        redirecting.current = true;
-        navigate("/auth", { replace: true, state: { from: location } });
-        const timer = setTimeout(() => { redirecting.current = false; }, 400);
-        return () => clearTimeout(timer);
-      }
-      // No redirect on /auth/neu or demo routes
+    // 1) Not logged in → redirect to /auth (only if not already there)
+    if (!userInfo && location.pathname !== "/auth" && location.pathname !== "/") {
+      redirecting.current = true;
+      navigate("/auth", { replace: true, state: { from: location } });
+      const timer = setTimeout(() => { redirecting.current = false; }, 400);
+      return () => clearTimeout(timer);
     }
 
     // 2) Logged in and still on /auth → redirect to intended destination or dashboard

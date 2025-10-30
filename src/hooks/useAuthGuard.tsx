@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppMode } from "@/config/appMode";
-import { isDemo } from "@/lib/isDemo";
-import { demoUser, demoTenant } from "@/demo/demoData";
 
 interface UserInfo {
   userId: string;
@@ -13,24 +11,27 @@ interface UserInfo {
 }
 
 const DEMO_USER: UserInfo = {
-  userId: demoUser.id,
-  email: demoUser.email,
-  tenantId: demoTenant.id,
-  role: "owner",
+  userId: "demo-user-id",
+  email: "demo@company.example",
+  tenantId: "demo-tenant-id",
+  role: "admin",
   subscriptionStatus: "active",
 };
 
 // Simplified: only provides session state, NO navigation
 export const useAuthGuard = () => {
-  const [loading, setLoading] = useState(!isDemo());
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(() => {
-    // ⚡️ Synchronously seed demo as logged-in to avoid first-render redirects
-    return isDemo() ? DEMO_USER : null;
-  });
+  const [loading, setLoading] = useState(true);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    // Demo: already seeded synchronously, skip async checks
-    if (isDemo()) return;
+    const mode = getAppMode();
+    
+    // Demo: return synthetic user immediately
+    if (mode === 'demo') {
+      setUserInfo(DEMO_USER);
+      setLoading(false);
+      return;
+    }
 
     // Prod/Trial: check session
     const checkSession = async () => {

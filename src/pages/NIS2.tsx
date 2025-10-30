@@ -48,8 +48,8 @@ const NIS2 = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
-      // No navigation - AuthGuard handles redirects
-      setLoading(false);
+      if (isDemo()) { setLoading(false); return; }
+      navigate("/auth");
       return;
     }
 

@@ -163,7 +163,6 @@
     "exitDemo": "Exit Demo"
   },
   "readOnly": "Read-only (Demo)",
-  "readOnlyDemo": "Changes are disabled in demo mode.",
   "demoOnly": "Changes are disabled in demo mode.",
   "status": {
     "running": "Running",

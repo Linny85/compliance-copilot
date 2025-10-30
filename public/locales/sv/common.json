@@ -141,7 +141,6 @@
     "exitDemo": "Lämna demo"
   },
   "readOnly": "Endast läsning (Demo)",
-  "readOnlyDemo": "Ändringar är inaktiverade i demoläget.",
   "demoOnly": "Ändringar är inaktiverade i demoläget.",
   "status": {
     "running": "Pågår",

@@ -31,7 +31,8 @@ const Onboarding = () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        // No navigation - AuthGuard handles redirects
+        if (isDemo()) return;
+        navigate("/auth");
         return;
       }
 
