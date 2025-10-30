@@ -709,6 +709,13 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
     // Load knowledge context for current language
     const knowledgeContext = await getKnowledgeContext(lang);
     
+    // === Context-Awareness: Aktuelles Modul erkennen ===
+    const activeModule = body.module || 'global';
+    const moduleLabel =
+      activeModule !== 'global'
+        ? `\n\n📍 Aktuelles Modul: ${activeModule.toUpperCase()}`
+        : '';
+    
     // Compose knowledge-first system prompt
     const knowledgeFirstPrompt: Record<Lang, string> = {
       de: `Du bist NORRLY – der integrierte KI-Assistent des Programms **NIS2 AI Guard**.
@@ -754,7 +761,7 @@ Din uppgift är att hjälpa användare att använda och hantera appen.
 ${knowledgeContext || '(Inget specifikt innehåll laddat – svara kort och generellt om appanvändning)'}`
     };
 
-    const enhancedSystemPrompt = knowledgeFirstPrompt[lang];
+    const enhancedSystemPrompt = knowledgeFirstPrompt[lang] + moduleLabel;
 
     // AI Call
     const messages = [

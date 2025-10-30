@@ -106,6 +106,15 @@ export function NorrlandGuideDrawer({
       const validLangs = ['de', 'en', 'sv'] as const;
       const currentLang = (validLangs.includes(rawLang as any) ? rawLang : 'en') as 'de' | 'en' | 'sv';
       
+      // === Automatische Modul-Erkennung ===
+      const pathname = window.location.pathname;
+      const moduleMatch = pathname
+        .split('/')
+        .find((seg) =>
+          ['dashboard', 'checks', 'controls', 'documents', 'evidence', 'training', 'admin', 'billing'].includes(seg)
+        );
+      const activeModule = moduleMatch || 'global';
+      
       // Get auth session for authorization header
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData?.session?.access_token ?? null;
@@ -114,6 +123,7 @@ export function NorrlandGuideDrawer({
         body: { 
           question: currentQuestion,
           lang: currentLang,
+          module: activeModule, // 🧠 Kontext für NORRLY
           session_id: sessionId || undefined,
           jurisdiction: "EU",
           user_id: sessionData?.session?.user?.id || undefined
