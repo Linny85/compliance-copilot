@@ -2235,6 +2235,24 @@ export type Database = {
           },
         ]
       }
+      helpbot_synonyms: {
+        Row: {
+          id: string
+          module: string
+          term: string
+        }
+        Insert: {
+          id?: string
+          module: string
+          term: string
+        }
+        Update: {
+          id?: string
+          module?: string
+          term?: string
+        }
+        Relationships: []
+      }
       integration_dlq: {
         Row: {
           attempts: number
