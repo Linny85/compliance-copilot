@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from '@/layouts/AdminLayout';
+import AdminPage from '@/components/layout/AdminPage';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -187,24 +187,20 @@ export default function Integrations() {
 
   if (loading) {
     return (
-      <AdminLayout>
+      <AdminPage>
         <div className="animate-pulse">
           <div className="h-8 w-64 bg-muted rounded mb-4" />
           <div className="h-32 bg-muted rounded" />
         </div>
-      </AdminLayout>
+      </AdminPage>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">🔗 Integrationen</h1>
-        <p className="text-muted-foreground">
-          Slack, Jira und Webhook-Verbindungen mit Retry-Logik
-        </p>
-      </div>
-
+    <AdminPage
+      title="🔗 Integrationen"
+      subtitle="Slack, Jira und Webhook-Verbindungen mit Retry-Logik"
+    >
       <Tabs defaultValue="settings" className="w-full">
         <TabsList>
           <TabsTrigger value="settings">Einstellungen</TabsTrigger>
@@ -352,6 +348,6 @@ export default function Integrations() {
           </Card>
         </TabsContent>
       </Tabs>
-    </AdminLayout>
+    </AdminPage>
   );
 }
