@@ -25,6 +25,19 @@ function normalizeLang(input?: string): Lang {
   return (VALID_LANGS as readonly string[]).includes(two) ? (two as Lang) : "de";
 }
 
+// === Agent Metadaten ===
+const AGENT = {
+  name: "Kollege Norrly",
+  description: "Interaktiver Compliance-Chatbot für NIS2 & EU AI Act – klare Antworten, EU-Quellen & Norrly-Tipps.",
+  avatar: "🤖"
+};
+
+const INTRO: Record<Lang, string> = {
+  de: `Ich bin **${AGENT.name}** – ${AGENT.description}`,
+  en: `I'm **${AGENT.name}** – ${AGENT.description}`,
+  sv: `Jag är **${AGENT.name}** – ${AGENT.description}`,
+};
+
 // === System Prompts ===
 const SYSTEM_PROMPTS: Record<Lang, string> = {
   de: `Du bist Kollege Norrly – ein freundlicher, fachkundiger Compliance-Assistent für NIS2 und EU AI Act.
@@ -187,16 +200,16 @@ Deno.serve(async (req: Request) => {
       const [cmd, arg] = question.toLowerCase().split(/\s+/, 2);
 
       if (cmd === "/resources") {
-        return json({ ok: true, session_id: sessionId, answer: RESOURCES[lang], sources: [], history: [], reqId }, 200);
+        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: RESOURCES[lang], sources: [], history: [], reqId }, 200);
       }
       if (cmd === "/contact") {
-        return json({ ok: true, session_id: sessionId, answer: CONTACT[lang], sources: [], history: [], reqId }, 200);
+        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: CONTACT[lang], sources: [], history: [], reqId }, 200);
       }
       if (cmd === "/summary") {
         const hist = await getContext(sessionId);
         const summary = hist.map(h => (h.role === "user" ? "👤" : "🤖") + " " + h.content).join("\n");
         const label = lang === "de" ? "Zusammenfassung (letzte Nachrichten):" : lang === "sv" ? "Sammanfattning (senaste meddelanden):" : "Summary (recent messages):";
-        return json({ ok: true, session_id: sessionId, answer: `**${label}**\n${summary}`, sources: [], history: hist, reqId }, 200);
+        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: `**${label}**\n${summary}`, sources: [], history: hist, reqId }, 200);
       }
       if (cmd === "/translate") {
         const target = normalizeLang(arg ?? lang);
@@ -215,7 +228,7 @@ Deno.serve(async (req: Request) => {
           { role: "user", content: `Target language: ${target}\n\nText:\n${lastAssistant}` },
         ]);
         await saveMsg(sessionId, "assistant", translated, userId);
-        return json({ ok: true, session_id: sessionId, answer: translated, sources: [], history: [], reqId }, 200);
+        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: translated, sources: [], history: [], reqId }, 200);
       }
 
       return json({ ok: false, error: `Unknown command: ${cmd}`, reqId }, 400);
@@ -223,6 +236,7 @@ Deno.serve(async (req: Request) => {
 
     // Kontext + Persistenz
     const context = await getContext(sessionId);
+    const isFirstTurn = context.length === 0;
     await saveMsg(sessionId, "user", question, userId);
 
     // AI Call
@@ -232,7 +246,13 @@ Deno.serve(async (req: Request) => {
       { role: "user", content: question },
     ] as { role: "system" | "user" | "assistant"; content: string }[];
 
-    const answer = await chat(messages);
+    let answer = await chat(messages);
+
+    // Intro nur beim ersten Turn einblenden
+    if (isFirstTurn) {
+      answer = `${INTRO[lang]}\n\n${answer}`;
+    }
+
     await saveMsg(sessionId, "assistant", answer, userId);
 
     // gesamte History für Client
@@ -242,7 +262,7 @@ Deno.serve(async (req: Request) => {
       .eq("session_id", sessionId)
       .order("created_at", { ascending: true });
 
-    return json({ ok: true, provider: "LOVABLE_AI", session_id: sessionId, answer, sources: [], history: fullHistory ?? [], reqId }, 200);
+    return json({ ok: true, provider: "LOVABLE_AI", session_id: sessionId, agent: AGENT, answer, sources: [], history: fullHistory ?? [], reqId }, 200);
 
   } catch (e: any) {
     console.error("[helpbot-chat] fatal", { error: String(e), stack: e?.stack });
