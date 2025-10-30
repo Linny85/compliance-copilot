@@ -332,6 +332,49 @@ async function checkRate(sessionId: string): Promise<{ ok: true } | { ok: false;
   return { ok: true };
 }
 
+// === Knowledge Context Loader ===
+async function getKnowledgeContext(lang: Lang): Promise<string> {
+  try {
+    const { data, error } = await sbAdmin
+      .from('helpbot_knowledge')
+      .select('module, locale, title, content')
+      .eq('locale', lang)
+      .limit(1000);
+
+    if (error) {
+      console.error('[helpbot-chat] Knowledge load error:', error);
+      return '';
+    }
+
+    if (!data || data.length === 0) return '';
+
+    return data
+      .map((r) => `📘 ${r.module.toUpperCase()} — ${r.title}\n${r.content}`)
+      .join('\n\n');
+  } catch (e) {
+    console.warn('[helpbot-chat] getKnowledgeContext failed', e);
+    return '';
+  }
+}
+
+// === Synonym Resolver ===
+async function resolveSynonyms(text: string): Promise<string> {
+  try {
+    const { data } = await sbAdmin.from('helpbot_synonyms').select('term, module');
+    if (!data) return text;
+
+    let result = text;
+    for (const s of data) {
+      const regex = new RegExp(`\\b${s.term}\\b`, 'gi');
+      result = result.replace(regex, s.module);
+    }
+    return result;
+  } catch (e) {
+    console.warn('[helpbot-chat] resolveSynonyms failed', e);
+    return text;
+  }
+}
+
 // === Lovable Chat Call ===
 async function chat(
   messages: { role: "system" | "user" | "assistant"; content: string }[], 
@@ -658,16 +701,27 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
     // Kontext + Persistenz
     const context = await getContext(sessionId);
     const isFirstTurn = context.length === 0;
+    
+    // Resolve synonyms in question
+    const resolvedQuestion = await resolveSynonyms(question);
     await saveMsg(sessionId, "user", question, userId);
+
+    // Load knowledge context for current language
+    const knowledgeContext = await getKnowledgeContext(lang);
+    
+    // Compose enhanced system prompt with knowledge
+    const enhancedSystemPrompt = knowledgeContext 
+      ? `${SYSTEM_PROMPTS[lang]}\n\n## 📚 Interne Wissensbasis:\n\n${knowledgeContext}`
+      : SYSTEM_PROMPTS[lang];
 
     // AI Call
     const messages = [
-      { role: "system", content: SYSTEM_PROMPTS[lang] },
+      { role: "system", content: enhancedSystemPrompt },
       ...context,
-      { role: "user", content: question },
+      { role: "user", content: resolvedQuestion },
     ] as { role: "system" | "user" | "assistant"; content: string }[];
 
-    let answer = await chat(messages, lang, question);
+    let answer = await chat(messages, lang, resolvedQuestion);
 
     // Intro nur beim ersten Turn einblenden
     if (isFirstTurn) {
