@@ -27,8 +27,8 @@ function normalizeLang(input?: string): Lang {
 
 // === Agent Metadaten ===
 const AGENT = {
-  name: "Kollege Norrly",
-  description: "Interaktiver Compliance-Chatbot für NIS2 & EU AI Act – klare Antworten, EU-Quellen & Norrly-Tipps.",
+  name: "NORRLY",
+  description: "Ihre Compliance, einfach automatisiert",
   avatar: "🤖"
 };
 
