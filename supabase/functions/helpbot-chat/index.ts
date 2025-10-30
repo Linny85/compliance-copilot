@@ -15,7 +15,72 @@ function json(body: unknown, status = 200) {
 }
 
 const err = (message: string, reqId: string, status = 400) => 
-  json({ ok: false, error: message, reqId }, status);
+  json({ 
+    ok: false, 
+    error: message, 
+    message,
+    text: message,
+    content: message,
+    choices: [{ index: 0, message: { role: "assistant", content: message }, finish_reason: "error" }],
+    reqId 
+  }, status);
+
+// Success envelope with multiple schema compatibility
+function successEnvelope(params: {
+  sessionId: string;
+  answer: string;
+  history?: any[];
+  reqId?: string;
+  provider?: string;
+  agent?: any;
+  sources?: any[];
+}) {
+  const { 
+    sessionId, 
+    answer, 
+    history = [], 
+    reqId = crypto.randomUUID(), 
+    provider = "LOVABLE_AI", 
+    agent,
+    sources = []
+  } = params;
+
+  // OpenAI-compatible block
+  const openaiLike = {
+    id: reqId,
+    object: "chat.completion",
+    choices: [
+      {
+        index: 0,
+        message: { role: "assistant", content: answer },
+        finish_reason: "stop",
+      },
+    ],
+  };
+
+  return {
+    ok: true,
+    provider,
+    session_id: sessionId,
+    agent: agent ?? undefined,
+    
+    // Primary fields
+    answer,
+    history,
+    sources,
+    
+    // Common aliases for UI compatibility
+    message: answer,
+    text: answer,
+    content: answer,
+    assistant_message: answer,
+    
+    // OpenAI-compatible (for UIs expecting this format)
+    ...openaiLike,
+    
+    reqId,
+  };
+}
 
 // === Typen & Sprache ===
 type Lang = "de" | "en" | "sv";
@@ -351,16 +416,16 @@ Deno.serve(async (req: Request) => {
       const [cmd, arg] = question.toLowerCase().split(/\s+/, 2);
 
       if (cmd === "/resources") {
-        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: RESOURCES[lang], sources: [], history: [], reqId }, 200);
+        return json(successEnvelope({ sessionId, answer: RESOURCES[lang], reqId, agent: AGENT }), 200);
       }
       if (cmd === "/contact") {
-        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: CONTACT[lang], sources: [], history: [], reqId }, 200);
+        return json(successEnvelope({ sessionId, answer: CONTACT[lang], reqId, agent: AGENT }), 200);
       }
       if (cmd === "/summary") {
         const hist = await getContext(sessionId);
         const summary = hist.map(h => (h.role === "user" ? "👤" : "🤖") + " " + h.content).join("\n");
         const label = lang === "de" ? "Zusammenfassung (letzte Nachrichten):" : lang === "sv" ? "Sammanfattning (senaste meddelanden):" : "Summary (recent messages):";
-        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: `**${label}**\n${summary}`, sources: [], history: hist, reqId }, 200);
+        return json(successEnvelope({ sessionId, answer: `**${label}**\n${summary}`, history: hist, reqId, agent: AGENT }), 200);
       }
       if (cmd === "/translate") {
         const target = normalizeLang(arg ?? lang);
@@ -379,7 +444,7 @@ Deno.serve(async (req: Request) => {
           { role: "user", content: `Target language: ${target}\n\nText:\n${lastAssistant}` },
         ]);
         await saveMsg(sessionId, "assistant", translated, userId);
-        return json({ ok: true, session_id: sessionId, agent: AGENT, answer: translated, sources: [], history: [], reqId }, 200);
+        return json(successEnvelope({ sessionId, answer: translated, reqId, agent: AGENT }), 200);
       }
 
       if (cmd === "/csp") {
@@ -397,7 +462,7 @@ Content-Security-Policy:
   base-uri 'none';
   frame-ancestors 'none';
 \`\`\``;
-        return json({ ok: true, session_id: sessionId, agent: AGENT, answer, sources: [], history: [], reqId }, 200);
+        return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200);
       }
 
       if (cmd === "/headers") {
@@ -424,7 +489,7 @@ Permissions-Policy:
 add_header Content-Security-Policy "default-src 'self'; script-src 'nonce-$request_id' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self'; connect-src 'self' https: wss:; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https: data:; frame-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none';" always;
 add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), accelerometer=(), gyroscope=(), magnetometer=(), usb=(), bluetooth=(), interest-cohort=()" always;
 \`\`\``;
-        return json({ ok: true, session_id: sessionId, agent: AGENT, answer, sources: [], history: [], reqId }, 200);
+        return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200);
       }
 
       return json({ ok: false, error: `Unknown command: ${cmd}`, reqId }, 400);
@@ -440,7 +505,7 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
         .select("role, content, id, created_at")
         .eq("session_id", sessionId)
         .order("created_at", { ascending: true });
-      return json({ ok: true, session_id: sessionId, agent: AGENT, answer: quickFix, sources: [], history: fullHistory ?? [], reqId }, 200);
+      return json(successEnvelope({ sessionId, answer: quickFix, history: fullHistory ?? [], reqId, agent: AGENT }), 200);
     }
 
     // Kontext + Persistenz
@@ -471,7 +536,14 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
       .eq("session_id", sessionId)
       .order("created_at", { ascending: true });
 
-    return json({ ok: true, provider: "LOVABLE_AI", session_id: sessionId, agent: AGENT, answer, sources: [], history: fullHistory ?? [], reqId }, 200);
+    return json(successEnvelope({ 
+      sessionId, 
+      answer, 
+      history: fullHistory ?? [], 
+      reqId, 
+      provider: "LOVABLE_AI", 
+      agent: AGENT 
+    }), 200);
 
   } catch (e: any) {
     console.error("[helpbot-chat] fatal", { error: String(e), stack: e?.stack });
