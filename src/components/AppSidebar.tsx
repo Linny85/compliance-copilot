@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   LayoutDashboard,
   ShieldAlert,
@@ -34,6 +35,7 @@ import { useI18n } from "@/contexts/I18nContext";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { useFeatures } from "@/contexts/FeatureFlagContext";
 import { isDemo } from "@/config/appMode";
+import { NorrlandGuideDrawer } from "./NorrlandGuideDrawer";
 
 export function AppSidebar() {
   const { state } = useSidebar();
@@ -41,6 +43,7 @@ export function AppSidebar() {
   const { t, ready, lng } = useI18n();
   const isAdmin = useIsAdmin();
   const { hasFeature } = useFeatures();
+  const [helpDrawerOpen, setHelpDrawerOpen] = useState(false);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -146,7 +149,7 @@ export function AppSidebar() {
               
               {/* Help Button (opens guide drawer) */}
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => {}}>
+                <SidebarMenuButton onClick={() => setHelpDrawerOpen(true)}>
                   <HelpCircle className="h-4 w-4" />
                   {!isCollapsed && <span>{t.nav.help}</span>}
                 </SidebarMenuButton>
@@ -169,6 +172,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      {/* Help Drawer */}
+      <NorrlandGuideDrawer open={helpDrawerOpen} setOpen={setHelpDrawerOpen} />
     </Sidebar>
   );
 }
