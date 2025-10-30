@@ -39,6 +39,7 @@ import Demo from "./pages/Demo";
 import RegisterAISystem from "./pages/ai/RegisterAISystem";
 import NotFound from "./pages/NotFound";
 import { installDomGuards } from "./lib/dom-guards";
+import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 
@@ -60,6 +61,7 @@ function GlobalNavigationBridge() {
 const App = () => (
   <TooltipProvider>
     <Toaster position="top-right" richColors closeButton expand duration={3500} />
+    <NorrlandGuide />
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <GlobalNavigationBridge />
       <AuthGuard>
