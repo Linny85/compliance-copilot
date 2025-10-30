@@ -159,10 +159,12 @@ export function NorrlandGuideDrawer({
         setSessionId(data.session_id);
       }
 
-      // Update messages with the full history from response
-      if (data?.history) {
-        setMessages(data.history);
-      }
+      // Add user message and assistant response to messages
+      setMessages(prev => [
+        ...prev,
+        { role: "user", content: currentQuestion },
+        { role: "assistant", content: data?.answer || "Keine Antwort erhalten.", id: data?.message_id }
+      ]);
       
       setSources(data?.sources ?? []);
       setDisc(data?.disclaimer ?? "");
