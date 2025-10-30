@@ -1,30 +1,21 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { cors, ok, bad } from "../_shared/cors.ts";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return cors(new Response(null, { status: 204 }));
+    return new Response(null, { headers: corsHeaders });
   }
 
   if (req.method !== 'POST') {
-    return bad(405, 'Method not allowed');
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed' }),
+      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: req.headers.get("Authorization")! } } }
-    );
-
-    const { data: { user }, error: userErr } = await supabase.auth.getUser();
-    if (userErr || !user) {
-      return bad(401, "Unauthorized");
-    }
-
     const { customerId, return_url } = await req.json();
     const origin = new URL(req.url).origin;
 
@@ -56,10 +47,22 @@ serve(async (req) => {
     const session = await response.json();
     console.log("[Portal] Session created");
 
-    return ok({ url: session.url });
+    return new Response(
+      JSON.stringify({ url: session.url }),
+      { 
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
   } catch (error) {
     console.error("[Portal] Error:", error);
     const errorMessage = error instanceof Error ? error.message : 'Portal creation failed';
-    return bad(500, errorMessage);
+    return new Response(
+      JSON.stringify({ error: errorMessage }),
+      { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      }
+    );
   }
 });
