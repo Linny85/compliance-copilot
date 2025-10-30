@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings, Plus, UserMinus, Clock, CreditCard } from "lucide-react";
-import AdminLayout from "@/layouts/AdminLayout";
+import AdminPage from "@/components/layout/AdminPage";
 import { toast } from "sonner";
 import { QAMonitorCard } from "@/components/dashboard/QAMonitorCard";
 import { ComplianceStatusCard } from "@/components/dashboard/ComplianceStatusCard";
@@ -169,15 +169,13 @@ const Admin = () => {
   }
 
   return (
-    <AdminLayout>
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Settings className="h-8 w-8 text-primary" />
-            Administration
-          </h1>
-          <p className="text-muted-foreground">Manage users and subscription</p>
-        </div>
+    <AdminPage title={
+      <span className="flex items-center gap-2">
+        <Settings className="h-8 w-8 text-primary" />
+        Administration
+      </span>
+    } subtitle="Manage users and subscription">
+      <div className="max-w-7xl mx-auto space-y-8 mt-6">
 
         <Tabs defaultValue="users" className="w-full">
           <TabsList>
@@ -385,7 +383,7 @@ const Admin = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </AdminLayout>
+    </AdminPage>
   );
 };
 
