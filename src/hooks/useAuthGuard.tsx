@@ -93,9 +93,6 @@ export const useAuthGuard = () => {
         } else if (info.tenantId && !hasAccess && location.pathname !== '/billing') {
           // User has tenant but no trial/paid access, redirect to billing
           navigate('/billing');
-        } else if (info.tenantId && hasAccess && location.pathname === '/billing') {
-          // User has active trial/paid but is on billing page, redirect to dashboard
-          navigate('/dashboard');
         } else if (info.tenantId && (location.pathname === '/auth' || location.pathname === '/')) {
           // Authenticated user with tenant on auth/landing page, redirect appropriately
           if (hasAccess) {
