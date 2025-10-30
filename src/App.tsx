@@ -29,6 +29,7 @@ import Approvals from "./pages/Approvals";
 import OpsDashboard from "./pages/OpsDashboard";
 import HelpbotManager from "./pages/admin/HelpbotManager";
 import TrainingCertificates from "./pages/admin/TrainingCertificates";
+import DebugHeaders from "./pages/admin/DebugHeaders";
 import AuditTasks from "./pages/audit/AuditTasks";
 import NewAuditTask from "./pages/audit/NewAuditTask";
 import AuditTaskDetail from "./pages/audit/AuditTaskDetail";
@@ -127,6 +128,7 @@ const App = () => (
             <Route path="/admin/ops" element={<OpsDashboard />} />
             <Route path="/admin/helpbot" element={<HelpbotManager />} />
             <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
+            <Route path="/admin/debug-headers" element={<DebugHeaders />} />
             <Route path="/audit" element={<AuditTasks />} />
             <Route path="/audit/new" element={<NewAuditTask />} />
             <Route path="/audit/:id" element={<AuditTaskDetail />} />
