@@ -2003,6 +2003,33 @@ export type Database = {
           },
         ]
       }
+      helpbot_knowledge: {
+        Row: {
+          content: string
+          id: string
+          locale: string
+          module: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          id?: string
+          locale?: string
+          module: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          id?: string
+          locale?: string
+          module?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       helpbot_logs: {
         Row: {
           base_url: string | null
