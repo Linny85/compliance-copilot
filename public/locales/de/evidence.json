@@ -8,7 +8,9 @@
   "actions": {
     "newRequest": "Neue Anforderung",
     "upload": "Nachweis hochladen",
-    "review": "Prüfen"
+    "review": "Prüfen",
+    "cancel": "Abbrechen",
+    "save": "Speichern"
   },
   "fields": {
     "title": "Titel",
@@ -18,7 +20,15 @@
     "status": "Status",
     "verdict": "Ergebnis",
     "note": "Notiz",
-    "control": "Kontrolle"
+    "control": "Kontrolle",
+    "controlPlaceholder": "Wähle eine Kontrolle",
+    "severity": "Schweregrad"
+  },
+  "severity": {
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "critical": "Kritisch"
   },
   "status": {
     "open": "Offen",
@@ -58,6 +68,9 @@
     "training_record": "Schulungsnachweis",
     "screenshot": "Screenshot",
     "dataset": "Datensatz",
-    "assessment": "Bewertung"
+    "assessment": "Bewertung",
+    "process": "Prozess",
+    "plan": "Plan",
+    "test-report": "Testbericht"
   }
 }
