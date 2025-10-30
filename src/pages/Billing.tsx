@@ -10,6 +10,7 @@ import FeatureSection from "@/components/FeatureSection";
 import { useBillingStatus } from "@/hooks/useBilling";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import { useTranslation } from "react-i18next";
+import { invoke } from "@/lib/supaInvoke";
 
 interface SubscriptionData {
   status: string;
@@ -116,31 +117,21 @@ export default function Billing() {
   async function startCheckout() {
     setLoading(true);
     try {
-      const session = await supabase.auth.getSession();
-      if (!session.data.session) throw new Error(t("common:errors.notAuthenticated", "Nicht angemeldet"));
-
       // Step 1: Prepare subscription
-      const { data: prepData, error: prepError } = await supabase.functions.invoke('subscription-prep', {
-        headers: {
-          Authorization: `Bearer ${session.data.session.access_token}`,
-        },
-      });
-
-      if (prepError) throw prepError;
+      const prepData = await invoke<{ stripe_customer_id: string }>('subscription-prep');
       const { stripe_customer_id } = prepData;
 
-      // Step 2: Create checkout session - open in new tab
-      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke('billing-checkout', {
+      // Step 2: Create checkout session
+      const checkoutData = await invoke<{ url: string }>('billing-checkout', {
         body: {
           customerId: stripe_customer_id,
-          success_url: `${window.location.origin}/billing?status=success`,
-          cancel_url: `${window.location.origin}/billing?status=cancel`,
+          success_url: `${window.location.origin}/billing/success`,
+          cancel_url: `${window.location.origin}/billing/cancel`,
         },
       });
 
-      if (checkoutError) throw checkoutError;
       if (checkoutData?.url) {
-        window.location.href = checkoutData.url;
+        window.open(checkoutData.url, "_blank", "noopener,noreferrer");
       }
     } catch (error) {
       console.error('Checkout error:', error);
@@ -149,6 +140,7 @@ export default function Billing() {
         description: error instanceof Error ? error.message : t("billing:checkoutFailed", "Checkout fehlgeschlagen"),
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
     }
   }
@@ -165,22 +157,15 @@ export default function Billing() {
 
     setLoading(true);
     try {
-      const session = await supabase.auth.getSession();
-      if (!session.data.session) throw new Error(t("common:errors.notAuthenticated", "Nicht angemeldet"));
-
-      const { data, error: portalError } = await supabase.functions.invoke('billing-portal', {
+      const data = await invoke<{ url: string }>('billing-portal', {
         body: {
           customerId: subscription.stripe_customer_id,
           return_url: `${window.location.origin}/billing`,
         },
-        headers: {
-          Authorization: `Bearer ${session.data.session.access_token}`,
-        },
       });
 
-      if (portalError) throw portalError;
       if (data?.url) {
-        window.location.href = data.url;
+        window.open(data.url, "_blank", "noopener,noreferrer");
       }
     } catch (error) {
       console.error('Portal error:', error);
@@ -189,6 +174,7 @@ export default function Billing() {
         description: error instanceof Error ? error.message : t("billing:portalFailed", "Portal-Zugriff fehlgeschlagen"),
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
     }
   }

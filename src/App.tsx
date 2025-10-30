@@ -35,6 +35,7 @@ import AuditTaskDetail from "./pages/audit/AuditTaskDetail";
 import DPIAList from "./pages/privacy/DPIAList";
 import DPIADetail from "./pages/privacy/DPIADetail";
 import Billing from "./pages/Billing";
+import BillingStatus from "./pages/BillingStatus";
 import Demo from "./pages/Demo";
 import RegisterAISystem from "./pages/ai/RegisterAISystem";
 import NotFound from "./pages/NotFound";
@@ -132,6 +133,8 @@ const App = () => (
             <Route path="/privacy/dpia" element={<DPIAList />} />
             <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
             <Route path="/billing" element={<Billing />} />
+            <Route path="/billing/success" element={<BillingStatus kind="success" />} />
+            <Route path="/billing/cancel" element={<BillingStatus kind="cancel" />} />
             <Route path="/upgrade" element={<Navigate to="/billing" replace />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/ai-systems/register" element={<RegisterAISystem />} />
