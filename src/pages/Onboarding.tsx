@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { Building2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { isDemo } from "@/config/appMode";
 
 const Onboarding = () => {
   const navigate = useNavigate();
@@ -31,7 +30,6 @@ const Onboarding = () => {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        if (isDemo()) return;
         navigate("/auth");
         return;
       }

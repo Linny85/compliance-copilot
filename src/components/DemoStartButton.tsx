@@ -16,11 +16,11 @@ export function DemoStartButton() {
       onClick={async () => {
         try {
           setBusy(true);
-          switchTo("demo");
           await seedDemo();
+          switchTo("demo");
           // Wait for state to propagate
-          await new Promise((r) => setTimeout(() => r(null), 50));
-          nav("/dashboard", { replace: true });
+          await new Promise((r) => requestAnimationFrame(() => r(null)));
+          nav("/demo", { replace: true });
         } finally {
           setBusy(false);
         }

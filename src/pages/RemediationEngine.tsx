@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle2, XCircle, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
-import { isDemo } from "@/config/appMode";
 
 type RemediationRun = {
   id: string;
@@ -38,7 +37,6 @@ export default function RemediationEngine() {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        if (isDemo()) return;
         navigate('/auth');
         return;
       }

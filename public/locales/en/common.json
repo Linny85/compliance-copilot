@@ -157,13 +157,6 @@
     },
     "none": "—"
   },
-  "banner": {
-    "demoTitle": "Demo Mode",
-    "demoText": "Read-only · No changes saved",
-    "exitDemo": "Exit Demo"
-  },
-  "readOnly": "Read-only (Demo)",
-  "demoOnly": "Changes are disabled in demo mode.",
   "status": {
     "running": "Running",
     "success": "Success",

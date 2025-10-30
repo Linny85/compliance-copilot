@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppModeProvider } from "@/state/AppModeProvider";
 import { I18nProvider } from "@/contexts/I18nContext";
-import i18n from "@/i18n/init";
+import "@/i18n/init";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -25,27 +25,15 @@ if (import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem
   document.documentElement.classList.add('debug-index-badge');
 }
 
-async function bootstrap() {
-  if (!i18n.isInitialized) {
-    await new Promise<void>((resolve) => {
-      i18n.on("initialized", () => resolve());
-      // Fallback, falls bereits initialisiert:
-      if (i18n.isInitialized) resolve();
-    });
-  }
-  
-  createRoot(document.getElementById("root")!).render(
-    // StrictMode can be re-enabled later for testing
-    // <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <I18nProvider>
-          <AppModeProvider>
-            <App />
-          </AppModeProvider>
-        </I18nProvider>
-      </QueryClientProvider>
-    // </React.StrictMode>
-  );
-}
-
-bootstrap();
+createRoot(document.getElementById("root")!).render(
+  // StrictMode can be re-enabled later for testing
+  // <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <I18nProvider>
+        <AppModeProvider>
+          <App />
+        </AppModeProvider>
+      </I18nProvider>
+    </QueryClientProvider>
+  // </React.StrictMode>
+);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, CreditCard, ArrowRight, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import FeatureSection from "@/components/FeatureSection";
+import { UpgradeCard } from "@/components/UpgradeCard";
 import { useBillingStatus } from "@/hooks/useBilling";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
-import { useTranslation } from "react-i18next";
-import { invoke } from "@/lib/supaInvoke";
 
 interface SubscriptionData {
   status: string;
@@ -20,76 +19,55 @@ interface SubscriptionData {
 }
 
 export default function Billing() {
-  const { t, ready } = useTranslation(["billing", "common"]);
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [fetchingData, setFetchingData] = useState(true);
   const [startingTrial, setStartingTrial] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { userInfo } = useAuthGuard();
   const { data: billingStatus } = useBillingStatus(userInfo?.tenantId);
 
   useEffect(() => {
-    let cancelled = false;
+    fetchSubscription();
+    
+    // Check URL params for status
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status');
+    
+    if (status === 'success') {
+      toast({
+        title: "Abonnement aktiviert",
+        description: "Ihr Abonnement wurde erfolgreich aktiviert.",
+      });
+      // Clear URL params
+      window.history.replaceState({}, '', window.location.pathname);
+    } else if (status === 'cancel') {
+      toast({
+        title: "Zahlung abgebrochen",
+        description: "Der Zahlungsvorgang wurde abgebrochen.",
+        variant: "destructive",
+      });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
-    const init = async () => {
-      try {
-        // Get session (but don't redirect - AuthGuard handles that)
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          setFetchingData(false);
-          return;
-        }
+  async function fetchSubscription() {
+    try {
+      // Use view instead of direct table access (no custom claims needed)
+      const { data, error } = await supabase
+        .from('v_me_subscription')
+        .select('status, plan, current_period_end, stripe_customer_id')
+        .maybeSingle();
 
-        // Check URL params for status
-        const params = new URLSearchParams(window.location.search);
-        const status = params.get('status');
-        
-        if (status === 'success') {
-          toast({
-            title: t("billing:checkoutSuccess", "Abonnement aktiviert"),
-            description: t("billing:checkoutSuccessDesc", "Ihr Abonnement wurde erfolgreich aktiviert."),
-          });
-          window.history.replaceState({}, '', window.location.pathname);
-        } else if (status === 'cancel') {
-          toast({
-            title: t("billing:checkoutCancel", "Zahlung abgebrochen"),
-            description: t("billing:checkoutCancelDesc", "Der Zahlungsvorgang wurde abgebrochen."),
-            variant: "destructive",
-          });
-          window.history.replaceState({}, '', window.location.pathname);
-        }
-
-        // Fetch subscription data
-        const { data, error: subError } = await supabase
-          .from('v_me_subscription')
-          .select('status, plan, current_period_end, stripe_customer_id')
-          .maybeSingle();
-
-        if (!cancelled) {
-          if (subError) {
-            console.error('Error fetching subscription:', subError);
-            setError(t("billing:fetchError", "Fehler beim Laden der Abonnementdaten"));
-          } else {
-            setSubscription(data);
-          }
-        }
-      } catch (e: any) {
-        if (!cancelled) {
-          setError(e?.message ?? t("common:errors.unknown", "Unbekannter Fehler"));
-        }
-      } finally {
-        if (!cancelled) {
-          setFetchingData(false);
-        }
-      }
-    };
-
-    init();
-    return () => { cancelled = true; };
-  }, [t, toast]);
+      if (error) throw error;
+      setSubscription(data);
+    } catch (error) {
+      console.error('Error fetching subscription:', error);
+    } finally {
+      setFetchingData(false);
+    }
+  }
 
   async function startTrial() {
     setStartingTrial(true);
@@ -98,15 +76,15 @@ export default function Billing() {
       const { error } = await supabase.rpc('start_or_reset_trial', { days: 14 });
       if (error) throw error;
       toast({
-        title: t("billing:trialStarted", "Testversion aktiviert"),
-        description: t("billing:trialStartedDesc", "Ihre 14-Tage-Testversion wurde erfolgreich aktiviert."),
+        title: "Testversion aktiviert",
+        description: "Ihre 14-Tage-Testversion wurde erfolgreich aktiviert.",
       });
       setTimeout(() => window.location.reload(), 1000);
     } catch (error) {
       console.error(error);
       toast({
-        title: t("common:errors.error", "Fehler"),
-        description: t("billing:trialStartFailed", "Fehler beim Starten der Testversion"),
+        title: "Fehler",
+        description: "Fehler beim Starten der Testversion",
         variant: "destructive",
       });
     } finally {
@@ -117,30 +95,58 @@ export default function Billing() {
   async function startCheckout() {
     setLoading(true);
     try {
-      // Step 1: Prepare subscription
-      const prepData = await invoke<{ stripe_customer_id: string }>('subscription-prep');
-      const { stripe_customer_id } = prepData;
+      const session = await supabase.auth.getSession();
+      if (!session.data.session) throw new Error("Nicht angemeldet");
+
+      // Step 1: Prepare subscription (create customer if needed, pre-insert record)
+      const prepRes = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/subscription-prep`,
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session.data.session.access_token}`,
+          },
+        }
+      );
+
+      if (!prepRes.ok) {
+        const error = await prepRes.json();
+        throw new Error(error.error || 'Vorbereitung fehlgeschlagen');
+      }
+
+      const { stripe_customer_id } = await prepRes.json();
 
       // Step 2: Create checkout session
-      const checkoutData = await invoke<{ url: string }>('billing-checkout', {
-        body: {
-          customerId: stripe_customer_id,
-          success_url: `${window.location.origin}/billing/success`,
-          cancel_url: `${window.location.origin}/billing/cancel`,
-        },
-      });
+      const checkoutRes = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/billing-checkout`,
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId: stripe_customer_id,
+            success_url: `${window.location.origin}/billing?status=success`,
+            cancel_url: `${window.location.origin}/billing?status=cancel`,
+          }),
+        }
+      );
 
-      if (checkoutData?.url) {
-        window.open(checkoutData.url, "_blank", "noopener,noreferrer");
+      if (!checkoutRes.ok) {
+        const error = await checkoutRes.json();
+        throw new Error(error.error || 'Checkout fehlgeschlagen');
       }
+
+      const { url } = await checkoutRes.json();
+      window.location.href = url;
     } catch (error) {
       console.error('Checkout error:', error);
       toast({
-        title: t("common:errors.error", "Fehler"),
-        description: error instanceof Error ? error.message : t("billing:checkoutFailed", "Checkout fehlgeschlagen"),
+        title: "Fehler",
+        description: error instanceof Error ? error.message : "Checkout fehlgeschlagen",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   }
@@ -148,8 +154,8 @@ export default function Billing() {
   async function openPortal() {
     if (!subscription?.stripe_customer_id) {
       toast({
-        title: t("common:errors.error", "Fehler"),
-        description: t("billing:noActiveSubscription", "Kein aktives Abonnement gefunden"),
+        title: "Fehler",
+        description: "Kein aktives Abonnement gefunden",
         variant: "destructive",
       });
       return;
@@ -157,93 +163,79 @@ export default function Billing() {
 
     setLoading(true);
     try {
-      const data = await invoke<{ url: string }>('billing-portal', {
-        body: {
-          customerId: subscription.stripe_customer_id,
-          return_url: `${window.location.origin}/billing`,
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/billing-portal`,
+        {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId: subscription.stripe_customer_id,
+            return_url: `${window.location.origin}/billing`,
+          }),
+        }
+      );
 
-      if (data?.url) {
-        window.open(data.url, "_blank", "noopener,noreferrer");
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Portal-Zugriff fehlgeschlagen');
       }
+
+      const { url } = await res.json();
+      window.location.href = url;
     } catch (error) {
       console.error('Portal error:', error);
       toast({
-        title: t("common:errors.error", "Fehler"),
-        description: error instanceof Error ? error.message : t("billing:portalFailed", "Portal-Zugriff fehlgeschlagen"),
+        title: "Fehler",
+        description: error instanceof Error ? error.message : "Portal-Zugriff fehlgeschlagen",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   }
 
   const getStatusBadge = (status: string) => {
     const variants: Record<string, { variant: any; label: string }> = {
-      active: { variant: "default", label: t("billing:statusActive", "Aktiv") },
-      trialing: { variant: "secondary", label: t("billing:statusTrialing", "Testzeitraum") },
-      past_due: { variant: "destructive", label: t("billing:statusPastDue", "Überfällig") },
-      canceled: { variant: "outline", label: t("billing:statusCanceled", "Gekündigt") },
-      incomplete: { variant: "secondary", label: t("billing:statusIncomplete", "Unvollständig") },
+      active: { variant: "default", label: "Aktiv" },
+      trialing: { variant: "secondary", label: "Testzeitraum" },
+      past_due: { variant: "destructive", label: "Überfällig" },
+      canceled: { variant: "outline", label: "Gekündigt" },
+      incomplete: { variant: "secondary", label: "Unvollständig" },
     };
     
     const config = variants[status] || { variant: "outline", label: status };
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
-  // Wait for i18n to be ready
-  if (!ready) return null;
-
   if (fetchingData) {
     return (
-      <div className="container mx-auto max-w-4xl px-4 py-8 animate-pulse">
-        <div className="h-7 w-56 rounded bg-muted mb-2" />
-        <div className="h-4 w-80 rounded bg-muted mb-6" />
-        <div className="h-9 w-48 rounded bg-muted mb-8" />
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="h-40 rounded bg-muted" />
-          <div className="h-40 rounded bg-muted" />
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
-
-  // If no session, AuthGuard will redirect
-  if (!userInfo) return null;
 
   const hasActiveSubscription = subscription && ['active', 'trialing'].includes(subscription.status);
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <h1 className="text-3xl font-bold mb-2">{t("billing:billingTitle", "Abonnement & Abrechnung")}</h1>
-      <p className="text-sm text-muted-foreground mb-8">
-        {t("billing:subtitle", "Verwalten Sie Ihr Abonnement und Ihre Zahlungsdaten.")}
-      </p>
-
-      {error && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 dark:border-red-900 dark:bg-red-950/20 p-3 text-red-800 dark:text-red-200 text-sm">
-          {error}
-        </div>
-      )}
+      <h1 className="text-3xl font-bold mb-8">Abonnement & Abrechnung</h1>
 
       {billingStatus?.trial_active && (
         <Card className="mb-6 border-amber-200 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/20">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-amber-900 dark:text-amber-200">
-                {t("billing:trialActive", "Testversion aktiv")}
+                Testversion aktiv
               </CardTitle>
               <Badge variant="default" className="bg-amber-600">
-                {t("billing:daysLeft", "{{count}} Tag verbleibend", { 
-                  count: billingStatus.trial_days_left 
-                })}
+                {billingStatus.trial_days_left} Tag{billingStatus.trial_days_left !== 1 ? 'e' : ''} verbleibend
               </Badge>
             </div>
             <CardDescription className="text-amber-900/70 dark:text-amber-200/70">
-              {t("billing:trialEnds", "Ihre kostenlose Testphase läuft bis {{date}}", {
-                date: billingStatus.trial_end ? new Date(billingStatus.trial_end).toLocaleDateString('de-DE') : '—'
-              })}
+              Ihre kostenlose Testphase läuft bis{' '}
+              {billingStatus.trial_end ? new Date(billingStatus.trial_end).toLocaleDateString('de-DE') : '—'}
             </CardDescription>
           </CardHeader>
         </Card>
@@ -254,9 +246,9 @@ export default function Billing() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>{t("billing:currentPlan", "Aktuelles Abonnement")}</CardTitle>
+                <CardTitle>Aktuelles Abonnement</CardTitle>
                 <CardDescription>
-                  {t("billing:plan", "Plan")}: {subscription.plan}
+                  Plan: {subscription.plan}
                 </CardDescription>
               </div>
               {getStatusBadge(subscription.status)}
@@ -267,9 +259,7 @@ export default function Billing() {
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <CheckCircle className="h-4 w-4" />
                 <span>
-                  {t("billing:renewsOn", "Verlängert sich am: {{date}}", {
-                    date: new Date(subscription.current_period_end).toLocaleDateString('de-DE')
-                  })}
+                  Verlängert sich am: {new Date(subscription.current_period_end).toLocaleDateString('de-DE')}
                 </span>
               </div>
             )}
@@ -284,7 +274,7 @@ export default function Billing() {
               ) : (
                 <CreditCard className="mr-2 h-4 w-4" />
               )}
-              {t("billing:openPortal", "Abrechnungsportal öffnen")}
+              Abrechnungsportal öffnen
             </Button>
           </CardContent>
         </Card>
@@ -293,9 +283,9 @@ export default function Billing() {
           {!billingStatus?.trial_active && (
             <Card className="mb-6 border-primary/20">
               <CardHeader>
-                <CardTitle>{t("billing:freeTrial", "14 Tage kostenlos testen")}</CardTitle>
+                <CardTitle>14 Tage kostenlos testen</CardTitle>
                 <CardDescription>
-                  {t("billing:freeTrialDesc", "Testen Sie alle Funktionen ohne Risiko. Keine Kreditkarte erforderlich.")}
+                  Testen Sie alle Funktionen ohne Risiko. Keine Kreditkarte erforderlich.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -309,7 +299,7 @@ export default function Billing() {
                   ) : (
                     <ArrowRight className="mr-2 h-4 w-4" />
                   )}
-                  {t("billing:startTrial", "Testversion starten")}
+                  Testversion starten
                 </Button>
               </CardContent>
             </Card>
@@ -317,9 +307,9 @@ export default function Billing() {
 
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>{t("billing:premiumPlan", "Premium-Abonnement")}</CardTitle>
+              <CardTitle>Premium-Abonnement</CardTitle>
               <CardDescription>
-                {t("billing:premiumPlanDesc", "Wählen Sie einen Plan, der zu Ihren Anforderungen passt")}
+                Wählen Sie einen Plan, der zu Ihren Anforderungen passt
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -333,7 +323,7 @@ export default function Billing() {
                 ) : (
                   <CreditCard className="mr-2 h-4 w-4" />
                 )}
-                {t("billing:upgradeNow", "Jetzt upgraden")}
+                Jetzt upgraden
               </Button>
             </CardContent>
           </Card>

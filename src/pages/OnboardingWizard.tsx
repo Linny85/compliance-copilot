@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { isDemo } from "@/config/appMode";
 
 type Step = 'company' | 'scope' | 'frameworks' | 'seed' | 'done';
 
@@ -30,7 +29,7 @@ const OnboardingWizard = () => {
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) { if (isDemo()) return; navigate("/auth"); return; }
+      if (!session) { navigate("/auth"); return; }
       setUserId(session.user.id);
     };
     checkAuth();

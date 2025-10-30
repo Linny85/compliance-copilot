@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, useNavigate, useSearchParams, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -29,14 +29,12 @@ import Approvals from "./pages/Approvals";
 import OpsDashboard from "./pages/OpsDashboard";
 import HelpbotManager from "./pages/admin/HelpbotManager";
 import TrainingCertificates from "./pages/admin/TrainingCertificates";
-import DebugHeaders from "./pages/admin/DebugHeaders";
 import AuditTasks from "./pages/audit/AuditTasks";
 import NewAuditTask from "./pages/audit/NewAuditTask";
 import AuditTaskDetail from "./pages/audit/AuditTaskDetail";
 import DPIAList from "./pages/privacy/DPIAList";
 import DPIADetail from "./pages/privacy/DPIADetail";
 import Billing from "./pages/Billing";
-import BillingStatus from "./pages/BillingStatus";
 import Demo from "./pages/Demo";
 import RegisterAISystem from "./pages/ai/RegisterAISystem";
 import NotFound from "./pages/NotFound";
@@ -44,8 +42,6 @@ import { installDomGuards } from "./lib/dom-guards";
 import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
-import { useAppMode } from "./state/AppModeProvider";
-import { seedDemo } from "./data/seed";
 
 installDomGuards();
 
@@ -62,36 +58,12 @@ function GlobalNavigationBridge() {
   return null;
 }
 
-/**
- * URL-Schalter für Demo: ?demo=1 aktiviert Demo-Modus und navigiert zu /dashboard
- */
-function DemoUrlSwitch() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const { switchTo, mode } = useAppMode();
-
-  useEffect(() => {
-    const demoParam = searchParams.get('demo');
-    if (demoParam === '1' && mode !== 'demo') {
-      (async () => {
-        switchTo('demo');
-        await seedDemo();
-        await new Promise(r => setTimeout(r, 50));
-        navigate('/dashboard', { replace: true });
-      })();
-    }
-  }, [searchParams, mode, switchTo, navigate]);
-
-  return null;
-}
-
 const App = () => (
   <TooltipProvider>
     <Toaster position="top-right" richColors closeButton expand duration={3500} />
     <NorrlandGuide />
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <GlobalNavigationBridge />
-      <DemoUrlSwitch />
       <AuthGuard>
         <FeatureFlagProvider>
           <Routes>
@@ -128,16 +100,12 @@ const App = () => (
             <Route path="/admin/ops" element={<OpsDashboard />} />
             <Route path="/admin/helpbot" element={<HelpbotManager />} />
             <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
-            <Route path="/admin/debug-headers" element={<DebugHeaders />} />
             <Route path="/audit" element={<AuditTasks />} />
             <Route path="/audit/new" element={<NewAuditTask />} />
             <Route path="/audit/:id" element={<AuditTaskDetail />} />
             <Route path="/privacy/dpia" element={<DPIAList />} />
             <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
             <Route path="/billing" element={<Billing />} />
-            <Route path="/billing/success" element={<BillingStatus kind="success" />} />
-            <Route path="/billing/cancel" element={<BillingStatus kind="cancel" />} />
-            <Route path="/upgrade" element={<Navigate to="/billing" replace />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/ai-systems/register" element={<RegisterAISystem />} />
           </Route>

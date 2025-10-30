@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { Session } from "@supabase/supabase-js";
 import { useI18n } from "@/contexts/I18nContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { getAppMode } from "@/config/appMode";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -27,10 +26,6 @@ const Auth = () => {
   const [signupFullName, setSignupFullName] = useState("");
 
   useEffect(() => {
-    // In Demo mode, skip auth listeners entirely
-    if (getAppMode && getAppMode() === 'demo') {
-      return;
-    }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       if (session) {

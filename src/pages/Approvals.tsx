@@ -9,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
-import { isDemo } from "@/config/appMode";
 
 type Approval = {
   id: string;
@@ -38,7 +37,6 @@ export default function Approvals() {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        if (isDemo()) return;
         navigate('/auth');
         return;
       }

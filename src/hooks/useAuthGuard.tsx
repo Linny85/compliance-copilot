@@ -11,14 +11,6 @@ interface UserInfo {
   subscriptionStatus?: string | null;
 }
 
-const DEMO_USER: UserInfo = {
-  userId: "demo-user-id",
-  email: "demo@norrland.example",
-  tenantId: "demo-tenant-id",
-  role: "viewer",
-  subscriptionStatus: "active",
-};
-
 export const useAuthGuard = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,13 +19,6 @@ export const useAuthGuard = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
 
   useEffect(() => {
-    // Skip all auth checks in demo mode
-    if (mode === 'demo') {
-      setUserInfo(DEMO_USER);
-      setLoading(false);
-      return;
-    }
-
     checkAuthAndRedirect();
 
     // Listen for auth state changes
@@ -44,22 +29,23 @@ export const useAuthGuard = () => {
         setUserInfo(null);
         setLoading(false);
         if (location.pathname !== '/auth' && location.pathname !== '/') {
-          navigate('/auth', { replace: true });
+          navigate('/auth');
         }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [location.pathname, mode]);
+  }, [location.pathname]);
 
   const checkAuthAndRedirect = async () => {
     try {
-      // Demo short-circuit: never redirect or query auth in demo
+      // If in demo mode, skip all auth checks
       if (mode === 'demo') {
-        setUserInfo(DEMO_USER);
         setLoading(false);
+        setUserInfo(null);
         return;
       }
+
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {

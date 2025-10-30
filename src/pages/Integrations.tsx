@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
-import AdminPage from '@/components/layout/AdminPage';
+import AdminLayout from '@/layouts/AdminLayout';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { CheckCircle2, XCircle, Clock, RotateCcw, AlertTriangle } from 'lucide-react';
-import { isDemo } from "@/config/appMode";
 
 type OutboxJob = {
   id: string;
@@ -45,7 +44,6 @@ export default function Integrations() {
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        if (isDemo()) return;
         navigate('/auth');
         return;
       }
@@ -187,20 +185,24 @@ export default function Integrations() {
 
   if (loading) {
     return (
-      <AdminPage>
+      <AdminLayout>
         <div className="animate-pulse">
           <div className="h-8 w-64 bg-muted rounded mb-4" />
           <div className="h-32 bg-muted rounded" />
         </div>
-      </AdminPage>
+      </AdminLayout>
     );
   }
 
   return (
-    <AdminPage
-      title="🔗 Integrationen"
-      subtitle="Slack, Jira und Webhook-Verbindungen mit Retry-Logik"
-    >
+    <AdminLayout>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">🔗 Integrationen</h1>
+        <p className="text-muted-foreground">
+          Slack, Jira und Webhook-Verbindungen mit Retry-Logik
+        </p>
+      </div>
+
       <Tabs defaultValue="settings" className="w-full">
         <TabsList>
           <TabsTrigger value="settings">Einstellungen</TabsTrigger>
@@ -348,6 +350,6 @@ export default function Integrations() {
           </Card>
         </TabsContent>
       </Tabs>
-    </AdminPage>
+    </AdminLayout>
   );
 }
