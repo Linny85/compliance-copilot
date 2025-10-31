@@ -349,17 +349,23 @@ async function resolveSynonyms(text: string): Promise<string> {
   }
 }
 
-// === Legal Guard (verhindert juristische Ausuferung) ===
-function legalGuard(answer: string, userQuestion: string): string {
-  const askedForLaw = /\b(gesetz|recht|artikel|art\.|celex|eur-lex|legal|grundlage|quelle)\b/i.test(userQuestion);
-  if (askedForLaw) return answer; // Nutzer wollte es explizit
-
-  // Wenn juristische Trigger vorkommen, kürzen wir auf App-Hinweis zurück
-  const juristicTrigger = /\b(NIS2|GDPR|DSGVO|DORA|EU AI Act|Artikel|Art\.|Richtlinie|Verordnung|CELEX|EUR-LEX)\b/i;
-  if (juristicTrigger.test(answer)) {
-    return 'Kurzfassung aus dem App-Kontext: Schau im Modul an, welche Kontrollen zugewiesen sind, prüfe Status & Nachweise und nutze „Neue Kontrolle" für Lücken. Für Rechtsgrundlagen bitte gezielt nachfragen („Zeig mir die Rechtsgrundlage zu …").';
+// === Legal Guard (entfernt nur konkrete Gesetzeszitate, nicht Produktnamen) ===
+function legalGuard(answer: string, userQuestion: string): { answer: string; triggered: boolean; reason: string } {
+  const askedForLaw = /\b(gesetz|recht|artikel|art\.|celex|eur-lex|legal|grundlage|quelle|bitte mit artikel|zeig.*artikel)\b/i.test(userQuestion);
+  if (askedForLaw) {
+    return { answer, triggered: false, reason: 'user_requested_legal' };
   }
-  return answer;
+
+  // Entferne NUR harte Gesetzeszitate (Art. 5, Artikel 24, Annex III, etc.) - NICHT Produktnamen wie "NIS2 AI Guard"
+  const citationPattern = /\b(Art\.?\s?\d+|Artikel\s?\d+|Annex\s?[IVXLC]+|CELEX:\d+|Erwägungsgrund\s?\d+)\b/gi;
+  const hasCitations = citationPattern.test(answer);
+  
+  if (hasCitations) {
+    const cleaned = answer.replace(citationPattern, '[Rechtsgrundlage auf Nachfrage]');
+    return { answer: cleaned, triggered: true, reason: 'removed_legal_citations' };
+  }
+  
+  return { answer, triggered: false, reason: 'none' };
 }
 
 // === Lovable Chat Call ===
@@ -695,9 +701,20 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
 
     // === Context-Awareness ===
     const activeModule = (body.module || 'global') as string;
+    const debug = body.debug === true;
 
-    // 🔍 Alias Resolution for common platform questions
+    // 🔍 Alias Resolution & Intent Detection
     const normalizedQuestion = resolvedQuestion.toLowerCase().trim();
+    
+    // Intent detection
+    let intent: "definition"|"benefit"|"module_help"|"legal"|"other" = "other";
+    const defTriggers = ["was ist", "what is", "vad är"];
+    const benefitTriggers = ["wobei hilft", "wofür", "how does", "what does", "hur hjälper", "vad gör"];
+    
+    if (defTriggers.some(t => normalizedQuestion.startsWith(t))) intent = "definition";
+    else if (benefitTriggers.some(t => normalizedQuestion.includes(t))) intent = "benefit";
+    else if (normalizedQuestion.includes("kontrollen") || normalizedQuestion.includes("controls")) intent = "module_help";
+    else if (normalizedQuestion.includes("artikel") || normalizedQuestion.includes("article")) intent = "legal";
     
     const aliasMap: Record<Lang, Record<string, string>> = {
       de: {
@@ -749,6 +766,7 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
 
     // Knowledge für Sprache + Modul laden (mit Alias-Hinweis für Priorisierung)
     const knowledgeContext = await getKnowledgeContext(lang, activeModule, questionForKnowledge);
+    const knowledgeKeys = knowledgeContext ? ['loaded'] : [];
     const moduleLabel = activeModule !== 'global' ? `📍 Modul: ${activeModule.toUpperCase()}` : '';
 
     // === Load Memory ===
@@ -811,8 +829,9 @@ ${memoryBlock}`
     //   answer = `${INTRO[lang]}\n\n${answer}`;
     // }
 
-    // Sicherheitsnetz gegen juristische Ausuferung
-    const answer = legalGuard(rawAnswer, question);
+    // Sicherheitsnetz gegen juristische Ausuferung (nur harte Zitate entfernen)
+    const guardResult = legalGuard(rawAnswer, question);
+    const answer = guardResult.answer;
 
     await saveMsg(sessionId, "assistant", answer, userId);
 
@@ -830,14 +849,33 @@ ${memoryBlock}`
       .eq("session_id", sessionId)
       .order("created_at", { ascending: true });
 
-    return json(successEnvelope({ 
+    // Build response payload
+    const payload: any = successEnvelope({ 
       sessionId, 
       answer, 
       history: fullHistory ?? [], 
       reqId, 
       provider: "LOVABLE_AI", 
       agent: AGENT 
-    }), 200);
+    });
+
+    // Add debug info if requested
+    if (debug) {
+      payload.debug = {
+        activeModule,
+        intent,
+        questionForKnowledge,
+        knowledgeContextLen: knowledgeContext.length,
+        knowledgeKeys,
+        legalGuard: {
+          triggered: guardResult.triggered,
+          reason: guardResult.reason
+        },
+        promptPreview: enhancedSystemPrompt.slice(0, 400)
+      };
+    }
+
+    return json(payload, 200);
 
   } catch (e: any) {
     console.error("[helpbot-chat] fatal", { error: String(e), stack: e?.stack });
