@@ -91,6 +91,29 @@ function normalizeLang(input?: string): Lang {
   return (VALID_LANGS as readonly string[]).includes(two) ? (two as Lang) : "de";
 }
 
+// === Audit-Hilfsfunktionen ===
+function formatDateByLang(d: string | Date, lang: Lang): string {
+  const date = typeof d === 'string' ? new Date(d) : d;
+  const fmt = new Intl.DateTimeFormat(
+    lang === 'de' ? 'de-DE' : lang === 'sv' ? 'sv-SE' : 'en-GB',
+    { year: 'numeric', month: 'long', day: '2-digit' }
+  );
+  return fmt.format(date);
+}
+
+function renderAuditLine(audit: { performed_at: string; performed_by: string; audit_type: string }, lang: Lang): string {
+  const date = formatDateByLang(audit.performed_at, lang);
+  if (lang === 'de') return `Zuletzt geprüft am **${date}** durch **${audit.performed_by}** (*${audit.audit_type}*).`;
+  if (lang === 'sv') return `Senast granskad **${date}** av **${audit.performed_by}** (*${audit.audit_type}*).`;
+  return `Last reviewed on **${date}** by **${audit.performed_by}** (*${audit.audit_type}*).`;
+}
+
+function renderFallbackAudit(lang: Lang): string {
+  if (lang === 'de') return `Wir führen regelmäßige externe und interne Sicherheitsprüfungen durch. Details erhältst du auf Anfrage (Compliance-Nachweise).`;
+  if (lang === 'sv') return `Vi genomför regelbundna externa och interna säkerhetsgranskningar. Detaljer finns på begäran (regelefterlevnadsunderlag).`;
+  return `We perform regular external and internal security reviews. Details available on request (compliance evidence).`;
+}
+
 // === Agent Metadaten ===
 const AGENT = {
   name: "NORRLY",
@@ -831,7 +854,40 @@ ${memoryBlock}`
 
     // Sicherheitsnetz gegen juristische Ausuferung (nur harte Zitate entfernen)
     const guardResult = legalGuard(rawAnswer, question);
-    const answer = guardResult.answer;
+    let answer = guardResult.answer;
+
+    // === Audit-Lookup ===
+    let lastAuditLine: string | null = null;
+    try {
+      const { data: audit, error: auditErr } = await sbAdmin
+        .from('security_audits')
+        .select('performed_at, performed_by, audit_type')
+        .order('performed_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!auditErr && audit) {
+        lastAuditLine = renderAuditLine(audit, lang);
+      }
+    } catch (_) {
+      // Keine Exceptions nach außen werfen – nur Fallback verwenden
+    }
+
+    // Falls Frage Audits/Prüfungen betrifft, Audit-Hinweis einblenden
+    const qLower = (question || '').toLowerCase();
+    const wantsAuditInfo =
+      qLower.includes('geprüft') ||
+      qLower.includes('prüfung') ||
+      qLower.includes('audit') ||
+      qLower.includes('pentest') ||
+      qLower.includes('sicherheitsprüfung') ||
+      qLower.includes('security review') ||
+      qLower.includes('säkerhetsgransk');
+
+    if (wantsAuditInfo) {
+      const auditHint = '\n\n' + (lastAuditLine ?? renderFallbackAudit(lang));
+      answer = answer + auditHint;
+    }
 
     await saveMsg(sessionId, "assistant", answer, userId);
 

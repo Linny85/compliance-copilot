@@ -3105,6 +3105,33 @@ export type Database = {
           },
         ]
       }
+      security_audits: {
+        Row: {
+          audit_type: string
+          created_at: string
+          id: string
+          performed_at: string
+          performed_by: string
+          summary: string | null
+        }
+        Insert: {
+          audit_type: string
+          created_at?: string
+          id?: string
+          performed_at: string
+          performed_by: string
+          summary?: string | null
+        }
+        Update: {
+          audit_type?: string
+          created_at?: string
+          id?: string
+          performed_at?: string
+          performed_by?: string
+          summary?: string | null
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           company_id: string

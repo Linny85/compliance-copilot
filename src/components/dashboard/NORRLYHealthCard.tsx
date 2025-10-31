@@ -151,6 +151,11 @@ export function NORRLYHealthCard() {
 
           <div className="space-y-2">
             <h4 className="text-sm font-medium text-text-primary">Test Details</h4>
+            {healthData?.details?.some(d => d.name?.includes('Audit Lookup')) && (
+              <p className="text-xs text-muted-foreground mb-2">
+                Audit-Test aktiv: Antworten zu „letzte Prüfung" nutzen DB oder Fallback.
+              </p>
+            )}
             <div className="space-y-1">
               {healthData.details.map((test, idx) => (
                 <div

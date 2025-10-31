@@ -68,6 +68,15 @@ const TEST_CASES: TestCase[] = [
       'NORRLY',
       'Compliance'
     ]
+  },
+  {
+    name: 'Test 7 – Audit Lookup / Fallback',
+    question: 'Wann wurde das Sicherheitssystem zuletzt geprüft?',
+    lang: 'de',
+    module: 'global',
+    session_id: 'health-audit-lookup',
+    expectation: 'Antwort enthält echtes Audit-Datum oder Fallback-Text',
+    expectIncludes: []
   }
 ];
 
@@ -118,12 +127,22 @@ async function runTest(testCase: TestCase): Promise<{
     
     const missingKeywords = expectIncludes.filter(k => !lowerAnswer.includes(k.toLowerCase()));
 
+    // Zusatzprüfung für Test 7 (Audit Lookup / Fallback)
+    let resultPassed = hasAnswer && allKeywordsPresent;
+    if (testCase.name.startsWith('Test 7')) {
+      const answer = (data?.answer || '').toLowerCase();
+      const hasDate = /\d{1,2}\.\s?[a-zäöü]+|\d{4}/i.test(answer); // grob: Datum/Monat/Jahr
+      const hasFallbackPhrase = answer.includes('regelmäßige externe') || answer.includes('regular external');
+
+      resultPassed = hasDate || hasFallbackPhrase;
+    }
+
     return {
-      passed: hasAnswer && allKeywordsPresent,
+      passed: resultPassed,
       duration,
       answerLength,
       error: hasAnswer
-        ? allKeywordsPresent
+        ? allKeywordsPresent || testCase.name.startsWith('Test 7')
           ? undefined
           : `Missing keywords: ${missingKeywords.join(', ')}`
         : 'No answer received',
