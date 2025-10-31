@@ -291,24 +291,31 @@ async function checkRate(sessionId: string): Promise<{ ok: true } | { ok: false;
 }
 
 // === Knowledge Context Loader ===
-async function getKnowledgeContext(lang: Lang): Promise<string> {
+async function getKnowledgeContext(lang: Lang, mod: string): Promise<string> {
   try {
     const { data, error } = await sbAdmin
       .from('helpbot_knowledge')
       .select('module, locale, title, content')
       .eq('locale', lang)
+      .in('module', [mod, 'global'])
+      .order('module', { ascending: true }) // zuerst global, dann spezielles Modul
       .limit(1000);
 
     if (error) {
       console.error('[helpbot-chat] Knowledge load error:', error);
       return '';
     }
-
     if (!data || data.length === 0) return '';
 
-    return data
-      .map((r) => `📘 ${r.module.toUpperCase()} — ${r.title}\n${r.content}`)
-      .join('\n\n');
+    // Kurze, modulspezifische Nuggets bauen
+    const chunks = data.map((r) => `• ${r.title}: ${r.content}`);
+    // Kontext begrenzen (ca. 1.5k Zeichen), damit Antworten knackig bleiben
+    let ctx = '';
+    for (const c of chunks) {
+      if ((ctx + '\n' + c).length > 1500) break;
+      ctx += (ctx ? '\n' : '') + c;
+    }
+    return ctx;
   } catch (e) {
     console.warn('[helpbot-chat] getKnowledgeContext failed', e);
     return '';
@@ -331,6 +338,19 @@ async function resolveSynonyms(text: string): Promise<string> {
     console.warn('[helpbot-chat] resolveSynonyms failed', e);
     return text;
   }
+}
+
+// === Legal Guard (verhindert juristische Ausuferung) ===
+function legalGuard(answer: string, userQuestion: string): string {
+  const askedForLaw = /\b(gesetz|recht|artikel|art\.|celex|eur-lex|legal|grundlage|quelle)\b/i.test(userQuestion);
+  if (askedForLaw) return answer; // Nutzer wollte es explizit
+
+  // Wenn juristische Trigger vorkommen, kürzen wir auf App-Hinweis zurück
+  const juristicTrigger = /\b(NIS2|GDPR|DSGVO|DORA|EU AI Act|Artikel|Art\.|Richtlinie|Verordnung|CELEX|EUR-LEX)\b/i;
+  if (juristicTrigger.test(answer)) {
+    return 'Kurzfassung aus dem App-Kontext: Schau im Modul an, welche Kontrollen zugewiesen sind, prüfe Status & Nachweise und nutze „Neue Kontrolle" für Lücken. Für Rechtsgrundlagen bitte gezielt nachfragen („Zeig mir die Rechtsgrundlage zu …").';
+  }
+  return answer;
 }
 
 // === Lovable Chat Call ===
@@ -664,15 +684,12 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
     const resolvedQuestion = await resolveSynonyms(question);
     await saveMsg(sessionId, "user", question, userId);
 
-    // Load knowledge context for current language
-    const knowledgeContext = await getKnowledgeContext(lang);
-    
-    // === Context-Awareness: Aktuelles Modul erkennen ===
-    const activeModule = body.module || 'global';
-    const moduleLabel =
-      activeModule !== 'global'
-        ? `\n\n📍 Aktuelles Modul: ${activeModule.toUpperCase()}`
-        : '';
+    // === Context-Awareness ===
+    const activeModule = (body.module || 'global') as string;
+
+    // Knowledge für Sprache + Modul laden
+    const knowledgeContext = await getKnowledgeContext(lang, activeModule);
+    const moduleLabel = activeModule !== 'global' ? `📍 Modul: ${activeModule.toUpperCase()}` : '';
 
     // === Load Memory ===
     const priorMemory = await loadMemory(sbAdmin, userId, activeModule, lang);
@@ -683,32 +700,29 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
           .join('\n')}`
       : '';
     
-    // === Hard Override System Prompt: NORRLY Kollegial ===
-    const systemPrompt = `
-Du bist **NORRLY** – der digitale Compliance-Kollege im Programm **NIS2 AI Guard**.
+    // === Kollegialer System-Prompt (keine Juristerei, max. 5 Sätze, App-Kontext zuerst) ===
+    const knowledgeFirstPrompt: Record<Lang, string> = {
+      de: `Du bist NORRLY – der kollegiale Assistent im **NIS2 AI Guard**.
+Antworte immer zuerst aus der internen Wissensbasis zum aktiven Modul. Keine Gesetzeszitate, keine langen juristischen Ausführungen. Wenn etwas unklar ist, gib einen kurzen, praktischen App-Hinweis.
+Maximal 5 Sätze. Sprich präzise, freundlich und lösungsorientiert.
+${moduleLabel}
+📘 Internes Wissen:
+${knowledgeContext || '(Kein spezifischer Modulkontent gefunden – gib kurze App-Hinweise für dieses Modul.)'}`,
+      en: `You are NORRLY — the collegial assistant inside **NIS2 AI Guard**.
+Answer from internal module knowledge first. No law quotes, no long legal commentary. If unclear, provide a short, practical in-app tip.
+Max 5 sentences. Be precise, friendly, solution-oriented.
+${moduleLabel}
+📘 Internal knowledge:
+${knowledgeContext || '(No specific module content found — provide short in-app hints for this module.)'}`,
+      sv: `Du är NORRLY — den kollegiala assistenten i **NIS2 AI Guard**.
+Svara först med internt modulkunnande. Inga lagcitat, ingen lång juridik. Om oklart: ge ett kort praktiskt app-tips.
+Max 5 meningar. Var precis, vänlig och lösningsorienterad.
+${moduleLabel}
+📘 Intern kunskap:
+${knowledgeContext || '(Ingen specifik modulinformation — ge korta app-tips för denna modul.)'}`
+    };
 
-🧠 Deine Rolle:
-Du arbeitest Seite an Seite mit den Anwender:innen und kennst sowohl die Funktionsweise des Programms als auch die rechtlichen Grundlagen (NIS2, AI Act, GDPR, DORA).  
-Deine Antworten sind praxisnah, lösungsorientiert und beziehen sich **immer** auf die App-Module:
-Dashboard, Checks, Controls, Documents, Evidence, Training, Admin und Billing.
-
-🎯 Regeln:
-1. Verwende **immer zuerst** Wissen aus der internen Datenbank (\`helpbot_knowledge\`).
-2. Wenn dort keine passende Info existiert, erkläre kurz, **wie man im jeweiligen Modul vorgeht** oder **welche Funktion dort zu finden ist**.
-3. Keine Gesetzeszitate oder Artikelnummern. Verwende stattdessen Handlungswissen („so setzt du es praktisch um").
-4. Sprich **wie ein erfahrener Kollege**, nicht wie ein Chatbot oder Jurist.
-5. Antworte in maximal **5 präzisen Sätzen**.
-6. Nutze **die Sprache des Nutzers** (de/en/sv).
-
-💬 Wenn dies die erste Interaktion einer Sitzung ist, beginne mit:
-„Hallo, ich bin NORRLY – dein Compliance-Kollege im NIS2 AI Guard. Ich kenne mich bestens mit den Modulen und Anforderungen aus. Womit kann ich dir helfen?"
-
-📘 Interner Wissenskontext:
-${knowledgeContext || '(Keine spezifischen Inhalte geladen – antworte kurz und allgemein zur App-Bedienung)'}
-${moduleLabel}${memoryBlock}
-`;
-
-    const enhancedSystemPrompt = systemPrompt;
+    const enhancedSystemPrompt = knowledgeFirstPrompt[lang];
 
     // AI Call
     const messages = [
@@ -717,12 +731,15 @@ ${moduleLabel}${memoryBlock}
       { role: "user", content: resolvedQuestion },
     ] as { role: "system" | "user" | "assistant"; content: string }[];
 
-    let answer = await chat(messages, lang, resolvedQuestion);
+    let rawAnswer = await chat(messages, lang, resolvedQuestion);
 
     // Intro deaktiviert – Begrüßung erfolgt jetzt ausschließlich über System-Prompt
     // if (isFirstTurn) {
     //   answer = `${INTRO[lang]}\n\n${answer}`;
     // }
+
+    // Sicherheitsnetz gegen juristische Ausuferung
+    const answer = legalGuard(rawAnswer, question);
 
     await saveMsg(sessionId, "assistant", answer, userId);
 
