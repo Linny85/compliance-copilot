@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { head, exportJson, Probe } from '@/testmode/http';
+import { head, Probe } from '@/testmode/http';
 import { ROUTE_CASES } from '@/testmode/redirects.cases';
 
 type Result = { section: string; probes: Probe[] };
@@ -73,10 +73,30 @@ export default function TestRedirects() {
 
         <button
           disabled={!results}
-          onClick={()=> results && exportJson(`redirects-${Date.now()}.json`, results)}
+          onClick={() => {
+            if (!results) return;
+            const profile = import.meta.env.VITE_QA_PROFILE ?? 'auth';
+            const filename = `redirects-${profile}-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+            const blob = new Blob([JSON.stringify(results,null,2)], {type:'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+          }}
           className="rounded-2xl px-4 py-2 border"
         >
           Export JSON
+        </button>
+
+        <button
+          disabled={!results}
+          onClick={() => {
+            if (!results) return;
+            navigator.clipboard.writeText(JSON.stringify(results,null,2));
+          }}
+          className="rounded-2xl px-4 py-2 border"
+        >
+          Copy JSON
         </button>
       </div>
 
