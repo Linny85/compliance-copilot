@@ -94,14 +94,15 @@ function normalizeLang(input?: string): Lang {
 // === Agent Metadaten ===
 const AGENT = {
   name: "NORRLY",
-  description: "Ihre Compliance, einfach automatisiert",
+  description: "Compliance-Kollege im NIS2 AI Guard",
   avatar: "🤖"
 };
 
+// INTRO deaktiviert – Begrüßung erfolgt jetzt ausschließlich über System-Prompt
 const INTRO: Record<Lang, string> = {
-  de: `Ich bin **${AGENT.name}** – ${AGENT.description}`,
-  en: `I'm **${AGENT.name}** – ${AGENT.description}`,
-  sv: `Jag är **${AGENT.name}** – ${AGENT.description}`,
+  de: "",
+  en: "",
+  sv: "",
 };
 
 // === System Prompts ===
