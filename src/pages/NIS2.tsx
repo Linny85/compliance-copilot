@@ -47,7 +47,7 @@ const NIS2 = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     if (!session) {
-      navigate("/auth");
+      setLoading(false);
       return;
     }
 
@@ -58,7 +58,7 @@ const NIS2 = () => {
       .maybeSingle();
 
     if (!profile?.company_id) {
-      navigate("/onboarding");
+      setLoading(false);
       return;
     }
 

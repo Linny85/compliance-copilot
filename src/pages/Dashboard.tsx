@@ -37,11 +37,11 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    const checkAuthAndLoadData = async () => {
+    const loadData = async () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
-        navigate("/auth");
+        setLoading(false);
         return;
       }
 
@@ -55,7 +55,7 @@ const Dashboard = () => {
         .maybeSingle();
 
       if (!profile?.company_id) {
-        navigate("/onboarding");
+        setLoading(false);
         return;
       }
 
@@ -91,8 +91,8 @@ const Dashboard = () => {
       setLoading(false);
     };
 
-    checkAuthAndLoadData();
-  }, [navigate]);
+    loadData();
+  }, []);
 
   if (loading || !ready) {
     return (
