@@ -1,0 +1,23 @@
+name: Edge Functions Check
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'supabase/functions/**'
+      - '.github/workflows/edge-check.yml'
+
+jobs:
+  deno-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      
+      - name: Triage Edge Functions
+        run: node ./scripts/edge-triage.mjs

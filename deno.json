@@ -1,0 +1,18 @@
+{
+  "tasks": {
+    "edge-check-all": "deno check --no-lock --compact -q supabase/functions/**/index.ts",
+    "edge-lint": "deno lint supabase/functions"
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100
+  },
+  "imports": {
+    "@std/assert": "https://deno.land/std@0.224.0/assert/mod.ts"
+  }
+}
