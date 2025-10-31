@@ -850,32 +850,35 @@ ${memoryBlock}`
       .order("created_at", { ascending: true });
 
     // Build response payload
-    const payload: any = successEnvelope({ 
+    const basePayload = { 
       sessionId, 
       answer, 
       history: fullHistory ?? [], 
       reqId, 
       provider: "LOVABLE_AI", 
       agent: AGENT 
-    });
+    };
 
     // Add debug info if requested
     if (debug) {
-      payload.debug = {
-        activeModule,
-        intent,
-        questionForKnowledge,
-        knowledgeContextLen: knowledgeContext.length,
-        knowledgeKeys,
-        legalGuard: {
-          triggered: guardResult.triggered,
-          reason: guardResult.reason
-        },
-        promptPreview: enhancedSystemPrompt.slice(0, 400)
-      };
+      return json(successEnvelope({
+        ...basePayload,
+        debug: {
+          activeModule,
+          intent,
+          questionForKnowledge,
+          knowledgeContextLen: knowledgeContext.length,
+          knowledgeKeys,
+          legalGuard: {
+            triggered: guardResult.triggered,
+            reason: guardResult.reason
+          },
+          promptPreview: enhancedSystemPrompt.slice(0, 400)
+        }
+      }), 200);
     }
 
-    return json(payload, 200);
+    return json(successEnvelope(basePayload), 200);
 
   } catch (e: any) {
     console.error("[helpbot-chat] fatal", { error: String(e), stack: e?.stack });
