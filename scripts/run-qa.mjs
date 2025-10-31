@@ -92,6 +92,13 @@ function loadTasks() {
   return JSON.parse(fs.readFileSync(p, "utf-8"));
 }
 
+function statusTag(status) {
+  if (!status) return 'err';
+  if (status >= 200 && status < 300) return 'ok';
+  if (status >= 300 && status < 400) return 'rx';
+  return 'err';
+}
+
 async function runProfile(tasks, baseUrl, profileKey) {
   const profile = tasks.profiles[profileKey];
   if (!profile) throw new Error(`Unknown profile: ${profileKey}`);
@@ -120,10 +127,11 @@ async function runProfile(tasks, baseUrl, profileKey) {
 
       // Einzelreport
       const parts = nowParts();
+      const tag = statusTag(r.status);
       const file = path.join(
         process.cwd(),
         phase.exportDir,
-        `${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.json`
+        `${tag}-${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.json`
       );
       writeJson(file, rec);
       console.log(`✓ ${profileKey}/${phase.name} → ${r.status} (${elapsedMs}ms)`);
@@ -137,10 +145,11 @@ async function runProfile(tasks, baseUrl, profileKey) {
       };
       results.push(rec);
       const parts = nowParts();
+      const tag = 'err'; // Catch block always means error
       const file = path.join(
         process.cwd(),
         phase.exportDir,
-        `${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.json`
+        `${tag}-${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.json`
       );
       writeJson(file, rec);
       console.log(`✗ ${profileKey}/${phase.name} → ERROR`);
