@@ -45,6 +45,7 @@ import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 import TestRedirects from "./pages/admin/TestRedirects";
+import TestI18n from "./pages/admin/TestI18n";
 import RedirectTracer from "./testmode/RedirectTracer";
 import NetProbe from "./testmode/NetProbe";
 
@@ -109,10 +110,11 @@ const App = () => (
               <Route path="/admin/helpbot" element={<HelpbotManager />} />
               <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
               {import.meta.env.VITE_TEST_MODE === '1' && (
-                <Route path="/admin/test-mode/redirects" element={<TestRedirects />} />
-              )}
-              {import.meta.env.VITE_TEST_MODE === '1' && (
-                <Route path="/admin/test-mode/net" element={<NetProbe />} />
+                <>
+                  <Route path="/admin/test-mode/redirects" element={<TestRedirects />} />
+                  <Route path="/admin/test-mode/net" element={<NetProbe />} />
+                  <Route path="/admin/test-mode/i18n" element={<TestI18n />} />
+                </>
               )}
               <Route path="/audit" element={<AuditTasks />} />
               <Route path="/audit/new" element={<NewAuditTask />} />
