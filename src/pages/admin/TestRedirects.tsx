@@ -57,6 +57,9 @@ export default function TestRedirects() {
       <header className="text-center">
         <h1 className="text-2xl font-bold">Testmodus – Phase 1: Redirects & Guards</h1>
         <p className="text-muted-foreground">Nur Analyse. Keine Auto-Fixes.</p>
+        <span className="text-xs opacity-70 block mt-2">
+          Profil: {import.meta.env.VITE_QA_PROFILE ?? 'auth'}
+        </span>
       </header>
 
       <div className="flex items-center gap-3 justify-center">
@@ -81,23 +84,39 @@ export default function TestRedirects() {
         <section className="border rounded-2xl p-4">
           <h2 className="font-semibold mb-3">{results.section}</h2>
           <ul className="space-y-2">
-            {results.probes.map(p => (
-              <li key={p.name} className="flex items-start gap-3">
-                <span className={{
-                  ok: 'text-green-600', warn:'text-amber-600', fail:'text-red-600'
-                }[p.status]}>
-                  {p.status==='ok'?'✅':p.status==='warn'?'⚠️':'❌'}
-                </span>
-                <div>
-                  <div className="font-mono text-sm">{p.name}</div>
-                  {p.detail && (
-                    <pre className="bg-neutral-50 border rounded p-2 max-h-56 overflow-auto text-xs">
-                      {typeof p.detail === 'string' ? p.detail : JSON.stringify(p.detail, null, 2)}
-                    </pre>
-                  )}
-                </div>
-              </li>
-            ))}
+            {results.probes.map(p => {
+              const pathMatch = p.name.match(/route:.+?\s+(\/[\w\/\-]+)/);
+              const path = pathMatch?.[1] || '';
+              return (
+                <li key={p.name} className="flex items-start gap-3">
+                  <span className={{
+                    ok: 'text-green-600', warn:'text-amber-600', fail:'text-red-600'
+                  }[p.status]}>
+                    {p.status==='ok'?'✅':p.status==='warn'?'⚠️':'❌'}
+                  </span>
+                  <div className="flex-1">
+                    <div className="font-mono text-sm flex items-center gap-2">
+                      {p.name}
+                      {path && (
+                        <a 
+                          href={path} 
+                          className="ml-2 text-xs underline text-blue-600 hover:text-blue-800" 
+                          target="_blank" 
+                          rel="noreferrer"
+                        >
+                          öffnen
+                        </a>
+                      )}
+                    </div>
+                    {p.detail && (
+                      <pre className="bg-neutral-50 border rounded p-2 max-h-56 overflow-auto text-xs mt-2">
+                        {typeof p.detail === 'string' ? p.detail : JSON.stringify(p.detail, null, 2)}
+                      </pre>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </section>
       )}
