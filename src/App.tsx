@@ -43,6 +43,8 @@ import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 import TestRedirects from "./pages/admin/TestRedirects";
+import RedirectTracer from "./testmode/RedirectTracer";
+import NetProbe from "./testmode/NetProbe";
 
 installDomGuards();
 
@@ -63,6 +65,7 @@ const App = () => (
   <TooltipProvider>
     <Toaster position="top-right" richColors closeButton expand duration={3500} />
     <NorrlandGuide />
+    {import.meta.env.VITE_TEST_MODE === '1' && <RedirectTracer />}
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <GlobalNavigationBridge />
       <AuthGuard>
@@ -103,6 +106,9 @@ const App = () => (
             <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
             {import.meta.env.VITE_TEST_MODE === '1' && (
               <Route path="/admin/test-mode/redirects" element={<TestRedirects />} />
+            )}
+            {import.meta.env.VITE_TEST_MODE === '1' && (
+              <Route path="/admin/test-mode/net" element={<NetProbe />} />
             )}
             <Route path="/audit" element={<AuditTasks />} />
             <Route path="/audit/new" element={<NewAuditTask />} />
