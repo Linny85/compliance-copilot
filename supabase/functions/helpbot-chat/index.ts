@@ -285,6 +285,7 @@ function offlineFallbackAnswer(q: string, lang: Lang): string {
 const sbAdmin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
 type ChatRow = { role: "user" | "assistant" | "system"; content: string };
+type ChatMsg = { role: 'user' | 'assistant'; content: string };
 
 async function getContext(sessionId: string): Promise<ChatRow[]> {
   try {
@@ -300,6 +301,72 @@ async function getContext(sessionId: string): Promise<ChatRow[]> {
     console.warn("[helpbot-chat] context fetch failed", e);
     return [];
   }
+}
+
+// === Memory Helpers ===
+function roughTokenCount(text: string): number {
+  return Math.ceil((text || '').length / 4);
+}
+
+async function loadMemory(
+  sbAdmin: any,
+  userId: string | null,
+  module: string,
+  locale: string
+): Promise<ChatMsg[]> {
+  if (!userId) return [];
+  const { data, error } = await sbAdmin
+    .from('helpbot_memory')
+    .select('messages')
+    .eq('user_id', userId)
+    .eq('module', module)
+    .eq('locale', locale)
+    .single();
+  if (error || !data?.messages) return [];
+  return data.messages as ChatMsg[];
+}
+
+async function saveMemory(
+  sbAdmin: any,
+  userId: string | null,
+  module: string,
+  locale: string,
+  append: ChatMsg[],
+  tokenBudget = 4000
+) {
+  if (!userId || append.length === 0) return;
+
+  const { data: existing } = await sbAdmin
+    .from('helpbot_memory')
+    .select('messages')
+    .eq('user_id', userId)
+    .eq('module', module)
+    .eq('locale', locale)
+    .single();
+
+  let merged: ChatMsg[] = Array.isArray(existing?.messages) ? existing!.messages : [];
+  merged = [...merged, ...append];
+
+  const flat = merged.map(m => m.content).join('\n');
+  let estTokens = roughTokenCount(flat);
+
+  while (estTokens > tokenBudget && merged.length > 2) {
+    merged.splice(0, 2);
+    estTokens = roughTokenCount(merged.map(m => m.content).join('\n'));
+  }
+
+  const upsertRow = {
+    user_id: userId,
+    module,
+    locale,
+    messages: merged,
+    token_count: estTokens,
+    updated_at: new Date().toISOString()
+  };
+
+  await sbAdmin
+    .from('helpbot_memory')
+    .upsert(upsertRow, { onConflict: 'user_id,module,locale' });
 }
 
 async function saveMsg(sessionId: string, role: "user" | "assistant", content: string, userId?: string) {
@@ -715,6 +782,15 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
       activeModule !== 'global'
         ? `\n\n📍 Aktuelles Modul: ${activeModule.toUpperCase()}`
         : '';
+
+    // === Load Memory ===
+    const priorMemory = await loadMemory(sbAdmin, userId, activeModule, lang);
+    const memoryBlock = priorMemory.length
+      ? `\n\n🧠 Verlauf (gekürzt):\n${priorMemory
+          .slice(-6)
+          .map(m => (m.role === 'user' ? `Q: ${m.content}` : `A: ${m.content}`))
+          .join('\n')}`
+      : '';
     
     // Compose knowledge-first system prompt
     const knowledgeFirstPrompt: Record<Lang, string> = {
@@ -730,7 +806,7 @@ Deine Aufgabe ist es, Anwender:innen bei der Bedienung und Nutzung der App zu un
 6. Verwende einen freundlichen, professionellen Ton – wie ein digitaler Compliance-Coach.
 
 📘 Interne Wissensbasis:
-${knowledgeContext || '(Keine spezifischen Inhalte geladen – antworte kurz und allgemein zur App-Bedienung)'}`,
+${knowledgeContext || '(Keine spezifischen Inhalte geladen – antworte kurz und allgemein zur App-Bedienung)'}${moduleLabel}${memoryBlock}`,
 
       en: `You are NORRLY – the integrated AI assistant of the **NIS2 AI Guard** program.
 Your task is to help users operate and use the app.
@@ -744,7 +820,7 @@ Your task is to help users operate and use the app.
 6. Use a friendly, professional tone – like a digital compliance coach.
 
 📘 Internal Knowledge Base:
-${knowledgeContext || '(No specific content loaded – answer briefly and generally about app usage)'}`,
+${knowledgeContext || '(No specific content loaded – answer briefly and generally about app usage)'}${moduleLabel}${memoryBlock}`,
 
       sv: `Du är NORRLY – den integrerade AI-assistenten för programmet **NIS2 AI Guard**.
 Din uppgift är att hjälpa användare att använda och hantera appen.
@@ -758,10 +834,10 @@ Din uppgift är att hjälpa användare att använda och hantera appen.
 6. Använd en vänlig, professionell ton – som en digital compliance-coach.
 
 📘 Intern kunskapsbas:
-${knowledgeContext || '(Inget specifikt innehåll laddat – svara kort och generellt om appanvändning)'}`
+${knowledgeContext || '(Inget specifikt innehåll laddat – svara kort och generellt om appanvändning)'}${moduleLabel}${memoryBlock}`
     };
 
-    const enhancedSystemPrompt = knowledgeFirstPrompt[lang] + moduleLabel;
+    const enhancedSystemPrompt = knowledgeFirstPrompt[lang];
 
     // AI Call
     const messages = [
@@ -778,6 +854,13 @@ ${knowledgeContext || '(Inget specifikt innehåll laddat – svara kort och gene
     }
 
     await saveMsg(sessionId, "assistant", answer, userId);
+
+    // === Save Memory ===
+    const toAppend: ChatMsg[] = [
+      { role: 'user', content: question },
+      { role: 'assistant', content: answer }
+    ];
+    await saveMemory(sbAdmin, userId, activeModule, lang, toAppend, 4000);
 
     // gesamte History für Client
     const { data: fullHistory } = await sbAdmin

@@ -2084,6 +2084,36 @@ export type Database = {
         }
         Relationships: []
       }
+      helpbot_memory: {
+        Row: {
+          id: string
+          locale: string
+          messages: Json
+          module: string
+          token_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          locale: string
+          messages?: Json
+          module: string
+          token_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          locale?: string
+          messages?: Json
+          module?: string
+          token_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       helpbot_messages: {
         Row: {
           content: string
