@@ -48,17 +48,35 @@ function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
 }
 
+function redact(obj) {
+  const s = JSON.stringify(obj);
+  const scrub = s
+    .replace(/(Authorization":\s*")[^"]+/gi, '$1[REDACTED]')
+    .replace(/(Cookie":\s*")[^"]+/gi, '$1[REDACTED]')
+    .replace(/(sb:token=)[^;"]+/gi, '$1[REDACTED]')
+    .replace(/(sb:refresh=)[^;"]+/gi, '$1[REDACTED]');
+  return JSON.parse(scrub);
+}
+
 function writeJson(file, obj) {
   ensureDir(path.dirname(file));
-  fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n");
+  fs.writeFileSync(file, JSON.stringify(redact(obj), null, 2) + "\n");
   return file;
+}
+
+function isPassable(r) {
+  // 2xx ok, 3xx ok (Guard-Redirects sind gewollt)
+  if (r.status >= 200 && r.status < 300) return true;
+  if (r.status >= 300 && r.status < 400) return true;
+  // 401/403 können je nach Phase erwünscht sein (unauth/phase1)
+  return false;
 }
 
 function writeJUnit(results, outPath) {
   const esc = (s='') => s.replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','\'':'&apos;','"':'&quot;'}[c]));
   const cases = results.map(r=>{
     const name = `${r.profile}/${r.phase}`;
-    const ok = r.status && r.status >= 200 && r.status < 300;
+    const ok = isPassable(r);
     const body = esc(JSON.stringify(r.body || {}).slice(0,2000));
     return ok
       ? `<testcase name="${esc(name)}" time="${(r.elapsedMs||0)/1000}"/>`

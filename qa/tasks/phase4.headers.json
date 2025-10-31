@@ -1,0 +1,35 @@
+{
+  "target": "${BASE_URL}",
+  "expects": [
+    {
+      "name": "content-security-policy",
+      "mustInclude": ["default-src", "script-src", "frame-ancestors"],
+      "notes": "Harte CSP aktiv"
+    },
+    {
+      "name": "cross-origin-opener-policy",
+      "mustInclude": ["same-origin"],
+      "notes": "COOP für Isolation"
+    },
+    {
+      "name": "cross-origin-embedder-policy",
+      "mustInclude": ["require-corp"],
+      "notes": "COEP für Cross-Origin-Isolation"
+    },
+    {
+      "name": "permissions-policy",
+      "mustNotInclude": ["*"],
+      "notes": "Keine Wildcards"
+    },
+    {
+      "name": "x-content-type-options",
+      "mustInclude": ["nosniff"],
+      "notes": "MIME-Type Sniffing verhindern"
+    },
+    {
+      "name": "referrer-policy",
+      "mustInclude": ["strict-origin"],
+      "notes": "Sichere Referrer-Policy"
+    }
+  ]
+}
