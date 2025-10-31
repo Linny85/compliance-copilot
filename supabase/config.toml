@@ -85,6 +85,10 @@ name = "verify-cert"
 verify_jwt = false
 
 [[functions]]
+name = "helpbot-healthcheck"
+verify_jwt = false
+
+[[functions]]
 name = "generate-audit-report"
 verify_jwt = false
 
@@ -120,6 +124,11 @@ endpoint = "/functions/v1/outbox-archive-prune"
 name = "dead-reporter-daily"
 schedule = "0 6 * * *"
 endpoint = "/functions/v1/dead-reporter"
+
+[[cron.jobs]]
+name = "helpbot-healthcheck-daily"
+schedule = "0 3 * * *"
+endpoint = "/functions/v1/helpbot-healthcheck"
 
 [[cron.jobs]]
 name = "helpbot-memory-train-daily"
