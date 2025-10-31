@@ -42,6 +42,7 @@ import { installDomGuards } from "./lib/dom-guards";
 import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
+import TestRedirects from "./pages/admin/TestRedirects";
 
 installDomGuards();
 
@@ -100,6 +101,9 @@ const App = () => (
             <Route path="/admin/ops" element={<OpsDashboard />} />
             <Route path="/admin/helpbot" element={<HelpbotManager />} />
             <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
+            {import.meta.env.VITE_TEST_MODE === '1' && (
+              <Route path="/admin/test-mode/redirects" element={<TestRedirects />} />
+            )}
             <Route path="/audit" element={<AuditTasks />} />
             <Route path="/audit/new" element={<NewAuditTask />} />
             <Route path="/audit/:id" element={<AuditTaskDetail />} />
