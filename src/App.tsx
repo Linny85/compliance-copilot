@@ -48,6 +48,7 @@ import TestRedirects from "./pages/admin/TestRedirects";
 import TestI18n from "./pages/admin/TestI18n";
 import TestI18nPatches from "./pages/admin/TestI18nPatches";
 import TestPhase3 from "./pages/admin/TestPhase3";
+import TestPhase4 from "./pages/admin/TestPhase4";
 import RedirectTracer from "./testmode/RedirectTracer";
 import NetProbe from "./testmode/NetProbe";
 
@@ -118,6 +119,7 @@ const App = () => (
                   <Route path="/admin/test-mode/i18n" element={<TestI18n />} />
                   <Route path="/admin/test-mode/i18n/patches" element={<TestI18nPatches />} />
                   <Route path="/admin/test-mode/phase3" element={<TestPhase3 />} />
+                  <Route path="/admin/test-mode/phase4" element={<TestPhase4 />} />
                 </>
               )}
               <Route path="/audit" element={<AuditTasks />} />
