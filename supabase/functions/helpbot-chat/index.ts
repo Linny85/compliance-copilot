@@ -291,7 +291,7 @@ async function checkRate(sessionId: string): Promise<{ ok: true } | { ok: false;
 }
 
 // === Knowledge Context Loader ===
-async function getKnowledgeContext(lang: Lang, mod: string): Promise<string> {
+async function getKnowledgeContext(lang: Lang, mod: string, questionHint?: string): Promise<string> {
   try {
     const { data, error } = await sbAdmin
       .from('helpbot_knowledge')
@@ -307,8 +307,17 @@ async function getKnowledgeContext(lang: Lang, mod: string): Promise<string> {
     }
     if (!data || data.length === 0) return '';
 
+    // If questionHint provided, prioritize matching entries
+    let prioritizedData = data;
+    if (questionHint) {
+      const hint = questionHint.toLowerCase();
+      const matches = data.filter(r => r.title.toLowerCase().includes(hint));
+      const others = data.filter(r => !r.title.toLowerCase().includes(hint));
+      prioritizedData = [...matches, ...others];
+    }
+
     // Kurze, modulspezifische Nuggets bauen
-    const chunks = data.map((r) => `• ${r.title}: ${r.content}`);
+    const chunks = prioritizedData.map((r) => `• ${r.title}: ${r.content}`);
     // Kontext begrenzen (ca. 1.5k Zeichen), damit Antworten knackig bleiben
     let ctx = '';
     for (const c of chunks) {
@@ -687,8 +696,59 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
     // === Context-Awareness ===
     const activeModule = (body.module || 'global') as string;
 
-    // Knowledge für Sprache + Modul laden
-    const knowledgeContext = await getKnowledgeContext(lang, activeModule);
+    // 🔍 Alias Resolution for common platform questions
+    const normalizedQuestion = resolvedQuestion.toLowerCase().trim();
+    
+    const aliasMap: Record<Lang, Record<string, string>> = {
+      de: {
+        "was ist nis2 ai guard": "was ist der nis2 ai guard",
+        "was ist der nis2 ai guard": "was ist der nis2 ai guard",
+        "was ist das programm": "was ist der nis2 ai guard",
+        "was ist dieses programm": "was ist der nis2 ai guard",
+        "was ist diese plattform": "was ist der nis2 ai guard",
+        "was ist diese software": "was ist der nis2 ai guard",
+        "wofür ist der nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+        "wofür ist nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+        "wofür hilft mir der nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+        "wobei hilft mir dieses programm": "wobei hilft mir der nis2 ai guard",
+        "was kann der nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+        "wozu dient der nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+        "was macht der nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+        "wofür brauche ich den nis2 ai guard": "wobei hilft mir der nis2 ai guard",
+      },
+      en: {
+        "what is nis2 ai guard": "what is the nis2 ai guard",
+        "what is the nis2 ai guard": "what is the nis2 ai guard",
+        "what is this program": "what is the nis2 ai guard",
+        "what is this platform": "what is the nis2 ai guard",
+        "what is this software": "what is the nis2 ai guard",
+        "what is this tool": "what is the nis2 ai guard",
+        "what is nis2 ai guard for": "how does the nis2 ai guard help me",
+        "what does nis2 ai guard do": "how does the nis2 ai guard help me",
+        "how does this program help": "how does the nis2 ai guard help me",
+        "what can nis2 ai guard do": "how does the nis2 ai guard help me",
+        "why do i need nis2 ai guard": "how does the nis2 ai guard help me",
+        "how does nis2 ai guard help": "how does the nis2 ai guard help me",
+      },
+      sv: {
+        "vad är nis2 ai guard": "vad är nis2 ai guard",
+        "vad är det här programmet": "vad är nis2 ai guard",
+        "vad är denna plattform": "vad är nis2 ai guard",
+        "vad är denna programvara": "vad är nis2 ai guard",
+        "vad är det här verktyget": "vad är nis2 ai guard",
+        "vad gör nis2 ai guard": "hur hjälper nis2 ai guard mig",
+        "vad är nis2 ai guard till för": "hur hjälper nis2 ai guard mig",
+        "hur hjälper detta program": "hur hjälper nis2 ai guard mig",
+        "vad kan nis2 ai guard göra": "hur hjälper nis2 ai guard mig",
+        "varför behöver jag nis2 ai guard": "hur hjälper nis2 ai guard mig",
+      }
+    };
+    
+    // Check if question matches an alias and use canonical form for knowledge lookup
+    const questionForKnowledge = aliasMap[lang]?.[normalizedQuestion] || normalizedQuestion;
+
+    // Knowledge für Sprache + Modul laden (mit Alias-Hinweis für Priorisierung)
+    const knowledgeContext = await getKnowledgeContext(lang, activeModule, questionForKnowledge);
     const moduleLabel = activeModule !== 'global' ? `📍 Modul: ${activeModule.toUpperCase()}` : '';
 
     // === Load Memory ===
