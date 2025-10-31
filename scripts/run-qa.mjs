@@ -1,8 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+let _seq = 0;
 function nowParts() {
   const d = new Date();
   const p = (n) => String(n).padStart(2, "0");
@@ -12,7 +14,8 @@ function nowParts() {
     DD: p(d.getDate()),
     HH: p(d.getHours()),
     mm: p(d.getMinutes()),
-    ss: p(d.getSeconds())
+    ss: p(d.getSeconds()),
+    seq: String((_seq++) % 1000).padStart(3, '0')
   };
 }
 
@@ -20,9 +23,41 @@ function template(str, vars) {
   return str.replace(/\$\{(\w+)\}/g, (_, k) => vars[k] ?? "");
 }
 
+function joinUrl(base, route) {
+  const b = base.replace(/\/+$/, '');
+  const r = route.startsWith('/') ? route : `/${route}`;
+  return `${b}${r}`;
+}
+
+async function fetchWithRetry(url, init = {}, { retries = 2, timeoutMs = 8000 } = {}) {
+  for (let i = 0; i <= retries; i++) {
+    const ctrl = new AbortController();
+    const id = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { ...init, signal: ctrl.signal });
+      clearTimeout(id);
+      return res;
+    } catch (e) {
+      clearTimeout(id);
+      if (i === retries) throw e;
+      await new Promise(r => setTimeout(r, 400 * (i + 1))); // backoff
+    }
+  }
+}
+
+function gitInfo() {
+  try {
+    const sha = execSync("git rev-parse --short HEAD").toString().trim();
+    const branch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
+    return { sha, branch };
+  } catch {
+    return {};
+  }
+}
+
 async function httpGetJson(baseUrl, route, headers) {
-  const url = new URL(route, baseUrl).toString();
-  const res = await fetch(url, { headers, redirect: "manual" });
+  const url = joinUrl(baseUrl, route);
+  const res = await fetchWithRetry(url, { headers, redirect: "manual" });
   const status = res.status;
   const headersObj = Object.fromEntries(res.headers.entries());
 
@@ -156,7 +191,7 @@ async function runProfile(tasks, baseUrl, profileKey) {
       const file = path.join(
         process.cwd(),
         phase.exportDir,
-        `${tag}-${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.json`
+        `${tag}-${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}${parts.seq}.json`
       );
       writeJson(file, rec);
       console.log(`✓ ${profileKey}/${phase.name} → ${r.status} (${elapsedMs}ms)`);
@@ -174,7 +209,7 @@ async function runProfile(tasks, baseUrl, profileKey) {
       const file = path.join(
         process.cwd(),
         phase.exportDir,
-        `${tag}-${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.json`
+        `${tag}-${profile.exportPrefix}-${phase.name}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}${parts.seq}.json`
       );
       writeJson(file, rec);
       console.log(`✗ ${profileKey}/${phase.name} → ERROR`);
@@ -191,7 +226,16 @@ async function runProfile(tasks, baseUrl, profileKey) {
     ...parts
   });
   const bundlePath = path.join(process.cwd(), tasks.bundle.exportDir, bundleName);
-  writeJson(bundlePath, { baseUrl, profile: profileKey, results });
+  writeJson(bundlePath, {
+    baseUrl,
+    profile: profileKey,
+    results,
+    meta: {
+      generatedAt: new Date().toISOString(),
+      git: gitInfo(),
+      env: { NODE: process.version }
+    }
+  });
   console.log(`◎ Bundle gespeichert: ${bundlePath}`);
   
   // JUnit export for CI dashboards
