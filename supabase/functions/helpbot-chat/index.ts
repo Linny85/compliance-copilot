@@ -283,13 +283,12 @@ async function saveMemory(
     .upsert(upsertRow, { onConflict: 'user_id,module,locale' });
 }
 
-async function saveMsg(sessionId: string, role: "user" | "assistant", content: string, userId?: string) {
+async function saveMsg(sessionId: string, role: "user" | "assistant", content: string) {
   try {
     const { error } = await sbAdmin.from("helpbot_messages").insert({
       session_id: sessionId,
       role,
       content,
-      user_id: userId || null,
     });
     if (error) throw error;
   } catch (e) {
@@ -633,7 +632,7 @@ Deno.serve(async (req: Request) => {
           { role: "system", content: "Translate the following text faithfully. Do not add explanations." },
           { role: "user", content: `Target language: ${target}\n\nText:\n${lastAssistant}` },
         ], target, lastAssistant);
-        await saveMsg(sessionId, "assistant", translated, userId);
+        await saveMsg(sessionId, "assistant", translated);
         return json(successEnvelope({ sessionId, answer: translated, reqId, agent: AGENT }), 200);
       }
 
@@ -704,8 +703,8 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
     // === Known Pattern Detection (vor AI-Call) ===
     const quickFix = tryKnownFix(question, lang);
     if (quickFix) {
-      await saveMsg(sessionId, "user", question, userId);
-      await saveMsg(sessionId, "assistant", quickFix, userId);
+      await saveMsg(sessionId, "user", question);
+      await saveMsg(sessionId, "assistant", quickFix);
       const { data: fullHistory } = await sbAdmin
         .from("helpbot_messages")
         .select("role, content, id, created_at")
@@ -720,7 +719,7 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
     
     // Resolve synonyms in question
     const resolvedQuestion = await resolveSynonyms(question);
-    await saveMsg(sessionId, "user", question, userId);
+    await saveMsg(sessionId, "user", question);
 
     // === Context-Awareness ===
     const activeModule = (body.module || 'global') as string;
@@ -889,7 +888,7 @@ ${memoryBlock}`
       answer = answer + auditHint;
     }
 
-    await saveMsg(sessionId, "assistant", answer, userId);
+    await saveMsg(sessionId, "assistant", answer);
 
     // === Save Memory ===
     const toAppend: ChatMsg[] = [
