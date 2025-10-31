@@ -23,10 +23,25 @@ function template(str, vars) {
 async function httpGetJson(baseUrl, route, headers) {
   const url = new URL(route, baseUrl).toString();
   const res = await fetch(url, { headers, redirect: "manual" });
+  const status = res.status;
+  const headersObj = Object.fromEntries(res.headers.entries());
+
+  // Handle redirects (e.g., 302 → /auth) without reading body
+  if (status >= 300 && status < 400) {
+    return {
+      status,
+      headers: headersObj,
+      body: { redirect: headersObj.location || null }
+    };
+  }
+
   const text = await res.text();
-  let body;
-  try { body = JSON.parse(text); } catch { body = { raw: text }; }
-  return { status: res.status, headers: Object.fromEntries(res.headers.entries()), body };
+  // Try JSON parse, fallback to raw text (e.g., HTML error page)
+  try {
+    return { status, headers: headersObj, body: JSON.parse(text) };
+  } catch {
+    return { status, headers: headersObj, body: { raw: text } };
+  }
 }
 
 function ensureDir(dir) {
@@ -37,6 +52,21 @@ function writeJson(file, obj) {
   ensureDir(path.dirname(file));
   fs.writeFileSync(file, JSON.stringify(obj, null, 2) + "\n");
   return file;
+}
+
+function writeJUnit(results, outPath) {
+  const esc = (s='') => s.replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','\'':'&apos;','"':'&quot;'}[c]));
+  const cases = results.map(r=>{
+    const name = `${r.profile}/${r.phase}`;
+    const ok = r.status && r.status >= 200 && r.status < 300;
+    const body = esc(JSON.stringify(r.body || {}).slice(0,2000));
+    return ok
+      ? `<testcase name="${esc(name)}" time="${(r.elapsedMs||0)/1000}"/>`
+      : `<testcase name="${esc(name)}" time="${(r.elapsedMs||0)/1000}"><failure message="HTTP ${r.status||'ERR'}">${body}</failure></testcase>`;
+  }).join('\n');
+  const xml = `<?xml version="1.0" encoding="UTF-8"?><testsuite name="QA Runner" tests="${results.length}">${cases}</testsuite>`;
+  ensureDir(path.dirname(outPath));
+  fs.writeFileSync(outPath, xml);
 }
 
 function loadTasks() {
@@ -108,6 +138,16 @@ async function runProfile(tasks, baseUrl, profileKey) {
   const bundlePath = path.join(process.cwd(), tasks.bundle.exportDir, bundleName);
   writeJson(bundlePath, { baseUrl, profile: profileKey, results });
   console.log(`◎ Bundle gespeichert: ${bundlePath}`);
+  
+  // JUnit export for CI dashboards
+  const junitPath = path.join(
+    process.cwd(), 
+    tasks.bundle.exportDir, 
+    `qa-junit-${profile.exportPrefix}-${parts.YYYY}${parts.MM}${parts.DD}-${parts.HH}${parts.mm}${parts.ss}.xml`
+  );
+  writeJUnit(results, junitPath);
+  console.log(`✔ JUnit export: ${junitPath}`);
+  
   return bundlePath;
 }
 

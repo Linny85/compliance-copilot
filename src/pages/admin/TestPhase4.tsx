@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { getHeadersSnapshot, validateSecurityHeaders } from '@/utils/getHeaders';
 
 // ====== Konfiguration ======
 type WriteCase = {
@@ -182,19 +183,44 @@ async function probeWebhook(c: WebhookCase): Promise<{status:Status, detail:any}
 
 async function probeHeaders(url: string, expects: HeaderExpect[]): Promise<{status:Status, detail:any}> {
   try {
-    const res = await fetch(url, { method: 'HEAD', redirect: 'manual', cache: 'no-store' });
-    const findings: Array<{name:string;status:Status;value:string}> = [];
+    // Get actual headers snapshot
+    const snapshot = await getHeadersSnapshot(url);
+    const validation = validateSecurityHeaders(snapshot.headers);
+    
+    const findings: Array<{name:string;status:Status;value:string;notes?:string}> = [];
 
     for (const ex of expects) {
-      const val = res.headers.get(ex.name) || '';
+      const val = snapshot.headers[ex.name] || '';
       let st: Status = 'ok';
-      if (ex.mustInclude?.some(s => !val.toLowerCase().includes(s.toLowerCase()))) st = 'fail';
-      if (ex.mustNotInclude?.some(s => val.toLowerCase().includes(s.toLowerCase()))) st = 'fail';
-      findings.push({ name: ex.name, status: st, value: val });
+      const issues: string[] = [];
+      
+      if (ex.mustInclude?.some(s => !val.toLowerCase().includes(s.toLowerCase()))) {
+        st = 'fail';
+        issues.push('Missing required content');
+      }
+      if (ex.mustNotInclude?.some(s => val.toLowerCase().includes(s.toLowerCase()))) {
+        st = 'fail';
+        issues.push('Contains forbidden content');
+      }
+      
+      findings.push({ 
+        name: ex.name, 
+        status: st, 
+        value: val,
+        notes: issues.length > 0 ? issues.join('; ') : ex.notes
+      });
     }
 
     const overall: Status = findings.some(f => f.status === 'fail') ? 'fail' : 'ok';
-    return { status: overall, detail: { url, headers: findings } };
+    return { 
+      status: overall, 
+      detail: { 
+        url, 
+        snapshot,
+        validation,
+        headers: findings 
+      } 
+    };
   } catch (e:any) {
     return { status: 'warn' as Status, detail: { url, error: String(e) } };
   }
