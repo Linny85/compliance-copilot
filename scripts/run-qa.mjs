@@ -68,8 +68,9 @@ function isPassable(r) {
   // 2xx ok, 3xx ok (Guard-Redirects sind gewollt)
   if (r.status >= 200 && r.status < 300) return true;
   if (r.status >= 300 && r.status < 400) return true;
-  // 401/403 können je nach Phase erwünscht sein (unauth/phase1)
-  return false;
+  // Check phase-specific whitelist for expected 401/403
+  const allow = ALLOW_STATUS[r.profile]?.[r.phase] || [];
+  return allow.includes(r.status);
 }
 
 function writeJUnit(results, outPath) {
@@ -92,11 +93,35 @@ function loadTasks() {
   return JSON.parse(fs.readFileSync(p, "utf-8"));
 }
 
+// Whitelist expected status codes per phase/profile
+// Customize based on your specific auth/guard/RBAC expectations
+const ALLOW_STATUS = {
+  unauth: { redirects: [302,303], i18n: [200], phase3: [401], phase4: [200] },
+  auth:   { redirects: [200],     i18n: [200], phase3: [200,403], phase4: [200] }
+};
+
 function statusTag(status) {
   if (!status) return 'err';
   if (status >= 200 && status < 300) return 'ok';
   if (status >= 300 && status < 400) return 'rx';
   return 'err';
+}
+
+function printSummary(results) {
+  const byKey = new Map();
+  for (const r of results) {
+    const k = `${r.profile}/${r.phase}`;
+    const arr = byKey.get(k) || [];
+    arr.push(r);
+    byKey.set(k, arr);
+  }
+  console.log('\n═══ QA SUMMARY ═══');
+  for (const [k, arr] of byKey.entries()) {
+    const verdict = arr.every(isPassable) ? '✓ PASS' : '✗ FAIL';
+    const codes = arr.map(x => x.status ?? 'ERR').join(', ');
+    console.log(` ${verdict} | ${k.padEnd(20)} [${codes}]`);
+  }
+  console.log('═══════════════════\n');
 }
 
 async function runProfile(tasks, baseUrl, profileKey) {
@@ -155,6 +180,9 @@ async function runProfile(tasks, baseUrl, profileKey) {
       console.log(`✗ ${profileKey}/${phase.name} → ERROR`);
     }
   }
+
+  // Summary
+  printSummary(results);
 
   // Bundle
   const parts = nowParts();
