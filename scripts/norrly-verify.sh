@@ -193,16 +193,32 @@ echo -e "${BOLD}Test 6: Automatischer Health-Check${NC}"
 echo "  Ruft helpbot-healthcheck auf..."
 echo ""
 
-HEALTH_RESULT=$(curl -s -X POST "${SUPABASE_URL}/functions/v1/helpbot-healthcheck" \
+# Create artifacts directory
+mkdir -p .norrly
+
+# Call health check and save response
+HEALTH_RESPONSE=$(curl -s -X POST "${SUPABASE_URL}/functions/v1/helpbot-healthcheck" \
   -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
   -H "Content-Type: application/json" \
-  -d '{}' | jq -r '.report // empty')
+  -d '{}')
+
+echo "$HEALTH_RESPONSE" > .norrly/health-response.json
+
+HEALTH_RESULT=$(echo "$HEALTH_RESPONSE" | jq -r '.report // empty')
+REPORT_URL=$(echo "$HEALTH_RESPONSE" | jq -r '.last_report_url // empty')
+
+# Save artifacts
+echo "$HEALTH_RESULT" > .norrly/health-report.json
+echo "$REPORT_URL" > .norrly/last-url.txt
 
 if [ -n "$HEALTH_RESULT" ]; then
   HEALTH_PASSED=$(echo "$HEALTH_RESULT" | jq -r '.passed // 0')
   HEALTH_TOTAL=$(echo "$HEALTH_RESULT" | jq -r '.total // 0')
   
   echo "  Health-Check Ergebnis: ${HEALTH_PASSED}/${HEALTH_TOTAL} Tests bestanden"
+  if [ -n "$REPORT_URL" ]; then
+    echo "  JSON-Report URL: ${REPORT_URL:0:60}..."
+  fi
   echo ""
   
   if [ "$HEALTH_PASSED" -eq "$HEALTH_TOTAL" ] && [ "$HEALTH_TOTAL" -gt 0 ]; then

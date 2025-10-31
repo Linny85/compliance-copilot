@@ -8,6 +8,12 @@ import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 
+interface HealthResponse {
+  success: boolean;
+  report: HealthReport;
+  last_report_url?: string;
+}
+
 interface HealthReport {
   timestamp: string;
   passed: number;
@@ -26,15 +32,17 @@ interface HealthReport {
 export function NORRLYHealthCard() {
   const { toast } = useToast();
 
-  const { data: healthData, isLoading, refetch, isRefetching } = useQuery({
+  const { data: healthResponse, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["norrly-health-status"],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("helpbot-healthcheck");
       if (error) throw error;
-      return data?.report as HealthReport;
+      return data as HealthResponse;
     },
     refetchInterval: 5 * 60 * 1000, // Auto-refresh every 5 minutes
   });
+
+  const healthData = healthResponse?.report;
 
   const runHealthCheck = async () => {
     try {
@@ -109,9 +117,21 @@ export function NORRLYHealthCard() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             {getStatusBadge()}
-            <span className="text-sm text-text-secondary">
-              {format(new Date(healthData.timestamp), "dd.MM.yyyy HH:mm", { locale: de })}
-            </span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-sm text-text-secondary">
+                {format(new Date(healthData.timestamp), "dd.MM.yyyy HH:mm", { locale: de })}
+              </span>
+              {healthResponse?.last_report_url && (
+                <a
+                  href={healthResponse.last_report_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-xs text-primary hover:underline"
+                >
+                  JSON-Report öffnen
+                </a>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">

@@ -137,6 +137,54 @@ async function runTest(testCase: TestCase): Promise<{
   }
 }
 
+function renderHtmlReport(subject: string, report: any, link?: string) {
+  const statusColor = report.failed === 0 ? '#16a34a' : '#eab308';
+  const pill = (ok: boolean) =>
+    `<span style="display:inline-block;padding:2px 8px;border-radius:999px;background:${ok ? '#e8f5e9' : '#fff7ed'};color:${ok ? '#16a34a' : '#ea580c'};font-weight:600">${ok ? 'PASS' : 'FAIL'}</span>`;
+
+  const details = report.details.map((d: any) => `
+    <tr>
+      <td style="padding:8px;border-bottom:1px solid #eee">${d.name}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee">${pill(d.passed)}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee">${d.duration} ms</td>
+      <td style="padding:8px;border-bottom:1px solid #eee">${d.answerLength ?? '-'}</td>
+      <td style="padding:8px;border-bottom:1px solid #eee;color:#b91c1c">${d.error ?? ''}</td>
+    </tr>
+  `).join('');
+
+  return `
+  <div style="font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:760px;margin:auto;padding:24px">
+    <h2 style="margin:0 0 8px 0;color:#111">${subject}</h2>
+    <p style="margin:0 0 16px 0;color:#444">
+      <strong>Zeitstempel:</strong> ${report.timestamp}<br/>
+      <strong>Status:</strong> <span style="color:${statusColor};font-weight:700">
+        ${report.passed}/${report.total} Tests bestanden
+      </span><br/>
+      <strong>Dauer:</strong> ${report.duration} ms
+      ${link ? `<br/><strong>JSON-Report:</strong> <a href="${link}" target="_blank" rel="noopener">Download</a>` : ''}
+    </p>
+
+    <table style="border-collapse:collapse;width:100%;font-size:14px">
+      <thead>
+        <tr>
+          <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd">Test</th>
+          <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd">Ergebnis</th>
+          <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd">Dauer</th>
+          <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd">Len.</th>
+          <th style="text-align:left;padding:8px;border-bottom:2px solid #ddd">Fehler</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${details}
+      </tbody>
+    </table>
+
+    <p style="margin-top:16px;color:#666">
+      NORRLY – integrierter Assistent im NIS2 AI Guard (Norrland Innovate AB).
+    </p>
+  </div>`;
+}
+
 async function sendNotification(report: {
   timestamp: string;
   passed: number;
@@ -144,32 +192,14 @@ async function sendNotification(report: {
   total: number;
   details: any[];
   duration: number;
-}) {
+}, reportUrl?: string) {
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     const status = report.failed === 0 ? '✅' : '⚠️';
     const subject = `NORRLY Health-Check ${status} [${report.passed}/${report.total}]`;
     
-    const html = `
-      <h2>${subject}</h2>
-      <p><strong>Zeitstempel:</strong> ${report.timestamp}</p>
-      <p><strong>Gesamtdauer:</strong> ${report.duration}ms</p>
-      <p><strong>Erfolgreich:</strong> ${report.passed}</p>
-      <p><strong>Fehlgeschlagen:</strong> ${report.failed}</p>
-      
-      <h3>Test Details:</h3>
-      <ul>
-        ${report.details.map(d => `
-          <li>
-            <strong>${d.name}</strong>: ${d.passed ? '✅ Bestanden' : '❌ Fehlgeschlagen'}
-            <br/>Dauer: ${d.duration}ms
-            ${d.answerLength ? `<br/>Antwortlänge: ${d.answerLength} Zeichen` : ''}
-            ${d.error ? `<br/><span style="color: red;">Fehler: ${d.error}</span>` : ''}
-          </li>
-        `).join('')}
-      </ul>
-    `;
+    const html = renderHtmlReport(subject, report, reportUrl);
 
     // Get admin emails
     const { data: admins } = await supabase
@@ -245,13 +275,40 @@ Deno.serve(async (req) => {
 
     console.log('[NORRLY Health] Report:', JSON.stringify(report, null, 2));
 
-    // Send notification
-    await sendNotification(report);
+    // Archive report to storage
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const ts = new Date().toISOString().replace(/[:.]/g, '-');
+    const keyJson = `reports/${ts}.json`;
+    
+    let reportUrl: string | null = null;
+    
+    try {
+      await supabase.storage
+        .from('norrly-logs')
+        .upload(keyJson, new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' }), {
+          upsert: true
+        });
+
+      // Create presigned URL (7 days)
+      const { data: signed } = await supabase
+        .storage
+        .from('norrly-logs')
+        .createSignedUrl(keyJson, 7 * 24 * 60 * 60);
+      
+      reportUrl = signed?.signedUrl ?? null;
+      console.log('[NORRLY Health] Report archived:', keyJson);
+    } catch (storageError: any) {
+      console.error('[NORRLY Health] Storage error:', storageError.message);
+    }
+
+    // Send notification with report URL
+    await sendNotification(report, reportUrl ?? undefined);
 
     return new Response(
       JSON.stringify({
         success: true,
         report,
+        last_report_url: reportUrl,
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
