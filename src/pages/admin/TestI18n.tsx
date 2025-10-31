@@ -125,6 +125,14 @@ export default function TestI18n() {
         <span className="text-xs opacity-70 block mt-2">
           Base: {I18N.baseLang} | Langs: {I18N.langs.join(', ')} | Namespaces: {I18N.namespaces.length}
         </span>
+        <div className="mt-2">
+          <a 
+            href="/admin/test-mode/i18n/patches" 
+            className="text-sm text-blue-600 hover:underline"
+          >
+            → Zum Patch-Generator (JSON-Skeletons erzeugen)
+          </a>
+        </div>
       </header>
 
       <div className="flex items-center gap-3 justify-center flex-wrap">

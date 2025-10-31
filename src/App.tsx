@@ -46,6 +46,7 @@ import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
 import TestRedirects from "./pages/admin/TestRedirects";
 import TestI18n from "./pages/admin/TestI18n";
+import TestI18nPatches from "./pages/admin/TestI18nPatches";
 import RedirectTracer from "./testmode/RedirectTracer";
 import NetProbe from "./testmode/NetProbe";
 
@@ -114,6 +115,7 @@ const App = () => (
                   <Route path="/admin/test-mode/redirects" element={<TestRedirects />} />
                   <Route path="/admin/test-mode/net" element={<NetProbe />} />
                   <Route path="/admin/test-mode/i18n" element={<TestI18n />} />
+                  <Route path="/admin/test-mode/i18n/patches" element={<TestI18nPatches />} />
                 </>
               )}
               <Route path="/audit" element={<AuditTasks />} />
