@@ -11,6 +11,7 @@ interface TestCase {
   module: string;
   session_id: string;
   expectation: string;
+  expectIncludes?: string[];
 }
 
 const TEST_CASES: TestCase[] = [
@@ -53,6 +54,20 @@ const TEST_CASES: TestCase[] = [
     module: 'controls',
     session_id: 'health-t4',
     expectation: 'Kontextbewusste Antwort auf vorherige Frage'
+  },
+  {
+    name: 'Test 6 – Knowledge: Was ist der NIS2 AI Guard?',
+    question: 'Was ist der NIS2 AI Guard?',
+    lang: 'de',
+    module: 'global',
+    session_id: 'healthcheck-nis2aiguard',
+    expectation: 'NORRLY antwortet aus interner Wissensbasis mit Plattform-Identität',
+    expectIncludes: [
+      'SaaS-Plattform',
+      'Norrland Innovate',
+      'NORRLY',
+      'Compliance'
+    ]
   }
 ];
 
@@ -95,11 +110,23 @@ async function runTest(testCase: TestCase): Promise<{
     const hasAnswer = data && data.answer && data.answer.length > 0;
     const answerLength = data?.answer?.length || 0;
 
+    // Check expectIncludes if provided
+    const expectIncludes = testCase.expectIncludes || [];
+    const lowerAnswer = (data?.answer || '').toLowerCase();
+    const allKeywordsPresent = expectIncludes.length === 0 || 
+      expectIncludes.every(k => lowerAnswer.includes(k.toLowerCase()));
+    
+    const missingKeywords = expectIncludes.filter(k => !lowerAnswer.includes(k.toLowerCase()));
+
     return {
-      passed: hasAnswer,
+      passed: hasAnswer && allKeywordsPresent,
       duration,
       answerLength,
-      error: hasAnswer ? undefined : 'No answer received',
+      error: hasAnswer
+        ? allKeywordsPresent
+          ? undefined
+          : `Missing keywords: ${missingKeywords.join(', ')}`
+        : 'No answer received',
     };
   } catch (error: any) {
     return {
