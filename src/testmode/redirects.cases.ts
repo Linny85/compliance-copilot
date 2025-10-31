@@ -6,7 +6,9 @@ export type RouteCase = {
   target?: string;
 };
 
-export const ROUTE_CASES: RouteCase[] = [
+const PROFILE = import.meta.env.VITE_QA_PROFILE ?? 'auth'; // 'auth' | 'unauth'
+
+const AUTH_CASES: RouteCase[] = [
   { label: 'Dashboard', path: '/dashboard', expect: '200' },
   { label: 'NIS2', path: '/nis2', expect: '200' },
   { label: 'AI Act', path: '/ai-act', expect: '200' },
@@ -19,8 +21,15 @@ export const ROUTE_CASES: RouteCase[] = [
   { label: 'Graph Manager', path: '/admin/graph', expect: '200' },
   { label: 'Login', path: '/auth', expect: '200' },
   { label: 'Landing', path: '/', expect: '200' },
-  
-  // Beispiele für Guard-Erwartungen (falls unauthed getestet wird):
-  // { label: 'Ops (unauth)', path: '/admin/ops', expect: '302->/auth', target: '/auth' },
-  // { label: 'Admin-Only (member)', path: '/admin/admin-only', expect: '403' },
 ];
+
+const UNAUTH_CASES: RouteCase[] = [
+  { label: 'Ops (unauth)', path: '/admin/ops', expect: '302->/auth', target: '/auth' },
+  { label: 'Billing (unauth)', path: '/billing', expect: '302->/auth', target: '/auth' },
+  { label: 'Dashboard (unauth)', path: '/dashboard', expect: '302->/auth', target: '/auth' },
+  { label: 'NIS2 (unauth)', path: '/nis2', expect: '302->/auth', target: '/auth' },
+  { label: 'Login', path: '/auth', expect: '200' },
+  { label: 'Landing', path: '/', expect: '200' },
+];
+
+export const ROUTE_CASES = PROFILE === 'unauth' ? UNAUTH_CASES : AUTH_CASES;
