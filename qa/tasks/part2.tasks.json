@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "defaultHeaders": {
+    "Accept": "application/json"
+  },
+  "profiles": {
+    "auth": {
+      "cookieEnv": "QA_AUTH_COOKIE",
+      "exportPrefix": "auth"
+    },
+    "unauth": {
+      "cookieEnv": null,
+      "exportPrefix": "unauth"
+    }
+  },
+  "phases": [
+    {
+      "name": "redirects",
+      "route": "/admin/test-mode/redirects",
+      "exportDir": "qa/reports/redirects"
+    },
+    {
+      "name": "i18n",
+      "route": "/admin/test-mode/i18n",
+      "exportDir": "qa/reports/i18n"
+    },
+    {
+      "name": "phase3",
+      "route": "/admin/test-mode/phase3",
+      "exportDir": "qa/reports/phase3"
+    },
+    {
+      "name": "phase4",
+      "route": "/admin/test-mode/phase4",
+      "exportDir": "qa/reports/phase4"
+    }
+  ],
+  "bundle": {
+    "exportDir": "qa/bundles",
+    "filePattern": "qa-bundle-${PROFILE}-${YYYY}${MM}${DD}-${HH}${mm}${ss}.json"
+  }
+}

@@ -1,0 +1,32 @@
+name: QA Runner (Part 2)
+on:
+  workflow_dispatch:
+    inputs:
+      profiles:
+        description: "auth, unauth oder beides (auth,unauth)"
+        required: false
+        default: "auth,unauth"
+  schedule:
+    - cron: "0 4 * * *"
+
+jobs:
+  run-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci || npm i
+      - run: node ./scripts/run-qa.mjs
+        env:
+          QA_BASE_URL: ${{ secrets.QA_BASE_URL }}
+          QA_AUTH_COOKIE: ${{ secrets.QA_AUTH_COOKIE }}
+          QA_RUN: ${{ github.event.inputs.profiles || 'auth,unauth' }}
+      - name: Upload QA artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-results-${{ github.run_id }}
+          path: |
+            qa/reports/**
+            qa/bundles/**
