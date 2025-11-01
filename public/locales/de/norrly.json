@@ -1,4 +1,7 @@
 {
+  "header": {
+    "subtitle": "Norrly – dein Kollege für Klarheit in NIS2 & dem AI Act."
+  },
   "intro": {
     "headline": "Hi, ich bin Norrly 👋",
     "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung. Ich helfe dir, dich im NIS2-AI-Guard-Programm zurechtzufinden und beantworte alle Fragen rund um NIS2, den AI Act und Compliance."
@@ -7,7 +10,12 @@
     "verify": "Verifizieren",
     "whyAccess": "Warum ist ein Login nötig?",
     "createDoc": "Neues Dokument erstellen",
-    "name": "Name"
+    "name": "Name",
+    "incident": "Sicherheitsvorfall melden",
+    "register": "NIS2-Register prüfen",
+    "roles": "Verantwortlichkeiten klären",
+    "audit": "Audit vorbereiten",
+    "training": "Schulung starten"
   },
   "input": {
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",

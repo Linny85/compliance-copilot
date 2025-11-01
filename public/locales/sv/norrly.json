@@ -1,13 +1,21 @@
 {
+  "header": {
+    "subtitle": "Norrly – din kollega för klarhet i NIS2 och AI-förordningen."
+  },
   "intro": {
     "headline": "Hej, jag är Norrly 👋",
-    "text": "Jag förklarar, vägleder och hjälper dig – från regler till genomförande. Jag guidar dig i NIS2-AI-Guard-programmet och svarar på dina frågor om NIS2, AI-förordningen och efterlevnad."
+    "text": "Jag förklarar, vägleder och hjälper dig – från regler till genomförande. Jag guidar dig i NIS2-AI-Guard-programmet och svarar på dina frågor om NIS2, AI-förordningen och regelefterlevnad."
   },
   "cta": {
     "verify": "Verifiera",
     "whyAccess": "Varför behöver jag logga in?",
     "createDoc": "Skapa nytt dokument",
-    "name": "Namn"
+    "name": "Namn",
+    "incident": "Rapportera en säkerhetsincident",
+    "register": "Kontrollera NIS2-registret",
+    "roles": "Klart ansvar",
+    "audit": "Förbered revision",
+    "training": "Starta utbildning"
   },
   "input": {
     "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
