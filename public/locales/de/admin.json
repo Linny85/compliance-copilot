@@ -56,7 +56,8 @@
       "title": "Mitglied entfernen",
       "desc": "Dieser Benutzer verliert den Zugriff auf alle Ressourcen.",
       "confirm": "Entfernen",
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "error": "Benutzer konnte nicht entfernt werden."
     },
     "disableDialog": {
       "title": "Mitglied deaktivieren",
@@ -72,11 +73,23 @@
   "subscription": {
     "sectionTitle": "Abonnement",
     "sectionDesc": "Tarif und Abrechnung verwalten",
+    "statusTitle": "Abonnement-Status",
+    "currentPlan": "Aktueller Plan",
     "plan": "Tarif",
     "status": "Status",
     "trial": "Testphase",
     "trialDaysLeft": "Noch {{count}} Tag",
     "trialDaysLeft_plural": "Noch {{count}} Tage",
+    "planTypes": {
+      "trial": "Testphase",
+      "free": "Kostenlos",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "trialInfo": {
+      "label": "Testphase",
+      "remain": "{{days}} Tage verbleibend"
+    },
     "actions": {
       "upgrade": "Upgrade",
       "downgrade": "Downgrade",
@@ -100,6 +113,20 @@
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Richtlinien und Standardeinstellungen durchsetzen",
+    "operations": {
+      "title": "Operations",
+      "empty": "Noch keine Daten. Dieser Bereich füllt sich nach der geplanten Aktualisierung.",
+      "sendDigest": "Ops-Digest senden"
+    },
+    "status": {
+      "title": "Compliance-Status",
+      "empty": "Keine Compliance-Daten verfügbar"
+    },
+    "insights": {
+      "title": "AI Insights",
+      "desc": "Letzte {{n}} Insights. Tägliche automatische Analyse per Cron verfügbar.",
+      "generate": "Jetzt generieren"
+    },
     "toggles": {
       "require2FA": "Zwei-Faktor-Authentifizierung erzwingen",
       "ipAllowlist": "Anmeldung auf IP-Allowlist beschränken",
@@ -112,6 +139,10 @@
   "qa": {
     "sectionTitle": "QA-Monitor",
     "sectionDesc": "Qualitätsprüfungen und automatisierte Testruns",
+    "title": "QA-Monitor",
+    "desc": "Systemzustand und Zustellung von Benachrichtigungen",
+    "empty": "Noch keine QA-Daten vorhanden",
+    "runFirst": "Erste QA-Suite starten",
     "actions": {
       "runAll": "Alle Tests ausführen",
       "export": "Bericht exportieren"

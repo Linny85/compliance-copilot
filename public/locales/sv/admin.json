@@ -56,7 +56,8 @@
       "title": "Ta bort medlem",
       "desc": "Den här användaren förlorar åtkomst till alla resurser.",
       "confirm": "Ta bort",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "error": "Det gick inte att ta bort användaren."
     },
     "disableDialog": {
       "title": "Inaktivera medlem",
@@ -72,11 +73,23 @@
   "subscription": {
     "sectionTitle": "Abonnemang",
     "sectionDesc": "Hantera plan och fakturering",
+    "statusTitle": "Abonnemangsstatus",
+    "currentPlan": "Aktuell plan",
     "plan": "Plan",
     "status": "Status",
     "trial": "Testperiod",
     "trialDaysLeft": "{{count}} dag kvar",
     "trialDaysLeft_plural": "{{count}} dagar kvar",
+    "planTypes": {
+      "trial": "Testperiod",
+      "free": "Gratis",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "trialInfo": {
+      "label": "Testperiod",
+      "remain": "{{days}} dagar kvar"
+    },
     "actions": {
       "upgrade": "Uppgradera",
       "downgrade": "Nedgradera",
@@ -100,6 +113,20 @@
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Tvinga igenom policys och standardinställningar",
+    "operations": {
+      "title": "Drift",
+      "empty": "Inga data ännu. Fylls efter schemalagd uppdatering.",
+      "sendDigest": "Skicka ops-sammanställning"
+    },
+    "status": {
+      "title": "Efterlevnadsstatus",
+      "empty": "Inga efterlevnadsdata tillgängliga"
+    },
+    "insights": {
+      "title": "AI-insikter",
+      "desc": "Senaste {{n}} insikterna. Daglig automatisk analys via cron.",
+      "generate": "Generera nu"
+    },
     "toggles": {
       "require2FA": "Kräv tvåfaktorsautentisering",
       "ipAllowlist": "Begränsa inloggning till IP-tillåtslista",
@@ -112,6 +139,10 @@
   "qa": {
     "sectionTitle": "QA-övervakning",
     "sectionDesc": "Kvalitetskontroller och automatiska testrundor",
+    "title": "QA-monitor",
+    "desc": "Systemhälsa och leverans av aviseringar",
+    "empty": "Inga QA-data tillgängliga ännu",
+    "runFirst": "Kör första QA-sviten",
     "actions": {
       "runAll": "Kör alla tester",
       "export": "Exportera rapport"

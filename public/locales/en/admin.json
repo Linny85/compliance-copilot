@@ -56,7 +56,8 @@
       "title": "Remove member",
       "desc": "This user will lose access to all resources.",
       "confirm": "Remove",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "error": "Failed to remove user."
     },
     "disableDialog": {
       "title": "Disable member",
@@ -72,11 +73,23 @@
   "subscription": {
     "sectionTitle": "Subscription",
     "sectionDesc": "Manage your plan and billing",
+    "statusTitle": "Subscription Status",
+    "currentPlan": "Current Plan",
     "plan": "Plan",
     "status": "Status",
     "trial": "Trial",
     "trialDaysLeft": "{{count}} day left",
     "trialDaysLeft_plural": "{{count}} days left",
+    "planTypes": {
+      "trial": "Trial",
+      "free": "Free",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "trialInfo": {
+      "label": "Trial Period",
+      "remain": "{{days}} days remaining"
+    },
     "actions": {
       "upgrade": "Upgrade",
       "downgrade": "Downgrade",
@@ -100,6 +113,20 @@
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Enforce policies and default settings",
+    "operations": {
+      "title": "Operations",
+      "empty": "No data yet. This will populate after the scheduled refresh.",
+      "sendDigest": "Send Ops Digest"
+    },
+    "status": {
+      "title": "Compliance Status",
+      "empty": "No compliance data available"
+    },
+    "insights": {
+      "title": "AI Insights",
+      "desc": "Last {{n}} insights. Daily automated analysis available via cron.",
+      "generate": "Generate Now"
+    },
     "toggles": {
       "require2FA": "Require two-factor authentication",
       "ipAllowlist": "Restrict login to IP allowlist",
@@ -112,6 +139,10 @@
   "qa": {
     "sectionTitle": "QA Monitor",
     "sectionDesc": "Quality checks and automated test runs",
+    "title": "QA Monitor",
+    "desc": "System health and notification delivery status",
+    "empty": "No QA data available yet",
+    "runFirst": "Run First QA Suite",
     "actions": {
       "runAll": "Run all tests",
       "export": "Export report"

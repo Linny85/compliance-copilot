@@ -118,11 +118,11 @@ const Admin = () => {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(t('admin:users.inviteDialog.error'));
       return;
     }
 
-    toast.success("User invited successfully");
+    toast.success(t('admin:users.inviteDialog.success'));
     setInviteDialogOpen(false);
     setInviteForm({ email: "", role: "member", masterCode: "" });
     loadData();
@@ -139,11 +139,11 @@ const Admin = () => {
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(t('admin:users.removeDialog.error'));
       return;
     }
 
-    toast.success("User removed successfully");
+    toast.success(t('admin:users.removeToast'));
     setRemoveDialogOpen(false);
     setRemoveForm({ masterCode: "" });
     setSelectedUser(null);
@@ -185,33 +185,33 @@ const Admin = () => {
             <TabsTrigger value="subscription">{t('admin:tabs.subscription')}</TabsTrigger>
             <TabsTrigger value="compliance">{t('admin:tabs.compliance')}</TabsTrigger>
             <TabsTrigger value="qa-monitor">{t('admin:tabs.qa')}</TabsTrigger>
-            <TabsTrigger value="graph">{t('admin:tabs.graph')}</TabsTrigger>
+            <TabsTrigger value="graph">{t('admin:tabs.knowledge')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle>{t('admin:team.heading')}</CardTitle>
-                  <CardDescription>{t('admin:team.description')}</CardDescription>
+                  <CardTitle>{t('admin:users.sectionTitle')}</CardTitle>
+                  <CardDescription>{t('admin:users.sectionDesc')}</CardDescription>
                 </div>
                 <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                   <DialogTrigger asChild>
                     <Button>
                       <Plus className="h-4 w-4 mr-2" />
-                      {t('admin:team.invite')}
+                      {t('admin:users.invite')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Invite User</DialogTitle>
+                      <DialogTitle>{t('admin:users.inviteDialog.title')}</DialogTitle>
                       <DialogDescription>
-                        Add a new team member to your organization
+                        {t('admin:users.inviteDialog.desc')}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div className="space-y-2">
-                        <Label htmlFor="invite-email">Email</Label>
+                        <Label htmlFor="invite-email">{t('admin:users.inviteDialog.email')}</Label>
                         <Input
                           id="invite-email"
                           type="email"
@@ -222,7 +222,7 @@ const Admin = () => {
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="invite-role">Role</Label>
+                        <Label htmlFor="invite-role">{t('admin:users.inviteDialog.role')}</Label>
                         <Select
                           value={inviteForm.role}
                           onValueChange={(value) => setInviteForm({ ...inviteForm, role: value })}
@@ -231,30 +231,30 @@ const Admin = () => {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="member">Member</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                            <SelectItem value="master_admin">Master Admin</SelectItem>
+                            <SelectItem value="member">{t('admin:users.roles.member')}</SelectItem>
+                            <SelectItem value="admin">{t('admin:users.roles.admin')}</SelectItem>
+                            <SelectItem value="master_admin">{t('common:masterAdmin')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="master-code">Master Code</Label>
+                        <Label htmlFor="master-code">{t('common:masterCode')}</Label>
                         <Input
                           id="master-code"
                           type="password"
                           value={inviteForm.masterCode}
                           onChange={(e) => setInviteForm({ ...inviteForm, masterCode: e.target.value })}
-                          placeholder="Enter master code"
+                          placeholder={t('common:enterMasterCode')}
                         />
                       </div>
                     </div>
                     <DialogFooter>
                       <Button variant="outline" onClick={() => setInviteDialogOpen(false)}>
-                        Cancel
+                        {t('admin:users.removeDialog.cancel')}
                       </Button>
                       <Button onClick={handleInviteUser} disabled={!inviteForm.email || !inviteForm.masterCode}>
-                        Send Invite
+                        {t('admin:users.inviteDialog.send')}
                       </Button>
                     </DialogFooter>
                   </DialogContent>
@@ -296,15 +296,17 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
-                  Subscription Status
+                  {t('admin:subscription.statusTitle')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
-                    <p className="font-semibold">Current Plan</p>
+                    <p className="font-semibold">{t('admin:subscription.currentPlan')}</p>
                     <p className="text-sm text-muted-foreground">
-                      {subscription?.status === 'trial' ? 'Free Trial' : subscription?.status}
+                      {subscription?.status === 'trial' 
+                        ? t('admin:subscription.planTypes.trial')
+                        : subscription?.status}
                     </p>
                   </div>
                   <Badge variant={subscription?.status === 'trial' ? 'default' : 'outline'}>
@@ -317,13 +319,13 @@ const Admin = () => {
                     <div>
                       <p className="font-semibold flex items-center gap-2">
                         <Clock className="h-4 w-4" />
-                        Trial Period
+                        {t('admin:subscription.trialInfo.label')}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {calculateTrialDaysLeft()} days remaining
+                        {t('admin:subscription.trialInfo.remain', { days: calculateTrialDaysLeft() })}
                       </p>
                     </div>
-                    <Button>Upgrade Plan</Button>
+                    <Button>{t('admin:subscription.actions.upgrade')}</Button>
                   </div>
                 )}
               </CardContent>
@@ -353,33 +355,33 @@ const Admin = () => {
         <Dialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Remove User</DialogTitle>
+              <DialogTitle>{t('admin:users.removeDialog.title')}</DialogTitle>
               <DialogDescription>
-                This action requires your Master Code for security
+                {t('admin:users.removeDialog.desc')}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="remove-master-code">Master Code</Label>
+                <Label htmlFor="remove-master-code">{t('common:masterCode')}</Label>
                 <Input
                   id="remove-master-code"
                   type="password"
                   value={removeForm.masterCode}
                   onChange={(e) => setRemoveForm({ masterCode: e.target.value })}
-                  placeholder="Enter master code"
+                  placeholder={t('common:enterMasterCode')}
                 />
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setRemoveDialogOpen(false)}>
-                Cancel
+                {t('admin:users.removeDialog.cancel')}
               </Button>
               <Button
                 variant="destructive"
                 onClick={handleRemoveUser}
                 disabled={!removeForm.masterCode}
               >
-                Remove User
+                {t('admin:users.removeDialog.confirm')}
               </Button>
             </DialogFooter>
           </DialogContent>
