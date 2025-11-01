@@ -48,5 +48,69 @@
   },
   "help": {
     "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
+  },
+  "pages": {
+    "/controls": "Åtgärder",
+    "/controls-mapping": "Åtgärder-mappning",
+    "/incidents": "Incidenter",
+    "/incidents/new": "Rapportera incident",
+    "/audits": "Revisioner",
+    "/audits/new": "Ny revision",
+    "/training": "Utbildning",
+    "/registry": "NIS2-register",
+    "/nis2": "NIS2-efterlevnad",
+    "/ai-act": "AI-lagen",
+    "/ai-systems/new": "Registrera AI-system",
+    "/dpia": "DPIA",
+    "/evidence": "Bevis",
+    "/checks": "Kontroller",
+    "/scope": "Omfattning",
+    "/scope-analysis": "Scope-analys",
+    "/documents": "Dokument",
+    "/documents/new": "Nytt dokument",
+    "/dashboard": "Översikt",
+    "/billing": "Fakturering",
+    "/organization": "Organisation",
+    "/company-profile": "Företagsprofil",
+    "/admin": "Administration"
+  },
+  "context": {
+    "intro": "Hej! Du är i avsnittet {{page}} i NIS2-AI-Guard.",
+    "controls_help": "Här kan du planera, genomföra och bevisa dina säkerhets- och efterlevnadsåtgärder.",
+    "incidents_help": "Här kan du rapportera, följa och dokumentera säkerhetsincidenter.",
+    "audits_help": "Här planerar och hanterar du dina efterlevnadsrevisioner.",
+    "training_help": "Här hanterar du utbildningar och certifikat för ditt team.",
+    "nis2_help": "Här ser du statusen för din NIS2-efterlevnad.",
+    "aiact_help": "Här hanterar du efterlevnad av EU:s AI-lag.",
+    "dpia_help": "Här skapar och hanterar du konsekvensbedömningar för dataskydd.",
+    "evidence_help": "Här samlar och hanterar du efterlevnadsbevis.",
+    "documents_help": "Här skapar och hanterar du policyer och dokument."
+  },
+  "actions": {
+    "controls": {
+      "new": "Skapa ny åtgärd",
+      "due": "Kontrollera förfallodatum",
+      "evidence": "Länka bevis"
+    },
+    "incidents": {
+      "new": "Rapportera ny incident",
+      "status": "Kontrollera status",
+      "policy": "Visa rapporteringsförfarande"
+    },
+    "audits": {
+      "plan": "Planera revision",
+      "upload": "Ladda upp revisionsbevis",
+      "report": "Skapa rapport"
+    },
+    "training": {
+      "assign": "Tilldela utbildning",
+      "progress": "Visa framsteg",
+      "cert": "Kontrollera certifikat"
+    },
+    "documents": {
+      "new": "Skapa nytt dokument",
+      "template": "Använd mall",
+      "review": "Granska dokument"
+    }
   }
 }

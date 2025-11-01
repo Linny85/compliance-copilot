@@ -48,5 +48,69 @@
   },
   "help": {
     "whyAccess": "Your access runs through your subscription. By signing in, I activate your license and can assign documents & evidence directly to your organization – securely and GDPR-compliant."
+  },
+  "pages": {
+    "/controls": "Controls",
+    "/controls-mapping": "Controls Mapping",
+    "/incidents": "Incidents",
+    "/incidents/new": "Report Incident",
+    "/audits": "Audits",
+    "/audits/new": "New Audit",
+    "/training": "Training",
+    "/registry": "NIS2 Registry",
+    "/nis2": "NIS2 Compliance",
+    "/ai-act": "AI Act",
+    "/ai-systems/new": "Register AI System",
+    "/dpia": "DPIA",
+    "/evidence": "Evidence",
+    "/checks": "Checks",
+    "/scope": "Scope",
+    "/scope-analysis": "Scope Analysis",
+    "/documents": "Documents",
+    "/documents/new": "New Document",
+    "/dashboard": "Dashboard",
+    "/billing": "Billing",
+    "/organization": "Organization",
+    "/company-profile": "Company Profile",
+    "/admin": "Administration"
+  },
+  "context": {
+    "intro": "Hi! You are in the {{page}} section of NIS2-AI-Guard.",
+    "controls_help": "Here you can plan, implement and evidence your security and compliance controls.",
+    "incidents_help": "Here you can report, track and document security incidents.",
+    "audits_help": "Here you plan and manage your compliance audits.",
+    "training_help": "Here you manage training and certificates for your team.",
+    "nis2_help": "Here you see the status of your NIS2 compliance.",
+    "aiact_help": "Here you manage compliance with the EU AI Act.",
+    "dpia_help": "Here you create and manage Data Protection Impact Assessments.",
+    "evidence_help": "Here you collect and manage compliance evidence.",
+    "documents_help": "Here you create and manage policies and documents."
+  },
+  "actions": {
+    "controls": {
+      "new": "Create new control",
+      "due": "Check due dates",
+      "evidence": "Link evidence"
+    },
+    "incidents": {
+      "new": "Report new incident",
+      "status": "Check status",
+      "policy": "View reporting procedure"
+    },
+    "audits": {
+      "plan": "Plan audit",
+      "upload": "Upload audit evidence",
+      "report": "Create report"
+    },
+    "training": {
+      "assign": "Assign training",
+      "progress": "Show progress",
+      "cert": "Check certificates"
+    },
+    "documents": {
+      "new": "Create new document",
+      "template": "Use template",
+      "review": "Review documents"
+    }
   }
 }

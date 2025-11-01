@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -25,6 +26,7 @@ export function NorrlandGuideDrawer({
   setOpen: (v: boolean) => void 
 }) {
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
+  const location = useLocation();
   
   if (!ready && open) return null;
 
@@ -44,8 +46,58 @@ export function NorrlandGuideDrawer({
   const [disc, setDisc] = useState("");
   const [ttsOn, setTtsOn] = useState(false);
   const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
+  const [contextActions, setContextActions] = useState<string[]>([]);
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Get page display name from DOM or i18n
+  const getPageDisplayName = useCallback(() => {
+    // Try to get from DOM first
+    const h1 = document.querySelector('main h1, [data-page-title], h1');
+    const fromDom = h1?.textContent?.trim();
+    if (fromDom) return fromDom;
+    
+    // Fallback to i18n mapping
+    const path = location.pathname;
+    return t(`norrly:pages.${path}`, { defaultValue: path });
+  }, [location.pathname, t]);
+
+  // Get context-specific help text
+  const getContextHelp = useCallback(() => {
+    const path = location.pathname;
+    if (path.startsWith('/controls')) return t('norrly:context.controls_help');
+    if (path.startsWith('/incidents')) return t('norrly:context.incidents_help');
+    if (path.startsWith('/audits')) return t('norrly:context.audits_help');
+    if (path.startsWith('/training')) return t('norrly:context.training_help');
+    if (path.startsWith('/nis2')) return t('norrly:context.nis2_help');
+    if (path.startsWith('/ai-act') || path.startsWith('/ai-systems')) return t('norrly:context.aiact_help');
+    if (path.startsWith('/dpia')) return t('norrly:context.dpia_help');
+    if (path.startsWith('/evidence')) return t('norrly:context.evidence_help');
+    if (path.startsWith('/documents')) return t('norrly:context.documents_help');
+    return null;
+  }, [location.pathname, t]);
+
+  // Get context-specific quick actions
+  const getContextActions = useCallback(() => {
+    const path = location.pathname;
+    let actionsKey = '';
+    
+    if (path.startsWith('/controls')) actionsKey = 'controls';
+    else if (path.startsWith('/incidents')) actionsKey = 'incidents';
+    else if (path.startsWith('/audits')) actionsKey = 'audits';
+    else if (path.startsWith('/training')) actionsKey = 'training';
+    else if (path.startsWith('/documents')) actionsKey = 'documents';
+    
+    if (!actionsKey) return [];
+    
+    const actions = t(`norrly:actions.${actionsKey}`, { returnObjects: true });
+    return typeof actions === 'object' ? Object.values(actions) : [];
+  }, [location.pathname, t]);
+
+  // Update context actions when route changes
+  useEffect(() => {
+    setContextActions(getContextActions());
+  }, [getContextActions]);
 
   // Translations - only access after ready
   const name = ready ? t("assistant:name") : "";
@@ -53,6 +105,11 @@ export function NorrlandGuideDrawer({
   const greetingHeadline = ready ? t("norrly:intro.headline") : "";
   const greetingText = ready ? t("norrly:intro.text") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
+  
+  // Context-aware intro
+  const pageName = getPageDisplayName();
+  const contextIntro = ready ? t("norrly:context.intro", { page: pageName }) : "";
+  const contextHelp = getContextHelp();
   
   const quickCtas = ready ? [
     { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
@@ -365,7 +422,38 @@ export function NorrlandGuideDrawer({
                 <h3 className="text-base font-semibold text-foreground">{greetingHeadline}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{greetingText}</p>
               </div>
-              {quickCtas.length > 0 && (
+              
+              {/* Context-aware intro */}
+              <div className="mt-4 pt-4 border-t border-border space-y-2">
+                <p className="text-xs text-muted-foreground">{contextIntro}</p>
+                {contextHelp && (
+                  <p className="text-xs text-muted-foreground">{contextHelp}</p>
+                )}
+              </div>
+              
+              {/* Context-specific quick actions */}
+              {contextActions.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
+                  <div className="flex flex-col gap-2">
+                    {contextActions.map((action, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => {
+                          setQ(action);
+                          setTimeout(() => ask(), 50);
+                        }}
+                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
+                      >
+                        {action}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Fallback to global quick actions if no context actions */}
+              {contextActions.length === 0 && quickCtas.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                   <div className="flex flex-col gap-2">

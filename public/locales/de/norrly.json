@@ -48,5 +48,69 @@
   },
   "help": {
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
+  },
+  "pages": {
+    "/controls": "Maßnahmen",
+    "/controls-mapping": "Maßnahmen-Mapping",
+    "/incidents": "Vorfälle",
+    "/incidents/new": "Vorfall melden",
+    "/audits": "Audits",
+    "/audits/new": "Neues Audit",
+    "/training": "Training",
+    "/registry": "NIS2-Register",
+    "/nis2": "NIS2-Compliance",
+    "/ai-act": "AI Act",
+    "/ai-systems/new": "KI-System registrieren",
+    "/dpia": "DPIA",
+    "/evidence": "Nachweise",
+    "/checks": "Prüfungen",
+    "/scope": "Geltungsbereich",
+    "/scope-analysis": "Scope-Analyse",
+    "/documents": "Dokumente",
+    "/documents/new": "Neues Dokument",
+    "/dashboard": "Dashboard",
+    "/billing": "Abrechnung",
+    "/organization": "Organisation",
+    "/company-profile": "Firmenprofil",
+    "/admin": "Administration"
+  },
+  "context": {
+    "intro": "Hallo! Du bist hier im Bereich {{page}} im NIS2-AI-Guard.",
+    "controls_help": "Hier kannst du Sicherheits- und Compliance-Maßnahmen planen, umsetzen und nachweisen.",
+    "incidents_help": "Hier kannst du Sicherheitsvorfälle melden, verfolgen und dokumentieren.",
+    "audits_help": "Hier planst und verwaltest du deine Compliance-Audits.",
+    "training_help": "Hier verwaltest du Schulungen und Zertifikate für dein Team.",
+    "nis2_help": "Hier siehst du den Status deiner NIS2-Compliance.",
+    "aiact_help": "Hier verwaltest du die Compliance mit dem EU AI Act.",
+    "dpia_help": "Hier erstellst und verwaltest du Datenschutz-Folgenabschätzungen.",
+    "evidence_help": "Hier sammelst und verwaltest du Compliance-Nachweise.",
+    "documents_help": "Hier erstellst und verwaltest du Richtlinien und Dokumente."
+  },
+  "actions": {
+    "controls": {
+      "new": "Neue Maßnahme anlegen",
+      "due": "Fälligkeiten prüfen",
+      "evidence": "Nachweise verknüpfen"
+    },
+    "incidents": {
+      "new": "Neuen Vorfall melden",
+      "status": "Status prüfen",
+      "policy": "Meldeverfahren ansehen"
+    },
+    "audits": {
+      "plan": "Audit planen",
+      "upload": "Auditnachweise hochladen",
+      "report": "Bericht erstellen"
+    },
+    "training": {
+      "assign": "Training zuweisen",
+      "progress": "Fortschritt anzeigen",
+      "cert": "Zertifikate prüfen"
+    },
+    "documents": {
+      "new": "Neues Dokument erstellen",
+      "template": "Vorlage verwenden",
+      "review": "Dokumente überprüfen"
+    }
   }
 }
