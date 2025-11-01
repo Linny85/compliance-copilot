@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -26,7 +25,9 @@ export function NorrlandGuideDrawer({
   setOpen: (v: boolean) => void 
 }) {
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
-  const location = useLocation();
+  
+  // Get current path without using useLocation (works outside Router context)
+  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
   
   if (!ready && open) return null;
 
@@ -58,41 +59,38 @@ export function NorrlandGuideDrawer({
     if (fromDom) return fromDom;
     
     // Fallback to i18n mapping
-    const path = location.pathname;
-    return t(`norrly:pages.${path}`, { defaultValue: path });
-  }, [location.pathname, t]);
+    return t(`norrly:pages.${currentPath}`, { defaultValue: currentPath });
+  }, [currentPath, t]);
 
   // Get context-specific help text
   const getContextHelp = useCallback(() => {
-    const path = location.pathname;
-    if (path.startsWith('/controls')) return t('norrly:context.controls_help');
-    if (path.startsWith('/incidents')) return t('norrly:context.incidents_help');
-    if (path.startsWith('/audits')) return t('norrly:context.audits_help');
-    if (path.startsWith('/training')) return t('norrly:context.training_help');
-    if (path.startsWith('/nis2')) return t('norrly:context.nis2_help');
-    if (path.startsWith('/ai-act') || path.startsWith('/ai-systems')) return t('norrly:context.aiact_help');
-    if (path.startsWith('/dpia')) return t('norrly:context.dpia_help');
-    if (path.startsWith('/evidence')) return t('norrly:context.evidence_help');
-    if (path.startsWith('/documents')) return t('norrly:context.documents_help');
+    if (currentPath.startsWith('/controls')) return t('norrly:context.controls_help');
+    if (currentPath.startsWith('/incidents')) return t('norrly:context.incidents_help');
+    if (currentPath.startsWith('/audits')) return t('norrly:context.audits_help');
+    if (currentPath.startsWith('/training')) return t('norrly:context.training_help');
+    if (currentPath.startsWith('/nis2')) return t('norrly:context.nis2_help');
+    if (currentPath.startsWith('/ai-act') || currentPath.startsWith('/ai-systems')) return t('norrly:context.aiact_help');
+    if (currentPath.startsWith('/dpia')) return t('norrly:context.dpia_help');
+    if (currentPath.startsWith('/evidence')) return t('norrly:context.evidence_help');
+    if (currentPath.startsWith('/documents')) return t('norrly:context.documents_help');
     return null;
-  }, [location.pathname, t]);
+  }, [currentPath, t]);
 
   // Get context-specific quick actions
   const getContextActions = useCallback(() => {
-    const path = location.pathname;
     let actionsKey = '';
     
-    if (path.startsWith('/controls')) actionsKey = 'controls';
-    else if (path.startsWith('/incidents')) actionsKey = 'incidents';
-    else if (path.startsWith('/audits')) actionsKey = 'audits';
-    else if (path.startsWith('/training')) actionsKey = 'training';
-    else if (path.startsWith('/documents')) actionsKey = 'documents';
+    if (currentPath.startsWith('/controls')) actionsKey = 'controls';
+    else if (currentPath.startsWith('/incidents')) actionsKey = 'incidents';
+    else if (currentPath.startsWith('/audits')) actionsKey = 'audits';
+    else if (currentPath.startsWith('/training')) actionsKey = 'training';
+    else if (currentPath.startsWith('/documents')) actionsKey = 'documents';
     
     if (!actionsKey) return [];
     
     const actions = t(`norrly:actions.${actionsKey}`, { returnObjects: true });
     return typeof actions === 'object' ? Object.values(actions) : [];
-  }, [location.pathname, t]);
+  }, [currentPath, t]);
 
   // Update context actions when route changes
   useEffect(() => {
