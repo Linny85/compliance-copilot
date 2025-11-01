@@ -42,5 +42,12 @@
   },
   "help": {
     "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
+  },
+  "actions": {
+    "controls": {
+      "new": "Skapa ny åtgärd",
+      "due": "Kontrollera förfallodatum",
+      "evidence": "Länka bevis"
+    }
   }
 }

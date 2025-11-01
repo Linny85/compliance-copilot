@@ -42,5 +42,12 @@
   },
   "help": {
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
+  },
+  "actions": {
+    "controls": {
+      "new": "Neue Maßnahme anlegen",
+      "due": "Fälligkeiten prüfen",
+      "evidence": "Nachweise verknüpfen"
+    }
   }
 }

@@ -2,20 +2,20 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
+const BUILD_ID = import.meta.env?.VITE_BUILD_ID ?? '20251101';
 
 i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'de',
+    fallbackLng: ['de'],
     debug: import.meta.env.DEV,
-    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
-    defaultNS: 'common',
+    ns: ['norrly', 'common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
+    defaultNS: 'norrly',
     preload: ['de', 'en', 'sv'],
-    load: 'currentOnly',
+    load: 'languageOnly',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${BUILD_ID}`,
       allowMultiLoading: false,
       crossDomain: false
     },

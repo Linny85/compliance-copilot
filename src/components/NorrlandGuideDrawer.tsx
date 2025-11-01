@@ -24,9 +24,9 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
+  const { t, i18n, ready } = useTranslation('norrly', { useSuspense: false });
   
-  if (!ready && open) return null;
+  if (!ready) return null;
 
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
   
@@ -43,33 +43,65 @@ export function NorrlandGuideDrawer({
   const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
   const [disc, setDisc] = useState("");
   const [ttsOn, setTtsOn] = useState(false);
-  const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // Translations - only access after ready
-  const name = ready ? t("assistant:name") : "";
-  const tagline = ready ? t("norrly:header.subtitle") : "";
-  const greetingHeadline = ready ? t("norrly:intro.headline") : "";
-  const greetingText = ready ? t("norrly:intro.text") : "";
-  const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
+  // Translations
+  const name = t("cta.name", "Norrly");
+  const tagline = t("header.subtitle");
+  const greetingHeadline = t("intro.headline");
+  const greetingText = t("intro.text");
   
-  const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
-    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
-    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
-    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
-  ] : [];
-  
-  const labels = ready ? {
-    open: t("norrly:input.open"),
-    cancel: t("norrly:input.cancel"),
-    loading: t("norrly:input.loading"),
-    speak_on: t("norrly:voice.on"),
-    speak_off: t("norrly:voice.off"),
-    reset: t("norrly:session.reset")
-  } : { open: "", cancel: "", loading: "", speak_on: "", speak_off: "", reset: "" };
+  const labels = {
+    open: t("input.open"),
+    cancel: t("input.cancel"),
+    loading: t("input.loading"),
+    speak_on: t("voice.on"),
+    speak_off: t("voice.off"),
+    reset: t("session.reset")
+  };
+
+  // Navigation handler
+  type ChatAction = { path: string; label: string; highlight?: string; confidence?: number };
+
+  async function handleNavigation(action: ChatAction) {
+    try {
+      navigateGlobal(action.path);
+      // optional: Element hervorheben
+      if (action.highlight) {
+        setTimeout(() => {
+          const el = document.querySelector(action.highlight!);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+      setMessages(prev => [...prev, { role: 'assistant', content: `Navigiere zu ${action.label}` }]);
+      setOpen(false);
+    } catch (e) {
+      console.error('[norrly] nav error', e);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Navigation fehlgeschlagen.' }]);
+    }
+  }
+
+  // Quickstart actions
+  const quickStart = [
+    { label: t('cta.incident'),  path: '/incidents/new' },
+    { label: t('cta.register'),  path: '/registry' },
+    { label: t('cta.roles'),     path: '/governance/roles' },
+    { label: t('cta.audit'),     path: '/audits' },
+    { label: t('cta.training'),  path: '/training' }
+  ];
+
+  const contextActions = (() => {
+    const p = typeof window !== 'undefined' ? window.location.pathname : '/';
+    if (p.startsWith('/controls')) {
+      return [
+        { label: t('actions.controls.new'),      path: '/controls/new' },
+        { label: t('actions.controls.due'),      path: '/controls?due=today' },
+        { label: t('actions.controls.evidence'), path: '/evidence?scope=controls' }
+      ];
+    }
+    return [];
+  })();
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
@@ -121,11 +153,6 @@ export function NorrlandGuideDrawer({
     const currentQuestion = q.trim();
     setQ(""); // Clear input immediately
     setLoading(true);
-    
-    // Check for intents locally
-    const lang3 = (i18n.language?.slice(0,2) ?? 'de') as 'de'|'en'|'sv';
-    const suggested = detectIntents(currentQuestion, lang3);
-    if (suggested[0]) setPendingAction(suggested[0]);
     
     try {
       // Normalize language to valid options
@@ -300,34 +327,24 @@ export function NorrlandGuideDrawer({
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
             <div className="space-y-4">
-              {intro && (
-                <div className="bg-muted/50 text-foreground px-4 py-3 rounded-lg text-sm leading-relaxed border border-border">
-                  {intro}
-                </div>
-              )}
               <div className="space-y-2">
                 <h3 className="text-base font-semibold text-foreground">{greetingHeadline}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{greetingText}</p>
               </div>
-              {quickCtas.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
-                  <div className="flex flex-col gap-2">
-                    {quickCtas.map((cta) => (
-                      <button
-                        key={cta.id}
-                        onClick={() => {
-                          setQ(cta.payload);
-                          setTimeout(() => ask(), 50);
-                        }}
-                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
-                      >
-                        {cta.label}
-                      </button>
-                    ))}
-                  </div>
+              <div className="space-y-2">
+                <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
+                <div className="flex flex-col gap-2">
+                  {[...quickStart, ...contextActions].map((a) => (
+                    <button
+                      key={`${a.label}-${a.path}`}
+                      onClick={() => handleNavigation({ path: a.path, label: a.label, confidence: 0.99 })}
+                      className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
+                    >
+                      {a.label}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           ) : (
             messages.map((msg, i) => (
@@ -415,7 +432,7 @@ export function NorrlandGuideDrawer({
                 }
               }}
               className="w-full h-20 rounded border border-border bg-background text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              placeholder={t("norrly:input.placeholder")}
+              placeholder={t("input.placeholder")}
               disabled={loading}
             />
             <div className="flex gap-2">
@@ -439,55 +456,6 @@ export function NorrlandGuideDrawer({
             </div>
           </div>
         </div>
-
-        {/* Navigation Confirmation */}
-        {pendingAction && pendingAction.type === 'NAVIGATE' && (
-          <div className="fixed bottom-4 right-4 z-50 rounded-xl border border-border bg-background/95 backdrop-blur p-3 shadow-lg max-w-sm">
-            <div className="mb-2 text-sm text-foreground">
-              {labels.open}: <code className="text-xs bg-muted px-1 py-0.5 rounded">{pendingAction.path}</code>?
-            </div>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                onClick={() => {
-                  // RBAC prüfen
-                  if (!canAccess(pendingAction.path, user)) {
-                    console.warn('No permission for', pendingAction.path);
-                    audit('chat.intent_denied', { path: pendingAction.path });
-                    setPendingAction(null);
-                    return;
-                  }
-                  
-                  // Audit loggen (erfolgreiche Ausführung)
-                  audit('chat.intent_confirmed', { path: pendingAction.path });
-                  
-                  navigateGlobal(pendingAction.path, false);
-                  // Optional highlight
-                  setTimeout(() => {
-                    if (pendingAction.highlight) {
-                      const el = document.querySelector(pendingAction.highlight);
-                      el?.classList.add('ring-2','ring-primary');
-                      setTimeout(() => {
-                        el?.classList.remove('ring-2','ring-primary');
-                      }, 3000);
-                    }
-                  }, 60);
-                  setPendingAction(null);
-                  setOpen(false);
-                }}
-              >
-                {labels.open}
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setPendingAction(null)}
-              >
-                {labels.cancel}
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
