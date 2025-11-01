@@ -9,5 +9,8 @@
   },
   "token": {
     "stale": "Din session har löpt ut eftersom huvudlösenordet roterades. Vänligen verifiera igen."
+  },
+  "help": {
+    "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
   }
 }

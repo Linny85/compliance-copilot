@@ -1,8 +1,8 @@
 {
-  "intro": "Välkommen tillbaka!",
+  "intro": "Hej, jag är NORRLY. Jag hjälper dig hantera efterlevnad snabbt & stressfritt.",
   "cta": {
-    "verify": "Kontrollera åtkomst",
-    "whyAccess": "Hur fungerar min åtkomst?",
+    "verify": "Verifiera",
+    "whyAccess": "Varför behöver jag logga in?",
     "createDoc": "Skapa nytt dokument",
     "name": "Namn"
   },
@@ -28,5 +28,8 @@
       "generic": "Jag kan inte svara på denna förfrågan av säkerhetsskäl. Kan jag hjälpa dig på annat sätt?"
     },
     "rateLimit": "För många blockerade förfrågningar. Vänta 2 minuter och försök igen."
+  },
+  "help": {
+    "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
   }
 }

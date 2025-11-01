@@ -9,5 +9,8 @@
   },
   "token": {
     "stale": "Deine Sitzung ist abgelaufen, weil das Master-Passwort rotiert wurde. Bitte neu verifizieren."
+  },
+  "help": {
+    "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
   }
 }

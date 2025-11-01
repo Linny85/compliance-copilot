@@ -1,8 +1,8 @@
 {
-  "intro": "Willkommen zurück!",
+  "intro": "Hi, ich bin NORRLY. Ich helfe dir, Compliance schnell & stressfrei zu erledigen.",
   "cta": {
-    "verify": "Zugang prüfen",
-    "whyAccess": "Wie funktioniert mein Zugang?",
+    "verify": "Verifizieren",
+    "whyAccess": "Warum ist ein Login nötig?",
     "createDoc": "Neues Dokument erstellen",
     "name": "Name"
   },
@@ -28,5 +28,8 @@
       "generic": "Diese Anfrage kann ich aus Sicherheitsgründen nicht beantworten. Kann ich dir auf andere Weise helfen?"
     },
     "rateLimit": "Zu viele blockierte Anfragen. Bitte warte 2 Minuten und versuche es erneut."
+  },
+  "help": {
+    "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
   }
 }
