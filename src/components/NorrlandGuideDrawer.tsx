@@ -24,7 +24,7 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
+  const { t, i18n, ready } = useTranslation("norrly", { useSuspense: false });
   
   // Get current path without using useLocation (works outside Router context)
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
@@ -59,20 +59,20 @@ export function NorrlandGuideDrawer({
     if (fromDom) return fromDom;
     
     // Fallback to i18n mapping
-    return t(`norrly:pages.${currentPath}`, { defaultValue: currentPath });
+    return t(`pages.${currentPath}`, { defaultValue: currentPath });
   }, [currentPath, t]);
 
   // Get context-specific help text
   const getContextHelp = useCallback(() => {
-    if (currentPath.startsWith('/controls')) return t('norrly:context.controls_help');
-    if (currentPath.startsWith('/incidents')) return t('norrly:context.incidents_help');
-    if (currentPath.startsWith('/audits')) return t('norrly:context.audits_help');
-    if (currentPath.startsWith('/training')) return t('norrly:context.training_help');
-    if (currentPath.startsWith('/nis2')) return t('norrly:context.nis2_help');
-    if (currentPath.startsWith('/ai-act') || currentPath.startsWith('/ai-systems')) return t('norrly:context.aiact_help');
-    if (currentPath.startsWith('/dpia')) return t('norrly:context.dpia_help');
-    if (currentPath.startsWith('/evidence')) return t('norrly:context.evidence_help');
-    if (currentPath.startsWith('/documents')) return t('norrly:context.documents_help');
+    if (currentPath.startsWith('/controls')) return t('context.controls_help');
+    if (currentPath.startsWith('/incidents')) return t('context.incidents_help');
+    if (currentPath.startsWith('/audits')) return t('context.audits_help');
+    if (currentPath.startsWith('/training')) return t('context.training_help');
+    if (currentPath.startsWith('/nis2')) return t('context.nis2_help');
+    if (currentPath.startsWith('/ai-act') || currentPath.startsWith('/ai-systems')) return t('context.aiact_help');
+    if (currentPath.startsWith('/dpia')) return t('context.dpia_help');
+    if (currentPath.startsWith('/evidence')) return t('context.evidence_help');
+    if (currentPath.startsWith('/documents')) return t('context.documents_help');
     return null;
   }, [currentPath, t]);
 
@@ -88,7 +88,7 @@ export function NorrlandGuideDrawer({
     
     if (!actionsKey) return [];
     
-    const actions = t(`norrly:actions.${actionsKey}`, { returnObjects: true });
+    const actions = t(`actions.${actionsKey}`, { returnObjects: true });
     return typeof actions === 'object' ? Object.values(actions) : [];
   }, [currentPath, t]);
 
@@ -99,31 +99,31 @@ export function NorrlandGuideDrawer({
 
   // Translations - only access after ready
   const name = ready ? t("assistant:name") : "";
-  const tagline = ready ? t("norrly:header.subtitle") : "";
-  const greetingHeadline = ready ? t("norrly:intro.headline") : "";
-  const greetingText = ready ? t("norrly:intro.text") : "";
+  const tagline = ready ? t("header.subtitle") : "";
+  const greetingHeadline = ready ? t("intro.headline") : "";
+  const greetingText = ready ? t("intro.text") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   // Context-aware intro
   const pageName = getPageDisplayName();
-  const contextIntro = ready ? t("norrly:context.intro", { page: pageName }) : "";
+  const contextIntro = ready ? t("context.intro", { page: pageName }) : "";
   const contextHelp = getContextHelp();
   
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
-    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
-    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
-    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
+    { id: 'incident', label: t('cta.incident'), payload: t('cta.incident') },
+    { id: 'register', label: t('cta.register'), payload: t('cta.register') },
+    { id: 'roles', label: t('cta.roles'), payload: t('cta.roles') },
+    { id: 'audit', label: t('cta.audit'), payload: t('cta.audit') },
+    { id: 'training', label: t('cta.training'), payload: t('cta.training') }
   ] : [];
   
   const labels = ready ? {
-    open: t("norrly:input.open"),
-    cancel: t("norrly:input.cancel"),
-    loading: t("norrly:input.loading"),
-    speak_on: t("norrly:voice.on"),
-    speak_off: t("norrly:voice.off"),
-    reset: t("norrly:session.reset")
+    open: t("input.open"),
+    cancel: t("input.cancel"),
+    loading: t("input.loading"),
+    speak_on: t("voice.on"),
+    speak_off: t("voice.off"),
+    reset: t("session.reset")
   } : { open: "", cancel: "", loading: "", speak_on: "", speak_off: "", reset: "" };
 
   // User context (Platzhalter bis echter Context genutzt wird)
@@ -178,7 +178,7 @@ export function NorrlandGuideDrawer({
       if (!hasPermission) {
         setMessages(prev => [...prev, {
           role: "assistant",
-          content: t('norrly:nav.denied')
+          content: t('nav.denied')
         }]);
         setPendingAction(null);
         return;
@@ -197,7 +197,7 @@ export function NorrlandGuideDrawer({
       
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: t('norrly:nav.ok', { target: action.label })
+        content: t('nav.ok', { target: action.label })
       }]);
       
       // Close drawer after navigation
@@ -212,7 +212,7 @@ export function NorrlandGuideDrawer({
       console.error('[Navigation error]', err);
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: t('norrly:nav.error')
+        content: t('nav.error')
       }]);
     } finally {
       setPendingAction(null);
@@ -557,7 +557,7 @@ export function NorrlandGuideDrawer({
                 }
               }}
               className="w-full h-20 rounded border border-border bg-background text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              placeholder={t("norrly:input.placeholder")}
+              placeholder={t("input.placeholder")}
               disabled={loading}
             />
             <div className="flex gap-2">
