@@ -110,6 +110,15 @@
     }
   },
 
+  "documents": {
+    "create": "Dokument erstellen",
+    "empty": {
+      "title": "Noch keine Dokumente vorhanden",
+      "desc": "Beginne mit der Erstellung deiner ersten Richtlinie oder deines ersten Berichts.",
+      "cta": "Dokument erstellen",
+      "cancel": "Abbrechen"
+    }
+  },
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Richtlinien und Standardeinstellungen durchsetzen",

@@ -110,6 +110,15 @@
     }
   },
 
+  "documents": {
+    "create": "Skapa dokument",
+    "empty": {
+      "title": "Inga dokument ännu",
+      "desc": "Börja med att skapa din första policy eller rapport.",
+      "cta": "Skapa dokument",
+      "cancel": "Avbryt"
+    }
+  },
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Tvinga igenom policys och standardinställningar",

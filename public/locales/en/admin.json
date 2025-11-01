@@ -110,6 +110,15 @@
     }
   },
 
+  "documents": {
+    "create": "Create document",
+    "empty": {
+      "title": "No documents yet",
+      "desc": "Start by creating your first policy or report.",
+      "cta": "Create document",
+      "cancel": "Cancel"
+    }
+  },
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Enforce policies and default settings",

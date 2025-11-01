@@ -242,4 +242,12 @@ All colors MUST be HSL.
     border-radius: 0.25rem;
     z-index: 9999;
   }
+
+  /* NORRLY (Helpbot) — immer über Dialogs/Sheets (z-50) */
+  [class*="helpbot"],
+  button[aria-label*="Norrland"],
+  button[aria-label*="Guide"] {
+    z-index: 70 !important;
+    pointer-events: auto !important;
+  }
 }
