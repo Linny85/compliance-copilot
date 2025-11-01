@@ -119,6 +119,20 @@
     "statusTitle": "Compliance-Status",
     "statusDesc": "Überblick zu AI Act & NIS2-Compliance",
     "noData": "Noch keine Compliance-Daten verfügbar. Führe zuerst Compliance-Prüfungen aus.",
+    "forecast": {
+      "title": "7-Tage-Prognose",
+      "empty": "Noch keine Prognose verfügbar. Prognosen werden täglich auf Basis von 30 Tagen Historik erzeugt."
+    },
+    "alerts": {
+      "title": "Compliance-Warnungen",
+      "desc": "SLO-Verstöße und Anomalie-Erkennung",
+      "none": "Keine aktiven Warnungen. Alle Systeme arbeiten normal.",
+      "refresh": "Aktualisieren",
+      "severity": {
+        "critical": "Kritisch",
+        "warning": "Warnung"
+      }
+    },
     "operations": {
       "title": "Operations",
       "empty": "Noch keine Daten. Dieser Bereich füllt sich nach der geplanten Aktualisierung.",

@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 type Forecast = {
   id: string;
@@ -23,6 +24,7 @@ type Forecast = {
 };
 
 export function ForecastCard({ companyId }: { companyId: string }) {
+  const { t } = useTranslation(['admin', 'common']);
 const [forecast, setForecast] = useState<Forecast | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -341,7 +343,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   if (loading) {
     return (
       <Card className="p-6">
-        <h3 className="text-lg font-semibold">7-Day Forecast</h3>
+        <h3 className="text-lg font-semibold">{t('admin:compliance.forecast.title')}</h3>
         <div className="mt-4 animate-pulse h-32 bg-muted rounded" />
       </Card>
     );
@@ -350,9 +352,9 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
   if (!forecast) {
     return (
       <Card className="p-6">
-        <h3 className="text-lg font-semibold">7-Day Forecast</h3>
+        <h3 className="text-lg font-semibold">{t('admin:compliance.forecast.title')}</h3>
         <div className="mt-6 text-sm text-muted-foreground">
-          No forecast available yet. Forecasts are generated daily based on 30 days of historical data.
+          {t('admin:compliance.forecast.empty')}
         </div>
       </Card>
     );

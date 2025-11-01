@@ -119,6 +119,20 @@
     "statusTitle": "Compliance-status",
     "statusDesc": "Översikt för AI-förordningen och NIS2",
     "noData": "Inga compliance-data ännu. Kör kontroller först.",
+    "forecast": {
+      "title": "7-dagars prognos",
+      "empty": "Ingen prognos ännu. Prognoser skapas dagligen baserat på 30 dagars historiska data."
+    },
+    "alerts": {
+      "title": "Efterlevnadsvarningar",
+      "desc": "SLO-brott och avvikelse-detektering",
+      "none": "Inga aktiva varningar. Alla system fungerar normalt.",
+      "refresh": "Uppdatera",
+      "severity": {
+        "critical": "Kritisk",
+        "warning": "Varning"
+      }
+    },
     "operations": {
       "title": "Drift",
       "empty": "Inga data ännu. Fylls efter schemalagd uppdatering.",

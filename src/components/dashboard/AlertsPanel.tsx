@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertTriangle, CheckCircle, Clock, RefreshCw, Shield } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 type Alert = {
   id: string;
@@ -26,6 +27,7 @@ type Alert = {
 };
 
 export function AlertsPanel({ companyId }: { companyId: string }) {
+  const { t } = useTranslation(['admin', 'common']);
   const [loading, setLoading] = useState(true);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [selectedAlert, setSelectedAlert] = useState<Alert | null>(null);
@@ -122,7 +124,7 @@ export function AlertsPanel({ companyId }: { companyId: string }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-warning" />
-            Compliance Alerts
+            {t('admin:compliance.alerts.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -141,10 +143,10 @@ export function AlertsPanel({ companyId }: { companyId: string }) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-warning" />
-            Compliance Alerts
+            {t('admin:compliance.alerts.title')}
           </CardTitle>
           <CardDescription>
-            SLO breaches and anomaly detection
+            {t('admin:compliance.alerts.desc')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -155,18 +157,18 @@ export function AlertsPanel({ companyId }: { companyId: string }) {
                 <Badge variant="destructive" className="text-sm">
                   {activeAlerts.filter(a => a.severity === "critical").length}
                 </Badge>
-                <span className="text-sm text-muted-foreground">Critical</span>
+                <span className="text-sm text-muted-foreground">{t('admin:compliance.alerts.severity.critical')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Badge variant="secondary" className="text-sm">
                   {activeAlerts.filter(a => a.severity === "warning").length}
                 </Badge>
-                <span className="text-sm text-muted-foreground">Warning</span>
+                <span className="text-sm text-muted-foreground">{t('admin:compliance.alerts.severity.warning')}</span>
               </div>
             </div>
             <Button size="sm" variant="outline" onClick={load}>
               <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh
+              {t('admin:compliance.alerts.refresh')}
             </Button>
           </div>
 
@@ -175,7 +177,7 @@ export function AlertsPanel({ companyId }: { companyId: string }) {
             <div className="rounded-md border p-4 text-center">
               <CheckCircle className="h-8 w-8 mx-auto mb-2 text-success opacity-50" />
               <p className="text-sm text-muted-foreground">
-                No active alerts. All systems operating normally.
+                {t('admin:compliance.alerts.none')}
               </p>
             </div>
           ) : (
@@ -196,7 +198,7 @@ export function AlertsPanel({ companyId }: { companyId: string }) {
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <Badge variant={getSeverityColor(alert.severity) as any}>
-                            {alert.severity}
+                            {t(`admin:compliance.alerts.severity.${alert.severity}`)}
                           </Badge>
                           <span className="text-sm font-medium">{alert.title}</span>
                         </div>
@@ -266,7 +268,7 @@ export function AlertsPanel({ companyId }: { companyId: string }) {
             <div className="space-y-4">
               <div className="rounded-md border p-3 space-y-2">
                 <Badge variant={getSeverityColor(selectedAlert.severity) as any}>
-                  {selectedAlert.severity}
+                  {t(`admin:compliance.alerts.severity.${selectedAlert.severity}`)}
                 </Badge>
                 <h4 className="font-medium">{selectedAlert.title}</h4>
                 <p className="text-sm text-muted-foreground">

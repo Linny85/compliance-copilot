@@ -119,6 +119,20 @@
     "statusTitle": "Compliance Status",
     "statusDesc": "AI Act & NIS2 compliance overview",
     "noData": "No compliance data available yet. Run compliance checks first.",
+    "forecast": {
+      "title": "7-Day Forecast",
+      "empty": "No forecast available yet. Forecasts are generated daily based on 30 days of historical data."
+    },
+    "alerts": {
+      "title": "Compliance Alerts",
+      "desc": "SLO breaches and anomaly detection",
+      "none": "No active alerts. All systems operating normally.",
+      "refresh": "Refresh",
+      "severity": {
+        "critical": "Critical",
+        "warning": "Warning"
+      }
+    },
     "operations": {
       "title": "Operations",
       "empty": "No data yet. This will populate after the scheduled refresh.",
