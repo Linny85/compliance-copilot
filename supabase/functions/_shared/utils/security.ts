@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { encode as b64e } from "https://deno.land/std@0.224.0/encoding/base64.ts";
+import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
 
 export type Role = 'viewer' | 'member' | 'manager' | 'admin';
 
@@ -87,11 +87,11 @@ export async function signEditToken(payload: Record<string,unknown>, ttlSec=300)
   const header = { alg: "HS256", typ:"JWT" };
   const exp = Math.floor(Date.now()/1000) + ttlSec;
   const body = { ...payload, exp };
-  const enc = (obj:object)=> b64e(new TextEncoder().encode(JSON.stringify(obj))).replaceAll("=","").replaceAll("+","-").replaceAll("/","_");
+  const enc = (obj:object)=> encodeBase64(new TextEncoder().encode(JSON.stringify(obj))).replaceAll("=","").replaceAll("+","-").replaceAll("/","_");
   const h = enc(header); const p = enc(body);
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(EDIT_JWT_SECRET), {name:"HMAC", hash:"SHA-256"}, false, ["sign"]);
   const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(`${h}.${p}`));
-  const s = b64e(new Uint8Array(sig)).replaceAll("=","").replaceAll("+","-").replaceAll("/","_");
+  const s = encodeBase64(new Uint8Array(sig)).replaceAll("=","").replaceAll("+","-").replaceAll("/","_");
   return `${h}.${p}.${s}`;
 }
 
