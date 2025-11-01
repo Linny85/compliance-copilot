@@ -625,10 +625,13 @@ Deno.serve(async (req: Request) => {
       // Record denial for rate limiting
       recordDenial(sessionId);
       
-      // Log security event (simplified - no tenant lookup needed)
+      // Log security event (simplified hash without crypto.subtle)
       try {
+        // Simple hash for logging (just first 16 chars of question)
+        const questionPreview = question.slice(0, 16).replace(/[^\w]/g, '_');
+        
         await sbAdmin.from("audit_log").insert({
-          tenant_id: null, // Could be enhanced to fetch from profiles if needed
+          tenant_id: null,
           actor_id: userId,
           action: "helpbot.query_blocked",
           entity: "helpbot",
@@ -637,8 +640,7 @@ Deno.serve(async (req: Request) => {
             reason: classification.reason,
             session_id: sessionId,
             lang,
-            question_hash: await crypto.subtle.digest("SHA-256", new TextEncoder().encode(question))
-              .then(buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join(''))
+            question_preview: questionPreview
           }
         });
       } catch (logErr) {
