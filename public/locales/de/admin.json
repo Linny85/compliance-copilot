@@ -121,7 +121,23 @@
     "noData": "Noch keine Compliance-Daten verfügbar. Führe zuerst Compliance-Prüfungen aus.",
     "forecast": {
       "title": "7-Tage-Prognose",
-      "empty": "Noch keine Prognose verfügbar. Prognosen werden täglich auf Basis von 30 Tagen Historik erzeugt."
+      "empty": "Noch keine Prognose verfügbar. Prognosen werden täglich auf Basis von 30 Tagen Historik erzeugt.",
+      "complianceForecast": "7-Tage Compliance-Prognose",
+      "predictiveAnalysis": "KI-gestützte Risikoanalyse",
+      "modelReliability": "Modell-Zuverlässigkeit",
+      "riskLevel": "Risikostufe",
+      "breachProbability": "Verstoßwahrscheinlichkeit",
+      "predictedSuccessRate": "Vorhergesagte Erfolgsrate",
+      "confidence": "Konfidenz",
+      "sloTarget": "SLO-Ziel",
+      "suggested": "Vorgeschlagen",
+      "recommendedActions": "Empfohlene Maßnahmen",
+      "applySloAdjustment": "KI-empfohlene SLO-Anpassung übernehmen?",
+      "adjustTarget": "Ziel von {{current}}% auf {{suggested}}% anpassen basierend auf Prognose-Analyse",
+      "applyAdjustment": "Anpassung übernehmen",
+      "applying": "Wird angewendet...",
+      "ensembleForecast": "90-Tage Ensemble-Prognose",
+      "reliabilityTrend": "30-Tage Zuverlässigkeits-Trend"
     },
     "alerts": {
       "title": "Compliance-Warnungen",
@@ -140,7 +156,17 @@
     },
     "status": {
       "title": "Compliance-Status",
-      "empty": "Keine Compliance-Daten verfügbar"
+      "empty": "Keine Compliance-Daten verfügbar",
+      "successRate": "Gesamterfolgsrate",
+      "trend": "7-Tage-Trend",
+      "dataPoints": "Datenpunkte",
+      "passed": "Bestanden",
+      "failed": "Fehlgeschlagen",
+      "warnings": "Warnungen",
+      "totalChecks": "Gesamtzahl Prüfungen",
+      "lastRun": "Letzter Lauf",
+      "generatingReport": "Bericht wird erstellt...",
+      "downloadReport": "Compliance-Bericht herunterladen"
     },
     "insights": {
       "title": "AI Insights",

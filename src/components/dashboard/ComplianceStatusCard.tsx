@@ -189,7 +189,7 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
           <>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Overall Success Rate</span>
+                <span className="text-sm font-medium">{t('admin:compliance.status.successRate')}</span>
                 <div className="flex items-center gap-2">
                   <div className={`w-3 h-3 rounded-full ${getHealthColor()} animate-pulse`} />
                   <Badge variant={statusVariant} className="text-lg px-3 py-1">
@@ -203,10 +203,10 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-medium">7-Day Trend</span>
+                      <span className="text-sm font-medium">{t('admin:compliance.status.trend')}</span>
                     </div>
                     <span className="text-xs text-muted-foreground">
-                      {historicalData.length} data points
+                      {historicalData.length} {t('admin:compliance.status.dataPoints')}
                     </span>
                   </div>
                   <div className="space-y-1">
@@ -234,30 +234,30 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
                 <div className="text-center p-3 rounded-lg bg-success/10">
                   <CheckCircle className="h-5 w-5 mx-auto mb-1 text-success" />
                   <div className="text-2xl font-bold">{compliance.passed}</div>
-                  <div className="text-xs text-muted-foreground">Passed</div>
+                  <div className="text-xs text-muted-foreground">{t('admin:compliance.status.passed')}</div>
                 </div>
 
                 <div className="text-center p-3 rounded-lg bg-destructive/10">
                   <XCircle className="h-5 w-5 mx-auto mb-1 text-destructive" />
                   <div className="text-2xl font-bold">{compliance.failed}</div>
-                  <div className="text-xs text-muted-foreground">Failed</div>
+                  <div className="text-xs text-muted-foreground">{t('admin:compliance.status.failed')}</div>
                 </div>
 
                 <div className="text-center p-3 rounded-lg bg-warning/10" title="AI Act control mapping may require review">
                   <AlertTriangle className="h-5 w-5 mx-auto mb-1 text-warning" />
                   <div className="text-2xl font-bold">{compliance.warnings}</div>
-                  <div className="text-xs text-muted-foreground">Warnings</div>
+                  <div className="text-xs text-muted-foreground">{t('admin:compliance.status.warnings')}</div>
                 </div>
               </div>
 
               <div className="pt-2 border-t">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Total Checks</span>
+                  <span className="text-muted-foreground">{t('admin:compliance.status.totalChecks')}</span>
                   <span className="font-semibold">{compliance.total}</span>
                 </div>
                 {compliance.last_run_at && (
                   <div className="flex items-center justify-between text-sm mt-1">
-                    <span className="text-muted-foreground">Last Run</span>
+                    <span className="text-muted-foreground">{t('admin:compliance.status.lastRun')}</span>
                     <span className="text-xs">
                       {new Date(compliance.last_run_at).toLocaleDateString()}
                     </span>
@@ -274,12 +274,12 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
               {generating ? (
                 <>
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                  Generating Report...
+                  {t('admin:compliance.status.generatingReport')}
                 </>
               ) : (
                 <>
                   <FileDown className="h-4 w-4 mr-2" />
-                  Download Compliance Report
+                  {t('admin:compliance.status.downloadReport')}
                 </>
               )}
             </Button>

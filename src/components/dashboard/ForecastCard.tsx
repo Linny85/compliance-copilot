@@ -367,9 +367,9 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
     <Card className="p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold">7-Day Compliance Forecast</h3>
+          <h3 className="text-lg font-semibold">{t('admin:compliance.forecast.complianceForecast')}</h3>
           <p className="text-sm text-muted-foreground">
-            Predictive risk analysis powered by AI
+            {t('admin:compliance.forecast.predictiveAnalysis')}
           </p>
           {metrics && (
             <div className="mt-2 text-sm">
@@ -378,7 +378,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
                 metrics.reliability >= 70 ? 'text-yellow-600 dark:text-yellow-400' : 
                 'text-red-600 dark:text-red-400'
               }>
-                Model Reliability: {Number(metrics.reliability).toFixed(0)}%
+                {t('admin:compliance.forecast.modelReliability')}: {Number(metrics.reliability).toFixed(0)}%
               </span>
               <span className="ml-2 text-muted-foreground">
                 (P {Number(metrics.precision_predicted).toFixed(0)}% ·
@@ -410,7 +410,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
                     })}
                   </svg>
                   <div className="text-xs text-muted-foreground text-center mt-1">
-                    30-Day Reliability Trend
+                    {t('admin:compliance.forecast.reliabilityTrend')}
                   </div>
                 </div>
               )}
@@ -422,17 +422,17 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
 
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <div className={`p-4 border rounded ${riskBg[forecast.risk_level]}`}>
-          <div className="text-sm text-muted-foreground">Risk Level</div>
+          <div className="text-sm text-muted-foreground">{t('admin:compliance.forecast.riskLevel')}</div>
           <div className={`mt-1 text-2xl font-bold ${riskColor[forecast.risk_level]}`}>
             {forecast.risk_level.toUpperCase()}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {forecast.breach_probability_7d.toFixed(0)}% breach probability
+            {forecast.breach_probability_7d.toFixed(0)}% {t('admin:compliance.forecast.breachProbability')}
           </div>
         </div>
 
         <div className="p-4 border rounded">
-          <div className="text-sm text-muted-foreground">Predicted Success Rate</div>
+          <div className="text-sm text-muted-foreground">{t('admin:compliance.forecast.predictedSuccessRate')}</div>
           <div className="mt-1 text-2xl font-bold flex items-center gap-2">
             {forecast.predicted_sr_7d.toFixed(1)}%
             {forecast.predicted_sr_7d > forecast.current_slo_target ? (
@@ -442,19 +442,19 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
             )}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
-            Confidence: {forecast.confidence_score.toFixed(0)}%
+            {t('admin:compliance.forecast.confidence')}: {forecast.confidence_score.toFixed(0)}%
           </div>
         </div>
 
         <div className="p-4 border rounded">
-          <div className="text-sm text-muted-foreground">SLO Target</div>
+          <div className="text-sm text-muted-foreground">{t('admin:compliance.forecast.sloTarget')}</div>
           <div className="mt-1 text-2xl font-bold">
             {forecast.current_slo_target.toFixed(1)}%
           </div>
           {showSloAdjustment && (
             <div className="text-xs mt-1">
               <Badge variant={sloDelta > 0 ? 'default' : 'secondary'}>
-                Suggested: {forecast.suggested_slo_target.toFixed(1)}%{' '}
+                {t('admin:compliance.forecast.suggested')}: {forecast.suggested_slo_target.toFixed(1)}%{' '}
                 ({sloDelta > 0 ? '+' : ''}
                 {sloDelta.toFixed(1)}%)
               </Badge>
@@ -466,7 +466,7 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
       <div className="mb-6">
         <h4 className="text-sm font-semibold mb-2 flex items-center gap-2">
           <AlertTriangle className="h-4 w-4" />
-          Recommended Actions
+          {t('admin:compliance.forecast.recommendedActions')}
         </h4>
         <ul className="space-y-2">
           {forecast.advisories.map((advisory, idx) => (
@@ -481,14 +481,16 @@ const [forecast, setForecast] = useState<Forecast | null>(null);
       {showSloAdjustment && (
         <div className="flex items-center justify-between p-4 border rounded bg-muted/50">
           <div className="text-sm">
-            <div className="font-semibold">Apply AI-Recommended SLO Adjustment?</div>
+            <div className="font-semibold">{t('admin:compliance.forecast.applySloAdjustment')}</div>
             <div className="text-muted-foreground">
-              Adjust target from {forecast.current_slo_target.toFixed(1)}% to{' '}
-              {forecast.suggested_slo_target.toFixed(1)}% based on forecast analysis
+              {t('admin:compliance.forecast.adjustTarget', {
+                current: forecast.current_slo_target.toFixed(1),
+                suggested: forecast.suggested_slo_target.toFixed(1)
+              })}
             </div>
           </div>
           <Button onClick={applySuggestedSLO} disabled={applying} variant="default">
-            {applying ? 'Applying...' : 'Apply Adjustment'}
+            {applying ? t('admin:compliance.forecast.applying') : t('admin:compliance.forecast.applyAdjustment')}
           </Button>
         </div>
       )}

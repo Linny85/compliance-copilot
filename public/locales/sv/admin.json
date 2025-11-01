@@ -121,7 +121,23 @@
     "noData": "Inga compliance-data ännu. Kör kontroller först.",
     "forecast": {
       "title": "7-dagars prognos",
-      "empty": "Ingen prognos ännu. Prognoser skapas dagligen baserat på 30 dagars historiska data."
+      "empty": "Ingen prognos ännu. Prognoser skapas dagligen baserat på 30 dagars historiska data.",
+      "complianceForecast": "7-dagars regelefterlevnadsprognos",
+      "predictiveAnalysis": "AI-driven riskanalys",
+      "modelReliability": "Modellens tillförlitlighet",
+      "riskLevel": "Risknivå",
+      "breachProbability": "sannolikhet för överträdelse",
+      "predictedSuccessRate": "Förutsedd framgångsfrekvens",
+      "confidence": "Tillförlitlighet",
+      "sloTarget": "SLO-mål",
+      "suggested": "Föreslagen",
+      "recommendedActions": "Rekommenderade åtgärder",
+      "applySloAdjustment": "Tillämpa AI-rekommenderad SLO-justering?",
+      "adjustTarget": "Justera mål från {{current}}% till {{suggested}}% baserat på prognosanalys",
+      "applyAdjustment": "Tillämpa justering",
+      "applying": "Tillämpar...",
+      "ensembleForecast": "90-dagars ensembleprognos",
+      "reliabilityTrend": "30-dagars tillförlitlighetstrend"
     },
     "alerts": {
       "title": "Efterlevnadsvarningar",
@@ -140,7 +156,17 @@
     },
     "status": {
       "title": "Efterlevnadsstatus",
-      "empty": "Inga efterlevnadsdata tillgängliga"
+      "empty": "Inga efterlevnadsdata tillgängliga",
+      "successRate": "Övergripande framgångsfrekvens",
+      "trend": "7-dagars trend",
+      "dataPoints": "datapunkter",
+      "passed": "Godkänd",
+      "failed": "Misslyckades",
+      "warnings": "Varningar",
+      "totalChecks": "Totalt antal kontroller",
+      "lastRun": "Senaste körning",
+      "generatingReport": "Genererar rapport...",
+      "downloadReport": "Ladda ner regelefterlevnadsrapport"
     },
     "insights": {
       "title": "AI-insikter",

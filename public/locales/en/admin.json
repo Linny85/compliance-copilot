@@ -121,7 +121,23 @@
     "noData": "No compliance data available yet. Run compliance checks first.",
     "forecast": {
       "title": "7-Day Forecast",
-      "empty": "No forecast available yet. Forecasts are generated daily based on 30 days of historical data."
+      "empty": "No forecast available yet. Forecasts are generated daily based on 30 days of historical data.",
+      "complianceForecast": "7-Day Compliance Forecast",
+      "predictiveAnalysis": "Predictive risk analysis powered by AI",
+      "modelReliability": "Model Reliability",
+      "riskLevel": "Risk Level",
+      "breachProbability": "breach probability",
+      "predictedSuccessRate": "Predicted Success Rate",
+      "confidence": "Confidence",
+      "sloTarget": "SLO Target",
+      "suggested": "Suggested",
+      "recommendedActions": "Recommended Actions",
+      "applySloAdjustment": "Apply AI-Recommended SLO Adjustment?",
+      "adjustTarget": "Adjust target from {{current}}% to {{suggested}}% based on forecast analysis",
+      "applyAdjustment": "Apply Adjustment",
+      "applying": "Applying...",
+      "ensembleForecast": "90-Day Ensemble Forecast",
+      "reliabilityTrend": "30-Day Reliability Trend"
     },
     "alerts": {
       "title": "Compliance Alerts",
@@ -140,7 +156,17 @@
     },
     "status": {
       "title": "Compliance Status",
-      "empty": "No compliance data available"
+      "empty": "No compliance data available",
+      "successRate": "Overall Success Rate",
+      "trend": "7-Day Trend",
+      "dataPoints": "data points",
+      "passed": "Passed",
+      "failed": "Failed",
+      "warnings": "Warnings",
+      "totalChecks": "Total Checks",
+      "lastRun": "Last Run",
+      "generatingReport": "Generating Report...",
+      "downloadReport": "Download Compliance Report"
     },
     "insights": {
       "title": "AI Insights",
