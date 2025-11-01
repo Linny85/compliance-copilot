@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const LOCALES_DIR = path.join(process.cwd(), 'public/locales');
 const LOCALES = ['de', 'en', 'sv', 'bg', 'ca', 'cs', 'da', 'el', 'es', 'et', 'fi', 'fr', 'ga', 'hr', 'hu', 'is', 'it', 'lt', 'lv', 'mt', 'nl', 'no', 'pl', 'pt', 'ro', 'sk', 'sl'];
 const BASE_LOCALE = 'en'; // Reference locale
-const NAMESPACES = ['common', 'nav', 'admin', 'aiAct', 'aiSystems', 'assistant', 'billing', 'checks', 'controls', 'dashboard', 'documents', 'evidence', 'helpbot', 'nis2', 'reports', 'scope', 'training'];
+const NAMESPACES = ['common', 'nav', 'admin', 'aiAct', 'aiSystems', 'assistant', 'billing', 'checks', 'controls', 'dashboard', 'documents', 'evidence', 'helpbot', 'nis2', 'reports', 'scope', 'training', 'organization'];
 
 /**
  * Flatten nested JSON object to dot-notation keys
