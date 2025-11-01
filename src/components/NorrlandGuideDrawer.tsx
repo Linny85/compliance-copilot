@@ -24,7 +24,7 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const { t, i18n, ready } = useTranslation(["assistant", "helpbot"], { useSuspense: false });
+  const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
   if (!ready && open) return null;
 
@@ -50,22 +50,24 @@ export function NorrlandGuideDrawer({
   // Translations - only access after ready
   const name = ready ? t("assistant:name") : "";
   const tagline = ready ? t("assistant:tagline") : "";
-  const greeting = ready ? t("assistant:greeting") : "";
+  const greeting = ready ? t("norrly:intro") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   const quickCtas = ready ? [
-    { id: 'verify', label: t('helpbot:cta.verify'), payload: t('helpbot:cta.verify') },
-    { id: 'whyToken', label: t('helpbot:cta.whyToken'), payload: t('helpbot:cta.whyToken') },
-    { id: 'createDoc', label: t('helpbot:cta.createDoc'), payload: t('helpbot:cta.createDoc') },
-    { id: 'name', label: t('helpbot:cta.name'), payload: t('helpbot:nameExplained') }
+    { id: 'verify', label: t('norrly:cta.verify'), payload: t('helpbot:cta.verify') },
+    { id: 'whyToken', label: t('norrly:cta.whyToken'), payload: t('helpbot:cta.whyToken') },
+    { id: 'createDoc', label: t('norrly:cta.createDoc'), payload: t('helpbot:cta.createDoc') },
+    { id: 'name', label: t('norrly:cta.name'), payload: t('helpbot:nameExplained') }
   ] : [];
   
   const labels = ready ? {
-    open: t("assistant:buttons.open"),
-    cancel: t("assistant:buttons.cancel"),
-    speak_on: t("assistant:buttons.speak_on"),
-    speak_off: t("assistant:buttons.speak_off")
-  } : { open: "", cancel: "", speak_on: "", speak_off: "" };
+    open: t("norrly:input.open"),
+    cancel: t("norrly:input.cancel"),
+    loading: t("norrly:input.loading"),
+    speak_on: t("norrly:voice.on"),
+    speak_off: t("norrly:voice.off"),
+    reset: t("norrly:session.reset")
+  } : { open: "", cancel: "", loading: "", speak_on: "", speak_off: "", reset: "" };
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
@@ -277,7 +279,7 @@ export function NorrlandGuideDrawer({
               variant="ghost"
               size="icon"
               onClick={resetSession}
-              title="Neue Session"
+              title={labels.reset}
               className="text-muted-foreground hover:text-foreground"
             >
               <RotateCcw className="h-4 w-4" />
@@ -410,7 +412,7 @@ export function NorrlandGuideDrawer({
                 }
               }}
               className="w-full h-20 rounded border border-border bg-background text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              placeholder="Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…"
+              placeholder={t("norrly:input.placeholder")}
               disabled={loading}
             />
             <div className="flex gap-2">
@@ -429,7 +431,7 @@ export function NorrlandGuideDrawer({
                 disabled={loading || !q.trim()}
                 className="ml-auto px-4 py-2"
               >
-                {loading ? "Lädt…" : labels.open}
+                {loading ? labels.loading : labels.open}
               </Button>
             </div>
           </div>

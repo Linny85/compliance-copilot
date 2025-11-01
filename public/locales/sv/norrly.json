@@ -1,0 +1,22 @@
+{
+  "intro": "Välkommen tillbaka!",
+  "cta": {
+    "verify": "Verifiera",
+    "whyToken": "Varför behöver jag en token?",
+    "createDoc": "Skapa nytt dokument",
+    "name": "Namn"
+  },
+  "input": {
+    "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
+    "open": "Öppna",
+    "loading": "Laddar…",
+    "cancel": "Avbryt"
+  },
+  "voice": {
+    "on": "Röst på",
+    "off": "Röst av"
+  },
+  "session": {
+    "reset": "Ny session"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "intro": "Willkommen zurück!",
+  "cta": {
+    "verify": "Verifizieren",
+    "whyToken": "Warum benötige ich ein Token?",
+    "createDoc": "Neues Dokument erstellen",
+    "name": "Name"
+  },
+  "input": {
+    "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
+    "open": "Öffnen",
+    "loading": "Lädt…",
+    "cancel": "Abbrechen"
+  },
+  "voice": {
+    "on": "Stimme an",
+    "off": "Stimme aus"
+  },
+  "session": {
+    "reset": "Neue Session"
+  }
+}
