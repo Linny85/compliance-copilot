@@ -44,15 +44,7 @@ export function NorrlandGuideDrawer({
   const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const [contextActions, setContextActions] = useState<string[]>([]);
   
-  // Force-load norrly namespace if missing
-  useEffect(() => {
-    const lng = (i18n.language || 'de').slice(0, 2);
-    if (!i18n.hasResourceBundle(lng, 'norrly')) {
-      i18n.loadNamespaces(['norrly'])
-        .then(() => i18n.reloadResources([lng], ['norrly']))
-        .catch(() => {});
-    }
-  }, [i18n, i18n.language]);
+  // Namespace loading is handled by useTranslation('norrly'); no manual force-load.
   
   useEffect(() => {
     if (firstSeen.current) {
@@ -121,16 +113,19 @@ export function NorrlandGuideDrawer({
     }
   }, [messages, ttsOn]);
   
-  // Early return for unready state - AFTER all hooks
-  const lng = (i18n.language || 'de').slice(0, 2);
-  if (!ready || !i18n.hasResourceBundle(lng, 'norrly')) return null;
+  // Dev diagnostics
+  if (import.meta.env.DEV) {
+    console.debug("[norrly] ready:", ready, "lng:", i18n.language);
+  }
+  // Gate rendering until i18n resources are ready
+  if (!ready) return null;
 
   // Translations - only access after ready
-  const name = t("assistant:name");
+  const name = i18n.t("assistant:name");
   const tagline = t("header.subtitle");
   const greetingHeadline = t("intro.headline");
   const greetingText = t("intro.text");
-  const intro = firstSeen.current ? t("helpbot:intro") : undefined;
+  const intro = firstSeen.current ? i18n.t("helpbot:intro") : undefined;
   
   // Context-aware intro
   const pageName = getPageDisplayName();
