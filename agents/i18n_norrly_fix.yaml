@@ -1,13 +1,9 @@
-# agents/i18n_norrly_fix.yaml
 id: verify-and-fix-i18n-norrly
 name: "i18n Integrity & nav.ok Fix (Norrly)"
 description: >
   Prüft und repariert fehlende i18n-Keys in public/locales/*/norrly.json
   (DE/EN/SV). Erst Report, dann Dry-Run, Anwendung nur nach Freigabe.
 
-# ────────────────────────────────────────────────────────────────────────────────
-# Grundeinstellungen
-# ────────────────────────────────────────────────────────────────────────────────
 vars:
   files:
     - public/locales/de/norrly.json
@@ -26,7 +22,6 @@ vars:
     - errors.nav_failed
     - nav.ok
     - nav.error
-  # Standard-Insert-Blöcke für jede Sprache (werden nur ergänzt, nichts überschrieben)
   inserts:
     de: |
       "cta": {
@@ -104,18 +99,14 @@ vars:
         "error": "Navigation misslyckades"
       }
 
-# ────────────────────────────────────────────────────────────────────────────────
-# PHASE 1 — Read-Only Prüfung
-# ────────────────────────────────────────────────────────────────────────────────
 steps:
   - id: phase-1-scan
     name: "Phase 1: Scan i18n files"
     run: |
-      # Pseudo-Engine: Der Agent soll Dateien lesen, JSON parsen, Keys prüfen.
+      # Dateien lesen, JSON parsen, Keys prüfen.
       # Output MUSS ein JSON-Report sein – keine Änderungen!
       SCAN_REPORT_BEGIN
-      # Für jede Datei: syntaxValid (true/false), missingKeys ([...]), trailingCommas (true/false)
-      # Der Agent füllt das basierend auf vars.requiredKeys.
+      # Für jede Datei: { file, syntaxValid, trailingCommas, missingKeys[] }
       SCAN_REPORT_END
     output: scanReport
 
@@ -123,18 +114,14 @@ steps:
     name: "Phase 1: Decide next step"
     run_if: "${scanReport.hasMissingKeys || scanReport.hasSyntaxErrors}"
     run: |
-      # Wenn Keys fehlen/Fehler existieren → Phase 2 vorbereiten, sonst Erfolg melden
       echo "Mängel gefunden; bereite Dry-Run vor."
 
-# ────────────────────────────────────────────────────────────────────────────────
-# PHASE 2 — Dry-Run Patch (keine Schreiboperationen!)
-# ────────────────────────────────────────────────────────────────────────────────
   - id: phase-2-dryrun
     name: "Phase 2: Prepare Dry-Run patch"
     run_if: "${scanReport.hasMissingKeys || scanReport.hasSyntaxErrors}"
     run: |
-      # Für jede betroffene Datei generiert der Agent einen unified diff,
-      # der NUR fehlende Keys ergänzt oder offensichtliche Komma/Syntaxfehler behebt.
+      # Für jede betroffene Datei: unified diff erzeugen,
+      # der NUR fehlende Keys ergänzt oder offensichtliche JSON-Syntaxfehler behebt.
       # Sprachspezifische Insert-Blöcke: vars.inserts.de / en / sv
       DRYRUN_DIFF_BEGIN
       # … unified diffs hier …
@@ -148,9 +135,6 @@ steps:
       Stoppe hier und warte auf das manuelle Signal: 'APPLY I18N FIX'.
       Vor Freigabe nichts schreiben/committen.
 
-# ────────────────────────────────────────────────────────────────────────────────
-# PHASE 3 — Anwendung (nur nach Freigabe 'APPLY I18N FIX')
-# ────────────────────────────────────────────────────────────────────────────────
   - id: phase-3-apply
     name: "Phase 3: Apply i18n fixes"
     run_if_signal: "APPLY I18N FIX"
@@ -169,7 +153,6 @@ steps:
     name: "Report"
     run_if_signal: "APPLY I18N FIX"
     run: |
-      # Zusammenfassung für die Konsole
       {
         "fixedFiles": [...],
         "addedKeys": [...],
@@ -178,9 +161,6 @@ steps:
         "notes": "Norrly navigation texts restored – 404-free."
       }
 
-# ────────────────────────────────────────────────────────────────────────────────
-# Sicherheitsregeln
-# ────────────────────────────────────────────────────────────────────────────────
 rules:
   - "Keine Hooks oder TS/TSX-Dateien ändern."
   - "Nur norrly.json (DE/EN/SV) und nur fehlende Keys oder offensichtliche JSON-Syntaxfehler beheben."
