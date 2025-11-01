@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -24,16 +24,18 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const { t, i18n, ready } = useTranslation("norrly", { useSuspense: false });
+  const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
-  // Get current path without using useLocation (works outside Router context)
-  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-  
-  // All hooks must be declared unconditionally before any returns
+  if (!ready && open) return null;
+
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
-  const first = useRef<HTMLTextAreaElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   
+  useEffect(() => {
+    if (firstSeen.current) {
+      sessionStorage.setItem(FIRST_SEEN_KEY, '1');
+    }
+  }, []);
+
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -42,120 +44,32 @@ export function NorrlandGuideDrawer({
   const [disc, setDisc] = useState("");
   const [ttsOn, setTtsOn] = useState(false);
   const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
-  const [contextActions, setContextActions] = useState<string[]>([]);
-  const [forceLangTick, setForceLangTick] = useState(0);
-  
-  // Re-render on language change so Drawer updates immediately
-  useEffect(() => {
-    const handler = () => setForceLangTick((n) => n + 1);
-    i18n.on('languageChanged', handler);
-    return () => {
-      i18n.off('languageChanged', handler);
-    };
-  }, [i18n]);
-  
-  useEffect(() => {
-    if (firstSeen.current) {
-      sessionStorage.setItem(FIRST_SEEN_KEY, '1');
-    }
-  }, []);
-
-  // Get page display name from DOM or i18n
-  const getPageDisplayName = useCallback(() => {
-    // Try to get from DOM first
-    const h1 = document.querySelector('main h1, [data-page-title], h1');
-    const fromDom = h1?.textContent?.trim();
-    if (fromDom) return fromDom;
-    
-    // Fallback to i18n mapping
-    return t(`pages.${currentPath}`, { defaultValue: currentPath });
-  }, [currentPath, t]);
-
-  // Get context-specific help text
-  const getContextHelp = useCallback(() => {
-    if (currentPath.startsWith('/controls')) return t('context.controls_help');
-    if (currentPath.startsWith('/incidents')) return t('context.incidents_help');
-    if (currentPath.startsWith('/audits')) return t('context.audits_help');
-    if (currentPath.startsWith('/training')) return t('context.training_help');
-    if (currentPath.startsWith('/nis2')) return t('context.nis2_help');
-    if (currentPath.startsWith('/ai-act') || currentPath.startsWith('/ai-systems')) return t('context.aiact_help');
-    if (currentPath.startsWith('/dpia')) return t('context.dpia_help');
-    if (currentPath.startsWith('/evidence')) return t('context.evidence_help');
-    if (currentPath.startsWith('/documents')) return t('context.documents_help');
-    return null;
-  }, [currentPath, t]);
-
-  // Get context-specific quick actions
-  const getContextActions = useCallback(() => {
-    let actionsKey = '';
-    
-    if (currentPath.startsWith('/controls')) actionsKey = 'controls';
-    else if (currentPath.startsWith('/incidents')) actionsKey = 'incidents';
-    else if (currentPath.startsWith('/audits')) actionsKey = 'audits';
-    else if (currentPath.startsWith('/training')) actionsKey = 'training';
-    else if (currentPath.startsWith('/documents')) actionsKey = 'documents';
-    
-    if (!actionsKey) return [];
-    
-    const actions = t(`actions.${actionsKey}`, { returnObjects: true });
-    return typeof actions === 'object' ? Object.values(actions) : [];
-  }, [currentPath, t]);
-
-  // Update context actions when route changes
-  useEffect(() => {
-    setContextActions(getContextActions());
-  }, [getContextActions]);
-  
-  useEffect(() => {
-    if (open && first.current) first.current.focus();
-  }, [open]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    const last = messages[messages.length - 1];
-    if (ttsOn && last?.role === "assistant") {
-      speak(last.content);
-    }
-  }, [messages, ttsOn]);
-  
-  // Dev diagnostics
-  if (import.meta.env.DEV) {
-    console.debug("[norrly] ready:", ready, "lng:", i18n.language);
-  }
-  // Gate rendering until i18n resources are ready
-  if (!ready) return null;
+  const first = useRef<HTMLTextAreaElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Translations - only access after ready
-  const name = i18n.t("assistant:name");
-  const tagline = t("header.subtitle");
-  const greetingHeadline = t("intro.headline");
-  const greetingText = t("intro.text");
-  const intro = firstSeen.current ? i18n.t("helpbot:intro") : undefined;
+  const name = ready ? t("assistant:name") : "";
+  const tagline = ready ? t("norrly:header.subtitle") : "";
+  const greetingHeadline = ready ? t("norrly:intro.headline") : "";
+  const greetingText = ready ? t("norrly:intro.text") : "";
+  const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
-  // Context-aware intro
-  const pageName = getPageDisplayName();
-  const contextIntro = t("context.intro", { page: pageName });
-  const contextHelp = getContextHelp();
+  const quickCtas = ready ? [
+    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
+    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
+    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
+    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
+    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
+  ] : [];
   
-  const quickCtas = [
-    { id: 'incident', label: t('cta.incident'), payload: t('cta.incident') },
-    { id: 'register', label: t('cta.register'), payload: t('cta.register') },
-    { id: 'roles', label: t('cta.roles'), payload: t('cta.roles') },
-    { id: 'audit', label: t('cta.audit'), payload: t('cta.audit') },
-    { id: 'training', label: t('cta.training'), payload: t('cta.training') }
-  ];
-  
-  const labels = {
-    open: t("input.open"),
-    cancel: t("input.cancel"),
-    loading: t("input.loading"),
-    speak_on: t("voice.on"),
-    speak_off: t("voice.off"),
-    reset: t("session.reset")
-  };
+  const labels = ready ? {
+    open: t("norrly:input.open"),
+    cancel: t("norrly:input.cancel"),
+    loading: t("norrly:input.loading"),
+    speak_on: t("norrly:voice.on"),
+    speak_off: t("norrly:voice.off"),
+    reset: t("norrly:session.reset")
+  } : { open: "", cancel: "", loading: "", speak_on: "", speak_off: "", reset: "" };
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
@@ -186,54 +100,20 @@ export function NorrlandGuideDrawer({
     window.speechSynthesis.speak(utterance);
   };
 
-  // Handle navigation with RBAC check
-  async function handleNavigation(action: ChatAction) {
-    try {
-      const hasPermission = canAccess(action.path, user);
-      
-      if (!hasPermission) {
-        setMessages(prev => [...prev, {
-          role: "assistant",
-          content: t('nav.denied')
-        }]);
-        setPendingAction(null);
-        return;
-      }
+  useEffect(() => {
+    if (open && first.current) first.current.focus();
+  }, [open]);
 
-      // Navigate and confirm
-      navigateGlobal(action.path);
-      
-      // Scroll to highlighted element if specified
-      if (action.highlight) {
-        setTimeout(() => {
-          const el = document.querySelector(action.highlight!);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300);
-      }
-      
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: t('nav.ok', { target: action.label })
-      }]);
-      
-      // Close drawer after navigation
-      setTimeout(() => setOpen(false), 800);
-      
-      audit('norrly_navigation', { 
-        path: action.path, 
-        label: action.label,
-        confidence: action.confidence 
-      });
-    } catch (err) {
-      console.error('[Navigation error]', err);
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: t('nav.error')
-      }]);
-    } finally {
-      setPendingAction(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    const last = messages[messages.length - 1];
+    if (ttsOn && last?.role === "assistant") {
+      speak(last.content);
     }
-  }
+  }, [messages, ttsOn]);
 
   async function ask() {
     if (!q.trim()) return;
@@ -245,14 +125,7 @@ export function NorrlandGuideDrawer({
     // Check for intents locally
     const lang3 = (i18n.language?.slice(0,2) ?? 'de') as 'de'|'en'|'sv';
     const suggested = detectIntents(currentQuestion, lang3);
-    
-    // If navigation intent detected with high confidence, handle immediately
-    if (suggested[0] && suggested[0].confidence >= 0.85) {
-      setMessages(prev => [...prev, { role: "user", content: currentQuestion }]);
-      setLoading(false);
-      await handleNavigation(suggested[0]);
-      return;
-    }
+    if (suggested[0]) setPendingAction(suggested[0]);
     
     try {
       // Normalize language to valid options
@@ -436,38 +309,7 @@ export function NorrlandGuideDrawer({
                 <h3 className="text-base font-semibold text-foreground">{greetingHeadline}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{greetingText}</p>
               </div>
-              
-              {/* Context-aware intro */}
-              <div className="mt-4 pt-4 border-t border-border space-y-2">
-                <p className="text-xs text-muted-foreground">{contextIntro}</p>
-                {contextHelp && (
-                  <p className="text-xs text-muted-foreground">{contextHelp}</p>
-                )}
-              </div>
-              
-              {/* Context-specific quick actions */}
-              {contextActions.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
-                  <div className="flex flex-col gap-2">
-                    {contextActions.map((action, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => {
-                          setQ(action);
-                          setTimeout(() => ask(), 50);
-                        }}
-                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
-                      >
-                        {action}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {/* Fallback to global quick actions if no context actions */}
-              {contextActions.length === 0 && quickCtas.length > 0 && (
+              {quickCtas.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                   <div className="flex flex-col gap-2">
@@ -573,7 +415,7 @@ export function NorrlandGuideDrawer({
                 }
               }}
               className="w-full h-20 rounded border border-border bg-background text-foreground p-2 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-              placeholder={t("input.placeholder")}
+              placeholder={t("norrly:input.placeholder")}
               disabled={loading}
             />
             <div className="flex gap-2">

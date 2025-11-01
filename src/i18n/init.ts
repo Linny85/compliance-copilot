@@ -2,20 +2,20 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-const buildId = import.meta.env.VITE_BUILD_ID ?? Date.now();
+const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
 
 i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    fallbackLng: ['de', 'en'],
+    fallbackLng: 'de',
     debug: import.meta.env.DEV,
     ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
-    load: 'languageOnly',
+    load: 'currentOnly',
     backend: {
-      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${buildId}`,
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
       allowMultiLoading: false,
       crossDomain: false
     },
@@ -43,11 +43,6 @@ i18n.on('loaded', (loaded) => {
 i18n.on('languageChanged', (lng) => {
   console.log('[i18n] Language changed to:', lng);
   document.documentElement.lang = lng?.slice(0, 2) || 'de';
-});
-
-// Debug: Log missing keys
-i18n.on('missingKey', (lngs, ns, key) => {
-  console.warn('[i18n] missing key:', { lngs, ns, key });
 });
 // Set initial lang
 document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
