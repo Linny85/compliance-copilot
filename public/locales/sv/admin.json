@@ -113,6 +113,12 @@
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Tvinga igenom policys och standardinställningar",
+    "opsTitle": "Operationer",
+    "opsDesc": "Samlad status för compliance-operationer",
+    "opsSendDigest": "Skicka ops-sammandrag",
+    "statusTitle": "Compliance-status",
+    "statusDesc": "Översikt för AI-förordningen och NIS2",
+    "noData": "Inga compliance-data ännu. Kör kontroller först.",
     "operations": {
       "title": "Drift",
       "empty": "Inga data ännu. Fylls efter schemalagd uppdatering.",
@@ -135,16 +141,25 @@
     },
     "saved": "Compliance-inställningar sparade."
   },
+  "insights": {
+    "title": "AI-insikter",
+    "desc": "30 dagars analys och trender för compliance",
+    "recent": "Senaste {{count}} insikterna. Daglig automatisering via cron.",
+    "actions": {
+      "generate": "Skapa nu"
+    }
+  },
 
   "qa": {
     "sectionTitle": "QA-övervakning",
     "sectionDesc": "Kvalitetskontroller och automatiska testrundor",
     "title": "QA-monitor",
-    "desc": "Systemhälsa och leverans av aviseringar",
-    "empty": "Inga QA-data tillgängliga ännu",
+    "desc": "Systemhälsa och leveransstatus för aviseringar",
+    "empty": "Inga QA-data ännu",
     "runFirst": "Kör första QA-sviten",
     "actions": {
       "runAll": "Kör alla tester",
+      "runFirst": "Kör första QA-sviten",
       "export": "Exportera rapport"
     },
     "lastRun": "Senaste körning: {{date}}",

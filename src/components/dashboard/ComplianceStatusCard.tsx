@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, CheckCircle, XCircle, AlertTriangle, FileDown, RefreshCw, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface ComplianceSummary {
   passed: number;
@@ -21,6 +22,7 @@ interface HistoricalData {
 }
 
 export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
+  const { t } = useTranslation(['admin']);
   const [compliance, setCompliance] = useState<ComplianceSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -139,7 +141,7 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-primary" />
-            Compliance Status
+            {t('admin:compliance.statusTitle')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -170,17 +172,17 @@ export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-primary" />
-          Compliance Status
+          {t('admin:compliance.statusTitle')}
         </CardTitle>
-        <CardDescription>AI Act & NIS2 compliance overview</CardDescription>
+        <CardDescription>{t('admin:compliance.statusDesc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {!compliance || compliance.total === 0 ? (
           <div className="text-center py-8 space-y-4">
             <div className="text-muted-foreground">
               <ShieldCheck className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p className="font-medium">No compliance data available</p>
-              <p className="text-sm mt-2">Run compliance checks to generate your first report</p>
+              <p className="font-medium">{t('admin:compliance.status.empty')}</p>
+              <p className="text-sm mt-2">{t('admin:compliance.noData')}</p>
             </div>
           </div>
         ) : (

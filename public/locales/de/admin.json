@@ -113,6 +113,12 @@
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Richtlinien und Standardeinstellungen durchsetzen",
+    "opsTitle": "Operations",
+    "opsDesc": "Vereinheitlichter Status der Compliance-Operationen",
+    "opsSendDigest": "Ops-Digest senden",
+    "statusTitle": "Compliance-Status",
+    "statusDesc": "Überblick zu AI Act & NIS2-Compliance",
+    "noData": "Noch keine Compliance-Daten verfügbar. Führe zuerst Compliance-Prüfungen aus.",
     "operations": {
       "title": "Operations",
       "empty": "Noch keine Daten. Dieser Bereich füllt sich nach der geplanten Aktualisierung.",
@@ -135,16 +141,25 @@
     },
     "saved": "Compliance-Einstellungen gespeichert."
   },
+  "insights": {
+    "title": "KI-Insights",
+    "desc": "30-Tage-Analyse und Trends zur Compliance",
+    "recent": "Letzte {{count}} Insights. Tägliche Automatisierung per Cron möglich.",
+    "actions": {
+      "generate": "Jetzt generieren"
+    }
+  },
 
   "qa": {
     "sectionTitle": "QA-Monitor",
     "sectionDesc": "Qualitätsprüfungen und automatisierte Testruns",
     "title": "QA-Monitor",
-    "desc": "Systemzustand und Zustellung von Benachrichtigungen",
+    "desc": "Systemzustand und Zustellstatus von Benachrichtigungen",
     "empty": "Noch keine QA-Daten vorhanden",
     "runFirst": "Erste QA-Suite starten",
     "actions": {
       "runAll": "Alle Tests ausführen",
+      "runFirst": "Erste QA-Suite starten",
       "export": "Bericht exportieren"
     },
     "lastRun": "Letzter Lauf: {{date}}",

@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 type OpsRow = {
   tenant_id: string;
@@ -25,6 +26,7 @@ type OpsRow = {
 };
 
 export function OpsDashboardCard({ companyId }: { companyId: string }) {
+  const { t } = useTranslation(['admin']);
   const [row, setRow] = useState<OpsRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -83,7 +85,7 @@ export function OpsDashboardCard({ companyId }: { companyId: string }) {
   if (loading) {
     return (
       <Card className="p-6">
-        <h3 className="text-lg font-semibold">Operations</h3>
+        <h3 className="text-lg font-semibold">{t('admin:compliance.opsTitle')}</h3>
         <div className="mt-4 animate-pulse h-16 bg-muted rounded" />
       </Card>
     );
@@ -93,19 +95,19 @@ export function OpsDashboardCard({ companyId }: { companyId: string }) {
     <Card className="p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Operations</h3>
+          <h3 className="text-lg font-semibold">{t('admin:compliance.opsTitle')}</h3>
           <p className="text-sm text-muted-foreground">
-            Unified compliance operations status
+            {t('admin:compliance.opsDesc')}
           </p>
         </div>
         <Button variant="secondary" onClick={sendDigest} disabled={sending}>
-          {sending ? 'Sending…' : 'Send Ops Digest'}
+          {sending ? t('admin:users.inviteDialog.sending') : t('admin:compliance.opsSendDigest')}
         </Button>
       </div>
 
       {!row ? (
         <div className="mt-6 text-sm text-muted-foreground">
-          No data yet. This populates after the scheduled refresh.
+          {t('admin:compliance.operations.empty')}
         </div>
       ) : (
         <>

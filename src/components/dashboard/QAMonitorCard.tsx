@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Clock, AlertTriangle, CheckCircle, PlayCircle, FileText, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 interface QAMonitor {
   last_run_status: string | null;
@@ -15,6 +16,7 @@ interface QAMonitor {
 }
 
 export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
+  const { t } = useTranslation(['admin']);
   const [monitor, setMonitor] = useState<QAMonitor | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
@@ -113,7 +115,7 @@ export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5 text-primary" />
-            QA Monitor
+            {t('admin:qa.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -135,21 +137,21 @@ export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Activity className="h-5 w-5 text-primary" />
-          QA Monitor
+          {t('admin:qa.title')}
         </CardTitle>
-        <CardDescription>System health and notification delivery status</CardDescription>
+        <CardDescription>{t('admin:qa.desc')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {!monitor || (!monitor.last_run_status && !monitor.last_run_at) ? (
           <div className="text-center py-8 space-y-4">
             <div className="text-muted-foreground">
               <Activity className="h-12 w-12 mx-auto mb-2 opacity-50" />
-              <p className="font-medium">No QA data available yet</p>
-              <p className="text-sm mt-2">Run your first QA test suite to get started</p>
+              <p className="font-medium">{t('admin:qa.empty')}</p>
+              <p className="text-sm mt-2">{t('admin:compliance.noData')}</p>
             </div>
             <Button onClick={handleRunQA} disabled={running}>
               <PlayCircle className="h-4 w-4 mr-2" />
-              {running ? "Starting..." : "Run First QA Suite"}
+              {running ? t('admin:users.inviteDialog.sending') : t('admin:qa.actions.runFirst')}
             </Button>
           </div>
         ) : (

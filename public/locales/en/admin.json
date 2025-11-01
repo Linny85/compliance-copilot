@@ -113,6 +113,12 @@
   "compliance": {
     "sectionTitle": "Compliance",
     "sectionDesc": "Enforce policies and default settings",
+    "opsTitle": "Operations",
+    "opsDesc": "Unified compliance operations status",
+    "opsSendDigest": "Send Ops Digest",
+    "statusTitle": "Compliance Status",
+    "statusDesc": "AI Act & NIS2 compliance overview",
+    "noData": "No compliance data available yet. Run compliance checks first.",
     "operations": {
       "title": "Operations",
       "empty": "No data yet. This will populate after the scheduled refresh.",
@@ -135,6 +141,14 @@
     },
     "saved": "Compliance settings saved."
   },
+  "insights": {
+    "title": "AI Insights",
+    "desc": "30-day compliance analysis and trends",
+    "recent": "Last {{count}} insights. Daily automation available via cron.",
+    "actions": {
+      "generate": "Generate Now"
+    }
+  },
 
   "qa": {
     "sectionTitle": "QA Monitor",
@@ -145,6 +159,7 @@
     "runFirst": "Run First QA Suite",
     "actions": {
       "runAll": "Run all tests",
+      "runFirst": "Run First QA Suite",
       "export": "Export report"
     },
     "lastRun": "Last run: {{date}}",
