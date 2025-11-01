@@ -83,13 +83,18 @@ export const useAuthGuard = () => {
         const paidActive = (billingRes.data as any)?.paid_active || false;
         const hasAccess = paidActive || trialActive;
         
+        // Check if on company-profile page with mode parameter
+        const isCompanyProfile = location.pathname === '/company-profile';
+        const params = new URLSearchParams(location.search);
+        const mode = params.get('mode'); // 'create' | 'edit' | null
+        
         // Routing logic based on tenantId and access
         if (!info.tenantId && location.pathname !== '/company-profile') {
           // User has no tenant, redirect to onboarding
-          navigate('/company-profile');
-        } else if (info.tenantId && location.pathname === '/company-profile') {
-          // User has tenant but is on onboarding page, redirect to dashboard
-          navigate('/dashboard');
+          navigate('/company-profile?mode=create');
+        } else if (info.tenantId && isCompanyProfile && !(mode === 'create' || mode === 'edit')) {
+          // User has tenant and is on company-profile without explicit mode → redirect to read-only view
+          navigate('/organization', { replace: true });
         } else if (info.tenantId && !hasAccess && location.pathname !== '/billing') {
           // User has tenant but no trial/paid access, redirect to billing
           navigate('/billing');

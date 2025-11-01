@@ -40,6 +40,7 @@ import Demo from "./pages/Demo";
 import RegisterAISystem from "./pages/ai/RegisterAISystem";
 import NotFound from "./pages/NotFound";
 import Forbidden from "./pages/Forbidden";
+import OrganizationView from "./pages/OrganizationView";
 import { installDomGuards } from "./lib/dom-guards";
 import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
@@ -86,6 +87,7 @@ const App = () => (
             {/* Protected routes with shared layout */}
             <Route element={<AppLayout />}>
               <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/organization" element={<OrganizationView />} />
               <Route path="/company-profile" element={
                 <ErrorBoundary>
                   <CompanyProfile />

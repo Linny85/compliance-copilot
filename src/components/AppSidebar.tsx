@@ -70,7 +70,7 @@ export function AppSidebar() {
 
   // System Items - recreate when language changes
   const systemNavItems = [
-    { title: t.nav.organization, url: "/company-profile", icon: Building2 },
+    { title: t.nav.organization, url: "/organization", icon: Building2 },
     { title: t.nav.integrations, url: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
     { title: t.nav.helpbot_manager, url: "/admin/helpbot", icon: Database, adminOnly: true },
     ...(isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Settings }] : []),

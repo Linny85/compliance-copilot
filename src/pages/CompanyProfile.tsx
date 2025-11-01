@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Building2, Lock, CheckCircle } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
+import { useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 // 🔍 DIAGNOSE: Global action tracker
@@ -46,6 +47,7 @@ export const companySizeOptions = [
 
 const CompanyProfile = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { t, language } = useI18n();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);

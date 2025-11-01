@@ -61,9 +61,9 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => navigate("/company-profile")}
+          onClick={() => navigate("/organization")}
         >
-          {t('dashboard:editOrganization')}
+          {t('dashboard:viewOrganization') || t('dashboard:editOrganization')}
         </Button>
       </CardContent>
     </Card>
