@@ -5083,6 +5083,18 @@ export type Database = {
         }
         Relationships: []
       }
+      v_forecast_reliability_trend: {
+        Row: {
+          avg_mae: number | null
+          avg_reliability: number | null
+          day: string | null
+          first_update: string | null
+          last_update: string | null
+          sample_count: number | null
+          tenant_id: string | null
+        }
+        Relationships: []
+      }
       v_framework_compliance: {
         Row: {
           framework: string | null
