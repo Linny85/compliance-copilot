@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Building2, MapPin, Briefcase, FileText, Globe, Hash, Users } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useI18n } from "@/contexts/I18nContext";
 
 interface CompanyData {
   id: string;
@@ -24,7 +24,7 @@ interface CompanyData {
 
 export default function OrganizationView() {
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t } = useTranslation(['organization', 'common']);
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -80,15 +80,15 @@ export default function OrganizationView() {
   };
 
   const getSectorLabel = (sectorValue?: string) => {
-    if (!sectorValue) return 'Not specified';
+    if (!sectorValue) return t('organization:notSpecified');
     const normalized = sectorValue.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-    return t[`sectors.${normalized}`] || sectorValue;
+    return t(`organization:sectors.${normalized}`, sectorValue);
   };
 
   const getCompanySizeLabel = (size?: string) => {
-    if (!size) return 'Not specified';
+    if (!size) return t('organization:notSpecified');
     const normalized = size.replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '');
-    return t[`companySize.${normalized}`] || size;
+    return t(`organization:companySize.${normalized}`, size);
   };
 
   if (loading) {
@@ -133,9 +133,9 @@ export default function OrganizationView() {
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">{t.nav?.organization || 'Organization'}</h1>
+        <h1 className="text-3xl font-bold">{t('organization:title')}</h1>
         <p className="text-muted-foreground mt-2">
-          View and manage your organization details
+          {t('organization:subtitle')}
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export default function OrganizationView() {
           </CardTitle>
           {company.legal_name && (
             <CardDescription className="text-base">
-              {t.onboarding?.legalName || 'Legal Name'}: {company.legal_name}
+              {t('organization:fields.legalName')}: {company.legal_name}
             </CardDescription>
           )}
         </CardHeader>
@@ -156,7 +156,7 @@ export default function OrganizationView() {
           {/* Address */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-              Address
+              {t('organization:fields.address')}
             </h3>
             <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
               <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
@@ -174,7 +174,7 @@ export default function OrganizationView() {
               <div className="flex items-center gap-2 mb-2">
                 <Briefcase className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  {t.onboarding?.sector || 'Sector'}
+                  {t('organization:fields.sector')}
                 </span>
               </div>
               <div className="font-medium">{getSectorLabel(company.sector)}</div>
@@ -184,7 +184,7 @@ export default function OrganizationView() {
               <div className="flex items-center gap-2 mb-2">
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm font-medium text-muted-foreground">
-                  {t.onboarding?.companySize || 'Company Size'}
+                  {t('organization:fields.companySize')}
                 </span>
               </div>
               <div className="font-medium">{getCompanySizeLabel(company.company_size)}</div>
@@ -195,11 +195,11 @@ export default function OrganizationView() {
                 <div className="flex items-center gap-2 mb-2">
                   <Globe className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium text-muted-foreground">
-                    Website
+                    {t('organization:fields.website')}
                   </span>
                 </div>
                 <a 
-                  href={company.website} 
+                  href={company.website.startsWith('http') ? company.website : `https://${company.website}`}
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="font-medium text-primary hover:underline"
@@ -214,7 +214,7 @@ export default function OrganizationView() {
                 <div className="flex items-center gap-2 mb-2">
                   <Hash className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm font-medium text-muted-foreground">
-                    {t.onboarding?.vatId || 'VAT ID'}
+                    {t('organization:fields.vatId')}
                   </span>
                 </div>
                 <div className="font-medium font-mono">{company.vat_id}</div>
@@ -225,10 +225,10 @@ export default function OrganizationView() {
           {/* Actions */}
           <div className="flex gap-3 pt-4 border-t">
             <Button onClick={() => navigate('/company-profile?mode=edit')}>
-              Edit Organization
+              {t('organization:actions.edit')}
             </Button>
             <Button variant="outline" onClick={() => navigate('/dashboard')}>
-              Back to Dashboard
+              {t('organization:actions.back')}
             </Button>
           </div>
         </CardContent>

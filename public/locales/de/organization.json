@@ -1,0 +1,43 @@
+{
+  "title": "Organisation",
+  "subtitle": "Sehen und verwalten Sie Ihre Organisationsdaten",
+  "fields": {
+    "name": "Firmenname",
+    "legalName": "Rechtlicher Name",
+    "address": "Adresse",
+    "street": "Straße",
+    "postalCode": "Postleitzahl",
+    "city": "Stadt",
+    "country": "Land",
+    "sector": "Sektor",
+    "companySize": "Unternehmensgröße",
+    "website": "Website",
+    "vatId": "USt-IdNr."
+  },
+  "actions": {
+    "edit": "Organisation bearbeiten",
+    "back": "Zurück zum Dashboard"
+  },
+  "notSpecified": "Nicht angegeben",
+  "sectors": {
+    "agriculture": "Landwirtschaft",
+    "manufacturing": "Verarbeitendes Gewerbe",
+    "construction": "Bauwesen",
+    "it_services": "IT-Dienstleistungen",
+    "education": "Bildung",
+    "healthcare": "Gesundheitswesen",
+    "public_sector": "Öffentlicher Sektor",
+    "finance": "Finanzen",
+    "energy": "Energie",
+    "transport": "Verkehr",
+    "other": "Sonstiges"
+  },
+  "companySize": {
+    "1-10": "1–10",
+    "11-50": "11–50",
+    "51-200": "51–200",
+    "201-500": "201–500",
+    "501-1000": "501–1.000",
+    "1000_plus": "1.000+"
+  }
+}

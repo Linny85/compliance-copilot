@@ -1,0 +1,43 @@
+{
+  "title": "Organization",
+  "subtitle": "View and manage your organization details",
+  "fields": {
+    "name": "Company name",
+    "legalName": "Legal name",
+    "address": "Address",
+    "street": "Street",
+    "postalCode": "Postal code",
+    "city": "City",
+    "country": "Country",
+    "sector": "Sector",
+    "companySize": "Company size",
+    "website": "Website",
+    "vatId": "VAT ID"
+  },
+  "actions": {
+    "edit": "Edit organization",
+    "back": "Back to dashboard"
+  },
+  "notSpecified": "Not specified",
+  "sectors": {
+    "agriculture": "Agriculture",
+    "manufacturing": "Manufacturing",
+    "construction": "Construction",
+    "it_services": "IT services",
+    "education": "Education",
+    "healthcare": "Healthcare",
+    "public_sector": "Public sector",
+    "finance": "Finance",
+    "energy": "Energy",
+    "transport": "Transport",
+    "other": "Other"
+  },
+  "companySize": {
+    "1-10": "1–10",
+    "11-50": "11–50",
+    "51-200": "51–200",
+    "201-500": "201–500",
+    "501-1000": "501–1,000",
+    "1000_plus": "1,000+"
+  }
+}
