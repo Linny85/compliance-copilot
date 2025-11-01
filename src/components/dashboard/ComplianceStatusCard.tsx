@@ -22,7 +22,7 @@ interface HistoricalData {
 }
 
 export const ComplianceStatusCard = ({ companyId }: { companyId: string }) => {
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation(['admin', 'common']);
   const [compliance, setCompliance] = useState<ComplianceSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);

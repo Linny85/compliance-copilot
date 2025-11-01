@@ -19,7 +19,7 @@ type Insight = {
 };
 
 export function AIInsightsCard({ companyId }: { companyId: string }) {
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation(['admin', 'common']);
   const [loading, setLoading] = useState(true);
   const [genLoading, setGenLoading] = useState(false);
   const [items, setItems] = useState<Insight[]>([]);

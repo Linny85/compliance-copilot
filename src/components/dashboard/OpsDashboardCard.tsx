@@ -26,7 +26,7 @@ type OpsRow = {
 };
 
 export function OpsDashboardCard({ companyId }: { companyId: string }) {
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation(['admin', 'common']);
   const [row, setRow] = useState<OpsRow | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);

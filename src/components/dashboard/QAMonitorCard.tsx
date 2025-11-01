@@ -16,7 +16,7 @@ interface QAMonitor {
 }
 
 export const QAMonitorCard = ({ companyId }: { companyId: string }) => {
-  const { t } = useTranslation(['admin']);
+  const { t } = useTranslation(['admin', 'common']);
   const [monitor, setMonitor] = useState<QAMonitor | null>(null);
   const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
