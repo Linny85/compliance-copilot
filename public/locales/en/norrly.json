@@ -76,6 +76,15 @@
   },
   "input": {
     "placeholder": "Type your question (Enter to send, Shift+Enter for a new line)…",
-    "open": "Open"
+    "open": "Open",
+    "cancel": "Cancel",
+    "loading": "Loading..."
+  },
+  "voice": {
+    "on": "Voice on",
+    "off": "Voice off"
+  },
+  "session": {
+    "reset": "Reset session"
   }
 }

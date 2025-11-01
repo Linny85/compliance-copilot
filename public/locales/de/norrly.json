@@ -76,6 +76,15 @@
   },
   "input": {
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
-    "open": "Öffnen"
+    "open": "Öffnen",
+    "cancel": "Abbrechen",
+    "loading": "Lädt..."
+  },
+  "voice": {
+    "on": "Sprache an",
+    "off": "Sprache aus"
+  },
+  "session": {
+    "reset": "Sitzung zurücksetzen"
   }
 }

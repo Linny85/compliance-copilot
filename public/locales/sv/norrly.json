@@ -76,6 +76,15 @@
   },
   "input": {
     "placeholder": "Skriv din fråga (Enter för att skicka, Shift+Enter för ny rad)…",
-    "open": "Öppna"
+    "open": "Öppna",
+    "cancel": "Avbryt",
+    "loading": "Laddar..."
+  },
+  "voice": {
+    "on": "Röst på",
+    "off": "Röst av"
+  },
+  "session": {
+    "reset": "Återställ session"
   }
 }
