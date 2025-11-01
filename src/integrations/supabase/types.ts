@@ -2601,6 +2601,8 @@ export type Database = {
       org_secrets: {
         Row: {
           algo: string
+          failed_attempts: number
+          locked_until: string | null
           master_hash: string
           rotated_at: string
           tenant_id: string
@@ -2609,6 +2611,8 @@ export type Database = {
         }
         Insert: {
           algo?: string
+          failed_attempts?: number
+          locked_until?: string | null
           master_hash: string
           rotated_at?: string
           tenant_id: string
@@ -2617,6 +2621,8 @@ export type Database = {
         }
         Update: {
           algo?: string
+          failed_attempts?: number
+          locked_until?: string | null
           master_hash?: string
           rotated_at?: string
           tenant_id?: string
