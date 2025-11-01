@@ -1,90 +1,45 @@
 {
+  "name": "Norrly",
   "header": {
     "subtitle": "Norrly – dein Kollege für Klarheit in NIS2 & dem AI Act."
   },
   "intro": {
     "headline": "Hi, ich bin Norrly 👋",
-    "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung. Ich helfe dir, dich im NIS2-AI-Guard-Programm zurechtzufinden und beantworte alle Fragen rund um NIS2, den AI Act und Compliance."
+    "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung. Ich helfe dir, dich im NIS2-AI-Guard-Programm zurechtzufinden und beantworte alle Fragen rund um NIS2, den EU AI Act und Compliance."
+  },
+  "context": {
+    "intro": "Hi! Du bist im Bereich {{page}} von NIS2-AI-Guard.",
+    "controls_help": "Hier kannst du Sicherheits- und Compliance-Maßnahmen planen, umsetzen und nachweisen.",
+    "incidents_help": "Hier meldest und verwaltest du Sicherheitsvorfälle – inkl. Status, Fristen und Benachrichtigungen.",
+    "audits_help": "Hier planst du Audits, verwaltest Nachweise und erstellst Berichte.",
+    "training_help": "Hier weist du Trainings zu, verfolgst den Fortschritt und prüfst Zertifikate.",
+    "nis2_help": "Hier findest du NIS2-Spezifika wie Schwellen, Register, Rollen und Meldewege.",
+    "aiact_help": "Hier arbeitest du zu AI-Act-Themen: Systemklassifizierung, Dokumentation und Pflichten.",
+    "dpia_help": "Hier erstellst du Datenschutz-Folgenabschätzungen und verwaltest Risiken.",
+    "evidence_help": "Hier sammelst und verknüpfst du Nachweise für Maßnahmen, Audits und Policies.",
+    "documents_help": "Hier erstellst, versionierst und veröffentlichst du Richtlinien und Vorlagen."
+  },
+  "pages": {
+    "/dashboard": "Dashboard",
+    "/controls": "Maßnahmen",
+    "/incidents": "Vorfälle",
+    "/incidents/new": "Vorfall melden",
+    "/audits": "Audits",
+    "/training": "Training",
+    "/registry": "NIS2-Register",
+    "/governance/roles": "Verantwortlichkeiten",
+    "/policies": "Richtlinien",
+    "/evidence": "Nachweise",
+    "/documents": "Dokumente",
+    "/settings": "Einstellungen",
+    "/billing": "Abrechnung"
   },
   "cta": {
-    "verify": "Verifizieren",
-    "whyAccess": "Warum ist ein Login nötig?",
-    "createDoc": "Neues Dokument erstellen",
-    "name": "Name",
     "incident": "Sicherheitsvorfall melden",
     "register": "NIS2-Register prüfen",
     "roles": "Verantwortlichkeiten klären",
     "audit": "Audit vorbereiten",
     "training": "Schulung starten"
-  },
-  "nav": {
-    "ok": "Alles klar – ich öffne „{{target}}".",
-    "ambiguous": "Meintest du eins davon?",
-    "denied": "Dafür hast du aktuell keine Berechtigung. Frag gern deine/n Admin.",
-    "error": "Das hat nicht geklappt. Versuch es bitte nochmal oder wähle im Menü."
-  },
-  "input": {
-    "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
-    "open": "Öffnen",
-    "loading": "Lädt…",
-    "cancel": "Abbrechen"
-  },
-  "voice": {
-    "on": "Stimme an",
-    "off": "Stimme aus"
-  },
-  "session": {
-    "reset": "Neue Session"
-  },
-  "guard": {
-    "deny": {
-      "technical": "Dazu kann ich keine Details teilen. Wenn du Norrly nutzen möchtest, helfe ich dir gern mit den verfügbaren Funktionen und Anleitungen.",
-      "credentials": "Zugangs- und Systeminformationen sind vertraulich und werden nicht offengelegt. Benötigst du Hilfe bei der Anwendung?",
-      "license": "Ich kann nicht dabei helfen, Lizenz- oder Sicherheitsmechanismen zu umgehen. Gern erkläre ich dir die offiziellen Nutzungsmöglichkeiten.",
-      "cloning": "Ich kann nicht dabei helfen, unser Produkt zu kopieren oder nachzubauen. Gern erkläre ich dir die offiziellen Nutzungsmöglichkeiten.",
-      "generic": "Diese Anfrage kann ich aus Sicherheitsgründen nicht beantworten. Kann ich dir auf andere Weise helfen?"
-    },
-    "rateLimit": "Zu viele blockierte Anfragen. Bitte warte 2 Minuten und versuche es erneut."
-  },
-  "help": {
-    "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
-  },
-  "pages": {
-    "/controls": "Maßnahmen",
-    "/controls-mapping": "Maßnahmen-Mapping",
-    "/incidents": "Vorfälle",
-    "/incidents/new": "Vorfall melden",
-    "/audits": "Audits",
-    "/audits/new": "Neues Audit",
-    "/training": "Training",
-    "/registry": "NIS2-Register",
-    "/nis2": "NIS2-Compliance",
-    "/ai-act": "AI Act",
-    "/ai-systems/new": "KI-System registrieren",
-    "/dpia": "DPIA",
-    "/evidence": "Nachweise",
-    "/checks": "Prüfungen",
-    "/scope": "Geltungsbereich",
-    "/scope-analysis": "Scope-Analyse",
-    "/documents": "Dokumente",
-    "/documents/new": "Neues Dokument",
-    "/dashboard": "Dashboard",
-    "/billing": "Abrechnung",
-    "/organization": "Organisation",
-    "/company-profile": "Firmenprofil",
-    "/admin": "Administration"
-  },
-  "context": {
-    "intro": "Hallo! Du bist hier im Bereich {{page}} im NIS2-AI-Guard.",
-    "controls_help": "Hier kannst du Sicherheits- und Compliance-Maßnahmen planen, umsetzen und nachweisen.",
-    "incidents_help": "Hier kannst du Sicherheitsvorfälle melden, verfolgen und dokumentieren.",
-    "audits_help": "Hier planst und verwaltest du deine Compliance-Audits.",
-    "training_help": "Hier verwaltest du Schulungen und Zertifikate für dein Team.",
-    "nis2_help": "Hier siehst du den Status deiner NIS2-Compliance.",
-    "aiact_help": "Hier verwaltest du die Compliance mit dem EU AI Act.",
-    "dpia_help": "Hier erstellst und verwaltest du Datenschutz-Folgenabschätzungen.",
-    "evidence_help": "Hier sammelst und verwaltest du Compliance-Nachweise.",
-    "documents_help": "Hier erstellst und verwaltest du Richtlinien und Dokumente."
   },
   "actions": {
     "controls": {
@@ -99,7 +54,7 @@
     },
     "audits": {
       "plan": "Audit planen",
-      "upload": "Auditnachweise hochladen",
+      "upload": "Audit-Nachweise hochladen",
       "report": "Bericht erstellen"
     },
     "training": {
@@ -108,9 +63,19 @@
       "cert": "Zertifikate prüfen"
     },
     "documents": {
-      "new": "Neues Dokument erstellen",
-      "template": "Vorlage verwenden",
-      "review": "Dokumente überprüfen"
+      "create": "Neues Dokument erstellen",
+      "import": "Vorlage importieren",
+      "publish": "Version veröffentlichen"
     }
+  },
+  "nav": {
+    "ok": "Alles klar – ich öffne „{{target}}".",
+    "denied": "Dafür hast du aktuell keine Berechtigung. Bitte kontaktiere deine:n Admin.",
+    "ambiguous": "Meintest du eins davon?",
+    "error": "Das hat nicht geklappt. Versuch es bitte erneut oder nutze das Menü."
+  },
+  "input": {
+    "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
+    "open": "Öffnen"
   }
 }

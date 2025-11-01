@@ -1,90 +1,45 @@
 {
+  "name": "Norrly",
   "header": {
     "subtitle": "Norrly – din kollega för klarhet i NIS2 och AI-förordningen."
   },
   "intro": {
     "headline": "Hej, jag är Norrly 👋",
-    "text": "Jag förklarar, vägleder och hjälper dig – från regler till genomförande. Jag guidar dig i NIS2-AI-Guard-programmet och svarar på dina frågor om NIS2, AI-förordningen och regelefterlevnad."
-  },
-  "cta": {
-    "verify": "Verifiera",
-    "whyAccess": "Varför behöver jag logga in?",
-    "createDoc": "Skapa nytt dokument",
-    "name": "Namn",
-    "incident": "Rapportera en säkerhetsincident",
-    "register": "Kontrollera NIS2-registret",
-    "roles": "Klart ansvar",
-    "audit": "Förbered revision",
-    "training": "Starta utbildning"
-  },
-  "nav": {
-    "ok": "Japp – öppnar \"{{target}}\".",
-    "ambiguous": "Menade du någon av dessa?",
-    "denied": "Du har inte behörighet till detta ännu. Kontakta din administratör.",
-    "error": "Det fungerade inte. Försök igen eller använd menyn."
-  },
-  "input": {
-    "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
-    "open": "Öppna",
-    "loading": "Laddar…",
-    "cancel": "Avbryt"
-  },
-  "voice": {
-    "on": "Röst på",
-    "off": "Röst av"
-  },
-  "session": {
-    "reset": "Ny session"
-  },
-  "guard": {
-    "deny": {
-      "technical": "Jag kan inte dela detaljer om det. Om du vill använda Norrly hjälper jag dig gärna med tillgängliga funktioner och dokumentation.",
-      "credentials": "Åtkomst- och systeminformation är konfidentiell och kan inte avslöjas. Behöver du hjälp med applikationen?",
-      "license": "Jag kan inte hjälpa till att kringgå licens- eller säkerhetsmekanismer. Jag förklarar gärna officiella användningsalternativ.",
-      "cloning": "Jag kan inte hjälpa till att kopiera eller replikera vår produkt. Jag förklarar gärna officiella användningsalternativ.",
-      "generic": "Jag kan inte svara på denna förfrågan av säkerhetsskäl. Kan jag hjälpa dig på annat sätt?"
-    },
-    "rateLimit": "För många blockerade förfrågningar. Vänta 2 minuter och försök igen."
-  },
-  "help": {
-    "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
-  },
-  "pages": {
-    "/controls": "Åtgärder",
-    "/controls-mapping": "Åtgärder-mappning",
-    "/incidents": "Incidenter",
-    "/incidents/new": "Rapportera incident",
-    "/audits": "Revisioner",
-    "/audits/new": "Ny revision",
-    "/training": "Utbildning",
-    "/registry": "NIS2-register",
-    "/nis2": "NIS2-efterlevnad",
-    "/ai-act": "AI-lagen",
-    "/ai-systems/new": "Registrera AI-system",
-    "/dpia": "DPIA",
-    "/evidence": "Bevis",
-    "/checks": "Kontroller",
-    "/scope": "Omfattning",
-    "/scope-analysis": "Scope-analys",
-    "/documents": "Dokument",
-    "/documents/new": "Nytt dokument",
-    "/dashboard": "Översikt",
-    "/billing": "Fakturering",
-    "/organization": "Organisation",
-    "/company-profile": "Företagsprofil",
-    "/admin": "Administration"
+    "text": "Jag förklarar, vägleder och stöttar dig – från regler till genomförande. Jag hjälper dig att navigera i NIS2-AI-Guard och svarar på dina frågor om NIS2, EU:s AI-förordning och regelefterlevnad."
   },
   "context": {
     "intro": "Hej! Du är i avsnittet {{page}} i NIS2-AI-Guard.",
-    "controls_help": "Här kan du planera, genomföra och bevisa dina säkerhets- och efterlevnadsåtgärder.",
-    "incidents_help": "Här kan du rapportera, följa och dokumentera säkerhetsincidenter.",
-    "audits_help": "Här planerar och hanterar du dina efterlevnadsrevisioner.",
-    "training_help": "Här hanterar du utbildningar och certifikat för ditt team.",
-    "nis2_help": "Här ser du statusen för din NIS2-efterlevnad.",
-    "aiact_help": "Här hanterar du efterlevnad av EU:s AI-lag.",
-    "dpia_help": "Här skapar och hanterar du konsekvensbedömningar för dataskydd.",
-    "evidence_help": "Här samlar och hanterar du efterlevnadsbevis.",
-    "documents_help": "Här skapar och hanterar du policyer och dokument."
+    "controls_help": "Här kan du planera, genomföra och styrka dina säkerhets- och efterlevnadsåtgärder.",
+    "incidents_help": "Rapportera och hantera säkerhetsincidenter – inklusive status, tidsfrister och aviseringar.",
+    "audits_help": "Planera revisioner, hantera bevis och skapa rapporter.",
+    "training_help": "Tilldela utbildningar, följ framsteg och kontrollera intyg.",
+    "nis2_help": "Här finns NIS2-specifikt innehåll: trösklar, register, roller och rapportering.",
+    "aiact_help": "Arbeta med AI-förordningen: systemklassning, dokumentation och skyldigheter.",
+    "dpia_help": "Skapa konsekvensbedömningar för dataskydd (DPIA) och hantera risker.",
+    "evidence_help": "Samla och länka bevis för åtgärder, revisioner och policys.",
+    "documents_help": "Skapa, versionshantera och publicera policydokument och mallar."
+  },
+  "pages": {
+    "/dashboard": "Översikt",
+    "/controls": "Åtgärder",
+    "/incidents": "Incidenter",
+    "/incidents/new": "Rapportera incident",
+    "/audits": "Revisioner",
+    "/training": "Utbildning",
+    "/registry": "NIS2-register",
+    "/governance/roles": "Ansvar",
+    "/policies": "Policys",
+    "/evidence": "Bevis",
+    "/documents": "Dokument",
+    "/settings": "Inställningar",
+    "/billing": "Fakturering"
+  },
+  "cta": {
+    "incident": "Rapportera en säkerhetsincident",
+    "register": "Kontrollera NIS2-registret",
+    "roles": "Tydliggör ansvar",
+    "audit": "Förbered revision",
+    "training": "Starta utbildning"
   },
   "actions": {
     "controls": {
@@ -95,7 +50,7 @@
     "incidents": {
       "new": "Rapportera ny incident",
       "status": "Kontrollera status",
-      "policy": "Visa rapporteringsförfarande"
+      "policy": "Visa rapporteringsrutin"
     },
     "audits": {
       "plan": "Planera revision",
@@ -105,12 +60,22 @@
     "training": {
       "assign": "Tilldela utbildning",
       "progress": "Visa framsteg",
-      "cert": "Kontrollera certifikat"
+      "cert": "Kontrollera intyg"
     },
     "documents": {
-      "new": "Skapa nytt dokument",
-      "template": "Använd mall",
-      "review": "Granska dokument"
+      "create": "Skapa nytt dokument",
+      "import": "Importera mall",
+      "publish": "Publicera version"
     }
+  },
+  "nav": {
+    "ok": "Japp – öppnar "{{target}}".",
+    "denied": "Du har inte behörighet till detta. Kontakta administratören.",
+    "ambiguous": "Menade du någon av dessa?",
+    "error": "Det fungerade inte. Försök igen eller använd menyn."
+  },
+  "input": {
+    "placeholder": "Skriv din fråga (Enter för att skicka, Shift+Enter för ny rad)…",
+    "open": "Öppna"
   }
 }
