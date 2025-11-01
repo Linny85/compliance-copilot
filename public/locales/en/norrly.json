@@ -1,5 +1,8 @@
 {
-  "intro": "Hi, I'm NORRLY. I help you handle compliance quickly & stress-free.",
+  "intro": {
+    "headline": "Hi, I'm Norrly 👋",
+    "text": "I explain, guide and support you – from regulation to implementation. I'll help you navigate the NIS2-AI-Guard program and answer all your questions about NIS2, the EU AI Act and your compliance journey."
+  },
   "cta": {
     "verify": "Verify",
     "whyAccess": "Why do I need to sign in?",

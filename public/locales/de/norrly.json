@@ -1,5 +1,8 @@
 {
-  "intro": "Hi, ich bin NORRLY. Ich helfe dir, Compliance schnell & stressfrei zu erledigen.",
+  "intro": {
+    "headline": "Hi, ich bin Norrly 👋",
+    "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung. Ich helfe dir, dich im NIS2-AI-Guard-Programm zurechtzufinden und beantworte alle Fragen rund um NIS2, den AI Act und Compliance."
+  },
   "cta": {
     "verify": "Verifizieren",
     "whyAccess": "Warum ist ein Login nötig?",

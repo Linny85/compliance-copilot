@@ -1,5 +1,8 @@
 {
-  "intro": "Hej, jag är NORRLY. Jag hjälper dig hantera efterlevnad snabbt & stressfritt.",
+  "intro": {
+    "headline": "Hej, jag är Norrly 👋",
+    "text": "Jag förklarar, vägleder och hjälper dig – från regler till genomförande. Jag guidar dig i NIS2-AI-Guard-programmet och svarar på dina frågor om NIS2, AI-förordningen och efterlevnad."
+  },
   "cta": {
     "verify": "Verifiera",
     "whyAccess": "Varför behöver jag logga in?",
