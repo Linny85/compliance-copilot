@@ -1,5 +1,5 @@
-import { requireAuth, supabaseAdmin, verifyMaster, rateLimit, signEditToken } from "@shared/utils/security.ts";
-import { auditEvent } from "@shared/utils/audit.ts";
+import { requireAuth, supabaseAdmin, verifyMaster, rateLimit, signEditToken } from "../_shared/utils/security.ts";
+import { auditEvent } from "../_shared/utils/audit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
