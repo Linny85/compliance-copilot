@@ -14,8 +14,25 @@
     "incident": "Report a security incident",
     "register": "Check NIS2 registry",
     "roles": "Clarify responsibilities",
-    "audit": "Prepare audit",
+    "auditList": "Audit Overview",
+    "auditNew": "Create New Audit",
+    "controlsDue": "Controls Due (Today)",
+    "evidenceControls": "Evidence Overview",
     "training": "Start training"
+  },
+  "missing": {
+    "incident": "Incident creation route not yet configured.",
+    "registry": "Registry route not yet configured.",
+    "roles": "Governance roles route not yet configured.",
+    "controls_new": "Controls creation route not yet configured."
+  },
+  "errors": {
+    "route_missing": "Route unavailable.",
+    "nav_failed": "Navigation failed."
+  },
+  "nav": {
+    "ok": "Navigating to {{target}}",
+    "error": "Navigation failed"
   },
   "input": {
     "placeholder": "Type a question (Enter to send, Shift+Enter for a new line)…",

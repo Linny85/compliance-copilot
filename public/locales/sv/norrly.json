@@ -14,8 +14,25 @@
     "incident": "Rapportera en säkerhetsincident",
     "register": "Kontrollera NIS2-registret",
     "roles": "Klart ansvar",
-    "audit": "Förbered revision",
+    "auditList": "Audit Översikt",
+    "auditNew": "Skapa Ny Audit",
+    "controlsDue": "Kontroller Förfaller (Idag)",
+    "evidenceControls": "Bevis Översikt",
     "training": "Starta utbildning"
+  },
+  "missing": {
+    "incident": "Incident-skapande väg är inte konfigurerad än.",
+    "registry": "Registerväg är inte konfigurerad än.",
+    "roles": "Styrningsroller väg är inte konfigurerad än.",
+    "controls_new": "Kontroll-skapande väg är inte konfigurerad än."
+  },
+  "errors": {
+    "route_missing": "Väg inte tillgänglig.",
+    "nav_failed": "Navigation misslyckades."
+  },
+  "nav": {
+    "ok": "Navigerar till {{target}}",
+    "error": "Navigation misslyckades"
   },
   "input": {
     "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",

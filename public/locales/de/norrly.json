@@ -14,8 +14,25 @@
     "incident": "Sicherheitsvorfall melden",
     "register": "NIS2-Register prüfen",
     "roles": "Verantwortlichkeiten klären",
-    "audit": "Audit vorbereiten",
+    "auditList": "Audit-Übersicht",
+    "auditNew": "Neuen Audit anlegen",
+    "controlsDue": "Kontrollen fällig (heute)",
+    "evidenceControls": "Evidence-Übersicht",
     "training": "Schulung starten"
+  },
+  "missing": {
+    "incident": "Die Incident-Create-Route ist noch nicht hinterlegt.",
+    "registry": "Registry-Route ist noch nicht hinterlegt.",
+    "roles": "Governance-Rollen-Route ist noch nicht hinterlegt.",
+    "controls_new": "Controls-Create-Route ist noch nicht hinterlegt."
+  },
+  "errors": {
+    "route_missing": "Route nicht verfügbar.",
+    "nav_failed": "Navigation fehlgeschlagen."
+  },
+  "nav": {
+    "ok": "Navigiere zu {{target}}",
+    "error": "Navigation fehlgeschlagen"
   },
   "input": {
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",

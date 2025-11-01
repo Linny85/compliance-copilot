@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { detectIntents, type ChatAction } from "@/features/assistant/intents";
 import { canAccess } from "@/lib/rbac";
+import { ROUTES } from "@/routes";
 import { navigateGlobal } from "@/lib/navigation";
 import { sanitize } from "@/helpbot/outputSanitizer";
 import { contextHint } from "@/helpbot/contextHints";
@@ -81,29 +83,36 @@ export function NorrlandGuideDrawer({
     reset: t("session.reset")
   };
 
-  // Quickstart actions (keine Hooks)
+  // Quickstart actions - mit disabled flags für fehlende Routes
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
   
-  const quickStart = [
-    { label: t('cta.incident'),  path: '/incidents/new' },
-    { label: t('cta.register'),  path: '/registry' },
-    { label: t('cta.roles'),     path: '/governance/roles' },
-    { label: t('cta.audit'),     path: '/audits' },
-    { label: t('cta.training'),  path: '/training' }
+  type QuickItem = { label: string; path?: string; disabled?: boolean; reasonKey?: string };
+  
+  const quickStart: QuickItem[] = [
+    { label: t('cta.incident'),  disabled: true, reasonKey: 'missing.incident' },
+    { label: t('cta.register'),  disabled: true, reasonKey: 'missing.registry' },
+    { label: t('cta.roles'),     disabled: true, reasonKey: 'missing.roles' },
+    { label: t('cta.auditList'), path: ROUTES.audit.list },
+    { label: t('cta.auditNew'),  path: ROUTES.audit.new },
+    { label: t('cta.training'),  path: ROUTES.training }
   ];
 
-  const contextActions = currentPath.startsWith('/controls')
+  const contextActions: QuickItem[] = currentPath.startsWith('/controls')
     ? [
-        { label: t('actions.controls.new'),      path: '/controls/new' },
-        { label: t('actions.controls.due'),      path: '/controls?due=today' },
-        { label: t('actions.controls.evidence'), path: '/evidence?scope=controls' }
+        { label: t('actions.controls.new'),      disabled: true, reasonKey: 'missing.controls_new' },
+        { label: t('actions.controls.due'),      path: `${ROUTES.controls}?due=today` },
+        { label: t('actions.controls.evidence'), path: `${ROUTES.evidence}?scope=controls` }
       ]
     : [];
 
   // Navigation handler
-  type ChatAction = { path: string; label: string; highlight?: string; confidence?: number };
+  type ChatAction = { path?: string; label: string; highlight?: string; confidence?: number; disabled?: boolean; reasonKey?: string };
 
   async function handleNavigation(action: ChatAction) {
+    if (action.disabled || !action.path) {
+      setMessages(prev => [...prev, { role: 'assistant', content: t(action.reasonKey ?? 'errors.route_missing') }]);
+      return;
+    }
     try {
       navigateGlobal(action.path);
       // optional: Element hervorheben
@@ -113,11 +122,11 @@ export function NorrlandGuideDrawer({
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 300);
       }
-      setMessages(prev => [...prev, { role: 'assistant', content: `Navigiere zu ${action.label}` }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: t('nav.ok', { target: action.label }) }]);
       setOpen(false);
     } catch (e) {
       console.error('[norrly] nav error', e);
-      setMessages(prev => [...prev, { role: 'assistant', content: 'Navigation fehlgeschlagen.' }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: t('nav.error') }]);
     }
   }
 
@@ -340,9 +349,15 @@ export function NorrlandGuideDrawer({
                 <div className="flex flex-col gap-2">
                   {[...quickStart, ...contextActions].map((a) => (
                     <button
-                      key={`${a.label}-${a.path}`}
-                      onClick={() => handleNavigation({ path: a.path, label: a.label, confidence: 0.99 })}
-                      className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
+                      key={`${a.label}-${a.path || a.reasonKey}`}
+                      onClick={() => handleNavigation({ path: a.path, label: a.label, disabled: a.disabled, reasonKey: a.reasonKey, confidence: 0.99 })}
+                      className={cn(
+                        "text-left text-sm px-3 py-2 rounded-lg border border-border transition-colors",
+                        a.disabled 
+                          ? "bg-muted/30 text-muted-foreground cursor-not-allowed opacity-50" 
+                          : "bg-background hover:bg-muted/50"
+                      )}
+                      disabled={a.disabled}
                     >
                       {a.label}
                     </button>
