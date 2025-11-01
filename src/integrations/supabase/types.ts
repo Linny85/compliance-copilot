@@ -276,6 +276,45 @@ export type Database = {
           },
         ]
       }
+      audit_events: {
+        Row: {
+          company_id: string
+          created_at: string
+          event: string
+          id: number
+          user_id: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          event: string
+          id?: number
+          user_id: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          event?: string
+          id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_tenant_scope"
+            referencedColumns: ["tenant_id"]
+          },
+          {
+            foreignKeyName: "audit_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           action: string
@@ -3580,6 +3619,10 @@ export type Database = {
           industry: string | null
           legal_name: string | null
           master_code_hash: string
+          master_pass_algo: string | null
+          master_pass_hash: string | null
+          master_pass_iter: number | null
+          master_pass_salt: string | null
           name: string
           onboarding_completed_at: string | null
           onboarding_done: boolean | null
@@ -3609,6 +3652,10 @@ export type Database = {
           industry?: string | null
           legal_name?: string | null
           master_code_hash: string
+          master_pass_algo?: string | null
+          master_pass_hash?: string | null
+          master_pass_iter?: number | null
+          master_pass_salt?: string | null
           name: string
           onboarding_completed_at?: string | null
           onboarding_done?: boolean | null
@@ -3638,6 +3685,10 @@ export type Database = {
           industry?: string | null
           legal_name?: string | null
           master_code_hash?: string
+          master_pass_algo?: string | null
+          master_pass_hash?: string | null
+          master_pass_iter?: number | null
+          master_pass_salt?: string | null
           name?: string
           onboarding_completed_at?: string | null
           onboarding_done?: boolean | null

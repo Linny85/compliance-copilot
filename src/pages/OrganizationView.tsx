@@ -138,6 +138,16 @@ export default function OrganizationView() {
 
       if (updateError) throw updateError;
 
+      // Log audit event
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('audit_events').insert({
+          company_id: editForm.id,
+          user_id: user.id,
+          event: 'org.profile.updated'
+        });
+      }
+
       setCompany(editForm);
       setEditing(false);
       setEditForm(null);

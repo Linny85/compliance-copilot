@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MasterPasswordDialogProps {
   open: boolean;
@@ -26,16 +27,16 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
       setLoading(true);
       setError(null);
 
-      // TODO: Replace with actual Edge Function call
-      // const res = await supabase.functions.invoke('verify-master-code', {
-      //   body: { password }
-      // });
-      
-      // Mock verification - always succeeds for now
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Simulate validation
-      if (password === '12345678') { // Mock master password
+      const { data, error: invokeError } = await supabase.functions.invoke('verify-master-code', {
+        body: { password }
+      });
+
+      if (invokeError) {
+        setError(t('organization:master.error', 'Verification failed'));
+        return;
+      }
+
+      if (data?.ok) {
         onSuccess();
         setPassword('');
       } else {
