@@ -115,6 +115,55 @@ export function NorrlandGuideDrawer({
     }
   }, [messages, ttsOn]);
 
+  // Handle navigation with RBAC check
+  async function handleNavigation(action: ChatAction) {
+    try {
+      const hasPermission = canAccess(action.path, user);
+      
+      if (!hasPermission) {
+        setMessages(prev => [...prev, {
+          role: "assistant",
+          content: t('norrly:nav.denied')
+        }]);
+        setPendingAction(null);
+        return;
+      }
+
+      // Navigate and confirm
+      navigateGlobal(action.path);
+      
+      // Scroll to highlighted element if specified
+      if (action.highlight) {
+        setTimeout(() => {
+          const el = document.querySelector(action.highlight!);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 300);
+      }
+      
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: t('norrly:nav.ok', { target: action.label })
+      }]);
+      
+      // Close drawer after navigation
+      setTimeout(() => setOpen(false), 800);
+      
+      audit('norrly_navigation', { 
+        path: action.path, 
+        label: action.label,
+        confidence: action.confidence 
+      });
+    } catch (err) {
+      console.error('[Navigation error]', err);
+      setMessages(prev => [...prev, {
+        role: "assistant",
+        content: t('norrly:nav.error')
+      }]);
+    } finally {
+      setPendingAction(null);
+    }
+  }
+
   async function ask() {
     if (!q.trim()) return;
     
@@ -125,7 +174,14 @@ export function NorrlandGuideDrawer({
     // Check for intents locally
     const lang3 = (i18n.language?.slice(0,2) ?? 'de') as 'de'|'en'|'sv';
     const suggested = detectIntents(currentQuestion, lang3);
-    if (suggested[0]) setPendingAction(suggested[0]);
+    
+    // If navigation intent detected with high confidence, handle immediately
+    if (suggested[0] && suggested[0].confidence >= 0.85) {
+      setMessages(prev => [...prev, { role: "user", content: currentQuestion }]);
+      setLoading(false);
+      await handleNavigation(suggested[0]);
+      return;
+    }
     
     try {
       // Normalize language to valid options

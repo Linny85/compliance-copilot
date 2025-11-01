@@ -17,6 +17,12 @@
     "audit": "Förbered revision",
     "training": "Starta utbildning"
   },
+  "nav": {
+    "ok": "Okej – öppnar \"{{target}}\".",
+    "ambiguous": "Menade du något av dessa?",
+    "denied": "Du har inte behörighet till den funktionen. Kontakta din admin.",
+    "error": "Kunde inte öppna sidan."
+  },
   "input": {
     "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
     "open": "Öppna",

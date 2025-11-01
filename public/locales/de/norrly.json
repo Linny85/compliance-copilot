@@ -17,6 +17,12 @@
     "audit": "Audit vorbereiten",
     "training": "Schulung starten"
   },
+  "nav": {
+    "ok": "Alles klar – ich öffne „{{target}}".",
+    "ambiguous": "Meintest du eins davon?",
+    "denied": "Dafür hast du aktuell keine Berechtigung. Frag gern deine/n Admin.",
+    "error": "Die Seite konnte nicht geöffnet werden."
+  },
   "input": {
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
     "open": "Öffnen",
