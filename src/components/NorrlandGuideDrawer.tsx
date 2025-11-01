@@ -49,15 +49,17 @@ export function NorrlandGuideDrawer({
 
   // Translations - only access after ready
   const name = ready ? t("assistant:name") : "";
-  const tagline = ready ? t("assistant:tagline") : "";
-  const greeting = ready ? t("norrly:intro") : "";
+  const tagline = ready ? t("norrly:header.subtitle") : "";
+  const greetingHeadline = ready ? t("norrly:intro.headline") : "";
+  const greetingText = ready ? t("norrly:intro.text") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   const quickCtas = ready ? [
-    { id: 'verify', label: t('norrly:cta.verify'), payload: t('helpbot:cta.verify') },
-    { id: 'whyAccess', label: t('norrly:cta.whyAccess'), payload: t('helpbot:cta.whyAccess') },
-    { id: 'createDoc', label: t('norrly:cta.createDoc'), payload: t('helpbot:cta.createDoc') },
-    { id: 'name', label: t('norrly:cta.name'), payload: t('helpbot:nameExplained') }
+    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
+    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
+    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
+    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
+    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
   ] : [];
   
   const labels = ready ? {
@@ -303,8 +305,9 @@ export function NorrlandGuideDrawer({
                   {intro}
                 </div>
               )}
-              <div className="text-sm text-muted-foreground leading-relaxed">
-                {greeting}
+              <div className="space-y-2">
+                <h3 className="text-base font-semibold text-foreground">{greetingHeadline}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{greetingText}</p>
               </div>
               {quickCtas.length > 0 && (
                 <div className="space-y-2">
