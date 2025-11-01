@@ -1,9 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const URL = Deno.env.get("SUPABASE_URL")!;
-const KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-export const supabaseAdmin = createClient(URL, KEY);
+import { supabaseAdmin } from "./security.ts";
 
 /** Einheitliche Audit-API (typsicher & fehlertolerant) */
 export type AuditEvent =
