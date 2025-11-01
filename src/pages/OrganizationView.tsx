@@ -133,10 +133,12 @@ export default function OrganizationView() {
     try {
       setSaving(true);
       
+      const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke('update-organization', {
         body: editForm,
         headers: {
-          'X-Org-Edit': editToken
+          'X-Org-Edit': editToken,
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {})
         }
       });
 

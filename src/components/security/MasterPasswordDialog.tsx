@@ -27,8 +27,10 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
       setLoading(true);
       setError(null);
 
+      const { data: { session } } = await supabase.auth.getSession();
       const { data, error: invokeError } = await supabase.functions.invoke('verify-master-pass', {
-        body: { master: password }
+        body: { master: password },
+        headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}
       });
 
       if (invokeError) {
