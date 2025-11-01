@@ -26,11 +26,20 @@ export function NorrlandGuideDrawer({
 }) {
   const { t, i18n, ready } = useTranslation("norrly", { useSuspense: false });
   
+  // Force-load norrly namespace if missing
+  useEffect(() => {
+    const lng = (i18n.language || 'de').slice(0, 2);
+    if (!i18n.hasResourceBundle(lng, 'norrly')) {
+      i18n.loadNamespaces(['norrly'])
+        .then(() => i18n.reloadResources([lng], ['norrly']))
+        .catch(() => {});
+    }
+  }, [i18n, i18n.language]);
+  
   // Get current path without using useLocation (works outside Router context)
   const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
   
-  if (!ready && open) return null;
-
+  if (!ready) return null;
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
   
   useEffect(() => {

@@ -8,14 +8,14 @@ i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'de',
+    fallbackLng: ['de', 'en'],
     debug: import.meta.env.DEV,
     ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
-    load: 'currentOnly',
+    load: 'languageOnly',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${buildId}`,
       allowMultiLoading: false,
       crossDomain: false
     },
