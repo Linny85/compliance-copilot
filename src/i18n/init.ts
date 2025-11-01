@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
+const buildId = import.meta.env.VITE_BUILD_ID ?? Date.now();
 
 i18n
   .use(Backend)
@@ -43,6 +43,11 @@ i18n.on('loaded', (loaded) => {
 i18n.on('languageChanged', (lng) => {
   console.log('[i18n] Language changed to:', lng);
   document.documentElement.lang = lng?.slice(0, 2) || 'de';
+});
+
+// Debug: Log missing keys
+i18n.on('missingKey', (lngs, ns, key) => {
+  console.warn('[i18n] missing key:', { lngs, ns, key });
 });
 // Set initial lang
 document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
