@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Building2, MapPin, Globe, Users, AlertCircle, ArrowLeft, Edit, Save, X, Loader2 } from "lucide-react";
 import { MasterPasswordDialog } from "@/components/security/MasterPasswordDialog";
+import { RotateMasterPasswordDialog } from "@/components/security/RotateMasterPasswordDialog";
 import { toast } from "sonner";
 
 interface CompanyData {
@@ -35,8 +36,10 @@ export default function OrganizationView() {
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
   const [masterDialogOpen, setMasterDialogOpen] = useState(false);
+  const [rotateDialogOpen, setRotateDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editForm, setEditForm] = useState<CompanyData | null>(null);
+  const [editToken, setEditToken] = useState<string | null>(null);
 
   useEffect(() => {
     loadCompanyData();
@@ -103,8 +106,9 @@ export default function OrganizationView() {
     setMasterDialogOpen(true);
   };
 
-  const handleMasterSuccess = () => {
+  const handleMasterSuccess = (token: string) => {
     setMasterDialogOpen(false);
+    setEditToken(token);
     setEditForm(company);
     setEditing(true);
   };
@@ -112,46 +116,49 @@ export default function OrganizationView() {
   const handleCancelEdit = () => {
     setEditing(false);
     setEditForm(null);
+    setEditToken(null);
+  };
+
+  const handleRotateSuccess = () => {
+    if (editing) {
+      toast.info("Bearbeitungssitzung wurde beendet");
+      setEditing(false);
+      setEditToken(null);
+    }
   };
 
   const handleSaveEdit = async () => {
-    if (!editForm) return;
+    if (!editForm || !editToken) return;
 
     try {
       setSaving(true);
       
-      const { error: updateError } = await supabase
-        .from('Unternehmen')
-        .update({
-          name: editForm.name,
-          legal_name: editForm.legal_name,
-          street: editForm.street,
-          zip: editForm.zip,
-          city: editForm.city,
-          country: editForm.country,
-          sector: editForm.sector,
-          company_size: editForm.company_size,
-          website: editForm.website,
-          vat_id: editForm.vat_id,
-        })
-        .eq('id', editForm.id);
+      const { data, error } = await supabase.functions.invoke('update-organization', {
+        body: editForm,
+        headers: {
+          'X-Org-Edit': editToken
+        }
+      });
 
-      if (updateError) throw updateError;
+      if (error) throw error;
 
-      // Log audit event
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        await supabase.from('audit_events').insert({
-          company_id: editForm.id,
-          user_id: user.id,
-          event: 'org.profile.updated'
-        });
+      if (data?.error) {
+        if (data.error === 'stale_token') {
+          toast.error("Sitzung abgelaufen (Passwort wurde geändert). Bitte erneut verifizieren.");
+          setEditing(false);
+          setEditToken(null);
+          return;
+        }
+        toast.error(`Fehler beim Speichern: ${data.error}`);
+        return;
       }
 
       setCompany(editForm);
       setEditing(false);
       setEditForm(null);
+      setEditToken(null);
       toast.success(t('organization:saveSuccess', 'Organization details updated successfully'));
+      await loadCompanyData();
     } catch (err: any) {
       console.error('Save error:', err);
       toast.error(t('organization:saveError', 'Failed to update organization details'));
@@ -205,10 +212,15 @@ export default function OrganizationView() {
             <p className="text-muted-foreground">{t('organization:subtitle')}</p>
           </div>
           {!editing && !loading && company && (
-            <Button onClick={handleEditClick} variant="outline">
-              <Edit className="mr-2 h-4 w-4" />
-              {t('organization:actions.edit')}
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={handleEditClick} variant="outline">
+                <Edit className="mr-2 h-4 w-4" />
+                {t('organization:actions.edit')}
+              </Button>
+              <Button onClick={() => setRotateDialogOpen(true)} variant="outline">
+                Master-Passwort ändern
+              </Button>
+            </div>
           )}
         </div>
 
@@ -380,10 +392,16 @@ export default function OrganizationView() {
         </div>
       </div>
 
-      <MasterPasswordDialog
+      <MasterPasswordDialog 
         open={masterDialogOpen}
         onClose={() => setMasterDialogOpen(false)}
         onSuccess={handleMasterSuccess}
+      />
+
+      <RotateMasterPasswordDialog
+        open={rotateDialogOpen}
+        onClose={() => setRotateDialogOpen(false)}
+        onSuccess={handleRotateSuccess}
       />
     </div>
   );

@@ -31,7 +31,9 @@ Deno.serve(async (req) => {
         tenant_id: tenantId, 
         master_hash, 
         version: 1,
-        rotated_at: new Date().toISOString() 
+        failed_attempts: 0,
+        locked_until: null,
+        updated_at: new Date().toISOString() 
       }, { onConflict: "tenant_id" });
 
     if (error) {

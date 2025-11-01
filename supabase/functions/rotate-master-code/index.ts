@@ -1,4 +1,4 @@
-import { requireAuth, supabaseAdmin, verifyMaster, rateLimit, signEditToken } from "@shared/utils/security.ts";
+import { requireRole, supabaseAdmin, verifyMaster, hashMaster } from "@shared/utils/security.ts";
 import { auditEvent } from "@shared/utils/audit.ts";
 
 const corsHeaders = {
@@ -15,23 +15,23 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const base = requireAuth(req);
+    const base = requireRole(req, "admin");
     if (base instanceof Response) return base;
     const { tenantId, userId } = base;
 
-    const okRL = await rateLimit(`${tenantId}:${userId}:verify`, 5, 900);
-    if (!okRL) {
-      return new Response(JSON.stringify({ ok: false, error: "rate_limited" }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+    const { oldPassword, newPassword } = await req.json().catch(() => ({}));
+    
+    if (typeof oldPassword !== "string" || typeof newPassword !== "string") {
+      return new Response(JSON.stringify({ error: 'bad_request' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const { master } = await req.json().catch(() => ({}));
-    if (typeof master !== "string") {
-      return new Response(JSON.stringify({ ok: false, error: "invalid_input" }), {
+    if (newPassword.length < 10) {
+      return new Response(JSON.stringify({ error: 'weak_password' }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (!secret?.master_hash) {
-      return new Response(JSON.stringify({ ok: false, error: "not_set" }), {
+      return new Response(JSON.stringify({ error: 'master_not_set' }), {
         status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -50,13 +50,14 @@ Deno.serve(async (req) => {
 
     // Check lockout
     if (secret.locked_until && new Date(secret.locked_until) > new Date()) {
-      return new Response(JSON.stringify({ ok: false, error: 'locked', locked_until: secret.locked_until }), {
+      return new Response(JSON.stringify({ error: 'locked', locked_until: secret.locked_until }), {
         status: 429,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const ok = await verifyMaster(secret.master_hash, master);
+    // Verify old password
+    const ok = await verifyMaster(secret.master_hash, oldPassword);
 
     if (!ok) {
       const fails = (secret.failed_attempts ?? 0) + 1;
@@ -68,11 +69,10 @@ Deno.serve(async (req) => {
         updated_at: new Date().toISOString()
       }).eq("tenant_id", tenantId);
 
-      await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { fails } });
+      await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { context: 'rotation', fails } });
       
       return new Response(JSON.stringify({ 
-        ok: false,
-        error: 'invalid',
+        error: 'invalid_old_password',
         attempts_remaining: MAX_FAILS - fails 
       }), {
         status: 403,
@@ -80,23 +80,34 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Success - reset counters
-    await supabaseAdmin.from("org_secrets").update({
+    // Hash new password
+    const newHash = await hashMaster(newPassword);
+
+    // Update with version increment (invalidates all edit tokens)
+    const { error } = await supabaseAdmin.from("org_secrets").update({
+      master_hash: newHash,
+      version: (secret.version ?? 1) + 1,
       failed_attempts: 0,
       locked_until: null,
       updated_at: new Date().toISOString()
     }).eq("tenant_id", tenantId);
 
-    await auditEvent({ tenantId, userId, event: "master.verify.ok" });
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
 
-    const token = await signEditToken({ tenantId, scope: "org:edit", v: secret.version }, 600);
-    return new Response(JSON.stringify({ ok: true, editToken: token, ttl: 600 }), {
+    await auditEvent({ tenantId, userId, event: "master.set", details: { action: 'rotation', version: (secret.version ?? 1) + 1 } });
+
+    return new Response(JSON.stringify({ ok: true }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   } catch (error) {
-    console.error('Verify master password error:', error);
-    return new Response(JSON.stringify({ ok: false, error: 'server_error' }), {
+    console.error('Rotate master code error:', error);
+    return new Response(JSON.stringify({ error: 'server_error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });

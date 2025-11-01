@@ -32,6 +32,27 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Check token version
+    const { data: secret } = await supabaseAdmin
+      .from("org_secrets")
+      .select("version")
+      .eq("tenant_id", tenantId)
+      .maybeSingle();
+
+    if (!secret) {
+      return new Response(JSON.stringify({ error: 'not_found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (secret.version !== payload.v) {
+      return new Response(JSON.stringify({ error: 'stale_token', message: 'Token expired due to password rotation' }), {
+        status: 409,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     const body = await req.json().catch(() => ({}));
     const allowed = ["name","legal_name","street","zip","city","country","sector","company_size","website","vat_id"];
     const patch: Record<string, unknown> = {};

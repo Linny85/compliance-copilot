@@ -36,9 +36,10 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
         return;
       }
 
-      if (data?.ok) {
-        onSuccess();
+      if (data?.ok && data?.editToken) {
+        onSuccess(data.editToken);
         setPassword('');
+        handleClose();
       } else {
         setError(t('organization:master.fail', 'Invalid master password'));
       }
