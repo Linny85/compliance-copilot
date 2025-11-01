@@ -43,8 +43,16 @@ export function NorrlandGuideDrawer({
   const [ttsOn, setTtsOn] = useState(false);
   const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
   const [contextActions, setContextActions] = useState<string[]>([]);
+  const [forceLangTick, setForceLangTick] = useState(0);
   
-  // Namespace loading is handled by useTranslation('norrly'); no manual force-load.
+  // Re-render on language change so Drawer updates immediately
+  useEffect(() => {
+    const handler = () => setForceLangTick((n) => n + 1);
+    i18n.on('languageChanged', handler);
+    return () => {
+      i18n.off('languageChanged', handler);
+    };
+  }, [i18n]);
   
   useEffect(() => {
     if (firstSeen.current) {
