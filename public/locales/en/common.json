@@ -114,6 +114,8 @@
     "admin": "Admin",
     "member": "Member"
   },
+  "masterCode": "Master Code",
+  "enterMasterCode": "Enter master code",
   "common": {
     "save": "Save",
     "saving": "Saving…",

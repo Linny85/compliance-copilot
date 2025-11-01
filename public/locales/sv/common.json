@@ -114,6 +114,8 @@
     "admin": "Administratör",
     "member": "Medlem"
   },
+  "masterCode": "Huvudkod",
+  "enterMasterCode": "Ange huvudkod",
   "common": {
     "save": "Spara",
     "saving": "Sparar…",

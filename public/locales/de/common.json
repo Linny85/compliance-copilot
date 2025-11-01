@@ -114,6 +114,8 @@
     "admin": "Administrator",
     "member": "Mitglied"
   },
+  "masterCode": "Master-Code",
+  "enterMasterCode": "Master-Code eingeben",
   "common": {
     "save": "Speichern",
     "saving": "Speichern…",
