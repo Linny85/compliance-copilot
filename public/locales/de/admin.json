@@ -1,64 +1,145 @@
 {
   "title": "Administration",
-  "subtitle": "Verwalte Benutzer und Abonnements",
+  "subtitle": "Benutzer und Abonnement verwalten",
+
   "tabs": {
     "users": "Benutzer",
     "subscription": "Abonnement",
     "compliance": "Compliance",
-    "qa": "Qualitätssicherung",
-    "graph": "Wissensgraph"
+    "qa": "QA-Monitor",
+    "knowledge": "Wissensgraph"
   },
-  "team": {
-    "heading": "Teammitglieder",
-    "description": "Verwalte den Zugriff auf deine Organisation",
+
+  "users": {
+    "sectionTitle": "Teammitglieder",
+    "sectionDesc": "Zugriff deiner Organisation verwalten",
     "invite": "Benutzer einladen",
-    "email": "E-Mail",
-    "role": "Rolle",
-    "status": "Status",
-    "actions": "Aktionen",
-    "owner": "Besitzer",
-    "admin": "Administrator",
-    "manager": "Manager",
-    "member": "Mitglied",
-    "pending": "Ausstehend",
-    "active": "Aktiv",
-    "remove": "Entfernen",
-    "confirmRemove": "Möchten Sie diesen Benutzer entfernen?",
-    "assignRole": "Rolle zuweisen"
+    "table": {
+      "name": "Name",
+      "email": "E-Mail",
+      "role": "Rolle",
+      "status": "Status",
+      "joined": "Beigetreten",
+      "actions": "Aktionen"
+    },
+    "roles": {
+      "admin": "Admin",
+      "manager": "Manager",
+      "member": "Mitglied",
+      "viewer": "Betrachter"
+    },
+    "statuses": {
+      "invited": "Eingeladen",
+      "active": "Aktiv",
+      "disabled": "Deaktiviert"
+    },
+    "actions": {
+      "makeAdmin": "Zum Admin machen",
+      "makeManager": "Zum Manager machen",
+      "makeMember": "Zum Mitglied machen",
+      "makeViewer": "Zum Betrachter machen",
+      "disable": "Deaktivieren",
+      "enable": "Aktivieren",
+      "remove": "Entfernen"
+    },
+    "inviteDialog": {
+      "title": "Benutzer einladen",
+      "desc": "Eine Einladung per E-Mail senden, der Organisation beizutreten.",
+      "email": "E-Mail-Adresse",
+      "role": "Rolle",
+      "send": "Einladung senden",
+      "sending": "Sende…",
+      "success": "Einladung gesendet.",
+      "error": "Einladung konnte nicht gesendet werden."
+    },
+    "removeDialog": {
+      "title": "Mitglied entfernen",
+      "desc": "Dieser Benutzer verliert den Zugriff auf alle Ressourcen.",
+      "confirm": "Entfernen",
+      "cancel": "Abbrechen"
+    },
+    "disableDialog": {
+      "title": "Mitglied deaktivieren",
+      "desc": "Der Benutzer kann sich nicht mehr anmelden.",
+      "confirm": "Deaktivieren"
+    },
+    "enableToast": "Mitglied aktiviert.",
+    "disableToast": "Mitglied deaktiviert.",
+    "removeToast": "Mitglied entfernt.",
+    "roleChangedToast": "Rolle aktualisiert."
   },
+
   "subscription": {
-    "title": "Abonnement",
-    "plan": "Plan",
+    "sectionTitle": "Abonnement",
+    "sectionDesc": "Tarif und Abrechnung verwalten",
+    "plan": "Tarif",
     "status": "Status",
-    "trial": "Testphase aktiv",
-    "active": "Aktiv",
-    "inactive": "Inaktiv",
-    "manage": "Abonnement verwalten",
-    "billingPortal": "Abrechnungsportal öffnen"
+    "trial": "Testphase",
+    "trialDaysLeft": "Noch {{count}} Tag",
+    "trialDaysLeft_plural": "Noch {{count}} Tage",
+    "actions": {
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "manageBilling": "Abrechnungsportal öffnen",
+      "startTrial": "Kostenlose Testphase starten"
+    },
+    "states": {
+      "active": "Aktiv",
+      "inTrial": "Testphase aktiv",
+      "pastDue": "Zahlung überfällig",
+      "canceled": "Gekündigt",
+      "none": "Kein Abonnement"
+    },
+    "messages": {
+      "updated": "Abonnement aktualisiert.",
+      "portalError": "Abrechnungsportal konnte nicht geöffnet werden.",
+      "checkoutError": "Checkout konnte nicht gestartet werden."
+    }
   },
+
   "compliance": {
-    "title": "Compliance",
-    "desc": "Compliance-Übersicht und Einstellungen"
+    "sectionTitle": "Compliance",
+    "sectionDesc": "Richtlinien und Standardeinstellungen durchsetzen",
+    "toggles": {
+      "require2FA": "Zwei-Faktor-Authentifizierung erzwingen",
+      "ipAllowlist": "Anmeldung auf IP-Allowlist beschränken",
+      "exportProtection": "Exporte mit Wasserzeichen schützen",
+      "dataResidency": "EU-Datenresidenz bevorzugen"
+    },
+    "saved": "Compliance-Einstellungen gespeichert."
   },
+
   "qa": {
-    "title": "QA-Überwachung",
-    "desc": "Qualitätssicherung und Systemüberwachung"
+    "sectionTitle": "QA-Monitor",
+    "sectionDesc": "Qualitätsprüfungen und automatisierte Testruns",
+    "actions": {
+      "runAll": "Alle Tests ausführen",
+      "export": "Bericht exportieren"
+    },
+    "lastRun": "Letzter Lauf: {{date}}",
+    "status": {
+      "passed": "Bestanden",
+      "failed": "Fehlgeschlagen",
+      "running": "Läuft"
+    }
   },
-  "graph": {
-    "title": "Wissensgraph",
-    "desc": "Beziehungen zwischen Objekten und Nachweisen"
+
+  "knowledge": {
+    "sectionTitle": "Wissensgraph",
+    "sectionDesc": "Quellen und Embeddings verwalten",
+    "actions": {
+      "sync": "Quellen synchronisieren",
+      "rebuild": "Index neu aufbauen"
+    },
+    "sources": "Quellen",
+    "documents": "Dokumente",
+    "vectors": "Vektoren",
+    "synced": "Synchronisierung gestartet.",
+    "rebuildStarted": "Neuaufbau gestartet."
   },
-  "actions": {
-    "save": "Änderungen speichern",
-    "cancel": "Abbrechen",
-    "back": "Zurück"
-  },
+
   "toasts": {
-    "saved": "Änderungen wurden gespeichert",
-    "error": "Beim Speichern ist ein Fehler aufgetreten"
-  },
-  "empty": {
-    "noUsers": "Noch keine Benutzer vorhanden.",
-    "inviteFirst": "Lade deinen ersten Benutzer ein, um loszulegen."
+    "saved": "Einstellungen gespeichert.",
+    "error": "Es ist ein Fehler aufgetreten."
   }
 }

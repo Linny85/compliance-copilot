@@ -1,64 +1,145 @@
 {
   "title": "Administration",
   "subtitle": "Hantera användare och abonnemang",
+
   "tabs": {
     "users": "Användare",
     "subscription": "Abonnemang",
-    "compliance": "Regelefterlevnad",
+    "compliance": "Compliance",
     "qa": "QA-övervakning",
-    "graph": "Kunskapsgraf"
+    "knowledge": "Kunskapsgraf"
   },
-  "team": {
-    "heading": "Teammedlemmar",
-    "description": "Hantera åtkomst för din organisation",
+
+  "users": {
+    "sectionTitle": "Teammedlemmar",
+    "sectionDesc": "Hantera åtkomst i din organisation",
     "invite": "Bjud in användare",
-    "email": "E-post",
-    "role": "Roll",
-    "status": "Status",
-    "actions": "Åtgärder",
-    "owner": "Ägare",
-    "admin": "Admin",
-    "manager": "Manager",
-    "member": "Medlem",
-    "pending": "Avvaktande",
-    "active": "Aktiv",
-    "remove": "Ta bort",
-    "confirmRemove": "Vill du ta bort den här användaren?",
-    "assignRole": "Tilldela roll"
+    "table": {
+      "name": "Namn",
+      "email": "E-post",
+      "role": "Roll",
+      "status": "Status",
+      "joined": "Gick med",
+      "actions": "Åtgärder"
+    },
+    "roles": {
+      "admin": "Administratör",
+      "manager": "Chef",
+      "member": "Medlem",
+      "viewer": "Läsare"
+    },
+    "statuses": {
+      "invited": "Inbjuden",
+      "active": "Aktiv",
+      "disabled": "Inaktiverad"
+    },
+    "actions": {
+      "makeAdmin": "Gör till administratör",
+      "makeManager": "Gör till chef",
+      "makeMember": "Gör till medlem",
+      "makeViewer": "Gör till läsare",
+      "disable": "Inaktivera",
+      "enable": "Aktivera",
+      "remove": "Ta bort"
+    },
+    "inviteDialog": {
+      "title": "Bjud in användare",
+      "desc": "Skicka en inbjudan via e-post för att gå med i organisationen.",
+      "email": "E-postadress",
+      "role": "Roll",
+      "send": "Skicka inbjudan",
+      "sending": "Skickar…",
+      "success": "Inbjudan skickad.",
+      "error": "Det gick inte att skicka inbjudan."
+    },
+    "removeDialog": {
+      "title": "Ta bort medlem",
+      "desc": "Den här användaren förlorar åtkomst till alla resurser.",
+      "confirm": "Ta bort",
+      "cancel": "Avbryt"
+    },
+    "disableDialog": {
+      "title": "Inaktivera medlem",
+      "desc": "Användaren kan inte längre logga in.",
+      "confirm": "Inaktivera"
+    },
+    "enableToast": "Medlem aktiverad.",
+    "disableToast": "Medlem inaktiverad.",
+    "removeToast": "Medlem borttagen.",
+    "roleChangedToast": "Roll uppdaterad."
   },
+
   "subscription": {
-    "title": "Abonnemang",
+    "sectionTitle": "Abonnemang",
+    "sectionDesc": "Hantera plan och fakturering",
     "plan": "Plan",
     "status": "Status",
-    "trial": "Testperiod aktiv",
-    "active": "Aktiv",
-    "inactive": "Inaktiv",
-    "manage": "Hantera abonnemang",
-    "billingPortal": "Öppna fakturaportal"
+    "trial": "Testperiod",
+    "trialDaysLeft": "{{count}} dag kvar",
+    "trialDaysLeft_plural": "{{count}} dagar kvar",
+    "actions": {
+      "upgrade": "Uppgradera",
+      "downgrade": "Nedgradera",
+      "manageBilling": "Öppna fakturaportal",
+      "startTrial": "Starta gratis testperiod"
+    },
+    "states": {
+      "active": "Aktiv",
+      "inTrial": "Testperiod aktiv",
+      "pastDue": "Förfallen betalning",
+      "canceled": "Uppsagt",
+      "none": "Inget abonnemang"
+    },
+    "messages": {
+      "updated": "Abonnemang uppdaterat.",
+      "portalError": "Kunde inte öppna fakturaportalen.",
+      "checkoutError": "Kassan kunde inte startas."
+    }
   },
+
   "compliance": {
-    "title": "Regelefterlevnad",
-    "desc": "Översikt och inställningar för efterlevnad"
+    "sectionTitle": "Compliance",
+    "sectionDesc": "Tvinga igenom policys och standardinställningar",
+    "toggles": {
+      "require2FA": "Kräv tvåfaktorsautentisering",
+      "ipAllowlist": "Begränsa inloggning till IP-tillåtslista",
+      "exportProtection": "Skydda exporter med vattenstämpel",
+      "dataResidency": "Föredra EU-dataresidens"
+    },
+    "saved": "Compliance-inställningar sparade."
   },
+
   "qa": {
-    "title": "QA-övervakning",
-    "desc": "Kvalitetssäkring och hälsoövervakning"
+    "sectionTitle": "QA-övervakning",
+    "sectionDesc": "Kvalitetskontroller och automatiska testrundor",
+    "actions": {
+      "runAll": "Kör alla tester",
+      "export": "Exportera rapport"
+    },
+    "lastRun": "Senaste körning: {{date}}",
+    "status": {
+      "passed": "Godkänd",
+      "failed": "Misslyckades",
+      "running": "Körs"
+    }
   },
-  "graph": {
-    "title": "Kunskapsgraf",
-    "desc": "Relationer mellan objekt och evidens"
+
+  "knowledge": {
+    "sectionTitle": "Kunskapsgraf",
+    "sectionDesc": "Hantera källor och embeddings",
+    "actions": {
+      "sync": "Synka källor",
+      "rebuild": "Bygg om index"
+    },
+    "sources": "Källor",
+    "documents": "Dokument",
+    "vectors": "Vektorer",
+    "synced": "Synk har startat.",
+    "rebuildStarted": "Ombyggnad har startat."
   },
-  "actions": {
-    "save": "Spara ändringar",
-    "cancel": "Avbryt",
-    "back": "Tillbaka"
-  },
+
   "toasts": {
-    "saved": "Ändringarna har sparats",
-    "error": "Ett fel uppstod när ändringarna skulle sparas"
-  },
-  "empty": {
-    "noUsers": "Inga användare ännu.",
-    "inviteFirst": "Bjud in din första användare för att komma igång."
+    "saved": "Inställningar sparade.",
+    "error": "Något gick fel."
   }
 }

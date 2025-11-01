@@ -1,64 +1,145 @@
 {
   "title": "Administration",
   "subtitle": "Manage users and subscription",
+
   "tabs": {
     "users": "Users",
     "subscription": "Subscription",
     "compliance": "Compliance",
     "qa": "QA Monitor",
-    "graph": "Knowledge Graph"
+    "knowledge": "Knowledge Graph"
   },
-  "team": {
-    "heading": "Team Members",
-    "description": "Manage user access to your organization",
+
+  "users": {
+    "sectionTitle": "Team Members",
+    "sectionDesc": "Manage user access to your organization",
     "invite": "Invite User",
-    "email": "Email",
-    "role": "Role",
-    "status": "Status",
-    "actions": "Actions",
-    "owner": "Owner",
-    "admin": "Admin",
-    "manager": "Manager",
-    "member": "Member",
-    "pending": "Pending",
-    "active": "Active",
-    "remove": "Remove",
-    "confirmRemove": "Do you want to remove this user?",
-    "assignRole": "Assign Role"
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "joined": "Joined",
+      "actions": "Actions"
+    },
+    "roles": {
+      "admin": "Admin",
+      "manager": "Manager",
+      "member": "Member",
+      "viewer": "Viewer"
+    },
+    "statuses": {
+      "invited": "Invited",
+      "active": "Active",
+      "disabled": "Disabled"
+    },
+    "actions": {
+      "makeAdmin": "Make admin",
+      "makeManager": "Make manager",
+      "makeMember": "Make member",
+      "makeViewer": "Make viewer",
+      "disable": "Disable",
+      "enable": "Enable",
+      "remove": "Remove"
+    },
+    "inviteDialog": {
+      "title": "Invite user",
+      "desc": "Send an invitation email to join your organization.",
+      "email": "Email address",
+      "role": "Role",
+      "send": "Send invite",
+      "sending": "Sending…",
+      "success": "Invitation sent.",
+      "error": "Failed to send invitation."
+    },
+    "removeDialog": {
+      "title": "Remove member",
+      "desc": "This user will lose access to all resources.",
+      "confirm": "Remove",
+      "cancel": "Cancel"
+    },
+    "disableDialog": {
+      "title": "Disable member",
+      "desc": "The user will not be able to sign in.",
+      "confirm": "Disable"
+    },
+    "enableToast": "Member enabled.",
+    "disableToast": "Member disabled.",
+    "removeToast": "Member removed.",
+    "roleChangedToast": "Role updated."
   },
+
   "subscription": {
-    "title": "Subscription",
+    "sectionTitle": "Subscription",
+    "sectionDesc": "Manage your plan and billing",
     "plan": "Plan",
     "status": "Status",
-    "trial": "Trial Active",
-    "active": "Active",
-    "inactive": "Inactive",
-    "manage": "Manage Subscription",
-    "billingPortal": "Open Billing Portal"
+    "trial": "Trial",
+    "trialDaysLeft": "{{count}} day left",
+    "trialDaysLeft_plural": "{{count}} days left",
+    "actions": {
+      "upgrade": "Upgrade",
+      "downgrade": "Downgrade",
+      "manageBilling": "Open billing portal",
+      "startTrial": "Start free trial"
+    },
+    "states": {
+      "active": "Active",
+      "inTrial": "Trial active",
+      "pastDue": "Past due",
+      "canceled": "Canceled",
+      "none": "No subscription"
+    },
+    "messages": {
+      "updated": "Subscription updated.",
+      "portalError": "Could not open billing portal.",
+      "checkoutError": "Checkout could not be started."
+    }
   },
+
   "compliance": {
-    "title": "Compliance",
-    "desc": "Compliance overview and settings"
+    "sectionTitle": "Compliance",
+    "sectionDesc": "Enforce policies and default settings",
+    "toggles": {
+      "require2FA": "Require two-factor authentication",
+      "ipAllowlist": "Restrict login to IP allowlist",
+      "exportProtection": "Protect exports with watermark",
+      "dataResidency": "Prefer EU data residency"
+    },
+    "saved": "Compliance settings saved."
   },
+
   "qa": {
-    "title": "QA Monitor",
-    "desc": "Quality assurance and health monitoring"
+    "sectionTitle": "QA Monitor",
+    "sectionDesc": "Quality checks and automated test runs",
+    "actions": {
+      "runAll": "Run all tests",
+      "export": "Export report"
+    },
+    "lastRun": "Last run: {{date}}",
+    "status": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "running": "Running"
+    }
   },
-  "graph": {
-    "title": "Knowledge Graph",
-    "desc": "Relationships between objects and evidence"
+
+  "knowledge": {
+    "sectionTitle": "Knowledge Graph",
+    "sectionDesc": "Manage sources and embeddings",
+    "actions": {
+      "sync": "Sync sources",
+      "rebuild": "Rebuild index"
+    },
+    "sources": "Sources",
+    "documents": "Documents",
+    "vectors": "Vectors",
+    "synced": "Sync started.",
+    "rebuildStarted": "Rebuild started."
   },
-  "actions": {
-    "save": "Save Changes",
-    "cancel": "Cancel",
-    "back": "Back"
-  },
+
   "toasts": {
-    "saved": "Changes saved successfully",
-    "error": "An error occurred while saving"
-  },
-  "empty": {
-    "noUsers": "No users yet.",
-    "inviteFirst": "Invite your first user to get started."
+    "saved": "Settings saved.",
+    "error": "Something went wrong."
   }
 }
