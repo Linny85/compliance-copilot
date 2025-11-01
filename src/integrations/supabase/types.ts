@@ -2598,6 +2598,33 @@ export type Database = {
         }
         Relationships: []
       }
+      org_secrets: {
+        Row: {
+          algo: string
+          master_hash: string
+          rotated_at: string
+          tenant_id: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          algo?: string
+          master_hash: string
+          rotated_at?: string
+          tenant_id: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          algo?: string
+          master_hash?: string
+          rotated_at?: string
+          tenant_id?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: []
+      }
       orgunits: {
         Row: {
           created_at: string
