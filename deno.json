@@ -1,7 +1,15 @@
 {
+  "imports": {
+    "@std/assert": "https://deno.land/std@0.224.0/assert/mod.ts",
+    "@shared/": "./supabase/functions/_shared/"
+  },
+  "compilerOptions": {
+    "strict": true
+  },
   "tasks": {
     "edge-check-all": "deno check --no-lock --compact -q supabase/functions/**/index.ts",
-    "edge-lint": "deno lint supabase/functions"
+    "edge-lint": "deno lint supabase/functions",
+    "check:functions": "deno check supabase/functions/**/index.ts"
   },
   "lint": {
     "rules": {
@@ -11,8 +19,5 @@
   "fmt": {
     "useTabs": false,
     "lineWidth": 100
-  },
-  "imports": {
-    "@std/assert": "https://deno.land/std@0.224.0/assert/mod.ts"
   }
 }

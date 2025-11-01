@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface MasterPasswordDialogProps {
   open: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (editToken: string) => void;
 }
 
 export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswordDialogProps) {

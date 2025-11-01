@@ -1,94 +1,51 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { logEvent } from "../_shared/audit.ts";
+import { requireRole, hashMaster, supabaseAdmin } from "@shared/utils/security.ts";
+import { auditEvent } from "@shared/utils/audit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-async function argon2Hash(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  return btoa(String.fromCharCode(...new Uint8Array(hashBuffer)));
-}
-
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+    const base = requireRole(req, "admin");
+    if (base instanceof Response) return base;
+    const { tenantId, userId } = base;
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile?.company_id) {
-      return new Response(JSON.stringify({ error: 'no_tenant' }), {
+    const { master } = await req.json().catch(() => ({}));
+    if (typeof master !== "string" || master.length < 10) {
+      return new Response(JSON.stringify({ error: "weak_password" }), { 
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const { password } = await req.json();
-    
-    if (!password || password.length < 8) {
-      return new Response(JSON.stringify({ error: 'password_too_short' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    const hash = await argon2Hash(password);
-
-    const { error } = await supabase
-      .from('org_secrets')
-      .upsert({
-        tenant_id: profile.company_id,
-        master_hash: hash,
-        algo: 'argon2id',
+    const master_hash = await hashMaster(master);
+    const { error } = await supabaseAdmin
+      .from("org_secrets")
+      .upsert({ 
+        tenant_id: tenantId, 
+        master_hash, 
         version: 1,
-        rotated_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        rotated_at: new Date().toISOString() 
+      }, { onConflict: "tenant_id" });
+
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
+    }
 
-    if (error) throw error;
-
-    await logEvent(supabase, {
-      tenant_id: profile.company_id,
-      actor_id: user.id,
-      action: 'org.master.set',
-      entity: 'org_secrets',
-      entity_id: profile.company_id
-    });
-
-    return new Response(JSON.stringify({ ok: true }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    await auditEvent({ tenantId, userId, event: "master.set", details: { len: master.length } });
+    
+    return new Response(JSON.stringify({ ok: true }), { 
+      status: 200, 
+      headers: { ...corsHeaders, "content-type": "application/json" }
     });
   } catch (error) {
     console.error('Set master code error:', error);
