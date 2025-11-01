@@ -26,6 +26,24 @@ export function NorrlandGuideDrawer({
 }) {
   const { t, i18n, ready } = useTranslation("norrly", { useSuspense: false });
   
+  // Get current path without using useLocation (works outside Router context)
+  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
+  
+  // All hooks must be declared unconditionally before any returns
+  const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
+  const first = useRef<HTMLTextAreaElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  
+  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
+  const [disc, setDisc] = useState("");
+  const [ttsOn, setTtsOn] = useState(false);
+  const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
+  const [contextActions, setContextActions] = useState<string[]>([]);
+  
   // Force-load norrly namespace if missing
   useEffect(() => {
     const lng = (i18n.language || 'de').slice(0, 2);
@@ -36,29 +54,11 @@ export function NorrlandGuideDrawer({
     }
   }, [i18n, i18n.language]);
   
-  // Get current path without using useLocation (works outside Router context)
-  const currentPath = typeof window !== "undefined" ? window.location.pathname : "/";
-  
-  if (!ready) return null;
-  const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
-  
   useEffect(() => {
     if (firstSeen.current) {
       sessionStorage.setItem(FIRST_SEEN_KEY, '1');
     }
   }, []);
-
-  const [q, setQ] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
-  const [disc, setDisc] = useState("");
-  const [ttsOn, setTtsOn] = useState(false);
-  const [pendingAction, setPendingAction] = useState<ChatAction | null>(null);
-  const [contextActions, setContextActions] = useState<string[]>([]);
-  const first = useRef<HTMLTextAreaElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Get page display name from DOM or i18n
   const getPageDisplayName = useCallback(() => {
@@ -105,35 +105,54 @@ export function NorrlandGuideDrawer({
   useEffect(() => {
     setContextActions(getContextActions());
   }, [getContextActions]);
+  
+  useEffect(() => {
+    if (open && first.current) first.current.focus();
+  }, [open]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    const last = messages[messages.length - 1];
+    if (ttsOn && last?.role === "assistant") {
+      speak(last.content);
+    }
+  }, [messages, ttsOn]);
+  
+  // Early return for unready state - AFTER all hooks
+  const lng = (i18n.language || 'de').slice(0, 2);
+  if (!ready || !i18n.hasResourceBundle(lng, 'norrly')) return null;
 
   // Translations - only access after ready
-  const name = ready ? t("assistant:name") : "";
-  const tagline = ready ? t("header.subtitle") : "";
-  const greetingHeadline = ready ? t("intro.headline") : "";
-  const greetingText = ready ? t("intro.text") : "";
-  const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
+  const name = t("assistant:name");
+  const tagline = t("header.subtitle");
+  const greetingHeadline = t("intro.headline");
+  const greetingText = t("intro.text");
+  const intro = firstSeen.current ? t("helpbot:intro") : undefined;
   
   // Context-aware intro
   const pageName = getPageDisplayName();
-  const contextIntro = ready ? t("context.intro", { page: pageName }) : "";
+  const contextIntro = t("context.intro", { page: pageName });
   const contextHelp = getContextHelp();
   
-  const quickCtas = ready ? [
+  const quickCtas = [
     { id: 'incident', label: t('cta.incident'), payload: t('cta.incident') },
     { id: 'register', label: t('cta.register'), payload: t('cta.register') },
     { id: 'roles', label: t('cta.roles'), payload: t('cta.roles') },
     { id: 'audit', label: t('cta.audit'), payload: t('cta.audit') },
     { id: 'training', label: t('cta.training'), payload: t('cta.training') }
-  ] : [];
+  ];
   
-  const labels = ready ? {
+  const labels = {
     open: t("input.open"),
     cancel: t("input.cancel"),
     loading: t("input.loading"),
     speak_on: t("voice.on"),
     speak_off: t("voice.off"),
     reset: t("session.reset")
-  } : { open: "", cancel: "", loading: "", speak_on: "", speak_off: "", reset: "" };
+  };
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
@@ -163,21 +182,6 @@ export function NorrlandGuideDrawer({
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   };
-
-  useEffect(() => {
-    if (open && first.current) first.current.focus();
-  }, [open]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    const last = messages[messages.length - 1];
-    if (ttsOn && last?.role === "assistant") {
-      speak(last.content);
-    }
-  }, [messages, ttsOn]);
 
   // Handle navigation with RBAC check
   async function handleNavigation(action: ChatAction) {
