@@ -24,18 +24,15 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
+  // 1) i18n – EIN Namespace
   const { t, i18n, ready } = useTranslation('norrly', { useSuspense: false });
-  
-  if (!ready) return null;
 
+  // 2) Refs – immer gleich
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
-  
-  useEffect(() => {
-    if (firstSeen.current) {
-      sessionStorage.setItem(FIRST_SEEN_KEY, '1');
-    }
-  }, []);
+  const first = useRef<HTMLTextAreaElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // 3) States – immer in derselben Reihenfolge
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -43,8 +40,31 @@ export function NorrlandGuideDrawer({
   const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
   const [disc, setDisc] = useState("");
   const [ttsOn, setTtsOn] = useState(false);
-  const first = useRef<HTMLTextAreaElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // 4) Effects – niemals bedingt aufrufen
+  useEffect(() => {
+    if (firstSeen.current) {
+      sessionStorage.setItem(FIRST_SEEN_KEY, '1');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (open && first.current) first.current.focus();
+  }, [open]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  useEffect(() => {
+    const last = messages[messages.length - 1];
+    if (ttsOn && last?.role === "assistant") {
+      speak(last.content);
+    }
+  }, [messages, ttsOn]);
+
+  // 5) ***EARLY RETURN ERST JETZT*** – nach ALLEN HOOKS
+  if (!ready) return null;
 
   // Translations
   const name = t("cta.name", "Norrly");
@@ -60,6 +80,25 @@ export function NorrlandGuideDrawer({
     speak_off: t("voice.off"),
     reset: t("session.reset")
   };
+
+  // Quickstart actions (keine Hooks)
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+  
+  const quickStart = [
+    { label: t('cta.incident'),  path: '/incidents/new' },
+    { label: t('cta.register'),  path: '/registry' },
+    { label: t('cta.roles'),     path: '/governance/roles' },
+    { label: t('cta.audit'),     path: '/audits' },
+    { label: t('cta.training'),  path: '/training' }
+  ];
+
+  const contextActions = currentPath.startsWith('/controls')
+    ? [
+        { label: t('actions.controls.new'),      path: '/controls/new' },
+        { label: t('actions.controls.due'),      path: '/controls?due=today' },
+        { label: t('actions.controls.evidence'), path: '/evidence?scope=controls' }
+      ]
+    : [];
 
   // Navigation handler
   type ChatAction = { path: string; label: string; highlight?: string; confidence?: number };
@@ -81,27 +120,6 @@ export function NorrlandGuideDrawer({
       setMessages(prev => [...prev, { role: 'assistant', content: 'Navigation fehlgeschlagen.' }]);
     }
   }
-
-  // Quickstart actions
-  const quickStart = [
-    { label: t('cta.incident'),  path: '/incidents/new' },
-    { label: t('cta.register'),  path: '/registry' },
-    { label: t('cta.roles'),     path: '/governance/roles' },
-    { label: t('cta.audit'),     path: '/audits' },
-    { label: t('cta.training'),  path: '/training' }
-  ];
-
-  const contextActions = (() => {
-    const p = typeof window !== 'undefined' ? window.location.pathname : '/';
-    if (p.startsWith('/controls')) {
-      return [
-        { label: t('actions.controls.new'),      path: '/controls/new' },
-        { label: t('actions.controls.due'),      path: '/controls?due=today' },
-        { label: t('actions.controls.evidence'), path: '/evidence?scope=controls' }
-      ];
-    }
-    return [];
-  })();
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
@@ -132,20 +150,6 @@ export function NorrlandGuideDrawer({
     window.speechSynthesis.speak(utterance);
   };
 
-  useEffect(() => {
-    if (open && first.current) first.current.focus();
-  }, [open]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    const last = messages[messages.length - 1];
-    if (ttsOn && last?.role === "assistant") {
-      speak(last.content);
-    }
-  }, [messages, ttsOn]);
 
   async function ask() {
     if (!q.trim()) return;
