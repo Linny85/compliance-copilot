@@ -1,8 +1,8 @@
 {
   "intro": "Willkommen zurück!",
   "cta": {
-    "verify": "Verifizieren",
-    "whyToken": "Warum benötige ich ein Token?",
+    "verify": "Zugang prüfen",
+    "whyAccess": "Wie funktioniert mein Zugang?",
     "createDoc": "Neues Dokument erstellen",
     "name": "Name"
   },

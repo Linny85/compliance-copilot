@@ -1,8 +1,8 @@
 {
   "intro": "Välkommen tillbaka!",
   "cta": {
-    "verify": "Verifiera",
-    "whyToken": "Varför behöver jag en token?",
+    "verify": "Kontrollera åtkomst",
+    "whyAccess": "Hur fungerar min åtkomst?",
     "createDoc": "Skapa nytt dokument",
     "name": "Namn"
   },

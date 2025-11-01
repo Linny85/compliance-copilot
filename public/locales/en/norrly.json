@@ -1,8 +1,8 @@
 {
   "intro": "Welcome back!",
   "cta": {
-    "verify": "Verify",
-    "whyToken": "Why do I need a token?",
+    "verify": "Check access",
+    "whyAccess": "How does my access work?",
     "createDoc": "Create new document",
     "name": "Name"
   },

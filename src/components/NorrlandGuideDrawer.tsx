@@ -55,7 +55,7 @@ export function NorrlandGuideDrawer({
   
   const quickCtas = ready ? [
     { id: 'verify', label: t('norrly:cta.verify'), payload: t('helpbot:cta.verify') },
-    { id: 'whyToken', label: t('norrly:cta.whyToken'), payload: t('helpbot:cta.whyToken') },
+    { id: 'whyAccess', label: t('norrly:cta.whyAccess'), payload: t('helpbot:cta.whyAccess') },
     { id: 'createDoc', label: t('norrly:cta.createDoc'), payload: t('helpbot:cta.createDoc') },
     { id: 'name', label: t('norrly:cta.name'), payload: t('helpbot:nameExplained') }
   ] : [];
