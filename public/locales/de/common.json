@@ -248,5 +248,9 @@
     "manufacturing": "Industrie",
     "public": "Öffentlicher Sektor",
     "other": "Sonstiges"
+  },
+  "adminAccess": {
+    "denied": "Kein Zugriff",
+    "message": "Dieser Bereich ist nur für Administratoren zugänglich. Bitte melden Sie sich mit einem Konto mit Administratorrechten an."
   }
 }

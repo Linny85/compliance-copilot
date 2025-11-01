@@ -174,5 +174,9 @@
     "manufacturing": "Tillverkning",
     "public": "Offentlig sektor",
     "other": "Annat"
+  },
+  "adminAccess": {
+    "denied": "Åtkomst nekad",
+    "message": "Detta område är endast tillgängligt för administratörer. Vänligen logga in med ett konto som har administratörsbehörighet."
   }
 }

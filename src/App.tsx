@@ -45,6 +45,7 @@ import { installDomGuards } from "./lib/dom-guards";
 import { NorrlandGuide } from "./components/NorrlandGuide";
 import { AppLayout } from "./components/AppLayout";
 import { FeatureFlagProvider } from "./contexts/FeatureFlagContext";
+import RequireAdmin from "./components/auth/RequireAdmin";
 import TestRedirects from "./pages/admin/TestRedirects";
 import TestI18n from "./pages/admin/TestI18n";
 import TestI18nPatches from "./pages/admin/TestI18nPatches";
@@ -105,23 +106,23 @@ const App = () => (
               <Route path="/checks/new" element={<ChecksNewRule />} />
               <Route path="/controls/mapping" element={<ControlsMapping />} />
               <Route path="/settings/notifications" element={<SettingsNotifications />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/audit" element={<AuditLog />} />
-              <Route path="/admin/noc" element={<NOC />} />
-              <Route path="/admin/remediation" element={<RemediationEngine />} />
-              <Route path="/admin/integrations" element={<Integrations />} />
-              <Route path="/admin/approvals" element={<Approvals />} />
-              <Route path="/admin/ops" element={<OpsDashboard />} />
-              <Route path="/admin/helpbot" element={<HelpbotManager />} />
-              <Route path="/admin/training-certificates" element={<TrainingCertificates />} />
+              <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
+              <Route path="/admin/audit" element={<RequireAdmin><AuditLog /></RequireAdmin>} />
+              <Route path="/admin/noc" element={<RequireAdmin><NOC /></RequireAdmin>} />
+              <Route path="/admin/remediation" element={<RequireAdmin><RemediationEngine /></RequireAdmin>} />
+              <Route path="/admin/integrations" element={<RequireAdmin><Integrations /></RequireAdmin>} />
+              <Route path="/admin/approvals" element={<RequireAdmin><Approvals /></RequireAdmin>} />
+              <Route path="/admin/ops" element={<RequireAdmin><OpsDashboard /></RequireAdmin>} />
+              <Route path="/admin/helpbot" element={<RequireAdmin><HelpbotManager /></RequireAdmin>} />
+              <Route path="/admin/training-certificates" element={<RequireAdmin><TrainingCertificates /></RequireAdmin>} />
               {import.meta.env.VITE_TEST_MODE === '1' && (
                 <>
-                  <Route path="/admin/test-mode/redirects" element={<TestRedirects />} />
-                  <Route path="/admin/test-mode/net" element={<NetProbe />} />
-                  <Route path="/admin/test-mode/i18n" element={<TestI18n />} />
-                  <Route path="/admin/test-mode/i18n/patches" element={<TestI18nPatches />} />
-                  <Route path="/admin/test-mode/phase3" element={<TestPhase3 />} />
-                  <Route path="/admin/test-mode/phase4" element={<TestPhase4 />} />
+                  <Route path="/admin/test-mode/redirects" element={<RequireAdmin><TestRedirects /></RequireAdmin>} />
+                  <Route path="/admin/test-mode/net" element={<RequireAdmin><NetProbe /></RequireAdmin>} />
+                  <Route path="/admin/test-mode/i18n" element={<RequireAdmin><TestI18n /></RequireAdmin>} />
+                  <Route path="/admin/test-mode/i18n/patches" element={<RequireAdmin><TestI18nPatches /></RequireAdmin>} />
+                  <Route path="/admin/test-mode/phase3" element={<RequireAdmin><TestPhase3 /></RequireAdmin>} />
+                  <Route path="/admin/test-mode/phase4" element={<RequireAdmin><TestPhase4 /></RequireAdmin>} />
                 </>
               )}
               <Route path="/audit" element={<AuditTasks />} />

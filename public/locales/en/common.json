@@ -276,5 +276,9 @@
       "title": "Top Priorities",
       "empty": "All tasks up to date"
     }
+  },
+  "adminAccess": {
+    "denied": "Access Denied",
+    "message": "This area is only accessible to administrators. Please sign in with an account that has administrator privileges."
   }
 }
