@@ -18,5 +18,15 @@
   },
   "session": {
     "reset": "New session"
+  },
+  "guard": {
+    "deny": {
+      "technical": "I cannot share details about that. If you'd like to use Norrly, I'm happy to help with available features and documentation.",
+      "credentials": "Access and system information is confidential and cannot be disclosed. Do you need help with the application?",
+      "license": "I cannot help bypass license or security mechanisms. I'm happy to explain official usage options.",
+      "cloning": "I cannot help copy or replicate our product. I'm happy to explain official usage options.",
+      "generic": "I cannot answer this request for security reasons. Can I help you in another way?"
+    },
+    "rateLimit": "Too many blocked requests. Please wait 2 minutes and try again."
   }
 }

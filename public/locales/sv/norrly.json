@@ -18,5 +18,15 @@
   },
   "session": {
     "reset": "Ny session"
+  },
+  "guard": {
+    "deny": {
+      "technical": "Jag kan inte dela detaljer om det. Om du vill använda Norrly hjälper jag dig gärna med tillgängliga funktioner och dokumentation.",
+      "credentials": "Åtkomst- och systeminformation är konfidentiell och kan inte avslöjas. Behöver du hjälp med applikationen?",
+      "license": "Jag kan inte hjälpa till att kringgå licens- eller säkerhetsmekanismer. Jag förklarar gärna officiella användningsalternativ.",
+      "cloning": "Jag kan inte hjälpa till att kopiera eller replikera vår produkt. Jag förklarar gärna officiella användningsalternativ.",
+      "generic": "Jag kan inte svara på denna förfrågan av säkerhetsskäl. Kan jag hjälpa dig på annat sätt?"
+    },
+    "rateLimit": "För många blockerade förfrågningar. Vänta 2 minuter och försök igen."
   }
 }
