@@ -17,6 +17,7 @@
   "actions": {
     "edit": "Edit organization",
     "save": "Save Changes",
+    "cancel": "Cancel",
     "back": "Back to dashboard"
   },
   "notSpecified": "Not specified",

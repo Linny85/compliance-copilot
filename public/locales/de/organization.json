@@ -17,18 +17,19 @@
   "actions": {
     "edit": "Organisation bearbeiten",
     "save": "Änderungen speichern",
+    "cancel": "Abbrechen",
     "back": "Zurück zum Dashboard"
   },
   "notSpecified": "Nicht angegeben",
   "saveSuccess": "Organisationsdaten erfolgreich aktualisiert",
   "saveError": "Aktualisierung der Organisationsdaten fehlgeschlagen",
   "master": {
-    "title": "Master-Passwort",
-    "desc": "Bitte geben Sie das Master-Passwort ein, um Organisationsdaten zu bearbeiten.",
+    "title": "Master-Passwort bestätigen",
+    "desc": "Zum Bearbeiten der Organisationsdaten ist das Master-Passwort erforderlich.",
     "placeholder": "Master-Passwort",
     "confirm": "Bestätigen",
-    "fail": "Ungültiges Master-Passwort",
-    "error": "Überprüfung fehlgeschlagen"
+    "fail": "Master-Passwort ist ungültig.",
+    "error": "Verifizierung derzeit nicht möglich. Bitte später erneut versuchen."
   },
   "sectors": {
     "agriculture": "Landwirtschaft",

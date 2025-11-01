@@ -27,7 +27,7 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
       setLoading(true);
       setError(null);
 
-      const { data, error: invokeError } = await supabase.functions.invoke('verify-master-code', {
+      const { data, error: invokeError } = await supabase.functions.invoke('verify-master-pass', {
         body: { password }
       });
 
