@@ -6,6 +6,10 @@ import { RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { detectIntents, type ChatAction } from "@/features/assistant/intents";
 import { canAccess } from "@/lib/rbac";
 import { navigateGlobal } from "@/lib/navigation";
+import { sanitize } from "@/helpbot/outputSanitizer";
+import { contextHint } from "@/helpbot/contextHints";
+
+const FIRST_SEEN_KEY = 'norrly_seen_session';
 
 interface Message {
   role: "user" | "assistant" | "system";
@@ -20,9 +24,17 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const { t, i18n, ready } = useTranslation("assistant", { useSuspense: false });
+  const { t, i18n, ready } = useTranslation(["assistant", "helpbot"], { useSuspense: false });
   
   if (!ready && open) return null;
+
+  const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
+  
+  useEffect(() => {
+    if (firstSeen.current) {
+      sessionStorage.setItem(FIRST_SEEN_KEY, '1');
+    }
+  }, []);
 
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,16 +48,23 @@ export function NorrlandGuideDrawer({
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   // Translations - only access after ready
-  const name = ready ? t("name") : "";
-  const tagline = ready ? t("tagline") : "";
-  const greeting = ready ? t("greeting") : "";
-  const quickRaw = ready ? t("quickPrompts", { returnObjects: true }) : [];
-  const quick = Array.isArray(quickRaw) ? (quickRaw as string[]) : [];
+  const name = ready ? t("assistant:name") : "";
+  const tagline = ready ? t("assistant:tagline") : "";
+  const greeting = ready ? t("assistant:greeting") : "";
+  const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
+  
+  const quickCtas = ready ? [
+    { id: 'verify', label: t('helpbot:cta.verify'), payload: t('helpbot:cta.verify') },
+    { id: 'whyToken', label: t('helpbot:cta.whyToken'), payload: t('helpbot:cta.whyToken') },
+    { id: 'createDoc', label: t('helpbot:cta.createDoc'), payload: t('helpbot:cta.createDoc') },
+    { id: 'name', label: t('helpbot:cta.name'), payload: t('helpbot:nameExplained') }
+  ] : [];
+  
   const labels = ready ? {
-    open: t("buttons.open"),
-    cancel: t("buttons.cancel"),
-    speak_on: t("buttons.speak_on"),
-    speak_off: t("buttons.speak_off")
+    open: t("assistant:buttons.open"),
+    cancel: t("assistant:buttons.cancel"),
+    speak_on: t("assistant:buttons.speak_on"),
+    speak_off: t("assistant:buttons.speak_off")
   } : { open: "", cancel: "", speak_on: "", speak_off: "" };
 
   // User context (Platzhalter bis echter Context genutzt wird)
@@ -65,7 +84,11 @@ export function NorrlandGuideDrawer({
 
   const speak = (text: string) => {
     if (!supportsTTS) return;
-    const utterance = new SpeechSynthesisUtterance(text);
+    const sanitized = sanitize(text);
+    const utterance = new SpeechSynthesisUtterance(sanitized);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+    utterance.volume = 0.9;
     if (i18n.language?.startsWith("de")) utterance.lang = "de-DE";
     else if (i18n.language?.startsWith("sv")) utterance.lang = "sv-SE";
     else utterance.lang = "en-US";
@@ -111,9 +134,10 @@ export function NorrlandGuideDrawer({
       const moduleMatch = pathname
         .split('/')
         .find((seg) =>
-          ['dashboard', 'checks', 'controls', 'documents', 'evidence', 'training', 'admin', 'billing'].includes(seg)
+          ['dashboard', 'checks', 'controls', 'documents', 'evidence', 'training', 'admin', 'billing', 'organization'].includes(seg)
         );
       const activeModule = moduleMatch || 'global';
+      const contextInfo = contextHint(pathname);
       
       // Get auth session for authorization header
       const { data: sessionData } = await supabase.auth.getSession();
@@ -121,7 +145,7 @@ export function NorrlandGuideDrawer({
       
       const { data, error } = await supabase.functions.invoke("helpbot-chat", {
         body: { 
-          question: currentQuestion,
+          question: contextInfo ? `${contextInfo}\n${currentQuestion}` : currentQuestion,
           lang: currentLang,
           module: activeModule, // 🧠 Kontext für NORRLY
           session_id: sessionId || undefined,
@@ -170,10 +194,11 @@ export function NorrlandGuideDrawer({
       }
 
       // Add user message and assistant response to messages
+      const sanitizedAnswer = sanitize(data?.answer || "Keine Antwort erhalten.");
       setMessages(prev => [
         ...prev,
         { role: "user", content: currentQuestion },
-        { role: "assistant", content: data?.answer || "Keine Antwort erhalten.", id: data?.message_id }
+        { role: "assistant", content: sanitizedAnswer, id: data?.message_id }
       ]);
       
       setSources(data?.sources ?? []);
@@ -223,7 +248,7 @@ export function NorrlandGuideDrawer({
   if (!open) return null;
 
   return (
-    <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 bg-black/40">
+    <div role="dialog" aria-modal="true" className="helpbot-panel fixed inset-0 z-50 bg-black/40">
       <div className="absolute right-0 top-0 h-full w-full max-w-lg bg-background border-l border-border flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -269,25 +294,30 @@ export function NorrlandGuideDrawer({
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 ? (
+        {messages.length === 0 ? (
             <div className="space-y-4">
+              {intro && (
+                <div className="bg-muted/50 text-foreground px-4 py-3 rounded-lg text-sm leading-relaxed border border-border">
+                  {intro}
+                </div>
+              )}
               <div className="text-sm text-muted-foreground leading-relaxed">
                 {greeting}
               </div>
-              {quick.length > 0 && (
+              {quickCtas.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                   <div className="flex flex-col gap-2">
-                    {quick.map((prompt) => (
+                    {quickCtas.map((cta) => (
                       <button
-                        key={prompt}
+                        key={cta.id}
                         onClick={() => {
-                          setQ(prompt);
+                          setQ(cta.payload);
                           setTimeout(() => ask(), 50);
                         }}
                         className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
                       >
-                        {prompt}
+                        {cta.label}
                       </button>
                     ))}
                   </div>

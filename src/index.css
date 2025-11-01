@@ -244,6 +244,8 @@ All colors MUST be HSL.
   }
 
   /* NORRLY (Helpbot) — immer über Dialogs/Sheets (z-50) */
+  .helpbot-launcher,
+  .helpbot-panel,
   [class*="helpbot"],
   button[aria-label*="Norrland"],
   button[aria-label*="Guide"] {

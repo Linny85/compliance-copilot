@@ -1,1 +1,13 @@
-{}
+{
+  "intro": "Hej, jag är NORRLY från efterlevnadsteamet. Ska jag guida dig genom redigering av din organisation eller hjälpa dig skapa ett dokument?",
+  "nameExplained": "NORRLY – härledd från Norrland + ally. Din partner för tydliga, praktiska svar.",
+  "cta": {
+    "verify": "Verifiera huvudlösenord",
+    "whyToken": "Varför redigeringstoken?",
+    "createDoc": "Skapa dokument",
+    "name": "Vem är NORRLY?"
+  },
+  "token": {
+    "stale": "Din session har löpt ut eftersom huvudlösenordet roterades. Vänligen verifiera igen."
+  }
+}

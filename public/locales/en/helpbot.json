@@ -1,1 +1,13 @@
-{}
+{
+  "intro": "Hi, I'm NORRLY from the compliance team. Can I guide you through editing your organization or help you create a document?",
+  "nameExplained": "NORRLY – derived from Norrland + ally. Your partner for clear, practical answers.",
+  "cta": {
+    "verify": "Verify master password",
+    "whyToken": "Why edit token?",
+    "createDoc": "Create document",
+    "name": "Who is NORRLY?"
+  },
+  "token": {
+    "stale": "Your session expired because the master password was rotated. Please verify again."
+  }
+}

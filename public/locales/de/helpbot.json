@@ -1,1 +1,13 @@
-{}
+{
+  "intro": "Hi, ich bin NORRLY aus dem Compliance-Team. Soll ich dich durch „Organisation bearbeiten" führen oder beim Erstellen eines Dokuments helfen?",
+  "nameExplained": "NORRLY – abgeleitet von Norrland + ally. Deine Partnerin für klare, praktische Antworten.",
+  "cta": {
+    "verify": "Master-Passwort verifizieren",
+    "whyToken": "Warum Edit-Token?",
+    "createDoc": "Dokument erstellen",
+    "name": "Wer ist NORRLY?"
+  },
+  "token": {
+    "stale": "Deine Sitzung ist abgelaufen, weil das Master-Passwort rotiert wurde. Bitte neu verifizieren."
+  }
+}
