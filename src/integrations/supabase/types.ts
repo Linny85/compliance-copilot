@@ -5409,6 +5409,10 @@ export type Database = {
         }[]
       }
       auth_tenant_id: { Args: never; Returns: string }
+      check_master_password: {
+        Args: { p_company_id: string; p_password: string }
+        Returns: boolean
+      }
       claim_email_jobs: {
         Args: { p_limit: number }
         Returns: {
@@ -5571,6 +5575,10 @@ export type Database = {
         Args: { p_batch_limit?: number; p_retention_days?: number }
         Returns: Json
       }
+      pbkdf2_hash: {
+        Args: { iterations?: number; password: string; salt: string }
+        Returns: string
+      }
       refresh_compliance_summary_rpc: { Args: never; Returns: string }
       resolve_effective_control: {
         Args: {
@@ -5588,6 +5596,10 @@ export type Database = {
         }[]
       }
       set_default_flags: { Args: { _tenant: string }; Returns: undefined }
+      set_master_password: {
+        Args: { p_company_id: string; p_password: string }
+        Returns: boolean
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
       start_or_reset_trial: {

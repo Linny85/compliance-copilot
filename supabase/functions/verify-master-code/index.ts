@@ -22,23 +22,29 @@ async function getClaims(req: Request) {
 
 // PBKDF2 verification using WebCrypto
 async function pbkdf2Verify(password: string, saltB64: string, hashB64: string, iter: number): Promise<boolean> {
-  const pw = new TextEncoder().encode(password);
-  const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
-  
-  const key = await crypto.subtle.importKey("raw", pw, "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits(
-    { name: "PBKDF2", hash: "SHA-256", salt, iterations: iter },
-    key,
-    256
-  );
-  
-  const computed = btoa(String.fromCharCode(...new Uint8Array(bits)));
-  
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    new TextEncoder().encode(computed),
-    new TextEncoder().encode(hashB64)
-  );
+  try {
+    const pw = new TextEncoder().encode(password);
+    const salt = Uint8Array.from(atob(saltB64), c => c.charCodeAt(0));
+    
+    const key = await crypto.subtle.importKey("raw", pw, "PBKDF2", false, ["deriveBits"]);
+    const bits = await crypto.subtle.deriveBits(
+      { name: "PBKDF2", hash: "SHA-256", salt, iterations: iter },
+      key,
+      256
+    );
+    
+    const computed = btoa(String.fromCharCode(...new Uint8Array(bits)));
+    
+    // Constant-time comparison
+    if (computed.length !== hashB64.length) return false;
+    let result = 0;
+    for (let i = 0; i < computed.length; i++) {
+      result |= computed.charCodeAt(i) ^ hashB64.charCodeAt(i);
+    }
+    return result === 0;
+  } catch {
+    return false;
+  }
 }
 
 serve(async (req) => {
