@@ -1,1 +1,16 @@
-{}
+{
+  "title": "Administration",
+  "subtitle": "Hantera användare och prenumeration",
+  "tabs": {
+    "users": "Användare",
+    "subscription": "Prenumeration",
+    "compliance": "Efterlevnad",
+    "qa": "Kvalitetskontroll",
+    "graph": "Kunskapsgraf"
+  },
+  "team": {
+    "heading": "Teammedlemmar",
+    "description": "Hantera användaråtkomst till din organisation.",
+    "invite": "Bjud in användare"
+  }
+}

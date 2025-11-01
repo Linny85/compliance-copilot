@@ -1,0 +1,22 @@
+{
+  "namespaces": [
+    "admin",
+    "aiAct",
+    "aiSystems",
+    "assistant",
+    "billing",
+    "checks",
+    "common",
+    "controls",
+    "dashboard",
+    "documents",
+    "evidence",
+    "helpbot",
+    "nav",
+    "nis2",
+    "organization",
+    "reports",
+    "scope",
+    "training"
+  ]
+}

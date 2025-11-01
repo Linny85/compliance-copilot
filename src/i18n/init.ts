@@ -9,7 +9,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'de',
-    debug: true, // Enable debug to see what's happening
+    debug: import.meta.env.DEV,
     ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
@@ -20,13 +20,16 @@ i18n
       crossDomain: false
     },
     interpolation: { escapeValue: false },
+    returnNull: false,
     returnEmptyString: false,
     saveMissing: false,
     react: {
       useSuspense: false
     },
     parseMissingKeyHandler: (key) => {
-      console.warn('[i18n] missing key:', key);
+      if (import.meta.env.DEV) {
+        console.warn('[i18n missing]', key);
+      }
       return key;
     },
   });
