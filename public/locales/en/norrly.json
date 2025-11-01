@@ -18,10 +18,10 @@
     "training": "Start training"
   },
   "nav": {
-    "ok": "Got it – opening \"{{target}}\".",
+    "ok": "Got it — opening \"{{target}}\".",
     "ambiguous": "Did you mean one of these?",
-    "denied": "You don't have access to that feature. Please contact your admin.",
-    "error": "Unable to open that page."
+    "denied": "You don't have access to this yet. Please contact your admin.",
+    "error": "That didn't work. Please try again or use the menu."
   },
   "input": {
     "placeholder": "Type a question (Enter to send, Shift+Enter for a new line)…",
