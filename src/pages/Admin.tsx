@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,6 +36,7 @@ interface Subscription {
 
 const Admin = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation(['admin', 'common']);
   const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -172,32 +174,32 @@ const Admin = () => {
     <AdminPage title={
       <span className="flex items-center gap-2">
         <Settings className="h-8 w-8 text-primary" />
-        Administration
+        {t('admin:title')}
       </span>
-    } subtitle="Manage users and subscription">
+    } subtitle={t('admin:subtitle')}>
       <div className="max-w-7xl mx-auto space-y-8 mt-6">
 
         <Tabs defaultValue="users" className="w-full">
           <TabsList>
-            <TabsTrigger value="users">Users</TabsTrigger>
-            <TabsTrigger value="subscription">Subscription</TabsTrigger>
-            <TabsTrigger value="compliance">Compliance</TabsTrigger>
-            <TabsTrigger value="qa-monitor">QA Monitor</TabsTrigger>
-            <TabsTrigger value="graph">Knowledge Graph</TabsTrigger>
+            <TabsTrigger value="users">{t('admin:tabs.users')}</TabsTrigger>
+            <TabsTrigger value="subscription">{t('admin:tabs.subscription')}</TabsTrigger>
+            <TabsTrigger value="compliance">{t('admin:tabs.compliance')}</TabsTrigger>
+            <TabsTrigger value="qa-monitor">{t('admin:tabs.qa')}</TabsTrigger>
+            <TabsTrigger value="graph">{t('admin:tabs.graph')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                  <CardTitle>Team Members</CardTitle>
-                  <CardDescription>Manage user access to your organization</CardDescription>
+                  <CardTitle>{t('admin:team.heading')}</CardTitle>
+                  <CardDescription>{t('admin:team.description')}</CardDescription>
                 </div>
                 <Dialog open={inviteDialogOpen} onOpenChange={setInviteDialogOpen}>
                   <DialogTrigger asChild>
                     <Button>
                       <Plus className="h-4 w-4 mr-2" />
-                      Invite User
+                      {t('admin:team.invite')}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>

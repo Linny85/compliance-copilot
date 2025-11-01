@@ -1,1 +1,16 @@
-{}
+{
+  "title": "Administration",
+  "subtitle": "Verwalte Benutzer und Abonnements",
+  "tabs": {
+    "users": "Benutzer",
+    "subscription": "Abonnement",
+    "compliance": "Compliance",
+    "qa": "Qualitätssicherung",
+    "graph": "Wissensgraph"
+  },
+  "team": {
+    "heading": "Teammitglieder",
+    "description": "Verwalte den Zugriff von Benutzern auf deine Organisation.",
+    "invite": "Benutzer einladen"
+  }
+}

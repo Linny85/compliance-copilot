@@ -1,1 +1,16 @@
-{}
+{
+  "title": "Administration",
+  "subtitle": "Manage users and subscription",
+  "tabs": {
+    "users": "Users",
+    "subscription": "Subscription",
+    "compliance": "Compliance",
+    "qa": "QA Monitor",
+    "graph": "Knowledge Graph"
+  },
+  "team": {
+    "heading": "Team Members",
+    "description": "Manage user access to your organization.",
+    "invite": "Invite User"
+  }
+}
