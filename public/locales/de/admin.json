@@ -10,7 +10,55 @@
   },
   "team": {
     "heading": "Teammitglieder",
-    "description": "Verwalte den Zugriff von Benutzern auf deine Organisation.",
-    "invite": "Benutzer einladen"
+    "description": "Verwalte den Zugriff auf deine Organisation",
+    "invite": "Benutzer einladen",
+    "email": "E-Mail",
+    "role": "Rolle",
+    "status": "Status",
+    "actions": "Aktionen",
+    "owner": "Besitzer",
+    "admin": "Administrator",
+    "manager": "Manager",
+    "member": "Mitglied",
+    "pending": "Ausstehend",
+    "active": "Aktiv",
+    "remove": "Entfernen",
+    "confirmRemove": "Möchten Sie diesen Benutzer entfernen?",
+    "assignRole": "Rolle zuweisen"
+  },
+  "subscription": {
+    "title": "Abonnement",
+    "plan": "Plan",
+    "status": "Status",
+    "trial": "Testphase aktiv",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "manage": "Abonnement verwalten",
+    "billingPortal": "Abrechnungsportal öffnen"
+  },
+  "compliance": {
+    "title": "Compliance",
+    "desc": "Compliance-Übersicht und Einstellungen"
+  },
+  "qa": {
+    "title": "QA-Überwachung",
+    "desc": "Qualitätssicherung und Systemüberwachung"
+  },
+  "graph": {
+    "title": "Wissensgraph",
+    "desc": "Beziehungen zwischen Objekten und Nachweisen"
+  },
+  "actions": {
+    "save": "Änderungen speichern",
+    "cancel": "Abbrechen",
+    "back": "Zurück"
+  },
+  "toasts": {
+    "saved": "Änderungen wurden gespeichert",
+    "error": "Beim Speichern ist ein Fehler aufgetreten"
+  },
+  "empty": {
+    "noUsers": "Noch keine Benutzer vorhanden.",
+    "inviteFirst": "Lade deinen ersten Benutzer ein, um loszulegen."
   }
 }

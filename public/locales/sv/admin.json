@@ -1,16 +1,64 @@
 {
   "title": "Administration",
-  "subtitle": "Hantera användare och prenumeration",
+  "subtitle": "Hantera användare och abonnemang",
   "tabs": {
     "users": "Användare",
-    "subscription": "Prenumeration",
-    "compliance": "Efterlevnad",
-    "qa": "Kvalitetskontroll",
+    "subscription": "Abonnemang",
+    "compliance": "Regelefterlevnad",
+    "qa": "QA-övervakning",
     "graph": "Kunskapsgraf"
   },
   "team": {
     "heading": "Teammedlemmar",
-    "description": "Hantera användaråtkomst till din organisation.",
-    "invite": "Bjud in användare"
+    "description": "Hantera åtkomst för din organisation",
+    "invite": "Bjud in användare",
+    "email": "E-post",
+    "role": "Roll",
+    "status": "Status",
+    "actions": "Åtgärder",
+    "owner": "Ägare",
+    "admin": "Admin",
+    "manager": "Manager",
+    "member": "Medlem",
+    "pending": "Avvaktande",
+    "active": "Aktiv",
+    "remove": "Ta bort",
+    "confirmRemove": "Vill du ta bort den här användaren?",
+    "assignRole": "Tilldela roll"
+  },
+  "subscription": {
+    "title": "Abonnemang",
+    "plan": "Plan",
+    "status": "Status",
+    "trial": "Testperiod aktiv",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "manage": "Hantera abonnemang",
+    "billingPortal": "Öppna fakturaportal"
+  },
+  "compliance": {
+    "title": "Regelefterlevnad",
+    "desc": "Översikt och inställningar för efterlevnad"
+  },
+  "qa": {
+    "title": "QA-övervakning",
+    "desc": "Kvalitetssäkring och hälsoövervakning"
+  },
+  "graph": {
+    "title": "Kunskapsgraf",
+    "desc": "Relationer mellan objekt och evidens"
+  },
+  "actions": {
+    "save": "Spara ändringar",
+    "cancel": "Avbryt",
+    "back": "Tillbaka"
+  },
+  "toasts": {
+    "saved": "Ändringarna har sparats",
+    "error": "Ett fel uppstod när ändringarna skulle sparas"
+  },
+  "empty": {
+    "noUsers": "Inga användare ännu.",
+    "inviteFirst": "Bjud in din första användare för att komma igång."
   }
 }

@@ -10,7 +10,55 @@
   },
   "team": {
     "heading": "Team Members",
-    "description": "Manage user access to your organization.",
-    "invite": "Invite User"
+    "description": "Manage user access to your organization",
+    "invite": "Invite User",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "actions": "Actions",
+    "owner": "Owner",
+    "admin": "Admin",
+    "manager": "Manager",
+    "member": "Member",
+    "pending": "Pending",
+    "active": "Active",
+    "remove": "Remove",
+    "confirmRemove": "Do you want to remove this user?",
+    "assignRole": "Assign Role"
+  },
+  "subscription": {
+    "title": "Subscription",
+    "plan": "Plan",
+    "status": "Status",
+    "trial": "Trial Active",
+    "active": "Active",
+    "inactive": "Inactive",
+    "manage": "Manage Subscription",
+    "billingPortal": "Open Billing Portal"
+  },
+  "compliance": {
+    "title": "Compliance",
+    "desc": "Compliance overview and settings"
+  },
+  "qa": {
+    "title": "QA Monitor",
+    "desc": "Quality assurance and health monitoring"
+  },
+  "graph": {
+    "title": "Knowledge Graph",
+    "desc": "Relationships between objects and evidence"
+  },
+  "actions": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "back": "Back"
+  },
+  "toasts": {
+    "saved": "Changes saved successfully",
+    "error": "An error occurred while saving"
+  },
+  "empty": {
+    "noUsers": "No users yet.",
+    "inviteFirst": "Invite your first user to get started."
   }
 }
