@@ -16,9 +16,20 @@
   },
   "actions": {
     "edit": "Edit organization",
+    "save": "Save Changes",
     "back": "Back to dashboard"
   },
   "notSpecified": "Not specified",
+  "saveSuccess": "Organization details updated successfully",
+  "saveError": "Failed to update organization details",
+  "master": {
+    "title": "Master Password",
+    "desc": "Enter the master password to edit organization details.",
+    "placeholder": "Master password",
+    "confirm": "Confirm",
+    "fail": "Invalid master password",
+    "error": "Verification failed"
+  },
   "sectors": {
     "agriculture": "Agriculture",
     "manufacturing": "Manufacturing",

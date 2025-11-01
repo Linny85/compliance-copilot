@@ -16,9 +16,20 @@
   },
   "actions": {
     "edit": "Redigera organisation",
+    "save": "Spara ändringar",
     "back": "Tillbaka till instrumentpanelen"
   },
   "notSpecified": "Ej angivet",
+  "saveSuccess": "Organisationsuppgifterna har uppdaterats",
+  "saveError": "Det gick inte att uppdatera organisationsuppgifterna",
+  "master": {
+    "title": "Huvudlösenord",
+    "desc": "Ange huvudlösenordet för att redigera organisationsuppgifter.",
+    "placeholder": "Huvudlösenord",
+    "confirm": "Bekräfta",
+    "fail": "Ogiltigt huvudlösenord",
+    "error": "Verifiering misslyckades"
+  },
   "sectors": {
     "agriculture": "Jordbruk",
     "manufacturing": "Tillverkning",

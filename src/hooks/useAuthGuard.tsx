@@ -92,6 +92,9 @@ export const useAuthGuard = () => {
         if (!info.tenantId && location.pathname !== '/company-profile') {
           // User has no tenant, redirect to onboarding
           navigate('/company-profile?mode=create');
+        } else if (info.tenantId && location.pathname === '/organization') {
+          // User has tenant and is on /organization - stay there (read-only or edit mode handled in-page)
+          // No redirect needed
         } else if (info.tenantId && isCompanyProfile && !(mode === 'create' || mode === 'edit')) {
           // User has tenant and is on company-profile without explicit mode → redirect to read-only view
           navigate('/organization', { replace: true });

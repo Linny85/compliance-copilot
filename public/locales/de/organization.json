@@ -16,9 +16,20 @@
   },
   "actions": {
     "edit": "Organisation bearbeiten",
+    "save": "Änderungen speichern",
     "back": "Zurück zum Dashboard"
   },
   "notSpecified": "Nicht angegeben",
+  "saveSuccess": "Organisationsdaten erfolgreich aktualisiert",
+  "saveError": "Aktualisierung der Organisationsdaten fehlgeschlagen",
+  "master": {
+    "title": "Master-Passwort",
+    "desc": "Bitte geben Sie das Master-Passwort ein, um Organisationsdaten zu bearbeiten.",
+    "placeholder": "Master-Passwort",
+    "confirm": "Bestätigen",
+    "fail": "Ungültiges Master-Passwort",
+    "error": "Überprüfung fehlgeschlagen"
+  },
   "sectors": {
     "agriculture": "Landwirtschaft",
     "manufacturing": "Verarbeitendes Gewerbe",
