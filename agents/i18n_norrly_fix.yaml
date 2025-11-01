@@ -1,0 +1,189 @@
+# agents/i18n_norrly_fix.yaml
+id: verify-and-fix-i18n-norrly
+name: "i18n Integrity & nav.ok Fix (Norrly)"
+description: >
+  Prüft und repariert fehlende i18n-Keys in public/locales/*/norrly.json
+  (DE/EN/SV). Erst Report, dann Dry-Run, Anwendung nur nach Freigabe.
+
+# ────────────────────────────────────────────────────────────────────────────────
+# Grundeinstellungen
+# ────────────────────────────────────────────────────────────────────────────────
+vars:
+  files:
+    - public/locales/de/norrly.json
+    - public/locales/en/norrly.json
+    - public/locales/sv/norrly.json
+  requiredKeys:
+    - cta.auditList
+    - cta.auditNew
+    - cta.controlsDue
+    - cta.evidenceControls
+    - missing.incident
+    - missing.registry
+    - missing.roles
+    - missing.controls_new
+    - errors.route_missing
+    - errors.nav_failed
+    - nav.ok
+    - nav.error
+  # Standard-Insert-Blöcke für jede Sprache (werden nur ergänzt, nichts überschrieben)
+  inserts:
+    de: |
+      "cta": {
+        "incident": "Sicherheitsvorfall melden",
+        "register": "Register führen",
+        "roles": "Rollen & Verantwortlichkeiten",
+        "auditList": "Audit-Übersicht",
+        "auditNew": "Neuen Audit anlegen",
+        "controlsDue": "Kontrollen fällig (heute)",
+        "evidenceControls": "Evidence-Übersicht",
+        "training": "Trainings & Zertifikate"
+      },
+      "missing": {
+        "incident": "Die Incident-Create-Route ist noch nicht hinterlegt.",
+        "registry": "Registry-Route ist noch nicht hinterlegt.",
+        "roles": "Governance-Rollen-Route ist noch nicht hinterlegt.",
+        "controls_new": "Controls-Create-Route ist noch nicht hinterlegt."
+      },
+      "errors": {
+        "route_missing": "Route nicht verfügbar.",
+        "nav_failed": "Navigation fehlgeschlagen."
+      },
+      "nav": {
+        "ok": "Navigiere zu {{target}}",
+        "error": "Navigation fehlgeschlagen"
+      }
+    en: |
+      "cta": {
+        "incident": "Report Security Incident",
+        "register": "Manage Registry",
+        "roles": "Roles & Responsibilities",
+        "auditList": "Audit Overview",
+        "auditNew": "Create New Audit",
+        "controlsDue": "Controls Due (Today)",
+        "evidenceControls": "Evidence Overview",
+        "training": "Training & Certificates"
+      },
+      "missing": {
+        "incident": "Incident creation route not yet configured.",
+        "registry": "Registry route not yet configured.",
+        "roles": "Governance roles route not yet configured.",
+        "controls_new": "Controls creation route not yet configured."
+      },
+      "errors": {
+        "route_missing": "Route unavailable.",
+        "nav_failed": "Navigation failed."
+      },
+      "nav": {
+        "ok": "Navigating to {{target}}",
+        "error": "Navigation failed"
+      }
+    sv: |
+      "cta": {
+        "incident": "Rapportera Säkerhetsincident",
+        "register": "Hantera Register",
+        "roles": "Roller & Ansvar",
+        "auditList": "Audit Översikt",
+        "auditNew": "Skapa Ny Audit",
+        "controlsDue": "Kontroller Förfaller (Idag)",
+        "evidenceControls": "Bevis Översikt",
+        "training": "Utbildning & Certifikat"
+      },
+      "missing": {
+        "incident": "Incident-skapande väg är inte konfigurerad än.",
+        "registry": "Registerväg är inte konfigurerad än.",
+        "roles": "Styrningsroller väg är inte konfigurerad än.",
+        "controls_new": "Kontroll-skapande väg är inte konfigurerad än."
+      },
+      "errors": {
+        "route_missing": "Väg inte tillgänglig.",
+        "nav_failed": "Navigation misslyckades."
+      },
+      "nav": {
+        "ok": "Navigerar till {{target}}",
+        "error": "Navigation misslyckades"
+      }
+
+# ────────────────────────────────────────────────────────────────────────────────
+# PHASE 1 — Read-Only Prüfung
+# ────────────────────────────────────────────────────────────────────────────────
+steps:
+  - id: phase-1-scan
+    name: "Phase 1: Scan i18n files"
+    run: |
+      # Pseudo-Engine: Der Agent soll Dateien lesen, JSON parsen, Keys prüfen.
+      # Output MUSS ein JSON-Report sein – keine Änderungen!
+      SCAN_REPORT_BEGIN
+      # Für jede Datei: syntaxValid (true/false), missingKeys ([...]), trailingCommas (true/false)
+      # Der Agent füllt das basierend auf vars.requiredKeys.
+      SCAN_REPORT_END
+    output: scanReport
+
+  - id: phase-1-assert
+    name: "Phase 1: Decide next step"
+    run_if: "${scanReport.hasMissingKeys || scanReport.hasSyntaxErrors}"
+    run: |
+      # Wenn Keys fehlen/Fehler existieren → Phase 2 vorbereiten, sonst Erfolg melden
+      echo "Mängel gefunden; bereite Dry-Run vor."
+
+# ────────────────────────────────────────────────────────────────────────────────
+# PHASE 2 — Dry-Run Patch (keine Schreiboperationen!)
+# ────────────────────────────────────────────────────────────────────────────────
+  - id: phase-2-dryrun
+    name: "Phase 2: Prepare Dry-Run patch"
+    run_if: "${scanReport.hasMissingKeys || scanReport.hasSyntaxErrors}"
+    run: |
+      # Für jede betroffene Datei generiert der Agent einen unified diff,
+      # der NUR fehlende Keys ergänzt oder offensichtliche Komma/Syntaxfehler behebt.
+      # Sprachspezifische Insert-Blöcke: vars.inserts.de / en / sv
+      DRYRUN_DIFF_BEGIN
+      # … unified diffs hier …
+      DRYRUN_DIFF_END
+    output: dryRunDiff
+
+  - id: phase-2-stop
+    name: "WAIT FOR APPROVAL"
+    run_if: "${scanReport.hasMissingKeys || scanReport.hasSyntaxErrors}"
+    description: >
+      Stoppe hier und warte auf das manuelle Signal: 'APPLY I18N FIX'.
+      Vor Freigabe nichts schreiben/committen.
+
+# ────────────────────────────────────────────────────────────────────────────────
+# PHASE 3 — Anwendung (nur nach Freigabe 'APPLY I18N FIX')
+# ────────────────────────────────────────────────────────────────────────────────
+  - id: phase-3-apply
+    name: "Phase 3: Apply i18n fixes"
+    run_if_signal: "APPLY I18N FIX"
+    run: |
+      # Dry-Run-Änderungen exakt anwenden (kein Refactor, keine fremden Dateien).
+      APPLY_DRYRUN_DIFF
+
+  - id: lint-build
+    name: "Lint & Build"
+    run_if_signal: "APPLY I18N FIX"
+    run: |
+      pnpm lint
+      pnpm build
+
+  - id: phase-3-report
+    name: "Report"
+    run_if_signal: "APPLY I18N FIX"
+    run: |
+      # Zusammenfassung für die Konsole
+      {
+        "fixedFiles": [...],
+        "addedKeys": [...],
+        "syntaxValid": true,
+        "buildPassed": true,
+        "notes": "Norrly navigation texts restored – 404-free."
+      }
+
+# ────────────────────────────────────────────────────────────────────────────────
+# Sicherheitsregeln
+# ────────────────────────────────────────────────────────────────────────────────
+rules:
+  - "Keine Hooks oder TS/TSX-Dateien ändern."
+  - "Nur norrly.json (DE/EN/SV) und nur fehlende Keys oder offensichtliche JSON-Syntaxfehler beheben."
+  - "Keys niemals löschen."
+  - "Keine anderen i18n-Dateien zusammenführen."
+  - "Anwendung der Änderungen ausschließlich nach Signal: 'APPLY I18N FIX'."
