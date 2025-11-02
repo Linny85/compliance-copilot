@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -26,6 +27,7 @@ export function NorrlandGuideDrawer({
   setOpen: (v: boolean) => void 
 }) {
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
+  const navigate = useNavigate();
   
   // Helper function for translations with default values
   const tn = (key: string, defaultValue: string) => t(key, { defaultValue });
@@ -57,15 +59,6 @@ export function NorrlandGuideDrawer({
   const greetingHeadline = ready ? t("norrly:intro.headline") : "";
   const greetingText = ready ? t("norrly:intro.text") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
-  
-  const quickCtas = ready ? [
-    { id: 'incident', label: tn('norrly:cta.incident', 'Sicherheitsvorfall melden'), payload: tn('norrly:cta.incident', 'Sicherheitsvorfall melden') },
-    { id: 'register', label: tn('norrly:cta.register', 'NIS2-Register prüfen'), payload: tn('norrly:cta.register', 'NIS2-Register prüfen') },
-    { id: 'roles', label: tn('norrly:cta.roles', 'Verantwortlichkeiten klären'), payload: tn('norrly:cta.roles', 'Verantwortlichkeiten klären') },
-    { id: 'auditList', label: tn('norrly:cta.auditList', 'Audit-Liste'), payload: tn('norrly:cta.auditList', 'Audit-Liste') },
-    { id: 'auditNew', label: tn('norrly:cta.auditNew', 'Neues Audit'), payload: tn('norrly:cta.auditNew', 'Neues Audit') },
-    { id: 'training', label: tn('norrly:cta.training', 'Schulung starten'), payload: tn('norrly:cta.training', 'Schulung starten') }
-  ] : [];
   
   const labels = ready ? {
     open: t("norrly:input.open"),
@@ -372,26 +365,33 @@ export function NorrlandGuideDrawer({
                   </div>
                 );
               })()}
-              {quickCtas.length > 0 && (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
-                  <div className="flex flex-col gap-2">
-                    {quickCtas.map((cta) => (
-                      <button
-                        key={cta.id}
-                        onClick={() => {
-                          const ctxLine = buildCtxLine();
-                          setQ(localizeModuleTerms((ctxLine ? ctxLine : '') + cta.payload));
-                          setTimeout(() => ask(), 50);
-                        }}
-                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
-                      >
-                        {cta.label}
-                      </button>
-                    ))}
+              {(() => {
+                const pageCtx = getPageCtx();
+                const ctxKey = pageCtx || 'dashboard';
+                const quickstarts = t(`norrly:quickstart.${ctxKey}`, { returnObjects: true });
+                const fallbackQuickstarts = t('norrly:quickstart.dashboard', { returnObjects: true });
+                const items = Array.isArray(quickstarts) && quickstarts.length ? quickstarts : fallbackQuickstarts;
+                
+                if (!Array.isArray(items) || items.length === 0) return null;
+                
+                return (
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
+                    <div className="flex flex-col gap-2">
+                      {items.map((q: any, i: number) => (
+                        <Button
+                          key={i}
+                          variant="outline"
+                          className="justify-start w-full text-left"
+                          onClick={() => navigate(q.to)}
+                        >
+                          {q.label}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
             </div>
           ) : (
             messages.map((msg, i) => (

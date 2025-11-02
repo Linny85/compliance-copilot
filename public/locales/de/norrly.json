@@ -45,6 +45,54 @@
   "help": {
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
   },
+  "quickstart": {
+    "dashboard": [
+      { "label": "Sicherheitsvorfall melden", "to": "/incident/new" },
+      { "label": "NIS2-Register prüfen", "to": "/nis2" },
+      { "label": "Verantwortlichkeiten klären", "to": "/controls/mapping" },
+      { "label": "Audit-Übersicht", "to": "/audit" },
+      { "label": "Schulung starten", "to": "/admin/training-certificates" }
+    ],
+    "documents": [
+      { "label": "Neues Dokument erstellen", "to": "/documents/new" },
+      { "label": "Nachweise hochladen", "to": "/evidence" },
+      { "label": "Richtlinie generieren", "to": "/controls" },
+      { "label": "Audit-Task anlegen", "to": "/audit/new" }
+    ],
+    "checks": [
+      { "label": "Neue Prüfung planen", "to": "/checks/new" },
+      { "label": "Prüfplan terminieren", "to": "/audit/new" },
+      { "label": "Nachweise prüfen", "to": "/evidence" }
+    ],
+    "audit:list": [
+      { "label": "Neues Audit anlegen", "to": "/audit/new" },
+      { "label": "Prüfungen öffnen", "to": "/checks" },
+      { "label": "Berichte & Exporte", "to": "/admin/ops" }
+    ],
+    "audit:new": [
+      { "label": "Audit-Vorlagen laden", "to": "/audit" },
+      { "label": "Kontrollen zuordnen", "to": "/controls/mapping" },
+      { "label": "DPIA-Liste", "to": "/privacy/dpia" }
+    ],
+    "dpia:list": [
+      { "label": "Neue DPIA starten", "to": "/privacy/dpia/new" },
+      { "label": "System ins Register", "to": "/ai-systems/register" },
+      { "label": "Nachweise hochladen", "to": "/evidence" }
+    ],
+    "ai-act": [
+      { "label": "KI-System registrieren", "to": "/ai-systems/register" },
+      { "label": "DPIA prüfen", "to": "/privacy/dpia" },
+      { "label": "Richtlinie generieren", "to": "/controls" }
+    ],
+    "organization": [
+      { "label": "Unternehmensprofil bearbeiten", "to": "/company-profile" },
+      { "label": "Zertifikate prüfen", "to": "/admin/training-certificates" }
+    ],
+    "billing": [
+      { "label": "Plan upgraden", "to": "/billing" },
+      { "label": "Testversion verwalten", "to": "/dashboard" }
+    ]
+  },
   "contextNames": {
     "dashboard": "Dashboard",
     "checks": "Prüfungen",

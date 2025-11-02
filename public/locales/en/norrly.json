@@ -44,5 +44,53 @@
   },
   "help": {
     "whyAccess": "Your access runs through your subscription. By signing in, I activate your license and can assign documents & evidence directly to your organization – securely and GDPR-compliant."
+  },
+  "quickstart": {
+    "dashboard": [
+      { "label": "Report security incident", "to": "/incident/new" },
+      { "label": "Check NIS2 registry", "to": "/nis2" },
+      { "label": "Clarify responsibilities", "to": "/controls/mapping" },
+      { "label": "Audit overview", "to": "/audit" },
+      { "label": "Start training", "to": "/admin/training-certificates" }
+    ],
+    "documents": [
+      { "label": "Create new document", "to": "/documents/new" },
+      { "label": "Upload evidence", "to": "/evidence" },
+      { "label": "Generate policy", "to": "/controls" },
+      { "label": "Create audit task", "to": "/audit/new" }
+    ],
+    "checks": [
+      { "label": "Plan new check", "to": "/checks/new" },
+      { "label": "Schedule audit", "to": "/audit/new" },
+      { "label": "Review evidence", "to": "/evidence" }
+    ],
+    "audit:list": [
+      { "label": "Create new audit", "to": "/audit/new" },
+      { "label": "Open checks", "to": "/checks" },
+      { "label": "Reports & exports", "to": "/admin/ops" }
+    ],
+    "audit:new": [
+      { "label": "Load audit templates", "to": "/audit" },
+      { "label": "Map controls", "to": "/controls/mapping" },
+      { "label": "DPIA list", "to": "/privacy/dpia" }
+    ],
+    "dpia:list": [
+      { "label": "Start new DPIA", "to": "/privacy/dpia/new" },
+      { "label": "Register system", "to": "/ai-systems/register" },
+      { "label": "Upload evidence", "to": "/evidence" }
+    ],
+    "ai-act": [
+      { "label": "Register AI system", "to": "/ai-systems/register" },
+      { "label": "Check DPIA", "to": "/privacy/dpia" },
+      { "label": "Generate policy", "to": "/controls" }
+    ],
+    "organization": [
+      { "label": "Edit company profile", "to": "/company-profile" },
+      { "label": "Check certificates", "to": "/admin/training-certificates" }
+    ],
+    "billing": [
+      { "label": "Upgrade plan", "to": "/billing" },
+      { "label": "Manage trial", "to": "/dashboard" }
+    ]
   }
 }
