@@ -10,44 +10,18 @@
     "verify": "Verifizieren",
     "whyAccess": "Warum ist ein Login nötig?",
     "createDoc": "Neues Dokument erstellen",
-    "name": "Norrly",
+    "name": "Name",
     "incident": "Sicherheitsvorfall melden",
     "register": "NIS2-Register prüfen",
     "roles": "Verantwortlichkeiten klären",
-    "auditList": "Audit-Übersicht",
-    "auditNew": "Neuen Audit anlegen",
-    "controlsDue": "Kontrollen fällig (heute)",
-    "evidenceControls": "Evidence-Übersicht",
+    "audit": "Audit vorbereiten",
     "training": "Schulung starten"
-  },
-  "missing": {
-    "incident": "Die Incident-Create-Route ist noch nicht hinterlegt.",
-    "registry": "Registry-Route ist noch nicht hinterlegt.",
-    "roles": "Governance-Rollen-Route ist noch nicht hinterlegt.",
-    "controls_new": "Controls-Create-Route ist noch nicht hinterlegt."
-  },
-  "errors": {
-    "route_missing": "Route nicht verfügbar.",
-    "nav_failed": "Navigation fehlgeschlagen."
-  },
-  "nav": {
-    "ok": "Navigiere zu {{target}}",
-    "error": "Navigation fehlgeschlagen"
   },
   "input": {
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
     "open": "Öffnen",
     "loading": "Lädt…",
     "cancel": "Abbrechen"
-  },
-  "incident": {
-    "report": "Sicherheitsvorfall melden",
-    "title": "Titel",
-    "description": "Beschreibung",
-    "impact": "Auswirkung",
-    "helpTitle": "Was muss ich hier eingeben?",
-    "helpBody": "Trage einen kurzen Titel (z. B. „Phishing-E-Mail geöffnet"), eine verständliche Beschreibung (Was ist passiert? Wann? Wer/was ist betroffen?) und – wenn bekannt – die Auswirkung (z. B. Systeme gestört, Daten evtl. betroffen) ein. Details kannst du später ergänzen.",
-    "submit": "Absenden"
   },
   "voice": {
     "on": "Stimme an",
@@ -68,12 +42,5 @@
   },
   "help": {
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
-  },
-  "actions": {
-    "controls": {
-      "new": "Neue Maßnahme anlegen",
-      "due": "Fälligkeiten prüfen",
-      "evidence": "Nachweise verknüpfen"
-    }
   }
 }

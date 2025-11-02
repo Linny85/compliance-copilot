@@ -24,11 +24,10 @@ export const LanguageSwitcher = () => {
   }, [i18n.language]);
 
   const setLocale = async (lng: string) => {
-    const normalizedLng = lng.toLowerCase();
-    await i18n.changeLanguage(normalizedLng);
+    await i18n.changeLanguage(lng);
     
     // Persist to localStorage first (instant fallback)
-    localStorage.setItem('i18nextLng', normalizedLng);
+    localStorage.setItem('i18nextLng', lng);
     
     // Persist to user profile (best effort)
     try {

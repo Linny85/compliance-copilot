@@ -1,90 +1,38 @@
-import _i18n from 'i18next';
+import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-// Singleton: reuse if already on window
-const i18n = (typeof window !== 'undefined' && (window as any).__I18N__) || _i18n as typeof _i18n;
-if (typeof window !== 'undefined') { (window as any).__I18N__ = i18n; }
-
-const BUILD_ID =
-  (typeof import.meta !== 'undefined' &&
-    import.meta.env &&
-    import.meta.env.VITE_BUILD_ID) ||
-  String(Date.now());
-
-// ✔️ Correct signature: (languages, namespaces) can be string OR string[]
-function resolveLocalesPath(languages: string[] | string, namespaces: string[] | string): string {
-  const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
-  const lng = Array.isArray(languages) ? (languages[0] || 'de') : (languages || 'de');
-  const ns  = Array.isArray(namespaces) ? (namespaces[0] || 'norrly') : (namespaces || 'norrly');
-  return `${origin}/locales/${String(lng).toLowerCase()}/${ns}.json?v=${BUILD_ID}`;
-}
+const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
 
 i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
     fallbackLng: 'de',
-    supportedLngs: ['de', 'en', 'sv'],
-    nonExplicitSupportedLngs: true,
-    load: 'languageOnly',
-    lowerCaseLng: true,
-    cleanCode: true,
     debug: import.meta.env.DEV,
-    ns: [
-      'norrly','common','dashboard','documents','billing','nis2','checks','controls',
-      'admin','helpbot','training','assistant','aiSystems','aiAct','evidence',
-      'scope','nav','reports','organization'
-    ],
-    defaultNS: 'norrly',
+    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
+    defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
+    load: 'currentOnly',
     backend: {
-      loadPath: resolveLocalesPath,
-      allowMultiLoading: true,       // ← important with array args
-      crossDomain: false,
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      allowMultiLoading: false,
+      crossDomain: false
     },
     interpolation: { escapeValue: false },
     returnNull: false,
     returnEmptyString: false,
     saveMissing: false,
-    keySeparator: false,
-    react: { useSuspense: false },
+    react: {
+      useSuspense: false
+    },
     parseMissingKeyHandler: (key) => {
-      if (import.meta.env.DEV) console.warn('[i18n missing]', key);
+      if (import.meta.env.DEV) {
+        console.warn('[i18n missing]', key);
+      }
       return key;
     },
-    resources: import.meta.env.DEV ? {
-      de: { norrly: {
-        'cta.name': 'Norrly',
-        'header.subtitle': 'Norrly – dein Kollege für Klarheit in NIS2 & dem AI Act.',
-        'intro.headline': 'Hi, ich bin Norrly 👋',
-        'intro.text': 'Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung.',
-        'cta.incident': 'Sicherheitsvorfall melden',
-        'cta.register': 'NIS2-Register prüfen',
-        'cta.roles': 'Verantwortlichkeiten klären',
-        'cta.auditList': 'Audit-Übersicht',
-        'cta.auditNew': 'Neuen Audit anlegen',
-        'cta.training': 'Schulung starten',
-        'input.placeholder': 'Frage eingeben…',
-        'input.open': 'Öffnen',
-        'input.cancel': 'Abbrechen',
-        'input.loading': 'Lädt…',
-        'voice.on': 'Stimme an',
-        'voice.off': 'Stimme aus'
-      }}
-    } : undefined,
   });
-
-/** Promise resolves when i18n is fully initialized */
-export const i18nReady: Promise<void> = new Promise((resolve) => {
-  if (i18n.isInitialized) return resolve();
-  const handler = () => {
-    // detach in case .off exists
-    try { (i18n as any).off?.('initialized', handler); } catch {}
-    resolve();
-  };
-  (i18n as any).on?.('initialized', handler);
-});
 
 // Debug: Log when namespaces are loaded
 i18n.on('loaded', (loaded) => {
@@ -98,31 +46,5 @@ i18n.on('languageChanged', (lng) => {
 });
 // Set initial lang
 document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
-
-// Diagnostic helper
-if (typeof window !== 'undefined') {
-  (window as any).__I18N_DIAG__ = async () => {
-    try {
-      const ns = 'norrly';
-      const lng = i18n.resolvedLanguage || i18n.language || 'de';
-      const url = (i18n.options as any).backend.loadPath(lng, ns);
-      console.log('[i18n] url', url);
-      const res = await fetch(url, { cache: 'no-store' });
-      console.log('[i18n] http', res.status);
-      const text = await res.text();
-      console.log('[i18n] sample', text.slice(0, 200));
-      console.log('[i18n] hasBundle?', i18n.hasResourceBundle(lng, ns));
-      if (!i18n.hasResourceBundle(lng, ns)) {
-        await i18n.loadNamespaces(ns);
-        console.log('[i18n] loaded via loadNamespaces → hasBundle?', i18n.hasResourceBundle(lng, ns));
-      }
-      console.log('[i18n] t(cta.name)', i18n.t('cta.name', { ns }));
-      console.log('[i18n] store keys', Object.keys((i18n.store?.data?.[lng]) || {}));
-    } catch (e) {
-      console.error('[i18n] diag error', e);
-    }
-  };
-  console.log('Run window.__I18N_DIAG__() to verify i18n setup.');
-}
 
 export default i18n;

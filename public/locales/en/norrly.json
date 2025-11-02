@@ -1,53 +1,27 @@
 {
   "header": {
-    "subtitle": "Norrly – your partner for clarity on NIS2 & the AI Act."
+    "subtitle": "Norrly – your colleague for clarity in NIS2 & the AI Act."
   },
   "intro": {
     "headline": "Hi, I'm Norrly 👋",
-    "text": "I explain, guide and support you – from regulation to implementation. I help you navigate the NIS2 AI Guard and answer questions about NIS2, the AI Act and compliance."
+    "text": "I explain, guide and support you – from regulation to implementation. I'll help you navigate the NIS2-AI-Guard program and answer all your questions about NIS2, the EU AI Act and compliance."
   },
   "cta": {
     "verify": "Verify",
     "whyAccess": "Why do I need to sign in?",
     "createDoc": "Create new document",
-    "name": "Norrly",
+    "name": "Name",
     "incident": "Report a security incident",
     "register": "Check NIS2 registry",
     "roles": "Clarify responsibilities",
-    "auditList": "Audit Overview",
-    "auditNew": "Create New Audit",
-    "controlsDue": "Controls Due (Today)",
-    "evidenceControls": "Evidence Overview",
+    "audit": "Prepare audit",
     "training": "Start training"
-  },
-  "missing": {
-    "incident": "Incident creation route not yet configured.",
-    "registry": "Registry route not yet configured.",
-    "roles": "Governance roles route not yet configured.",
-    "controls_new": "Controls creation route not yet configured."
-  },
-  "errors": {
-    "route_missing": "Route unavailable.",
-    "nav_failed": "Navigation failed."
-  },
-  "nav": {
-    "ok": "Navigating to {{target}}",
-    "error": "Navigation failed"
   },
   "input": {
     "placeholder": "Type a question (Enter to send, Shift+Enter for a new line)…",
     "open": "Open",
     "loading": "Loading…",
     "cancel": "Cancel"
-  },
-  "incident": {
-    "report": "Report security incident",
-    "title": "Title",
-    "description": "Description",
-    "impact": "Impact",
-    "helpTitle": "What should I enter here?",
-    "helpBody": "Provide a short title (e.g., "Opened phishing email"), a clear description (what happened, when, who/what is affected), and—if known—the impact (e.g., systems degraded, data possibly affected). You can add details later.",
-    "submit": "Submit"
   },
   "voice": {
     "on": "Voice on",
@@ -68,12 +42,5 @@
   },
   "help": {
     "whyAccess": "Your access runs through your subscription. By signing in, I activate your license and can assign documents & evidence directly to your organization – securely and GDPR-compliant."
-  },
-  "actions": {
-    "controls": {
-      "new": "Create new control",
-      "due": "Check due dates",
-      "evidence": "Link evidence"
-    }
   }
 }

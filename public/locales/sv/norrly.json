@@ -1,53 +1,27 @@
 {
   "header": {
-    "subtitle": "Norrly – din partner för tydlighet kring NIS2 och AI-förordningen."
+    "subtitle": "Norrly – din kollega för klarhet i NIS2 och AI-förordningen."
   },
   "intro": {
     "headline": "Hej, jag är Norrly 👋",
-    "text": "Jag förklarar, vägleder och stöttar – från regelverk till genomförande. Jag hjälper dig att hitta i NIS2 AI Guard och svarar på frågor om NIS2, AI-förordningen och compliance."
+    "text": "Jag förklarar, vägleder och hjälper dig – från regler till genomförande. Jag guidar dig i NIS2-AI-Guard-programmet och svarar på dina frågor om NIS2, AI-förordningen och regelefterlevnad."
   },
   "cta": {
     "verify": "Verifiera",
     "whyAccess": "Varför behöver jag logga in?",
     "createDoc": "Skapa nytt dokument",
-    "name": "Norrly",
+    "name": "Namn",
     "incident": "Rapportera en säkerhetsincident",
     "register": "Kontrollera NIS2-registret",
     "roles": "Klart ansvar",
-    "auditList": "Audit Översikt",
-    "auditNew": "Skapa Ny Audit",
-    "controlsDue": "Kontroller Förfaller (Idag)",
-    "evidenceControls": "Bevis Översikt",
+    "audit": "Förbered revision",
     "training": "Starta utbildning"
-  },
-  "missing": {
-    "incident": "Incident-skapande väg är inte konfigurerad än.",
-    "registry": "Registerväg är inte konfigurerad än.",
-    "roles": "Styrningsroller väg är inte konfigurerad än.",
-    "controls_new": "Kontroll-skapande väg är inte konfigurerad än."
-  },
-  "errors": {
-    "route_missing": "Väg inte tillgänglig.",
-    "nav_failed": "Navigation misslyckades."
-  },
-  "nav": {
-    "ok": "Navigerar till {{target}}",
-    "error": "Navigation misslyckades"
   },
   "input": {
     "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
     "open": "Öppna",
     "loading": "Laddar…",
     "cancel": "Avbryt"
-  },
-  "incident": {
-    "report": "Rapportera säkerhetsincident",
-    "title": "Titel",
-    "description": "Beskrivning",
-    "impact": "Påverkan",
-    "helpTitle": "Vad ska jag fylla i här?",
-    "helpBody": "Ange en kort titel (t.ex. "Öppnade phishing-mejl"), en tydlig beskrivning (vad hände, när, vem/vad påverkades) och – om känt – påverkan (t.ex. system störda, data ev. påverkad). Du kan lägga till detaljer senare.",
-    "submit": "Skicka"
   },
   "voice": {
     "on": "Röst på",
@@ -68,12 +42,5 @@
   },
   "help": {
     "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
-  },
-  "actions": {
-    "controls": {
-      "new": "Skapa ny åtgärd",
-      "due": "Kontrollera förfallodatum",
-      "evidence": "Länka bevis"
-    }
   }
 }

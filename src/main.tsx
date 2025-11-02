@@ -1,11 +1,11 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AppModeProvider } from '@/state/AppModeProvider';
-import { I18nProvider } from '@/contexts/I18nContext';
-import i18n, { i18nReady } from '@/i18n/init';
-import App from './App.tsx';
-import './index.css';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppModeProvider } from "@/state/AppModeProvider";
+import { I18nProvider } from "@/contexts/I18nContext";
+import "@/i18n/init";
+import App from "./App.tsx";
+import "./index.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,23 +25,15 @@ if (import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem
   document.documentElement.classList.add('debug-index-badge');
 }
 
-function render() {
-  const rootEl = document.getElementById('root')!;
-  createRoot(rootEl).render(
-    // StrictMode can be re-enabled later for testing
-    // <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <I18nProvider>
-          <AppModeProvider>
-            <App />
-          </AppModeProvider>
-        </I18nProvider>
-      </QueryClientProvider>
-    // </React.StrictMode>
-  );
-}
-
-// ✅ Wait until i18n is initialized, then ensure language is set, then render
-i18nReady
-  .then(() => i18n.changeLanguage(i18n.resolvedLanguage || i18n.language || 'de'))
-  .finally(render);
+createRoot(document.getElementById("root")!).render(
+  // StrictMode can be re-enabled later for testing
+  // <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <I18nProvider>
+        <AppModeProvider>
+          <App />
+        </AppModeProvider>
+      </I18nProvider>
+    </QueryClientProvider>
+  // </React.StrictMode>
+);
