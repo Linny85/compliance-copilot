@@ -44,5 +44,13 @@
   },
   "help": {
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
+  },
+  "contextHelp": {
+    "prüfungen": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
+    "audit": "Im Audit-Bereich kannst du Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren.",
+    "training": "Im Schulungsbereich kannst du Trainings starten, Lernfortschritte überwachen und Nachweise erstellen.",
+    "register": "Hier prüfst du dein NIS2-Register und stellst sicher, dass alle Unternehmensdaten vollständig sind.",
+    "incident": "Wenn ein Sicherheitsvorfall auftritt, kannst du ihn hier direkt dokumentieren und melden.",
+    "roles": "In diesem Bereich klären wir Zuständigkeiten, Verantwortlichkeiten und Meldeketten."
   }
 }
