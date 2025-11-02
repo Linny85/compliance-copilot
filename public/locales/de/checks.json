@@ -1,4 +1,5 @@
 {
+  "moduleName": "Prüfungen",
   "title": "Automatisierte Checks",
   "subtitle": "Deterministische Regeln mit Controls verknüpft",
   "tabs": {

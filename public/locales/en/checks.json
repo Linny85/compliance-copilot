@@ -1,4 +1,5 @@
 {
+  "moduleName": "Audits",
   "title": "Automated Checks",
   "subtitle": "Deterministic rules mapped to controls",
   "tabs": {

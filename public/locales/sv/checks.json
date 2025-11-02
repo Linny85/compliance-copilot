@@ -1,4 +1,5 @@
 {
+  "moduleName": "Revisioner",
   "title": "Automatiserade kontroller",
   "subtitle": "Deterministiska regler kopplade till kontroller",
   "tabs": {
