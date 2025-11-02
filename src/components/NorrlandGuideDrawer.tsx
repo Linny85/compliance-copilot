@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -24,6 +25,7 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
+  const navigate = useNavigate();
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
   if (!ready && open) return null;
@@ -54,12 +56,14 @@ export function NorrlandGuideDrawer({
   const greetingText = ready ? t("norrly:intro.text") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
+  // Quickstart actions mapped to existing routes
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
-    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
-    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
-    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
+    { id: 'incident', label: t('norrly:cta.incident'), path: '/privacy/dpia' },
+    { id: 'register', label: t('norrly:cta.register'), path: '/nis2' },
+    { id: 'roles', label: t('norrly:cta.roles'), path: '/organization' },
+    { id: 'auditList', label: t('norrly:cta.audit'), path: '/audit' },
+    { id: 'auditNew', label: t('norrly:cta.auditNew'), path: '/audit/new' },
+    { id: 'training', label: t('norrly:cta.training'), path: '/admin/training-certificates' }
   ] : [];
   
   const labels = ready ? {
@@ -317,8 +321,8 @@ export function NorrlandGuideDrawer({
                       <button
                         key={cta.id}
                         onClick={() => {
-                          setQ(cta.payload);
-                          setTimeout(() => ask(), 50);
+                          navigate(cta.path);
+                          setOpen(false);
                         }}
                         className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
                       >
