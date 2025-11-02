@@ -58,8 +58,7 @@ export function NorrlandGuideDrawer({
     { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
     { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
     { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'auditList', label: t('norrly:cta.auditList'), payload: t('norrly:cta.auditList') },
-    { id: 'auditNew', label: t('norrly:cta.auditNew'), payload: t('norrly:cta.auditNew') },
+    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
     { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
   ] : [];
   
