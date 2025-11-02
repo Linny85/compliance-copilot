@@ -8,12 +8,16 @@ i18n
   .use(Backend)
   .use(initReactI18next)
   .init({
-    fallbackLng: ['de'],
+    fallbackLng: 'de',
+    supportedLngs: ['de', 'en', 'sv'],
+    nonExplicitSupportedLngs: true,
+    load: 'languageOnly',
+    lowerCaseLng: true,
+    cleanCode: true,
     debug: import.meta.env.DEV,
     ns: ['norrly', 'common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
     defaultNS: 'norrly',
     preload: ['de', 'en', 'sv'],
-    load: 'languageOnly',
     backend: {
       loadPath: `/locales/{{lng}}/{{ns}}.json?v=${BUILD_ID}`,
       allowMultiLoading: false,

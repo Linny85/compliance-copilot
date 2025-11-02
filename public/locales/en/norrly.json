@@ -1,16 +1,16 @@
 {
   "header": {
-    "subtitle": "Norrly – your colleague for clarity in NIS2 & the AI Act."
+    "subtitle": "Norrly – your partner for clarity on NIS2 & the AI Act."
   },
   "intro": {
     "headline": "Hi, I'm Norrly 👋",
-    "text": "I explain, guide and support you – from regulation to implementation. I'll help you navigate the NIS2-AI-Guard program and answer all your questions about NIS2, the EU AI Act and compliance."
+    "text": "I explain, guide and support you – from regulation to implementation. I help you navigate the NIS2 AI Guard and answer questions about NIS2, the AI Act and compliance."
   },
   "cta": {
     "verify": "Verify",
     "whyAccess": "Why do I need to sign in?",
     "createDoc": "Create new document",
-    "name": "Name",
+    "name": "Norrly",
     "incident": "Report a security incident",
     "register": "Check NIS2 registry",
     "roles": "Clarify responsibilities",
