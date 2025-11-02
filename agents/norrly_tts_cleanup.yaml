@@ -1,0 +1,85 @@
+id: norrly-tts-cleanup
+name: "Norrly: TTS-Bereinigung (sanftere Stimme, weniger Sonderzeichen)"
+description: >
+  Säubert TTS-Textausgabe (entfernt überflüssige Sonderzeichen, reduziert Emphase).
+  Keine Logikänderungen außer dem Sanitizer und dessen Einsatz.
+
+vars:
+  norrly_file: "src/components/NorrlandGuideDrawer.tsx"
+
+steps:
+  # PHASE 1 — READ-ONLY
+  - id: scan-tts
+    name: "Phase 1: TTS-Stelle finden (read-only)"
+    run: |
+      SCAN_BEGIN
+      # Suche im File nach speak(last.content) oder nach TTS-Aufrufen.
+      # Rückgabe-JSON:
+      # { "found": true|false, "lineHints": ["..."], "notes": "" }
+      SCAN_END
+    output: ttsReport
+
+  - id: stop-if-missing
+    name: "Stop if TTS not found"
+    run_if: "${!ttsReport.found}"
+    description: "Keine Änderungen – TTS nicht gefunden."
+
+  # PHASE 2 — DRY-RUN
+  - id: dryrun-tts
+    name: "Phase 2: Dry-Run Patch – Sanitizer + Nutzung"
+    run_if: "${ttsReport.found}"
+    run: |
+      DRYRUN_DIFF_BEGIN
+      *** ${norrly_file}
+      --- a/${norrly_file}
+      +++ b/${norrly_file}
+      @@
+      + function sanitizeForTTS(input: string): string {
+      +   if (!input) return "";
+      +   // 1) Doppelte/auffällige Satzzeichen reduzieren
+      +   let s = input.replace(/[!?]{2,}/g, m => m[0])
+      +                 .replace(/\.{2,}/g, ".")
+      +                 .replace(/[\u201c\u201d\u201e\u00ab\u00bb]/g, '"')
+      +                 .replace(/[\u2018\u2019]/g, "'");
+      +   // 2) Steuer-/Sonderzeichen entfernen, die TTS stören können
+      +   s = s.replace(/[^\S\r\n]+/g, " ")               // Mehrfachspaces
+      +        .replace(/[\u200B-\u200D\uFEFF]/g, "")     // Zero-width
+      +        .replace(/[•·►–—]/g, "-");                 // Bullets/Dashes
+      +   // 3) Lange URLs/Code-Snippets kürzen
+      +   s = s.replace(/\bhttps?:\/\/\S+/g, "Link")
+      +        .replace(/`{1,3}[^`]+`{1,3}/g, "Code");
+      +   return s.trim();
+      + }
+      @@
+        useEffect(() => {
+          const last = messages[messages.length - 1];
+          if (ttsOn && last?.role === "assistant") {
+      -     speak(last.content);
+      +     const clean = sanitizeForTTS(last.content);
+      +     speak(clean);
+          }
+        }, [messages, ttsOn]);
+      DRYRUN_DIFF_END
+    output: dryRunDiff
+
+  - id: wait-approval
+    name: "WAIT FOR APPROVAL"
+    description: "Warte auf manuelles Signal: APPLY TTS FIX"
+
+  # PHASE 3 — APPLY
+  - id: apply
+    name: "Apply TTS fix"
+    run_if_signal: "APPLY TTS FIX"
+    run: |
+      APPLY_DRYRUN_DIFF
+
+  - id: lint-build
+    name: "Lint & Build"
+    run_if_signal: "APPLY TTS FIX"
+    run: |
+      pnpm lint
+      pnpm build
+
+rules:
+  - "Nur die TTS-Stelle anfassen; keine anderen Hooks/States verändern."
+  - "Kein Refactor außerhalb des Sanitizers und seines Aufrufs."

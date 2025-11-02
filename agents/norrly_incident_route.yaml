@@ -1,0 +1,111 @@
+id: norrly-incident-route
+name: "Norrly: Incident-Create-Route ermitteln & aktivieren"
+description: >
+  Findet die tatsächliche Incident-Create-Route im Projekt und aktiviert den
+  Schnellstart-Button in Norrly. Schreibzugriffe nur nach Freigabe.
+
+vars:
+  scan_globs:
+    - "src/app/**/*.{ts,tsx,js,jsx}"
+    - "src/routes/**/*.{ts,tsx,js,jsx}"
+    - "src/pages/**/*.{ts,tsx,js,jsx}"
+  # Kandidaten-Muster für Create-Routen
+  patterns:
+    - "/incidents/new"
+    - "/incident/new"
+    - "/incidents/create"
+    - "/incident/create"
+    - "/security-incidents/new"
+    - "/security/incident/new"
+  norrly_file: "src/components/NorrlandGuideDrawer.tsx"
+  routes_file: "src/routes.ts"
+
+steps:
+  # PHASE 1 — READ-ONLY
+  - id: scan-router
+    name: "Phase 1: Router-Scan (read-only)"
+    run: |
+      ROUTE_SCAN_BEGIN
+      # Suche in ${scan_globs} nach <Route path="..."> und exportierten Pfaden.
+      # Prüfe auf Vorkommen der Muster aus vars.patterns.
+      # Gib genau diesen JSON-Report aus, sonst nichts:
+      # {
+      #   "found": true|false,
+      #   "path": "/incidents/new" | null,
+      #   "component": "src/pages/incidents/IncidentCreatePage.tsx" | null,
+      #   "collisions": [],
+      #   "notes": "kurze Hinweise"
+      # }
+      ROUTE_SCAN_END
+    output: routeReport
+
+  - id: stop-if-not-found
+    name: "Stop if not found"
+    run_if: "${!routeReport.found}"
+    description: >
+      Keine Schreiboperationen durchführen. Warte auf weitere Anweisung.
+      (Optionaler Folge-Workflow: Placeholder anlegen.)
+
+  # PHASE 2 — DRY-RUN (nur, wenn Route gefunden)
+  - id: dryrun-enable-norrly
+    name: "Phase 2: Dry-Run Patch – ROUTES + Norrly Quickstart"
+    run_if: "${routeReport.found}"
+    run: |
+      DRYRUN_DIFF_BEGIN
+      *** ${routes_file}
+      --- a/${routes_file}
+      +++ b/${routes_file}
+      @@
+       export const ROUTES = {
+      @@
+      +  incidents: {
+      +    new: "${routeReport.path}"
+      +  },
+       } as const;
+
+      *** ${norrly_file}
+      --- a/${norrly_file}
+      +++ b/${norrly_file}
+      @@
+       type QuickItem = { label: string; path?: string; disabled?: boolean; reasonKey?: string };
+       const quickStart: QuickItem[] = [
+      -  { label: t('cta.incident'),  disabled: true, reasonKey: 'missing.incident' },
+      +  { label: t('cta.incident'),  path: ROUTES.incidents.new },
+         { label: t('cta.register'),  disabled: true, reasonKey: 'missing.registry' },
+         { label: t('cta.roles'),     disabled: true, reasonKey: 'missing.roles' },
+         { label: t('cta.auditList'), path: ROUTES.audit.list },
+         { label: t('cta.auditNew'),  path: ROUTES.audit.new },
+         { label: t('cta.training'),  path: ROUTES.training }
+       ];
+      DRYRUN_DIFF_END
+    output: dryRunDiff
+
+  - id: wait-approval
+    name: "WAIT FOR APPROVAL"
+    description: "Warte auf manuelles Signal: APPLY INCIDENT ROUTE"
+    run_if: "${routeReport.found}"
+
+  # PHASE 3 — APPLY (nur auf Signal)
+  - id: apply-patch
+    name: "Apply incident route patch"
+    run_if_signal: "APPLY INCIDENT ROUTE"
+    run: |
+      APPLY_DRYRUN_DIFF
+
+  - id: lint-build
+    name: "Lint & Build"
+    run_if_signal: "APPLY INCIDENT ROUTE"
+    run: |
+      pnpm lint
+      pnpm build
+
+  - id: smoke
+    name: "Smoke Test Hinweise"
+    run_if_signal: "APPLY INCIDENT ROUTE"
+    run: |
+      echo "UI-Test: Norrly öffnen → 'Sicherheitsvorfall melden' → ${routeReport.path} lädt ohne 404."
+
+rules:
+  - "Keine Änderungen, bevor 'APPLY INCIDENT ROUTE' erteilt wurde."
+  - "Nur die beiden Dateien ändern: src/routes.ts, src/components/NorrlandGuideDrawer.tsx."
+  - "Keine anderen Routen oder Texte anfassen."

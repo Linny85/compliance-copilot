@@ -1,0 +1,85 @@
+id: norrly-onboarding-modal
+name: "Norrly: Onboarding-Dialog (einmalig)"
+description: >
+  Fügt einen kleinen Willkommenshinweis in den Drawer ein, der nur beim ersten
+  Öffnen pro Browser erscheint (sessionStorage-Flag wird genutzt).
+
+vars:
+  norrly_file: "src/components/NorrlandGuideDrawer.tsx"
+
+steps:
+  # PHASE 1 — READ-ONLY
+  - id: scan-firstseen
+    name: "Phase 1: Prüfe firstSeen/logik (read-only)"
+    run: |
+      SCAN_BEGIN
+      # Prüfe, ob FIRST_SEEN_KEY/sessionStorage bereits verwendet werden.
+      # Rückgabe: { "hasFirstSeen": true|false, "key": "NORRLY_FIRST_SEEN" | null }
+      SCAN_END
+    output: seenReport
+
+  # PHASE 2 — DRY-RUN
+  - id: dryrun-onboarding
+    name: "Phase 2: Dry-Run Patch – Banner/Modal im Drawer"
+    run: |
+      DRYRUN_DIFF_BEGIN
+      *** ${norrly_file}
+      --- a/${norrly_file}
+      +++ b/${norrly_file}
+      @@
+       export function NorrlandGuideDrawer({
+         open,
+         setOpen
+       }: {
+         open: boolean;
+         setOpen: (v: boolean) => void
+       }) {
+      @@
+      +  const [showWelcome, setShowWelcome] = useState<boolean>(() => {
+      +    try { return !sessionStorage.getItem(FIRST_SEEN_KEY); } catch { return false; }
+      +  });
+      @@
+      +  useEffect(() => {
+      +    if (showWelcome) {
+      +      try { sessionStorage.setItem(FIRST_SEEN_KEY, "1"); } catch {}
+      +    }
+      +  }, [showWelcome]);
+      @@
+      -  {/* Content Start */}
+      +  {/* Onboarding Hinweis – nur einmalig */}
+      +  {showWelcome && (
+      +    <div className="mb-3 rounded-xl border border-border/60 bg-muted/30 p-3 text-sm">
+      +      <div className="font-medium mb-1">{t("intro.headline")}</div>
+      +      <p className="opacity-80">{t("intro.text")}</p>
+      +      <button
+      +        onClick={() => setShowWelcome(false)}
+      +        className="mt-2 inline-flex items-center rounded-md border px-3 py-1 text-xs hover:bg-muted"
+      +      >
+      +        {t("input.open")}
+      +      </button>
+      +    </div>
+      +  )}
+      DRYRUN_DIFF_END
+    output: dryRunDiff
+
+  - id: wait-approval
+    name: "WAIT FOR APPROVAL"
+    description: "Warte auf manuelles Signal: APPLY ONBOARDING"
+
+  # PHASE 3 — APPLY
+  - id: apply
+    name: "Apply onboarding patch"
+    run_if_signal: "APPLY ONBOARDING"
+    run: |
+      APPLY_DRYRUN_DIFF
+
+  - id: lint-build
+    name: "Lint & Build"
+    run_if_signal: "APPLY ONBOARDING"
+    run: |
+      pnpm lint
+      pnpm build
+
+rules:
+  - "Keine externen Modals/Libs einführen – rein im Drawer rendern."
+  - "FIRST_SEEN_KEY/logik nicht löschen; nur nutzen/ergänzen."
