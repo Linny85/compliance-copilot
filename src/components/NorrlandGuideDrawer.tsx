@@ -58,9 +58,8 @@ export function NorrlandGuideDrawer({
     { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
     { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
     { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'auditList', label: t('norrly:cta.auditList'), payload: t('norrly:cta.auditList'), route: '/audit' },
-    { id: 'auditNew', label: t('norrly:cta.auditNew'), payload: t('norrly:cta.auditNew'), route: '/audit/new' },
-    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training'), route: '/privacy/dpia' }
+    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
+    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
   ] : [];
   
   const labels = ready ? {
@@ -74,23 +73,6 @@ export function NorrlandGuideDrawer({
 
   // User context (Platzhalter bis echter Context genutzt wird)
   const user = { role: 'admin' } as const;
-
-  // Helper to detect page context
-  const getPageCtx = () => {
-    const p = window.location.pathname;
-    if (p.startsWith('/audit/new')) return 'audit:new';
-    if (p.startsWith('/audit')) return 'audit:list';
-    if (p.startsWith('/privacy/dpia')) return 'dpia:list';
-    return null;
-  };
-
-  const pageCtx = getPageCtx();
-  
-  const contextHelp: Record<string, string> = {
-    'audit:new': ready ? 'Ich kann dir beim Ausfüllen des Audit-Formulars helfen: Titel, Beschreibung, Priorität, Fälligkeitsdatum.' : '',
-    'audit:list': ready ? 'Ich kann dir bei der Verwaltung deiner Audit-Aufgaben helfen.' : '',
-    'dpia:list': ready ? 'Ich kann dir bei der Verwaltung deiner DPIA-Listen helfen.' : ''
-  };
 
   const supportsTTS = typeof window !== "undefined" && "speechSynthesis" in window;
 
@@ -323,11 +305,6 @@ export function NorrlandGuideDrawer({
                   {intro}
                 </div>
               )}
-              {pageCtx && contextHelp[pageCtx] && (
-                <div className="bg-primary/10 text-foreground px-4 py-3 rounded-lg text-sm leading-relaxed border border-primary/20">
-                  💡 {contextHelp[pageCtx]}
-                </div>
-              )}
               <div className="space-y-2">
                 <h3 className="text-base font-semibold text-foreground">{greetingHeadline}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{greetingText}</p>
@@ -340,13 +317,8 @@ export function NorrlandGuideDrawer({
                       <button
                         key={cta.id}
                         onClick={() => {
-                          if ('route' in cta && cta.route) {
-                            navigateGlobal(cta.route, false);
-                            setOpen(false);
-                          } else {
-                            setQ(cta.payload);
-                            setTimeout(() => ask(), 50);
-                          }
+                          setQ(cta.payload);
+                          setTimeout(() => ask(), 50);
                         }}
                         className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
                       >
