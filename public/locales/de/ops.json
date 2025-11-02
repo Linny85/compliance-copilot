@@ -1,0 +1,30 @@
+{
+  "title": "Ops Dashboard",
+  "subtitle": "Systemzustand, Warteschlangen und E-Mail-Zustellung",
+  "panels": {
+    "queued": "Wartende Jobs",
+    "failed24h": "Fehlgeschlagen (24h)",
+    "delivered24h": "Zugestellt (24h)",
+    "retries7d": "Ø Versuche (7d)"
+  },
+  "emailStats": {
+    "title": "E-Mail-Statistiken nach Vorlage",
+    "total": "{{count}} gesamt",
+    "metrics": {
+      "sent": "Gesendet",
+      "delivered": "Zugestellt",
+      "opens": "Öffnungen",
+      "clicks": "Klicks",
+      "bounces": "Bounces"
+    }
+  },
+  "actions": {
+    "refresh": "Aktualisieren",
+    "viewQueue": "Warteschlange öffnen",
+    "viewErrors": "Fehler-Logs anzeigen"
+  },
+  "state": {
+    "loading": "Lade…",
+    "empty": "Keine Daten vorhanden"
+  }
+}

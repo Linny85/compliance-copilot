@@ -18,7 +18,7 @@ type OpsMetrics = {
 };
 
 export default function OpsDashboard() {
-  const { t, ready } = useTranslation(['reports', 'common'], { useSuspense: false });
+  const { t, ready } = useTranslation(['ops', 'common'], { useSuspense: false });
   const { toast } = useToast();
   const [data, setData] = useState<OpsMetrics | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,10 +50,10 @@ export default function OpsDashboard() {
   useEffect(() => { if (ready) load(); }, [sinceHours, tick, ready]);
 
   const cards = useMemo(() => ready ? [
-    { label: t('reports:metrics.pending'), value: data?.pending ?? 0, description: t('reports:metrics.pendingDesc'), href: "/admin/integrations?tab=pending" },
-    { label: t('reports:metrics.dead24h'), value: data?.dead24h ?? 0, description: t('reports:metrics.dead24hDesc'), href: "/admin/integrations?tab=dead" },
-    { label: t('reports:metrics.delivered24h'), value: data?.delivered24h ?? 0, description: t('reports:metrics.delivered24hDesc'), href: "/admin/integrations?tab=delivered" },
-    { label: t('reports:metrics.avgAttempts7d'), value: data?.avgAttempts7d ?? 0, description: t('reports:metrics.avgAttempts7dDesc'), href: undefined }
+    { label: t('ops:panels.queued'), value: data?.pending ?? 0, description: t('ops:subtitle'), href: "/admin/integrations?tab=pending" },
+    { label: t('ops:panels.failed24h'), value: data?.dead24h ?? 0, description: t('ops:panels.failed24h'), href: "/admin/integrations?tab=dead" },
+    { label: t('ops:panels.delivered24h'), value: data?.delivered24h ?? 0, description: t('ops:panels.delivered24h'), href: "/admin/integrations?tab=delivered" },
+    { label: t('ops:panels.retries7d'), value: data?.avgAttempts7d ?? 0, description: t('ops:panels.retries7d'), href: undefined }
   ] : [], [data, t, ready]);
 
   // Single render path to prevent hook ordering issues
@@ -92,18 +92,18 @@ export default function OpsDashboard() {
         <section>
           <Card>
             <CardHeader>
-              <CardTitle>{t('reports:errors.title')}</CardTitle>
+              <CardTitle>{t('common:errors', 'Top Errors')}</CardTitle>
             </CardHeader>
             <CardContent>
               {!data?.topErrors24h?.length ? (
-                <div className="text-sm text-muted-foreground">{t('reports:errors.empty')}</div>
+                <div className="text-sm text-muted-foreground">{t('ops:state.empty')}</div>
               ) : (
                 <div className="table-responsive -mx-4 sm:mx-0">
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-3 font-medium">{t('reports:errors.error')}</th>
-                        <th className="text-right py-3 font-medium w-24">{t('reports:errors.count')}</th>
+                        <th className="text-left py-3 font-medium">{t('common:error', 'Error')}</th>
+                        <th className="text-right py-3 font-medium w-24">{t('common:count', 'Count')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -131,7 +131,7 @@ export default function OpsDashboard() {
         {/* Controls */}
         <div className="mt-6 flex justify-center items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium">{t('reports:controls.lookback')}</label>
+            <label className="text-sm font-medium">{t('common:period', 'Period')}</label>
             <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
               <SelectTrigger className="w-24">
                 <SelectValue />
@@ -146,7 +146,7 @@ export default function OpsDashboard() {
           </div>
           <Button onClick={load} disabled={loading} size="sm" variant="outline">
             <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? t('common:loading') : t('reports:controls.refresh')}
+            {loading ? t('common:loading') : t('ops:actions.refresh')}
           </Button>
         </div>
       </>
@@ -154,7 +154,7 @@ export default function OpsDashboard() {
   }
 
   return (
-    <AdminPage title={ready ? t('reports:title') : ''}>
+    <AdminPage title={ready ? t('ops:title') : ''}>
       {content}
     </AdminPage>
   );

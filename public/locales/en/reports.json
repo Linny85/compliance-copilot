@@ -1,35 +1,48 @@
 {
-  "title": "Ops Dashboard",
-  "metrics": {
-    "pending": "Pending Jobs",
-    "pendingDesc": "Jobs waiting to be processed",
-    "dead24h": "Failed (24h)",
-    "dead24hDesc": "Failed jobs in last 24h",
-    "delivered24h": "Delivered (24h)",
-    "delivered24hDesc": "Successfully delivered",
-    "avgAttempts7d": "Avg Attempts (7d)",
-    "avgAttempts7dDesc": "Average retries needed"
+  "title": "Reports",
+  "subtitle": "Create, schedule and export compliance reports",
+  "list": {
+    "title": "All Reports",
+    "count_one": "{{count}} report",
+    "count_other": "{{count}} reports",
+    "empty": "No reports yet."
   },
-  "errors": {
-    "title": "Top Errors (24h)",
-    "empty": "No errors in the selected period.",
-    "error": "Error",
-    "count": "Count"
+  "columns": {
+    "name": "Name",
+    "type": "Type",
+    "period": "Period",
+    "created": "Created",
+    "status": "Status",
+    "actions": "Actions"
   },
-  "controls": {
-    "lookback": "Period",
-    "refresh": "Refresh"
+  "status": {
+    "draft": "Draft",
+    "queued": "Queued",
+    "generating": "Generating",
+    "ready": "Ready",
+    "failed": "Failed"
   },
-  "emailStats": {
-    "title": "Email Statistics by Template",
-    "noData": "No email data available.",
-    "connectionIssues": "Connection Issues",
-    "refreshing": "Refreshing…",
-    "total": "total",
-    "sent": "Sent",
-    "delivered": "Delivered",
-    "opens": "Opens",
-    "clicks": "Clicks",
-    "bounces": "Bounces"
+  "actions": {
+    "new": "Create Report",
+    "generate": "Generate",
+    "download": "Download",
+    "schedule": "Schedule",
+    "view": "View",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "detail": {
+    "loading": "Loading report…",
+    "notFound": "Report not found",
+    "builderTitle": "Configure report",
+    "builderDesc": "Choose source, period and format."
+  },
+  "fields": {
+    "name": "Name",
+    "type": "Report type",
+    "period": "Period",
+    "from": "From",
+    "to": "To",
+    "format": "Format"
   }
 }

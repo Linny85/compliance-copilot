@@ -1,0 +1,30 @@
+{
+  "title": "Ops-instrumentpanel",
+  "subtitle": "Systemstatus, köer och e-postleverans",
+  "panels": {
+    "queued": "Väntande jobb",
+    "failed24h": "Misslyckade (24h)",
+    "delivered24h": "Levererade (24h)",
+    "retries7d": "Snittförsök (7d)"
+  },
+  "emailStats": {
+    "title": "E-poststatistik per mall",
+    "total": "{{count}} totalt",
+    "metrics": {
+      "sent": "Skickade",
+      "delivered": "Levererade",
+      "opens": "Öppningar",
+      "clicks": "Klick",
+      "bounces": "Studsar"
+    }
+  },
+  "actions": {
+    "refresh": "Uppdatera",
+    "viewQueue": "Öppna kö",
+    "viewErrors": "Visa felloggar"
+  },
+  "state": {
+    "loading": "Laddar…",
+    "empty": "Inga data tillgängliga"
+  }
+}

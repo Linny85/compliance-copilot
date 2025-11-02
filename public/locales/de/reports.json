@@ -1,35 +1,48 @@
 {
-  "title": "Ops Dashboard",
-  "metrics": {
-    "pending": "Wartende Jobs",
-    "pendingDesc": "Jobs in der Warteschlange",
-    "dead24h": "Fehlgeschlagen (24h)",
-    "dead24hDesc": "Fehlgeschlagene Jobs in den letzten 24h",
-    "delivered24h": "Zugestellt (24h)",
-    "delivered24hDesc": "Erfolgreich zugestellt",
-    "avgAttempts7d": "Ø Versuche (7d)",
-    "avgAttempts7dDesc": "Durchschnittliche Wiederholungen"
+  "title": "Berichte",
+  "subtitle": "Erstellen, planen und exportieren von Compliance-Berichten",
+  "list": {
+    "title": "Alle Berichte",
+    "count_one": "{{count}} Bericht",
+    "count_other": "{{count}} Berichte",
+    "empty": "Noch keine Berichte angelegt."
   },
-  "errors": {
-    "title": "Top-Fehler (24h)",
-    "empty": "Keine Fehler im gewählten Zeitraum.",
-    "error": "Fehler",
-    "count": "Anzahl"
+  "columns": {
+    "name": "Name",
+    "type": "Typ",
+    "period": "Zeitraum",
+    "created": "Erstellt",
+    "status": "Status",
+    "actions": "Aktionen"
   },
-  "controls": {
-    "lookback": "Zeitraum",
-    "refresh": "Aktualisieren"
+  "status": {
+    "draft": "Entwurf",
+    "queued": "Eingeplant",
+    "generating": "Wird erstellt",
+    "ready": "Fertig",
+    "failed": "Fehlgeschlagen"
   },
-  "emailStats": {
-    "title": "E-Mail-Statistiken nach Vorlage",
-    "noData": "Keine E-Mail-Daten vorhanden.",
-    "connectionIssues": "Verbindungsprobleme",
-    "refreshing": "Aktualisiere…",
-    "total": "gesamt",
-    "sent": "Gesendet",
-    "delivered": "Zugestellt",
-    "opens": "Öffnungen",
-    "clicks": "Klicks",
-    "bounces": "Bounces"
+  "actions": {
+    "new": "Neuen Bericht erstellen",
+    "generate": "Bericht erzeugen",
+    "download": "Download",
+    "schedule": "Planen",
+    "view": "Ansehen",
+    "delete": "Löschen",
+    "cancel": "Abbrechen"
+  },
+  "detail": {
+    "loading": "Lade Bericht…",
+    "notFound": "Bericht nicht gefunden",
+    "builderTitle": "Bericht konfigurieren",
+    "builderDesc": "Wähle Quelle, Zeitraum und Format."
+  },
+  "fields": {
+    "name": "Name",
+    "type": "Berichtstyp",
+    "period": "Zeitraum",
+    "from": "Von",
+    "to": "Bis",
+    "format": "Format"
   }
 }

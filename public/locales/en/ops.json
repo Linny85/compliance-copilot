@@ -1,0 +1,30 @@
+{
+  "title": "Ops Dashboard",
+  "subtitle": "System health, queues and email delivery",
+  "panels": {
+    "queued": "Queued Jobs",
+    "failed24h": "Failed (24h)",
+    "delivered24h": "Delivered (24h)",
+    "retries7d": "Avg. Retries (7d)"
+  },
+  "emailStats": {
+    "title": "Email stats by template",
+    "total": "{{count}} total",
+    "metrics": {
+      "sent": "Sent",
+      "delivered": "Delivered",
+      "opens": "Opens",
+      "clicks": "Clicks",
+      "bounces": "Bounces"
+    }
+  },
+  "actions": {
+    "refresh": "Refresh",
+    "viewQueue": "Open Queue",
+    "viewErrors": "View Error Logs"
+  },
+  "state": {
+    "loading": "Loading…",
+    "empty": "No data available"
+  }
+}
