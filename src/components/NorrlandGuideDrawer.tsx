@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -25,7 +24,6 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const navigate = useNavigate();
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
   if (!ready && open) return null;
@@ -57,13 +55,22 @@ export function NorrlandGuideDrawer({
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   // Quickstart actions mapped to existing routes
+  const quickActions: Record<string, string> = {
+    'cta.incident': '/privacy/dpia',
+    'cta.register': '/nis2',
+    'cta.roles': '/organization',
+    'cta.audit': '/audit',
+    'cta.auditNew': '/audit/new',
+    'cta.training': '/admin/training-certificates'
+  };
+  
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), path: '/privacy/dpia' },
-    { id: 'register', label: t('norrly:cta.register'), path: '/nis2' },
-    { id: 'roles', label: t('norrly:cta.roles'), path: '/organization' },
-    { id: 'auditList', label: t('norrly:cta.audit'), path: '/audit' },
-    { id: 'auditNew', label: t('norrly:cta.auditNew'), path: '/audit/new' },
-    { id: 'training', label: t('norrly:cta.training'), path: '/admin/training-certificates' }
+    { id: 'incident', label: t('norrly:cta.incident'), key: 'cta.incident' },
+    { id: 'register', label: t('norrly:cta.register'), key: 'cta.register' },
+    { id: 'roles', label: t('norrly:cta.roles'), key: 'cta.roles' },
+    { id: 'audit', label: t('norrly:cta.audit'), key: 'cta.audit' },
+    { id: 'auditNew', label: t('norrly:cta.auditNew'), key: 'cta.auditNew' },
+    { id: 'training', label: t('norrly:cta.training'), key: 'cta.training' }
   ] : [];
   
   const labels = ready ? {
@@ -318,16 +325,17 @@ export function NorrlandGuideDrawer({
                   <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                   <div className="flex flex-col gap-2">
                     {quickCtas.map((cta) => (
-                      <button
+                      <a
                         key={cta.id}
-                        onClick={() => {
-                          navigate(cta.path);
+                        href={quickActions[cta.key]}
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setOpen(false);
                         }}
-                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
+                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors no-underline text-foreground"
                       >
                         {cta.label}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 </div>
