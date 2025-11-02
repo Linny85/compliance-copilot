@@ -55,12 +55,12 @@ export function NorrlandGuideDrawer({
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
-    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
-    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'auditList', label: t('cta.auditList', { ns: 'norrly', defaultValue: 'Audit-Übersicht' }), payload: t('cta.auditList', { ns: 'norrly', defaultValue: 'Audit-Übersicht' }) },
-    { id: 'auditNew', label: t('cta.auditNew', { ns: 'norrly', defaultValue: 'Neuen Audit anlegen' }), payload: t('cta.auditNew', { ns: 'norrly', defaultValue: 'Neuen Audit anlegen' }) },
-    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
+    { id: 'incident', label: t('norrly:cta.incident', { defaultValue: 'Sicherheitsvorfall melden' }), payload: t('norrly:cta.incident', { defaultValue: 'Sicherheitsvorfall melden' }) },
+    { id: 'register', label: t('norrly:cta.register', { defaultValue: 'NIS2-Register prüfen' }), payload: t('norrly:cta.register', { defaultValue: 'NIS2-Register prüfen' }) },
+    { id: 'roles', label: t('norrly:cta.roles', { defaultValue: 'Verantwortlichkeiten klären' }), payload: t('norrly:cta.roles', { defaultValue: 'Verantwortlichkeiten klären' }) },
+    { id: 'auditList', label: t('norrly:cta.auditList', { defaultValue: 'Audit-Übersicht' }), payload: t('norrly:cta.auditList', { defaultValue: 'Audit-Übersicht' }) },
+    { id: 'auditNew', label: t('norrly:cta.auditNew', { defaultValue: 'Neuen Audit anlegen' }), payload: t('norrly:cta.auditNew', { defaultValue: 'Neuen Audit anlegen' }) },
+    { id: 'training', label: t('norrly:cta.training', { defaultValue: 'Schulung starten' }), payload: t('norrly:cta.training', { defaultValue: 'Schulung starten' }) }
   ] : [];
   
   const labels = ready ? {
@@ -91,8 +91,22 @@ export function NorrlandGuideDrawer({
     if (p.startsWith('/audit/new')) return 'audit:new';
     if (p.startsWith('/audit')) return 'audit:list';
     if (p.startsWith('/privacy/dpia')) return 'dpia:list';
-    if (p.startsWith('/checks')) return 'prüfungen';
+    if (p.startsWith('/checks')) return 'checks';
     return null;
+  };
+
+  const ctxName: Record<string, string> = {
+    checks: 'Prüfungen',
+    'audit:list': 'Audits',
+    'audit:new': 'Neues Audit',
+    'dpia:list': 'DPIA'
+  };
+
+  const contextHelp: Record<string, string> = {
+    checks: 'Ich kann dir bei deinen Prüfungen helfen – z. B. beim Verstehen der Ergebnisse, dem nächsten Schritt und dem Anlegen neuer Prüfungen.',
+    'audit:list': 'Ich helfe dir, Audit-Aufgaben zu filtern, zuzuweisen und Fristen im Blick zu behalten.',
+    'audit:new': 'Ich helfe dir beim Ausfüllen: Titel, Beschreibung, Priorität und Fälligkeitsdatum.',
+    'dpia:list': 'Ich unterstütze dich beim Strukturieren und Dokumentieren deiner DPIAs.'
   };
 
   const getFormCtx = (pageCtx: string | null) => {
@@ -347,6 +361,15 @@ export function NorrlandGuideDrawer({
                 <h3 className="text-base font-semibold text-foreground">{greetingHeadline}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{greetingText}</p>
               </div>
+              {(() => {
+                const pageCtx = getPageCtx();
+                return pageCtx && (
+                  <div className="text-sm text-muted-foreground mt-2 bg-muted/30 px-3 py-2 rounded border border-border/50">
+                    <div>Du bist im Bereich <strong className="text-foreground">{ctxName[pageCtx] ?? 'dieser Seite'}</strong>.</div>
+                    {contextHelp[pageCtx] && <div className="mt-1">💡 {contextHelp[pageCtx]}</div>}
+                  </div>
+                );
+              })()}
               {quickCtas.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
