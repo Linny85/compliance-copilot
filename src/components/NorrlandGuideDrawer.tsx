@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -27,7 +26,6 @@ export function NorrlandGuideDrawer({
   setOpen: (v: boolean) => void 
 }) {
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
-  const navigate = useNavigate();
   
   // Helper function for translations with default values
   const tn = (key: string, defaultValue: string) => t(key, { defaultValue });
@@ -279,6 +277,13 @@ export function NorrlandGuideDrawer({
     }
   }
 
+  // Navigation helper without Router context
+  const go = (to: string) => {
+    if (typeof window !== 'undefined' && window.location) {
+      window.location.href = to;
+    }
+  };
+
   if (!open) return null;
 
   return (
@@ -379,14 +384,13 @@ export function NorrlandGuideDrawer({
                     <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                     <div className="flex flex-col gap-2">
                       {items.map((q: any, i: number) => (
-                        <Button
+                        <button
                           key={i}
-                          variant="outline"
-                          className="justify-start w-full text-left"
-                          onClick={() => navigate(q.to)}
+                          onClick={() => go(q.to)}
+                          className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors w-full"
                         >
                           {q.label}
-                        </Button>
+                        </button>
                       ))}
                     </div>
                   </div>
