@@ -54,23 +54,12 @@ export function NorrlandGuideDrawer({
   const greetingText = ready ? t("norrly:intro.text") : "";
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
-  // Quickstart actions mapped to existing routes
-  const quickActions: Record<string, string> = {
-    'cta.incident': '/privacy/dpia',
-    'cta.register': '/nis2',
-    'cta.roles': '/organization',
-    'cta.audit': '/audit',
-    'cta.auditNew': '/audit/new',
-    'cta.training': '/admin/training-certificates'
-  };
-  
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), key: 'cta.incident' },
-    { id: 'register', label: t('norrly:cta.register'), key: 'cta.register' },
-    { id: 'roles', label: t('norrly:cta.roles'), key: 'cta.roles' },
-    { id: 'audit', label: t('norrly:cta.auditList'), key: 'cta.audit' },
-    { id: 'auditNew', label: t('norrly:cta.auditNew'), key: 'cta.auditNew' },
-    { id: 'training', label: t('norrly:cta.training'), key: 'cta.training' }
+    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
+    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
+    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
+    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
+    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
   ] : [];
   
   const labels = ready ? {
@@ -325,17 +314,16 @@ export function NorrlandGuideDrawer({
                   <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                   <div className="flex flex-col gap-2">
                     {quickCtas.map((cta) => (
-                      <a
+                      <button
                         key={cta.id}
-                        href={quickActions[cta.key]}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpen(false);
+                        onClick={() => {
+                          setQ(cta.payload);
+                          setTimeout(() => ask(), 50);
                         }}
-                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors no-underline text-foreground"
+                        className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
                       >
                         {cta.label}
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>
