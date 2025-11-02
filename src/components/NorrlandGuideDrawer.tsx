@@ -26,6 +26,9 @@ export function NorrlandGuideDrawer({
 }) {
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
+  // Helper function for translations with default values
+  const tn = (key: string, defaultValue: string) => t(key, { defaultValue });
+  
   if (!ready && open) return null;
 
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
@@ -55,12 +58,12 @@ export function NorrlandGuideDrawer({
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident', { defaultValue: 'Sicherheitsvorfall melden' }), payload: t('norrly:cta.incident', { defaultValue: 'Sicherheitsvorfall melden' }) },
-    { id: 'register', label: t('norrly:cta.register', { defaultValue: 'NIS2-Register prüfen' }), payload: t('norrly:cta.register', { defaultValue: 'NIS2-Register prüfen' }) },
-    { id: 'roles', label: t('norrly:cta.roles', { defaultValue: 'Verantwortlichkeiten klären' }), payload: t('norrly:cta.roles', { defaultValue: 'Verantwortlichkeiten klären' }) },
-    { id: 'auditList', label: t('norrly:cta.auditList', { defaultValue: 'Audit-Übersicht' }), payload: t('norrly:cta.auditList', { defaultValue: 'Audit-Übersicht' }) },
-    { id: 'auditNew', label: t('norrly:cta.auditNew', { defaultValue: 'Neuen Audit anlegen' }), payload: t('norrly:cta.auditNew', { defaultValue: 'Neuen Audit anlegen' }) },
-    { id: 'training', label: t('norrly:cta.training', { defaultValue: 'Schulung starten' }), payload: t('norrly:cta.training', { defaultValue: 'Schulung starten' }) }
+    { id: 'incident', label: tn('norrly:cta.incident', 'Sicherheitsvorfall melden'), payload: tn('norrly:cta.incident', 'Sicherheitsvorfall melden') },
+    { id: 'register', label: tn('norrly:cta.register', 'NIS2-Register prüfen'), payload: tn('norrly:cta.register', 'NIS2-Register prüfen') },
+    { id: 'roles', label: tn('norrly:cta.roles', 'Verantwortlichkeiten klären'), payload: tn('norrly:cta.roles', 'Verantwortlichkeiten klären') },
+    { id: 'auditList', label: tn('norrly:cta.auditList', 'Audit-Liste'), payload: tn('norrly:cta.auditList', 'Audit-Liste') },
+    { id: 'auditNew', label: tn('norrly:cta.auditNew', 'Neues Audit'), payload: tn('norrly:cta.auditNew', 'Neues Audit') },
+    { id: 'training', label: tn('norrly:cta.training', 'Schulung starten'), payload: tn('norrly:cta.training', 'Schulung starten') }
   ] : [];
   
   const labels = ready ? {
