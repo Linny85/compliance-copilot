@@ -41,8 +41,8 @@ export default function DPIAList() {
   const [records, setRecords] = useState<DPIARecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
-  const [riskFilter, setRiskFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'submitted' | 'scored' | 'approved'>('all');
+  const [riskFilter, setRiskFilter] = useState<'all' | 'low' | 'med' | 'high' | 'critical'>('all');
   const [showNew, setShowNew] = useState(false);
 
   // New DPIA form
@@ -58,8 +58,8 @@ export default function DPIAList() {
     setLoading(true);
     try {
       const params: Record<string, string> = {};
-      if (statusFilter) params.status = statusFilter;
-      if (riskFilter) params.risk = riskFilter;
+      if (statusFilter !== 'all') params.status = statusFilter;
+      if (riskFilter !== 'all') params.risk = riskFilter;
       if (search) params.search = search;
 
       const { data, error } = await supabase.functions.invoke("dpia-list", {
@@ -181,24 +181,24 @@ export default function DPIAList() {
                 className="pl-9"
               />
             </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 <SelectItem value="open">Open</SelectItem>
                 <SelectItem value="submitted">Submitted</SelectItem>
                 <SelectItem value="scored">Scored</SelectItem>
                 <SelectItem value="approved">Approved</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={riskFilter} onValueChange={setRiskFilter}>
+            <Select value={riskFilter} onValueChange={(v: any) => setRiskFilter(v)}>
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="Risk" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 <SelectItem value="low">Low</SelectItem>
                 <SelectItem value="med">Medium</SelectItem>
                 <SelectItem value="high">High</SelectItem>
