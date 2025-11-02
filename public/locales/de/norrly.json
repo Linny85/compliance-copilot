@@ -15,8 +15,8 @@
     "register": "NIS2-Register prüfen",
     "roles": "Verantwortlichkeiten klären",
     "audit": "Audit vorbereiten",
-    "auditList": "Audit-Übersicht",
-    "auditNew": "Neuen Audit anlegen",
+    "auditList": "Audit-Liste",
+    "auditNew": "Neues Audit",
     "training": "Schulung starten"
   },
   "input": {
@@ -25,13 +25,8 @@
     "loading": "Lädt…",
     "cancel": "Abbrechen"
   },
-  "voice": {
-    "on": "Stimme an",
-    "off": "Stimme aus"
-  },
-  "session": {
-    "reset": "Neue Session"
-  },
+  "voice": { "on": "Stimme an", "off": "Stimme aus" },
+  "session": { "reset": "Neue Session" },
   "guard": {
     "deny": {
       "technical": "Dazu kann ich keine Details teilen. Wenn du Norrly nutzen möchtest, helfe ich dir gern mit den verfügbaren Funktionen und Anleitungen.",
