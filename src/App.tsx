@@ -38,6 +38,7 @@ import DPIADetail from "./pages/privacy/DPIADetail";
 import Billing from "./pages/Billing";
 import Demo from "./pages/Demo";
 import RegisterAISystem from "./pages/ai/RegisterAISystem";
+import NewIncidentPage from "./pages/incident/NewIncidentPage";
 import NotFound from "./pages/NotFound";
 import Forbidden from "./pages/Forbidden";
 import OrganizationView from "./pages/OrganizationView";
@@ -133,6 +134,7 @@ const App = () => (
               <Route path="/billing" element={<Billing />} />
               <Route path="/demo" element={<Demo />} />
               <Route path="/ai-systems/register" element={<RegisterAISystem />} />
+              <Route path="/incident/new" element={<NewIncidentPage />} />
             </Route>
             
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

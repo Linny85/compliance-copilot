@@ -38,7 +38,13 @@
     "placeholder": "Type a question (Enter to send, Shift+Enter for a new line)…",
     "open": "Open",
     "loading": "Loading…",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "incident": {
+    "title": "Title",
+    "description": "Description",
+    "impact": "Impact"
   },
   "voice": {
     "on": "Voice on",

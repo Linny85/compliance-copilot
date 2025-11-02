@@ -11,5 +11,8 @@ export const ROUTES = {
   documents: {
     list: '/documents',
     new: '/documents/new'
+  },
+  incidents: {
+    new: '/incident/new'
   }
 } as const;

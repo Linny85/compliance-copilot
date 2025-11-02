@@ -38,7 +38,13 @@
     "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
     "open": "Öppna",
     "loading": "Laddar…",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "submit": "Skicka"
+  },
+  "incident": {
+    "title": "Titel",
+    "description": "Beskrivning",
+    "impact": "Påverkan"
   },
   "voice": {
     "on": "Röst på",

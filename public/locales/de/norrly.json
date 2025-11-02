@@ -38,7 +38,13 @@
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
     "open": "Öffnen",
     "loading": "Lädt…",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "submit": "Absenden"
+  },
+  "incident": {
+    "title": "Titel",
+    "description": "Beschreibung",
+    "impact": "Auswirkung"
   },
   "voice": {
     "on": "Stimme an",

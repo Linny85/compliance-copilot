@@ -98,7 +98,7 @@ export function NorrlandGuideDrawer({
   type QuickItem = { label: string; path?: string; disabled?: boolean; reasonKey?: string };
   
   const quickStart: QuickItem[] = [
-    { label: t('cta.incident'),  disabled: true, reasonKey: 'missing.incident' },
+    { label: t('cta.incident'),  path: ROUTES.incidents.new },
     { label: t('cta.register'),  disabled: true, reasonKey: 'missing.registry' },
     { label: t('cta.roles'),     disabled: true, reasonKey: 'missing.roles' },
     { label: t('cta.auditList'), path: ROUTES.audit.list },
