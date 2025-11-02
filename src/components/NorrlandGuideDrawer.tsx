@@ -8,6 +8,7 @@ import { canAccess } from "@/lib/rbac";
 import { navigateGlobal } from "@/lib/navigation";
 import { sanitize } from "@/helpbot/outputSanitizer";
 import { contextHint } from "@/helpbot/contextHints";
+import { getContextKey } from "@/lib/norrly/context";
 
 const FIRST_SEEN_KEY = 'norrly_seen_session';
 
@@ -90,26 +91,7 @@ export function NorrlandGuideDrawer({
 
   // === Page & Form Context Helpers ===
   const getPageCtx = () => {
-    const p = window.location?.pathname || '';
-    if (p.startsWith('/audit/new')) return 'audit:new';
-    if (p.startsWith('/audit')) return 'audit:list';
-    if (p.startsWith('/privacy/dpia')) return 'dpia:list';
-    if (p.startsWith('/checks')) return 'checks';
-    return null;
-  };
-
-  const ctxName: Record<string, string> = {
-    checks: 'Prüfungen',
-    'audit:list': 'Audits',
-    'audit:new': 'Neues Audit',
-    'dpia:list': 'DPIA'
-  };
-
-  const contextHelp: Record<string, string> = {
-    checks: 'Ich kann dir bei deinen Prüfungen helfen – z. B. beim Verstehen der Ergebnisse, dem nächsten Schritt und dem Anlegen neuer Prüfungen.',
-    'audit:list': 'Ich helfe dir, Audit-Aufgaben zu filtern, zuzuweisen und Fristen im Blick zu behalten.',
-    'audit:new': 'Ich helfe dir beim Ausfüllen: Titel, Beschreibung, Priorität und Fälligkeitsdatum.',
-    'dpia:list': 'Ich unterstütze dich beim Strukturieren und Dokumentieren deiner DPIAs.'
+    return getContextKey(window.location?.pathname || '');
   };
 
   const getFormCtx = (pageCtx: string | null) => {
@@ -366,10 +348,17 @@ export function NorrlandGuideDrawer({
               </div>
               {(() => {
                 const pageCtx = getPageCtx();
-                return pageCtx && (
+                if (!pageCtx) return null;
+                
+                const helpText = t(`norrly:contextHelp.${pageCtx}`, { defaultValue: '' });
+                if (!helpText) return null;
+                
+                return (
                   <div className="text-sm text-muted-foreground mt-2 bg-muted/30 px-3 py-2 rounded border border-border/50">
-                    <div>Du bist im Bereich <strong className="text-foreground">{ctxName[pageCtx] ?? 'dieser Seite'}</strong>.</div>
-                    {contextHelp[pageCtx] && <div className="mt-1">💡 {contextHelp[pageCtx]}</div>}
+                    <div className="flex items-start gap-2">
+                      <span className="text-base">💡</span>
+                      <span>{helpText}</span>
+                    </div>
                   </div>
                 );
               })()}
