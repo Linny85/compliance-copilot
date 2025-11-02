@@ -91,6 +91,7 @@ export function NorrlandGuideDrawer({
     if (p.startsWith('/audit/new')) return 'audit:new';
     if (p.startsWith('/audit')) return 'audit:list';
     if (p.startsWith('/privacy/dpia')) return 'dpia:list';
+    if (p.startsWith('/checks')) return 'prüfungen';
     return null;
   };
 
