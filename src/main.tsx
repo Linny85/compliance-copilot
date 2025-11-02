@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppModeProvider } from '@/state/AppModeProvider';
 import { I18nProvider } from '@/contexts/I18nContext';
-import i18n from '@/i18n/init';
+import i18n, { i18nReady } from '@/i18n/init';
 import App from './App.tsx';
 import './index.css';
 
@@ -41,13 +41,7 @@ function render() {
   );
 }
 
-// Sicherstellen, dass i18n fertig + Sprache gesetzt ist, dann rendern
-if (i18n.isInitialized) {
-  // Sprache aufgelöst oder Fallback
-  void i18n.changeLanguage(i18n.resolvedLanguage || 'de').finally(render);
-} else {
-  const initHandler = () => {
-    void i18n.changeLanguage(i18n.resolvedLanguage || 'de').finally(render);
-  };
-  i18n.on('initialized', initHandler);
-}
+// ✅ Wait until i18n is initialized, then ensure language is set, then render
+i18nReady
+  .then(() => i18n.changeLanguage(i18n.resolvedLanguage || i18n.language || 'de'))
+  .finally(render);

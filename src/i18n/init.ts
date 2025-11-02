@@ -8,7 +8,7 @@ const BUILD_ID =
     import.meta.env.VITE_BUILD_ID) ||
   String(Date.now());
 
-// KORREKTE Signatur: (languages[], namespaces[])
+// ✔️ Correct signature: (languages, namespaces) can be string OR string[]
 function resolveLocalesPath(languages: string[] | string, namespaces: string[] | string): string {
   const href = typeof window !== 'undefined' ? window.location.href : 'http://localhost/';
   const lng = Array.isArray(languages) ? (languages[0] || 'de') : (languages || 'de');
@@ -34,10 +34,9 @@ i18n
     ],
     defaultNS: 'norrly',
     preload: ['de', 'en', 'sv'],
-    // Wichtig: Multi-Loading erlaubt Arrays -> stabilere Pfad-Aufrufe
     backend: {
       loadPath: resolveLocalesPath,
-      allowMultiLoading: true,
+      allowMultiLoading: true,       // ← important with array args
       crossDomain: false,
     },
     interpolation: { escapeValue: false },
@@ -50,6 +49,17 @@ i18n
       return key;
     },
   });
+
+/** Promise resolves when i18n is fully initialized */
+export const i18nReady: Promise<void> = new Promise((resolve) => {
+  if (i18n.isInitialized) return resolve();
+  const handler = () => {
+    // detach in case .off exists
+    try { (i18n as any).off?.('initialized', handler); } catch {}
+    resolve();
+  };
+  (i18n as any).on?.('initialized', handler);
+});
 
 // Debug: Log when namespaces are loaded
 i18n.on('loaded', (loaded) => {
