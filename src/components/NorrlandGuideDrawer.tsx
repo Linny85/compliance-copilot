@@ -76,6 +76,14 @@ export function NorrlandGuideDrawer({
 
   const supportsTTS = typeof window !== "undefined" && "speechSynthesis" in window;
 
+  // === Localization Helper ===
+  const localizeModuleTerms = (text: string) => {
+    if (!text) return text;
+    return text
+      .replace(/\bCHECKS\b/g, 'Prüfungen')
+      .replace(/\bChecks\b/g, 'Prüfungen');
+  };
+
   // === Page & Form Context Helpers ===
   const getPageCtx = () => {
     const p = window.location?.pathname || '';
@@ -346,7 +354,7 @@ export function NorrlandGuideDrawer({
                         key={cta.id}
                         onClick={() => {
                           const ctxLine = buildCtxLine();
-                          setQ((ctxLine ? ctxLine : '') + cta.payload);
+                          setQ(localizeModuleTerms((ctxLine ? ctxLine : '') + cta.payload));
                           setTimeout(() => ask(), 50);
                         }}
                         className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
