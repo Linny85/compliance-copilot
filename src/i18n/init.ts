@@ -2,7 +2,18 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-const BUILD_ID = import.meta.env?.VITE_BUILD_ID ?? '20251101';
+// Build-ID für Cache-Busting (fällt auf Timestamp zurück)
+const BUILD_ID =
+  (typeof import.meta !== 'undefined' &&
+    import.meta.env &&
+    import.meta.env.VITE_BUILD_ID) ||
+  String(Date.now());
+
+// Pfad-Resolver: erzeugt immer eine gültige absolute URL relativ zur aktuellen Seite
+function resolveLocalesPath(lngs: string[], ns: string): string {
+  const href = typeof window !== 'undefined' ? window.location.href : 'http://localhost/';
+  return new URL(`locales/${lngs[0].toLowerCase()}/${ns}.json?v=${BUILD_ID}`, href).toString();
+}
 
 i18n
   .use(Backend)
@@ -19,7 +30,8 @@ i18n
     defaultNS: 'norrly',
     preload: ['de', 'en', 'sv'],
     backend: {
-      loadPath: `locales/{{lng}}/{{ns}}.json?v=${BUILD_ID}`,
+      // Funktions-LoadPath verhindert BasePath-/Subfolder-Probleme
+      loadPath: resolveLocalesPath,
       allowMultiLoading: false,
       crossDomain: false
     },

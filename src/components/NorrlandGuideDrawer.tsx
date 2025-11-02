@@ -96,6 +96,21 @@ export function NorrlandGuideDrawer({
   // 5) ***EARLY RETURN ERST JETZT*** – nach ALLEN HOOKS
   if (!ready) return null;
 
+  // ---- TEMP i18n PROBE (remove after success) ----
+  if (typeof window !== "undefined" && (window as any).i18next) {
+    const i: any = (window as any).i18next;
+    const probe = {
+      lang: i.language,
+      hasDe: i.hasResourceBundle?.("de", "norrly"),
+      hasEn: i.hasResourceBundle?.("en", "norrly"),
+      hasSv: i.hasResourceBundle?.("sv", "norrly"),
+      sampleDe: i.t?.("cta.auditNew", { lng: "de" }),
+    };
+    (window as any).__NORRLY_PROBE__ = probe;
+    // Kein console.log spam – nur ein Mal pro Load.
+  }
+  // ---- /TEMP ----
+
   // Translations
   const name = t("cta.name", "Norrly");
   const tagline = t("header.subtitle");
