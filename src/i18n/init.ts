@@ -43,6 +43,7 @@ i18n
     returnNull: false,
     returnEmptyString: false,
     saveMissing: false,
+    keySeparator: false,
     react: { useSuspense: false },
     parseMissingKeyHandler: (key) => {
       if (import.meta.env.DEV) console.warn('[i18n missing]', key);
