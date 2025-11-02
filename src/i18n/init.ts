@@ -32,20 +32,6 @@ i18n
       }
       return key;
     },
-    resources: import.meta.env.DEV ? {
-      de: { norrly: {
-        'cta.auditList': 'Audit-Liste',
-        'cta.auditNew': 'Neues Audit',
-      }},
-      en: { norrly: {
-        'cta.auditList': 'Audit list',
-        'cta.auditNew': 'New audit',
-      }},
-      sv: { norrly: {
-        'cta.auditList': 'Revisionslista',
-        'cta.auditNew': 'Ny revision',
-      }},
-    } : undefined
   });
 
 // Debug: Log when namespaces are loaded
