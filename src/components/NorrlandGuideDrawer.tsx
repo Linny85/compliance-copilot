@@ -76,6 +76,34 @@ export function NorrlandGuideDrawer({
 
   const supportsTTS = typeof window !== "undefined" && "speechSynthesis" in window;
 
+  // === Page & Form Context Helpers ===
+  const getPageCtx = () => {
+    const p = window.location?.pathname || '';
+    if (p.startsWith('/audit/new')) return 'audit:new';
+    if (p.startsWith('/audit')) return 'audit:list';
+    if (p.startsWith('/privacy/dpia')) return 'dpia:list';
+    return null;
+  };
+
+  const getFormCtx = (pageCtx: string | null) => {
+    const present: string[] = [];
+    if (pageCtx === 'audit:new') {
+      if (document.querySelector('[data-testid="title"], input[name="title"]')) present.push('title');
+      if (document.querySelector('[data-testid="description"], textarea[name="description"]')) present.push('description');
+      if (document.querySelector('[data-testid="priority"], [name="priority"]')) present.push('priority');
+      if (document.querySelector('[data-testid="due_date"], [name="due_date"]')) present.push('due_date');
+    }
+    return { fieldsPresent: present };
+  };
+
+  const buildCtxLine = () => {
+    const pageCtx = getPageCtx();
+    const formCtx = getFormCtx(pageCtx);
+    if (!pageCtx) return '';
+    const fields = (formCtx.fieldsPresent || []).join(',');
+    return `[CTX page=${pageCtx}; fields=${fields}]\n`;
+  };
+
   // Fire-and-forget Audit-Helper
   const audit = (event: string, data: Record<string, any>) => {
     const payload = { event, ...data, ts: new Date().toISOString() };
@@ -317,7 +345,8 @@ export function NorrlandGuideDrawer({
                       <button
                         key={cta.id}
                         onClick={() => {
-                          setQ(cta.payload);
+                          const ctxLine = buildCtxLine();
+                          setQ((ctxLine ? ctxLine : '') + cta.payload);
                           setTimeout(() => ask(), 50);
                         }}
                         className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
