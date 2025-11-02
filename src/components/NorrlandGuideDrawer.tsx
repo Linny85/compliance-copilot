@@ -337,6 +337,16 @@ export function NorrlandGuideDrawer({
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
             <div className="space-y-4">
+              {(() => {
+                const pageCtx = getPageCtx();
+                const pageName = pageCtx ? t(`norrly:contextNames.${pageCtx}`, pageCtx) : t('norrly:contextNames.dashboard', 'Dashboard');
+                
+                return (
+                  <div className="text-xs text-muted-foreground border border-border rounded-lg p-2 bg-muted/20">
+                    🧭 Du befindest dich im Modul <b className="text-foreground">{pageName}</b>
+                  </div>
+                );
+              })()}
               {intro && (
                 <div className="bg-muted/50 text-foreground px-4 py-3 rounded-lg text-sm leading-relaxed border border-border">
                   {intro}

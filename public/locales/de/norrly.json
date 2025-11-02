@@ -45,6 +45,29 @@
   "help": {
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
   },
+  "contextNames": {
+    "dashboard": "Dashboard",
+    "checks": "Prüfungen",
+    "checks:new": "Neue Prüfung",
+    "audit:list": "Audits",
+    "audit:new": "Neues Audit",
+    "audit:detail": "Audit-Detail",
+    "dpia:list": "Datenschutz-Folgenabschätzungen",
+    "dpia:detail": "DPIA-Detail",
+    "documents": "Dokumente",
+    "documents:new": "Neues Dokument",
+    "controls": "Kontrollen",
+    "controls:mapping": "Kontroll-Mapping",
+    "evidence": "Nachweise",
+    "scope": "Anwendungsbereich",
+    "nis2": "NIS2",
+    "ai-act": "AI Act",
+    "ai-systems:register": "KI-System-Register",
+    "organization": "Organisation",
+    "company-profile": "Unternehmensprofil",
+    "billing": "Abrechnung",
+    "admin:training-certificates": "Schulungszertifikate"
+  },
   "contextHelp": {
     "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
     "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
