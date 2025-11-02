@@ -92,7 +92,7 @@ export default function OpsDashboard() {
         <section>
           <Card>
             <CardHeader>
-              <CardTitle>{t('common:errors', 'Top Errors')}</CardTitle>
+              <CardTitle>{t('ops:errors.title')}</CardTitle>
             </CardHeader>
             <CardContent>
               {!data?.topErrors24h?.length ? (
@@ -102,8 +102,8 @@ export default function OpsDashboard() {
                   <table className="min-w-full text-sm">
                     <thead>
                       <tr className="border-b">
-                        <th className="text-left py-3 font-medium">{t('common:error', 'Error')}</th>
-                        <th className="text-right py-3 font-medium w-24">{t('common:count', 'Count')}</th>
+                        <th className="text-left py-3 font-medium">{t('ops:columns.error')}</th>
+                        <th className="text-right py-3 font-medium w-24">{t('ops:columns.count')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -131,7 +131,7 @@ export default function OpsDashboard() {
         {/* Controls */}
         <div className="mt-6 flex justify-center items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium">{t('common:period', 'Period')}</label>
+            <label className="text-sm font-medium">{t('ops:filters.period')}</label>
             <Select value={sinceHours.toString()} onValueChange={(v) => setSinceHours(Number(v))}>
               <SelectTrigger className="w-24">
                 <SelectValue />

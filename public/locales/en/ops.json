@@ -18,10 +18,25 @@
       "bounces": "Bounces"
     }
   },
+  "errors": {
+    "title": "Top Errors (24h)"
+  },
+  "columns": {
+    "error": "Error",
+    "count": "Count"
+  },
+  "filters": {
+    "period": "Period"
+  },
   "actions": {
     "refresh": "Refresh",
     "viewQueue": "Open Queue",
     "viewErrors": "View Error Logs"
+  },
+  "templates": {
+    "ai_act_training_reminder": "AI Act Training Reminder",
+    "nis2_audit_notice": "NIS2 Audit Notice",
+    "dpia_review_required": "DPIA Review Required"
   },
   "state": {
     "loading": "Loading…",

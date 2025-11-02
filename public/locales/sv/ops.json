@@ -18,10 +18,25 @@
       "bounces": "Studsar"
     }
   },
+  "errors": {
+    "title": "Vanligaste fel (24h)"
+  },
+  "columns": {
+    "error": "Fel",
+    "count": "Antal"
+  },
+  "filters": {
+    "period": "Period"
+  },
   "actions": {
     "refresh": "Uppdatera",
     "viewQueue": "Öppna kö",
     "viewErrors": "Visa felloggar"
+  },
+  "templates": {
+    "ai_act_training_reminder": "Påminnelse: KI-utbildning",
+    "nis2_audit_notice": "Meddelande: NIS2-revision",
+    "dpia_review_required": "DPIA-granskning krävs"
   },
   "state": {
     "loading": "Laddar…",

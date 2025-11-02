@@ -18,10 +18,25 @@
       "bounces": "Bounces"
     }
   },
+  "errors": {
+    "title": "Top-Fehler (24h)"
+  },
+  "columns": {
+    "error": "Fehler",
+    "count": "Anzahl"
+  },
+  "filters": {
+    "period": "Zeitraum"
+  },
   "actions": {
     "refresh": "Aktualisieren",
     "viewQueue": "Warteschlange öffnen",
     "viewErrors": "Fehler-Logs anzeigen"
+  },
+  "templates": {
+    "ai_act_training_reminder": "Erinnerung: KI-Schulung",
+    "nis2_audit_notice": "Hinweis: NIS2-Audit",
+    "dpia_review_required": "DPIA-Überprüfung erforderlich"
   },
   "state": {
     "loading": "Lade…",

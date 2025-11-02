@@ -24,7 +24,7 @@ type EmailStats = {
 };
 
 export default function EmailStatsDashboard() {
-  const { t, ready } = useTranslation(['reports', 'common'], { useSuspense: false });
+  const { t, ready } = useTranslation(['ops', 'reports', 'common'], { useSuspense: false });
   const [stats, setStats] = useState<EmailStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -115,7 +115,7 @@ export default function EmailStatsDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            {ready ? t('reports:emailStats.title') : 'Loading...'}
+            {ready ? t('ops:emailStats.title') : 'Loading...'}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -132,7 +132,7 @@ export default function EmailStatsDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            {t('reports:emailStats.title')}
+            {t('ops:emailStats.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -149,7 +149,7 @@ export default function EmailStatsDashboard() {
           <div className="flex items-center gap-2">
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5" />
-              {t('reports:emailStats.title')}
+              {t('ops:emailStats.title')}
             </CardTitle>
             {errorCount > 0 && (
               <Badge variant="destructive" className="gap-1">
@@ -173,9 +173,11 @@ export default function EmailStatsDashboard() {
         {stats.map((template) => (
           <div key={template.template_code} className="space-y-3 pb-6 border-b last:border-0 last:pb-0">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-base">{template.template_code}</h3>
+              <h3 className="font-semibold text-base">
+                {t(`ops:templates.${template.template_code}`, { defaultValue: template.template_code })}
+              </h3>
               <span className="text-sm text-muted-foreground">
-                {template.total_enqueued} {t('reports:emailStats.total')}
+                {t('ops:emailStats.total', { count: template.total_enqueued })}
               </span>
             </div>
 
@@ -183,7 +185,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Send className="h-3.5 w-3.5" />
-                  <span>{t('reports:emailStats.sent')}</span>
+                  <span>{t('ops:emailStats.metrics.sent')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.total_sent}</span>
@@ -197,7 +199,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CheckCircle2 className="h-3.5 w-3.5" />
-                  <span>{t('reports:emailStats.delivered')}</span>
+                  <span>{t('ops:emailStats.metrics.delivered')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.delivered}</span>
@@ -211,7 +213,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Eye className="h-3.5 w-3.5" />
-                  <span>{t('reports:emailStats.opens')}</span>
+                  <span>{t('ops:emailStats.metrics.opens')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.opened}</span>
@@ -225,7 +227,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <MousePointerClick className="h-3.5 w-3.5" />
-                  <span>{t('reports:emailStats.clicks')}</span>
+                  <span>{t('ops:emailStats.metrics.clicks')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.clicked}</span>
@@ -239,7 +241,7 @@ export default function EmailStatsDashboard() {
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <XCircle className="h-3.5 w-3.5" />
-                  <span>{t('reports:emailStats.bounces')}</span>
+                  <span>{t('ops:emailStats.metrics.bounces')}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-lg font-bold">{template.bounced}</span>
