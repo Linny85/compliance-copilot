@@ -45,6 +45,48 @@
   "help": {
     "whyAccess": "Your access runs through your subscription. By signing in, I activate your license and can assign documents & evidence directly to your organization – securely and GDPR-compliant."
   },
+  "contextNames": {
+    "dashboard": "Dashboard",
+    "documents": "Documents",
+    "checks": "Checks",
+    "controls": "Controls",
+    "evidence": "Evidence",
+    "admin": {
+      "training-certificates": "Training Certificates"
+    },
+    "audit": {
+      "list": "Audits",
+      "new": "New Audit",
+      "detail": "Audit Detail"
+    },
+    "dpia": {
+      "list": "Data Protection Impact Assessments",
+      "detail": "DPIA Detail"
+    },
+    "ai-act": "AI Act",
+    "organization": "Organization",
+    "billing": "Billing"
+  },
+  "contextHelp": {
+    "dashboard": "Your home view: progress, next steps, and latest reports.",
+    "documents": "Manage your compliance documentation and policies.",
+    "checks": "Schedule and review compliance checks.",
+    "controls": "Manage controls and verify related requirements.",
+    "evidence": "Upload and organize supporting evidence.",
+    "admin": {
+      "training-certificates": "Manage course records, certificates, and staff assignments."
+    },
+    "audit": {
+      "list": "View and manage all audit tasks.",
+      "new": "Create and schedule new audit activities."
+    },
+    "dpia": {
+      "list": "Track all data protection impact assessments."
+    },
+    "ai-act": "Register and manage AI systems for compliance.",
+    "organization": "Configure your organization settings and team.",
+    "billing": "Manage your subscription and payment details."
+  },
   "quickstart": {
     "dashboard": [
       { "label": "Report security incident", "to": "/incident/new" },
@@ -64,21 +106,37 @@
       { "label": "Schedule audit", "to": "/audit/new" },
       { "label": "Review evidence", "to": "/evidence" }
     ],
-    "audit:list": [
-      { "label": "Create new audit", "to": "/audit/new" },
-      { "label": "Open checks", "to": "/checks" },
-      { "label": "Reports & exports", "to": "/admin/ops" }
+    "controls": [
+      { "label": "Open control mapping", "to": "/controls/mapping" },
+      { "label": "Create new control", "to": "/controls" },
+      { "label": "Filter evidence", "to": "/evidence" }
     ],
-    "audit:new": [
-      { "label": "Load audit templates", "to": "/audit" },
-      { "label": "Map controls", "to": "/controls/mapping" },
-      { "label": "DPIA list", "to": "/privacy/dpia" }
-    ],
-    "dpia:list": [
-      { "label": "Start new DPIA", "to": "/privacy/dpia/new" },
-      { "label": "Register system", "to": "/ai-systems/register" },
-      { "label": "Upload evidence", "to": "/evidence" }
-    ],
+    "admin": {
+      "training-certificates": [
+        { "label": "Issue certificate", "to": "/admin/training-certificates" },
+        { "label": "Assign course", "to": "/admin/training-certificates" },
+        { "label": "Open reports", "to": "/reports" }
+      ]
+    },
+    "audit": {
+      "list": [
+        { "label": "Create new audit", "to": "/audit/new" },
+        { "label": "Open checks", "to": "/checks" },
+        { "label": "Reports & exports", "to": "/admin/ops" }
+      ],
+      "new": [
+        { "label": "Load audit templates", "to": "/audit" },
+        { "label": "Map controls", "to": "/controls/mapping" },
+        { "label": "DPIA list", "to": "/privacy/dpia" }
+      ]
+    },
+    "dpia": {
+      "list": [
+        { "label": "Start new DPIA", "to": "/privacy/dpia/new" },
+        { "label": "Register system", "to": "/ai-systems/register" },
+        { "label": "Upload evidence", "to": "/evidence" }
+      ]
+    },
     "ai-act": [
       { "label": "Register AI system", "to": "/ai-systems/register" },
       { "label": "Check DPIA", "to": "/privacy/dpia" },

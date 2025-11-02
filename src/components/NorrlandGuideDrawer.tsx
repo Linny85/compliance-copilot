@@ -82,7 +82,9 @@ export function NorrlandGuideDrawer({
 
   // === Page & Form Context Helpers ===
   const getPageCtx = () => {
-    return getContextKey(window.location?.pathname || '');
+    const ctx = getContextKey(window.location?.pathname || '');
+    // Convert colon to dot for i18n keys: 'admin:training-certificates' -> 'admin.training-certificates'
+    return ctx ? ctx.replace(/:/g, '.') : null;
   };
 
   const getFormCtx = (pageCtx: string | null) => {
@@ -337,7 +339,8 @@ export function NorrlandGuideDrawer({
             <div className="space-y-4">
               {(() => {
                 const pageCtx = getPageCtx();
-                const pageName = pageCtx ? t(`norrly:contextNames.${pageCtx}`, pageCtx) : t('norrly:contextNames.dashboard', 'Dashboard');
+                const ctxKeyDot = pageCtx || 'dashboard';
+                const pageName = t(`norrly:contextNames.${ctxKeyDot}`, ctxKeyDot);
                 
                 return (
                   <div className="text-xs text-muted-foreground border border-border rounded-lg p-2 bg-muted/20">
@@ -358,7 +361,8 @@ export function NorrlandGuideDrawer({
                 const pageCtx = getPageCtx();
                 if (!pageCtx) return null;
                 
-                const helpText = t(`norrly:contextHelp.${pageCtx}`, { defaultValue: '' });
+                const ctxKeyDot = pageCtx || 'dashboard';
+                const helpText = t(`norrly:contextHelp.${ctxKeyDot}`, { defaultValue: '' });
                 if (!helpText) return null;
                 
                 return (
@@ -372,8 +376,8 @@ export function NorrlandGuideDrawer({
               })()}
               {(() => {
                 const pageCtx = getPageCtx();
-                const ctxKey = pageCtx || 'dashboard';
-                const quickstarts = t(`norrly:quickstart.${ctxKey}`, { returnObjects: true });
+                const ctxKeyDot = pageCtx || 'dashboard';
+                const quickstarts = t(`norrly:quickstart.${ctxKeyDot}`, { returnObjects: true });
                 const fallbackQuickstarts = t('norrly:quickstart.dashboard', { returnObjects: true });
                 const items = Array.isArray(quickstarts) && quickstarts.length ? quickstarts : fallbackQuickstarts;
                 

@@ -64,21 +64,37 @@
       { "label": "Prüfplan terminieren", "to": "/audit/new" },
       { "label": "Nachweise prüfen", "to": "/evidence" }
     ],
-    "audit:list": [
-      { "label": "Neues Audit anlegen", "to": "/audit/new" },
-      { "label": "Prüfungen öffnen", "to": "/checks" },
-      { "label": "Berichte & Exporte", "to": "/admin/ops" }
+    "controls": [
+      { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" },
+      { "label": "Neue Kontrolle anlegen", "to": "/controls" },
+      { "label": "Nachweise filtern", "to": "/evidence" }
     ],
-    "audit:new": [
-      { "label": "Audit-Vorlagen laden", "to": "/audit" },
-      { "label": "Kontrollen zuordnen", "to": "/controls/mapping" },
-      { "label": "DPIA-Liste", "to": "/privacy/dpia" }
-    ],
-    "dpia:list": [
-      { "label": "Neue DPIA starten", "to": "/privacy/dpia/new" },
-      { "label": "System ins Register", "to": "/ai-systems/register" },
-      { "label": "Nachweise hochladen", "to": "/evidence" }
-    ],
+    "admin": {
+      "training-certificates": [
+        { "label": "Zertifikat ausstellen", "to": "/admin/training-certificates" },
+        { "label": "Kurs zuweisen", "to": "/admin/training-certificates" },
+        { "label": "Berichte öffnen", "to": "/reports" }
+      ]
+    },
+    "audit": {
+      "list": [
+        { "label": "Neues Audit anlegen", "to": "/audit/new" },
+        { "label": "Prüfungen öffnen", "to": "/checks" },
+        { "label": "Berichte & Exporte", "to": "/admin/ops" }
+      ],
+      "new": [
+        { "label": "Audit-Vorlagen laden", "to": "/audit" },
+        { "label": "Kontrollen zuordnen", "to": "/controls/mapping" },
+        { "label": "DPIA-Liste", "to": "/privacy/dpia" }
+      ]
+    },
+    "dpia": {
+      "list": [
+        { "label": "Neue DPIA starten", "to": "/privacy/dpia/new" },
+        { "label": "System ins Register", "to": "/ai-systems/register" },
+        { "label": "Nachweise hochladen", "to": "/evidence" }
+      ]
+    },
     "ai-act": [
       { "label": "KI-System registrieren", "to": "/ai-systems/register" },
       { "label": "DPIA prüfen", "to": "/privacy/dpia" },
@@ -95,48 +111,52 @@
   },
   "contextNames": {
     "dashboard": "Dashboard",
-    "checks": "Prüfungen",
-    "checks:new": "Neue Prüfung",
-    "audit:list": "Audits",
-    "audit:new": "Neues Audit",
-    "audit:detail": "Audit-Detail",
-    "dpia:list": "Datenschutz-Folgenabschätzungen",
-    "dpia:detail": "DPIA-Detail",
     "documents": "Dokumente",
-    "documents:new": "Neues Dokument",
+    "checks": "Prüfungen",
     "controls": "Kontrollen",
-    "controls:mapping": "Kontroll-Mapping",
     "evidence": "Nachweise",
     "scope": "Anwendungsbereich",
     "nis2": "NIS2",
     "ai-act": "AI Act",
-    "ai-systems:register": "KI-System-Register",
     "organization": "Organisation",
-    "company-profile": "Unternehmensprofil",
     "billing": "Abrechnung",
-    "admin:training-certificates": "Schulungszertifikate"
+    "admin": {
+      "training-certificates": "Schulungszertifikate"
+    },
+    "audit": {
+      "list": "Audits",
+      "new": "Neues Audit",
+      "detail": "Audit-Detail"
+    },
+    "dpia": {
+      "list": "Datenschutz-Folgenabschätzungen",
+      "detail": "DPIA-Detail"
+    },
+    "ai-systems": {
+      "register": "KI-System-Register"
+    },
+    "company-profile": "Unternehmensprofil"
   },
   "contextHelp": {
     "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
-    "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
-    "checks:new": "Erstelle hier eine neue Prüfung. Definiere das Ziel, die Prüfkriterien und die Verantwortlichen.",
-    "audit:list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
-    "audit:new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren.",
-    "dpia:list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten.",
     "documents": "Hier findest du deine Compliance-Dokumente. Ich erkläre dir, wie du Nachweise und Richtlinien verwaltest.",
-    "documents:new": "Hier erstellst du neue Dokumente oder lädst bestehende Nachweise hoch.",
+    "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
     "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
-    "controls:mapping": "Hier kannst du Kontrollen mit Standards wie ISO 27001 oder NIS2-Maßnahmen verknüpfen.",
     "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
     "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
     "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",
     "ai-act": "Hier lernst du alles über den EU AI Act und kannst den Reifegrad deiner KI-Systeme prüfen.",
-    "ai-systems:register": "Hier meldest du deine KI-Systeme gemäß AI Act Art. 51 an.",
     "organization": "Hier verwaltest du deine Organisationsstruktur, Verantwortlichkeiten und Meldewege.",
-    "company-profile": "Hier bearbeitest du die Stammdaten deines Unternehmens.",
     "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
-    "roles": "In diesem Bereich klären wir Zuständigkeiten, Verantwortlichkeiten und Meldeketten.",
-    "incident": "Wenn ein Sicherheitsvorfall auftritt, kannst du ihn hier direkt dokumentieren und melden.",
-    "admin:training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation."
+    "admin": {
+      "training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation."
+    },
+    "audit": {
+      "list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
+      "new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren."
+    },
+    "dpia": {
+      "list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten."
+    }
   }
 }

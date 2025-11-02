@@ -44,5 +44,111 @@
   },
   "help": {
     "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
+  },
+  "contextNames": {
+    "dashboard": "Översikt",
+    "documents": "Dokument",
+    "checks": "Kontroller",
+    "controls": "Kontroller",
+    "evidence": "Underlag",
+    "admin": {
+      "training-certificates": "Utbildningsintyg"
+    },
+    "audit": {
+      "list": "Revisioner",
+      "new": "Ny Revision",
+      "detail": "Revisionsdetalj"
+    },
+    "dpia": {
+      "list": "Dataskyddskonsekvensbedömningar",
+      "detail": "DPIA-detalj"
+    },
+    "ai-act": "AI-förordningen",
+    "organization": "Organisation",
+    "billing": "Fakturering"
+  },
+  "contextHelp": {
+    "dashboard": "Din startsida: framsteg, nästa steg och senaste rapporter.",
+    "documents": "Hantera din dokumentation för regelefterlevnad.",
+    "checks": "Schemalägg och granska efterlevnadskontroller.",
+    "controls": "Här hanterar du kontroller och granskar tillhörande krav.",
+    "evidence": "Ladda upp och organisera stödjande underlag.",
+    "admin": {
+      "training-certificates": "Hantera kursregister, intyg och tilldelningar för personal."
+    },
+    "audit": {
+      "list": "Visa och hantera alla revisionsuppgifter.",
+      "new": "Skapa och schemalägg nya revisionsaktiviteter."
+    },
+    "dpia": {
+      "list": "Spåra alla dataskyddskonsekvensbedömningar."
+    },
+    "ai-act": "Registrera och hantera AI-system för regelefterlevnad.",
+    "organization": "Konfigurera dina organisationsinställningar och team.",
+    "billing": "Hantera din prenumeration och betalningsuppgifter."
+  },
+  "quickstart": {
+    "dashboard": [
+      { "label": "Rapportera säkerhetsincident", "to": "/incident/new" },
+      { "label": "Kontrollera NIS2-registret", "to": "/nis2" },
+      { "label": "Klargör ansvar", "to": "/controls/mapping" },
+      { "label": "Revisionsöversikt", "to": "/audit" },
+      { "label": "Starta utbildning", "to": "/admin/training-certificates" }
+    ],
+    "documents": [
+      { "label": "Skapa nytt dokument", "to": "/documents/new" },
+      { "label": "Ladda upp underlag", "to": "/evidence" },
+      { "label": "Generera policy", "to": "/controls" },
+      { "label": "Skapa revisionsuppgift", "to": "/audit/new" }
+    ],
+    "checks": [
+      { "label": "Planera ny kontroll", "to": "/checks/new" },
+      { "label": "Schemalägg revision", "to": "/audit/new" },
+      { "label": "Granska underlag", "to": "/evidence" }
+    ],
+    "controls": [
+      { "label": "Öppna kontrollmapping", "to": "/controls/mapping" },
+      { "label": "Skapa ny kontroll", "to": "/controls" },
+      { "label": "Filtrera underlag", "to": "/evidence" }
+    ],
+    "admin": {
+      "training-certificates": [
+        { "label": "Utfärda intyg", "to": "/admin/training-certificates" },
+        { "label": "Tilldela kurs", "to": "/admin/training-certificates" },
+        { "label": "Öppna rapporter", "to": "/reports" }
+      ]
+    },
+    "audit": {
+      "list": [
+        { "label": "Skapa ny revision", "to": "/audit/new" },
+        { "label": "Öppna kontroller", "to": "/checks" },
+        { "label": "Rapporter & exporter", "to": "/admin/ops" }
+      ],
+      "new": [
+        { "label": "Ladda revisionsmallar", "to": "/audit" },
+        { "label": "Mappa kontroller", "to": "/controls/mapping" },
+        { "label": "DPIA-lista", "to": "/privacy/dpia" }
+      ]
+    },
+    "dpia": {
+      "list": [
+        { "label": "Starta ny DPIA", "to": "/privacy/dpia/new" },
+        { "label": "Registrera system", "to": "/ai-systems/register" },
+        { "label": "Ladda upp underlag", "to": "/evidence" }
+      ]
+    },
+    "ai-act": [
+      { "label": "Registrera AI-system", "to": "/ai-systems/register" },
+      { "label": "Kontrollera DPIA", "to": "/privacy/dpia" },
+      { "label": "Generera policy", "to": "/controls" }
+    ],
+    "organization": [
+      { "label": "Redigera företagsprofil", "to": "/company-profile" },
+      { "label": "Kontrollera certifikat", "to": "/admin/training-certificates" }
+    ],
+    "billing": [
+      { "label": "Uppgradera plan", "to": "/billing" },
+      { "label": "Hantera provperiod", "to": "/dashboard" }
+    ]
   }
 }
