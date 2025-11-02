@@ -19,7 +19,7 @@ i18n
     defaultNS: 'norrly',
     preload: ['de', 'en', 'sv'],
     backend: {
-      loadPath: `/public/locales/{{lng}}/{{ns}}.json?v=${BUILD_ID}`,
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${BUILD_ID}`,
       allowMultiLoading: false,
       crossDomain: false
     },
