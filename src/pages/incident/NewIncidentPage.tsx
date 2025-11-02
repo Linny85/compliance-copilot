@@ -18,22 +18,22 @@ export default function NewIncidentPage() {
 
   return (
     <div className="mx-auto max-w-2xl p-6">
-      <h1 className="text-xl font-semibold mb-4">{t("cta.incident")}</h1>
+      <h1 className="text-xl font-semibold mb-4">{t("incident.report")}</h1>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm mb-1">{t("incident.title", "Titel")}</label>
+          <label className="block text-sm mb-1">{t("incident.title")}</label>
           <Input value={title} onChange={e=>setTitle(e.target.value)} required />
         </div>
         <div>
-          <label className="block text-sm mb-1">{t("incident.description", "Beschreibung")}</label>
+          <label className="block text-sm mb-1">{t("incident.description")}</label>
           <Textarea value={desc} onChange={e=>setDesc(e.target.value)} rows={5} required />
         </div>
         <div>
-          <label className="block text-sm mb-1">{t("incident.impact", "Auswirkung")}</label>
+          <label className="block text-sm mb-1">{t("incident.impact")}</label>
           <Input value={impact} onChange={e=>setImpact(e.target.value)} />
         </div>
         <div className="pt-2">
-          <Button type="submit">{t("input.submit", "Absenden")}</Button>
+          <Button type="submit">{t("incident.submit")}</Button>
         </div>
       </form>
     </div>

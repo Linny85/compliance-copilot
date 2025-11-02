@@ -38,13 +38,16 @@
     "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
     "open": "Öppna",
     "loading": "Laddar…",
-    "cancel": "Avbryt",
-    "submit": "Skicka"
+    "cancel": "Avbryt"
   },
   "incident": {
+    "report": "Rapportera säkerhetsincident",
     "title": "Titel",
     "description": "Beskrivning",
-    "impact": "Påverkan"
+    "impact": "Påverkan",
+    "helpTitle": "Vad ska jag fylla i här?",
+    "helpBody": "Ange en kort titel (t.ex. "Öppnade phishing-mejl"), en tydlig beskrivning (vad hände, när, vem/vad påverkades) och – om känt – påverkan (t.ex. system störda, data ev. påverkad). Du kan lägga till detaljer senare.",
+    "submit": "Skicka"
   },
   "voice": {
     "on": "Röst på",

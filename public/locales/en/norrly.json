@@ -38,13 +38,16 @@
     "placeholder": "Type a question (Enter to send, Shift+Enter for a new line)…",
     "open": "Open",
     "loading": "Loading…",
-    "cancel": "Cancel",
-    "submit": "Submit"
+    "cancel": "Cancel"
   },
   "incident": {
+    "report": "Report security incident",
     "title": "Title",
     "description": "Description",
-    "impact": "Impact"
+    "impact": "Impact",
+    "helpTitle": "What should I enter here?",
+    "helpBody": "Provide a short title (e.g., "Opened phishing email"), a clear description (what happened, when, who/what is affected), and—if known—the impact (e.g., systems degraded, data possibly affected). You can add details later.",
+    "submit": "Submit"
   },
   "voice": {
     "on": "Voice on",

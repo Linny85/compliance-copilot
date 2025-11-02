@@ -38,13 +38,16 @@
     "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
     "open": "Öffnen",
     "loading": "Lädt…",
-    "cancel": "Abbrechen",
-    "submit": "Absenden"
+    "cancel": "Abbrechen"
   },
   "incident": {
+    "report": "Sicherheitsvorfall melden",
     "title": "Titel",
     "description": "Beschreibung",
-    "impact": "Auswirkung"
+    "impact": "Auswirkung",
+    "helpTitle": "Was muss ich hier eingeben?",
+    "helpBody": "Trage einen kurzen Titel (z. B. „Phishing-E-Mail geöffnet"), eine verständliche Beschreibung (Was ist passiert? Wann? Wer/was ist betroffen?) und – wenn bekannt – die Auswirkung (z. B. Systeme gestört, Daten evtl. betroffen) ein. Details kannst du später ergänzen.",
+    "submit": "Absenden"
   },
   "voice": {
     "on": "Stimme an",

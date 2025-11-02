@@ -33,6 +33,8 @@ export function NorrlandGuideDrawer({
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
   const first = useRef<HTMLTextAreaElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  // Kontext-Hilfe nur einmal anzeigen (pro Pfad)
+  const ctxHelpShownIncident = useRef(false);
 
   // 3) States – immer in derselben Reihenfolge
   const [q, setQ] = useState("");
@@ -58,6 +60,23 @@ export function NorrlandGuideDrawer({
       try { sessionStorage.setItem(FIRST_SEEN_KEY, "1"); } catch {}
     }
   }, [showWelcome]);
+
+  // Kontext-Hilfe für Incident-Form, wenn Drawer geöffnet wird
+  useEffect(() => {
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+    if (!open) return;
+    if (ctxHelpShownIncident.current) return;
+    if (currentPath.startsWith('/incident')) {
+      ctxHelpShownIncident.current = true;
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: `${t('incident.helpTitle')}\n\n${t('incident.helpBody')}`
+        }
+      ]);
+    }
+  }, [open, t]);
 
   useEffect(() => {
     if (open && first.current) first.current.focus();
