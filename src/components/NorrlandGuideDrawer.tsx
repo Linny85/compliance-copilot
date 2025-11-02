@@ -42,6 +42,9 @@ export function NorrlandGuideDrawer({
   const [sources, setSources] = useState<{ title: string; uri: string }[]>([]);
   const [disc, setDisc] = useState("");
   const [ttsOn, setTtsOn] = useState(false);
+  const [showWelcome, setShowWelcome] = useState<boolean>(() => {
+    try { return !sessionStorage.getItem(FIRST_SEEN_KEY); } catch { return false; }
+  });
 
   // 4) Effects – niemals bedingt aufrufen
   useEffect(() => {
@@ -49,6 +52,12 @@ export function NorrlandGuideDrawer({
       sessionStorage.setItem(FIRST_SEEN_KEY, '1');
     }
   }, []);
+
+  useEffect(() => {
+    if (showWelcome) {
+      try { sessionStorage.setItem(FIRST_SEEN_KEY, "1"); } catch {}
+    }
+  }, [showWelcome]);
 
   useEffect(() => {
     if (open && first.current) first.current.focus();
@@ -145,9 +154,27 @@ export function NorrlandGuideDrawer({
     }).catch(() => {});
   };
 
+  function sanitizeForTTS(input: string): string {
+    if (!input) return "";
+    // 1) Doppelte/auffällige Satzzeichen reduzieren
+    let s = input.replace(/[!?]{2,}/g, m => m[0])
+                  .replace(/\.{2,}/g, ".")
+                  .replace(/[\u201c\u201d\u201e\u00ab\u00bb]/g, '"')
+                  .replace(/[\u2018\u2019]/g, "'");
+    // 2) Steuer-/Sonderzeichen entfernen, die TTS stören können
+    s = s.replace(/[^\S\r\n]+/g, " ")        // Mehrfachspaces
+         .replace(/[\u200B-\u200D\uFEFF]/g, "")   // Zero-width
+         .replace(/[•·►–—]/g, "-");               // Bullets/Dashes
+    // 3) Lange URLs/Code-Snippets kürzen
+    s = s.replace(/\bhttps?:\/\/\S+/g, "Link")
+         .replace(/`{1,3}[^`]+`{1,3}/g, "Code");
+    return s.trim();
+  }
+
   const speak = (text: string) => {
     if (!supportsTTS) return;
-    const sanitized = sanitize(text);
+    const clean = sanitizeForTTS(text);
+    const sanitized = sanitize(clean);
     const utterance = new SpeechSynthesisUtterance(sanitized);
     utterance.rate = 0.95;
     utterance.pitch = 1.0;
@@ -338,6 +365,19 @@ export function NorrlandGuideDrawer({
 
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Onboarding Hinweis – nur einmalig */}
+          {showWelcome && (
+            <div className="mb-3 rounded-xl border border-border/60 bg-muted/30 p-3 text-sm">
+              <div className="font-medium mb-1">{t("intro.headline")}</div>
+              <p className="opacity-80">{t("intro.text")}</p>
+              <button
+                onClick={() => setShowWelcome(false)}
+                className="mt-2 inline-flex items-center rounded-md border px-3 py-1 text-xs hover:bg-muted"
+              >
+                {t("input.open")}
+              </button>
+            </div>
+          )}
         {messages.length === 0 ? (
             <div className="space-y-4">
               <div className="space-y-2">
