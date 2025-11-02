@@ -55,11 +55,12 @@ export function NorrlandGuideDrawer({
   const intro = ready && firstSeen.current ? t("helpbot:intro") : undefined;
   
   const quickCtas = ready ? [
-    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident') },
-    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register') },
-    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles') },
-    { id: 'audit', label: t('norrly:cta.audit'), payload: t('norrly:cta.audit') },
-    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training') }
+    { id: 'incident', label: t('norrly:cta.incident'), payload: t('norrly:cta.incident'), route: null },
+    { id: 'register', label: t('norrly:cta.register'), payload: t('norrly:cta.register'), route: null },
+    { id: 'roles', label: t('norrly:cta.roles'), payload: t('norrly:cta.roles'), route: null },
+    { id: 'auditList', label: t('norrly:cta.auditList'), payload: t('norrly:cta.auditList'), route: '/audit' },
+    { id: 'auditNew', label: t('norrly:cta.auditNew'), payload: t('norrly:cta.auditNew'), route: '/audit/new' },
+    { id: 'training', label: t('norrly:cta.training'), payload: t('norrly:cta.training'), route: '/privacy/dpia' }
   ] : [];
   
   const labels = ready ? {
@@ -317,8 +318,13 @@ export function NorrlandGuideDrawer({
                       <button
                         key={cta.id}
                         onClick={() => {
-                          setQ(cta.payload);
-                          setTimeout(() => ask(), 50);
+                          if (cta.route) {
+                            navigateGlobal(cta.route);
+                            setOpen(false);
+                          } else {
+                            setQ(cta.payload);
+                            setTimeout(() => ask(), 50);
+                          }
                         }}
                         className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors"
                       >
