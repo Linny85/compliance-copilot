@@ -46,12 +46,26 @@
     "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
   },
   "contextHelp": {
+    "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
     "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
+    "checks:new": "Erstelle hier eine neue Prüfung. Definiere das Ziel, die Prüfkriterien und die Verantwortlichen.",
+    "audit:list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
     "audit:new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren.",
-    "audit:list": "Hier findest du eine Übersicht deiner laufenden Audits und kannst deren Status verfolgen.",
-    "dpia:list": "Im Schulungs- oder Datenschutzbereich (DPIA) kannst du Bewertungen und Trainings verwalten.",
-    "register": "Hier prüfst du dein NIS2-Register und stellst sicher, dass alle Unternehmensdaten vollständig sind.",
+    "dpia:list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten.",
+    "documents": "Hier findest du deine Compliance-Dokumente. Ich erkläre dir, wie du Nachweise und Richtlinien verwaltest.",
+    "documents:new": "Hier erstellst du neue Dokumente oder lädst bestehende Nachweise hoch.",
+    "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
+    "controls:mapping": "Hier kannst du Kontrollen mit Standards wie ISO 27001 oder NIS2-Maßnahmen verknüpfen.",
+    "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
+    "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
+    "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",
+    "ai-act": "Hier lernst du alles über den EU AI Act und kannst den Reifegrad deiner KI-Systeme prüfen.",
+    "ai-systems:register": "Hier meldest du deine KI-Systeme gemäß AI Act Art. 51 an.",
+    "organization": "Hier verwaltest du deine Organisationsstruktur, Verantwortlichkeiten und Meldewege.",
+    "company-profile": "Hier bearbeitest du die Stammdaten deines Unternehmens.",
+    "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
+    "roles": "In diesem Bereich klären wir Zuständigkeiten, Verantwortlichkeiten und Meldeketten.",
     "incident": "Wenn ein Sicherheitsvorfall auftritt, kannst du ihn hier direkt dokumentieren und melden.",
-    "roles": "In diesem Bereich klären wir Zuständigkeiten, Verantwortlichkeiten und Meldeketten."
+    "admin:training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation."
   }
 }
