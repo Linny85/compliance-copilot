@@ -48,8 +48,11 @@
   "contextNames": {
     "dashboard": "Översikt",
     "documents": "Dokument",
+    "documents.new": "Dokument – Nytt",
     "checks": "Kontroller",
+    "checks.new": "Kontroller – Ny",
     "controls": "Kontroller",
+    "controls.mapping": "Kontroller – Mapping",
     "evidence": "Underlag",
     "admin": {
       "ops": "Ops Dashboard",
@@ -71,8 +74,11 @@
   "contextHelp": {
     "dashboard": "Din startsida: framsteg, nästa steg och senaste rapporter.",
     "documents": "Hantera din dokumentation för regelefterlevnad.",
+    "documents.new": "Skapa en ny policy eller annat compliance-dokument, länka bevis och spara för godkännande.",
     "checks": "Schemalägg och granska efterlevnadskontroller.",
+    "checks.new": "Planera en ny efterlevnadskontroll, tilldela ansvariga och sätt deadlines.",
     "controls": "Här hanterar du kontroller och granskar tillhörande krav.",
+    "controls.mapping": "Mappa kontroller till krav och tilldela ägarskap för tydliga strukturer i regelefterlevnad.",
     "evidence": "Ladda upp och organisera stödjande underlag.",
     "admin": {
       "ops": "Operativa mätvärden: e-postkö, felanalys, systemhälsa.",
@@ -102,6 +108,24 @@
       { "label": "Ladda upp underlag", "to": "/evidence" },
       { "label": "Generera policy", "to": "/controls" },
       { "label": "Skapa revisionsuppgift", "to": "/audit/new" }
+    ],
+    "documents.new": [
+      { "label": "Välj policymall", "to": "/controls" },
+      { "label": "Lägg till bevis-typ", "to": "/evidence" },
+      { "label": "Spara & publicera", "to": "/documents" },
+      { "label": "Öppna kontroll-mapping", "to": "/controls/mapping" }
+    ],
+    "checks.new": [
+      { "label": "Schemalägg revision", "to": "/audit/new" },
+      { "label": "Granska underlag", "to": "/evidence" },
+      { "label": "Mappa kontroller", "to": "/controls/mapping" },
+      { "label": "Kontrollöversikt", "to": "/checks" }
+    ],
+    "controls.mapping": [
+      { "label": "Skapa ny kontroll", "to": "/controls" },
+      { "label": "Filtrera underlag", "to": "/evidence" },
+      { "label": "Tilldela ansvar", "to": "/organization" },
+      { "label": "Planera revision", "to": "/audit/new" }
     ],
     "checks": [
       { "label": "Planera ny kontroll", "to": "/checks/new" },

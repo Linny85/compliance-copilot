@@ -59,6 +59,24 @@
       { "label": "Richtlinie generieren", "to": "/controls" },
       { "label": "Audit-Task anlegen", "to": "/audit/new" }
     ],
+    "documents.new": [
+      { "label": "Richtlinien-Vorlage auswählen", "to": "/controls" },
+      { "label": "Evidenztyp hinzufügen", "to": "/evidence" },
+      { "label": "Dokument speichern & freigeben", "to": "/documents" },
+      { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" }
+    ],
+    "checks.new": [
+      { "label": "Prüfplan terminieren", "to": "/audit/new" },
+      { "label": "Nachweise prüfen", "to": "/evidence" },
+      { "label": "Kontrollen zuordnen", "to": "/controls/mapping" },
+      { "label": "Prüfungen-Übersicht", "to": "/checks" }
+    ],
+    "controls.mapping": [
+      { "label": "Neue Kontrolle anlegen", "to": "/controls" },
+      { "label": "Nachweise filtern", "to": "/evidence" },
+      { "label": "Verantwortlichkeiten zuweisen", "to": "/organization" },
+      { "label": "Audit planen", "to": "/audit/new" }
+    ],
     "checks": [
       { "label": "Neue Prüfung planen", "to": "/checks/new" },
       { "label": "Prüfplan terminieren", "to": "/audit/new" },
@@ -117,8 +135,11 @@
   "contextNames": {
     "dashboard": "Dashboard",
     "documents": "Dokumente",
+    "documents.new": "Dokumente – Neu",
     "checks": "Prüfungen",
+    "checks.new": "Prüfungen – Neu",
     "controls": "Kontrollen",
+    "controls.mapping": "Kontrollen – Mapping",
     "evidence": "Nachweise",
     "scope": "Anwendungsbereich",
     "nis2": "NIS2",
@@ -146,8 +167,11 @@
   "contextHelp": {
     "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
     "documents": "Hier findest du deine Compliance-Dokumente. Ich erkläre dir, wie du Nachweise und Richtlinien verwaltest.",
+    "documents.new": "Erstelle eine neue Richtlinie oder ein anderes Compliance-Dokument, verknüpfe Evidenzen und speichere es zur Freigabe.",
     "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
+    "checks.new": "Plane eine neue Compliance-Prüfung, weise Verantwortliche zu und lege Fristen fest.",
     "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
+    "controls.mapping": "Ordne Kontrollen den jeweiligen Anforderungen und Verantwortlichen zu – für klare Compliance-Strukturen.",
     "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
     "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
     "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",

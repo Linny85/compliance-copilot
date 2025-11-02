@@ -48,8 +48,11 @@
   "contextNames": {
     "dashboard": "Dashboard",
     "documents": "Documents",
+    "documents.new": "Documents – New",
     "checks": "Checks",
+    "checks.new": "Checks – New",
     "controls": "Controls",
+    "controls.mapping": "Controls – Mapping",
     "evidence": "Evidence",
     "admin": {
       "ops": "Ops Dashboard",
@@ -71,8 +74,11 @@
   "contextHelp": {
     "dashboard": "Your home view: progress, next steps, and latest reports.",
     "documents": "Manage your compliance documentation and policies.",
+    "documents.new": "Create a new policy or other compliance document, link evidence, and save for approval.",
     "checks": "Schedule and review compliance checks.",
+    "checks.new": "Plan a new compliance check, assign responsibilities, and set deadlines.",
     "controls": "Manage controls and verify related requirements.",
+    "controls.mapping": "Map controls to requirements and assign ownership for clear compliance structures.",
     "evidence": "Upload and organize supporting evidence.",
     "admin": {
       "ops": "Operational metrics: email queue, error analysis, system health.",
@@ -102,6 +108,24 @@
       { "label": "Upload evidence", "to": "/evidence" },
       { "label": "Generate policy", "to": "/controls" },
       { "label": "Create audit task", "to": "/audit/new" }
+    ],
+    "documents.new": [
+      { "label": "Choose policy template", "to": "/controls" },
+      { "label": "Add evidence type", "to": "/evidence" },
+      { "label": "Save & publish document", "to": "/documents" },
+      { "label": "Open control mapping", "to": "/controls/mapping" }
+    ],
+    "checks.new": [
+      { "label": "Schedule audit", "to": "/audit/new" },
+      { "label": "Review evidence", "to": "/evidence" },
+      { "label": "Map controls", "to": "/controls/mapping" },
+      { "label": "Checks overview", "to": "/checks" }
+    ],
+    "controls.mapping": [
+      { "label": "Create new control", "to": "/controls" },
+      { "label": "Filter evidence", "to": "/evidence" },
+      { "label": "Assign responsibilities", "to": "/organization" },
+      { "label": "Plan audit", "to": "/audit/new" }
     ],
     "checks": [
       { "label": "Plan new check", "to": "/checks/new" },
