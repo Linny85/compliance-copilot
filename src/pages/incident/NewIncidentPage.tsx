@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslation } from "react-i18next";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function NewIncidentPage() {
   const { t, ready } = useTranslation("norrly", { useSuspense: false });
@@ -10,10 +11,31 @@ export default function NewIncidentPage() {
   const [desc, setDesc] = useState("");
   const [impact, setImpact] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement create-incident (Supabase/EdgeFunction)
-    alert("Incident placeholder submitted.");
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      
+      if (!token) {
+        alert(t("errors.unauthorized", { defaultValue: "Nicht angemeldet." }));
+        return;
+      }
+
+      const res = await supabase.functions.invoke("create-incident", {
+        body: { title, description: desc, impact }
+      });
+
+      if (res.error) {
+        throw new Error(res.error.message || "unknown");
+      }
+
+      // Success → redirect to detail page
+      window.location.assign(`/incident/${res.data.id}`);
+    } catch (err) {
+      console.error("[incident] create failed", err);
+      alert(t("errors.nav_failed", { defaultValue: "Aktion fehlgeschlagen." }));
+    }
   };
 
   if (!ready) return null;

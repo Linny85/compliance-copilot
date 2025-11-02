@@ -2322,6 +2322,36 @@ export type Database = {
         }
         Relationships: []
       }
+      incidents: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          impact: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          impact?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          impact?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       integration_dlq: {
         Row: {
           attempts: number
