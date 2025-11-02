@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { ArrowLeft, FileText, Send, Download, Save } from "lucide-react";
 import { format } from "date-fns";
+import { getDateFnsLocale } from "@/lib/dateLocale";
 
 interface AuditTask {
   id: string;
@@ -29,13 +30,14 @@ interface AuditTask {
 }
 
 export default function AuditTaskDetail() {
-  const { t } = useTranslation(['audit', 'common']);
+  const { t, i18n } = useTranslation(['audit', 'common']);
   const { id } = useParams();
   const navigate = useNavigate();
   const [task, setTask] = useState<AuditTask | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const dfLocale = getDateFnsLocale(i18n.language);
 
   useEffect(() => {
     if (id) loadTask();
@@ -301,7 +303,7 @@ export default function AuditTaskDetail() {
               <div className="flex-1">
                 <p className="text-sm font-medium">{t('audit:detail.lastReportGenerated')}</p>
                 <p className="text-xs text-muted-foreground">
-                  {format(new Date(task.report_generated_at), "PPpp")}
+                  {format(new Date(task.report_generated_at), "PPpp", { locale: dfLocale })}
                 </p>
               </div>
               <Button variant="outline" size="sm" onClick={handleDownloadReport}>

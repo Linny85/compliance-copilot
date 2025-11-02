@@ -3,7 +3,9 @@
   "subtitle": "Nachprüfungen und Compliance-Audits",
   "list": {
     "title": "Alle Aufgaben",
-    "empty": "Keine Audit-Aufgaben gefunden"
+    "empty": "Keine Audit-Aufgaben gefunden",
+    "count_one": "{{count}} Audit-Aufgabe",
+    "count_other": "{{count}} Audit-Aufgaben"
   },
   "columns": {
     "title": "Titel",

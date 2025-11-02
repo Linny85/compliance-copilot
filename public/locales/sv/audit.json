@@ -3,7 +3,9 @@
   "subtitle": "Efterimplementeringsgranskningar och efterlevnadsrevisioner",
   "list": {
     "title": "Alla uppgifter",
-    "empty": "Inga granskningsuppgifter hittades"
+    "empty": "Inga granskningsuppgifter hittades",
+    "count_one": "{{count}} granskningsuppgift",
+    "count_other": "{{count}} granskningsuppgifter"
   },
   "columns": {
     "title": "Titel",

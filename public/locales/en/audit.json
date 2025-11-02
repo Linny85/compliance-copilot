@@ -3,7 +3,9 @@
   "subtitle": "Post-implementation reviews and compliance audits",
   "list": {
     "title": "All Tasks",
-    "empty": "No audit tasks found"
+    "empty": "No audit tasks found",
+    "count_one": "{{count}} audit task",
+    "count_other": "{{count}} audit tasks"
   },
   "columns": {
     "title": "Title",

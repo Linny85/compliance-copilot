@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useNavigate } from "react-router-dom";
 import { Plus, FileText, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { getDateFnsLocale } from "@/lib/dateLocale";
 import { toast } from "sonner";
 
 interface AuditTask {
@@ -21,10 +22,11 @@ interface AuditTask {
 }
 
 export default function AuditTasks() {
-  const { t } = useTranslation(['audit', 'common']);
+  const { t, i18n } = useTranslation(['audit', 'common']);
   const [tasks, setTasks] = useState<AuditTask[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const dfLocale = getDateFnsLocale(i18n.language);
 
   useEffect(() => {
     loadTasks();
@@ -95,7 +97,7 @@ export default function AuditTasks() {
       <Card>
         <CardHeader>
           <CardTitle>{t('audit:list.title')}</CardTitle>
-          <CardDescription>{tasks.length} {t('audit:title').toLowerCase()}</CardDescription>
+          <CardDescription>{t('audit:list.count', { count: tasks.length })}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -124,7 +126,7 @@ export default function AuditTasks() {
                     {task.due_date ? (
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm">{formatDistanceToNow(new Date(task.due_date), { addSuffix: true })}</span>
+                        <span className="text-sm">{formatDistanceToNow(new Date(task.due_date), { addSuffix: true, locale: dfLocale })}</span>
                       </div>
                     ) : (
                       "–"
@@ -141,7 +143,7 @@ export default function AuditTasks() {
                     )}
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
-                    {formatDistanceToNow(new Date(task.created_at), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(task.created_at), { addSuffix: true, locale: dfLocale })}
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/audit/${task.id}`); }}>
