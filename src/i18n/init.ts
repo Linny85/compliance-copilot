@@ -2,17 +2,18 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-// Build-ID für Cache-Busting (fällt auf Timestamp zurück)
 const BUILD_ID =
   (typeof import.meta !== 'undefined' &&
     import.meta.env &&
     import.meta.env.VITE_BUILD_ID) ||
   String(Date.now());
 
-// Pfad-Resolver: erzeugt immer eine gültige absolute URL relativ zur aktuellen Seite
-function resolveLocalesPath(lngs: string[], ns: string): string {
+// KORREKTE Signatur: (languages[], namespaces[])
+function resolveLocalesPath(languages: string[] | string, namespaces: string[] | string): string {
   const href = typeof window !== 'undefined' ? window.location.href : 'http://localhost/';
-  return new URL(`locales/${lngs[0].toLowerCase()}/${ns}.json?v=${BUILD_ID}`, href).toString();
+  const lng = Array.isArray(languages) ? (languages[0] || 'de') : (languages || 'de');
+  const ns  = Array.isArray(namespaces) ? (namespaces[0] || 'norrly') : (namespaces || 'norrly');
+  return new URL(`locales/${String(lng).toLowerCase()}/${ns}.json?v=${BUILD_ID}`, href).toString();
 }
 
 i18n
@@ -26,26 +27,26 @@ i18n
     lowerCaseLng: true,
     cleanCode: true,
     debug: import.meta.env.DEV,
-    ns: ['norrly', 'common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
+    ns: [
+      'norrly','common','dashboard','documents','billing','nis2','checks','controls',
+      'admin','helpbot','training','assistant','aiSystems','aiAct','evidence',
+      'scope','nav','reports','organization'
+    ],
     defaultNS: 'norrly',
     preload: ['de', 'en', 'sv'],
+    // Wichtig: Multi-Loading erlaubt Arrays -> stabilere Pfad-Aufrufe
     backend: {
-      // Funktions-LoadPath verhindert BasePath-/Subfolder-Probleme
       loadPath: resolveLocalesPath,
-      allowMultiLoading: false,
-      crossDomain: false
+      allowMultiLoading: true,
+      crossDomain: false,
     },
     interpolation: { escapeValue: false },
     returnNull: false,
     returnEmptyString: false,
     saveMissing: false,
-    react: {
-      useSuspense: false
-    },
+    react: { useSuspense: false },
     parseMissingKeyHandler: (key) => {
-      if (import.meta.env.DEV) {
-        console.warn('[i18n missing]', key);
-      }
+      if (import.meta.env.DEV) console.warn('[i18n missing]', key);
       return key;
     },
   });
