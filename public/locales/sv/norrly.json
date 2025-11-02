@@ -52,6 +52,7 @@
     "controls": "Kontroller",
     "evidence": "Underlag",
     "admin": {
+      "ops": "Ops Dashboard",
       "training-certificates": "Utbildningsintyg"
     },
     "audit": {
@@ -74,6 +75,7 @@
     "controls": "Här hanterar du kontroller och granskar tillhörande krav.",
     "evidence": "Ladda upp och organisera stödjande underlag.",
     "admin": {
+      "ops": "Operativa mätvärden: e-postkö, felanalys, systemhälsa.",
       "training-certificates": "Hantera kursregister, intyg och tilldelningar för personal."
     },
     "audit": {
@@ -112,10 +114,15 @@
       { "label": "Filtrera underlag", "to": "/evidence" }
     ],
     "admin": {
+      "ops": [
+        { "label": "Kontrollera kö", "to": "/admin/integrations?tab=pending" },
+        { "label": "Visa felloggar", "to": "/admin/integrations?tab=dead" },
+        { "label": "E-poststatistik", "to": "/admin/ops" }
+      ],
       "training-certificates": [
         { "label": "Utfärda intyg", "to": "/admin/training-certificates" },
         { "label": "Tilldela kurs", "to": "/admin/training-certificates" },
-        { "label": "Öppna rapporter", "to": "/reports" }
+        { "label": "Öppna rapporter", "to": "/admin/ops" }
       ]
     },
     "audit": {

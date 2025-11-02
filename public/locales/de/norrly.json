@@ -70,10 +70,15 @@
       { "label": "Nachweise filtern", "to": "/evidence" }
     ],
     "admin": {
+      "ops": [
+        { "label": "Warteschlange prüfen", "to": "/admin/integrations?tab=pending" },
+        { "label": "Fehler-Logs ansehen", "to": "/admin/integrations?tab=dead" },
+        { "label": "E-Mail-Statistiken", "to": "/admin/ops" }
+      ],
       "training-certificates": [
         { "label": "Zertifikat ausstellen", "to": "/admin/training-certificates" },
         { "label": "Kurs zuweisen", "to": "/admin/training-certificates" },
-        { "label": "Berichte öffnen", "to": "/reports" }
+        { "label": "Berichte öffnen", "to": "/admin/ops" }
       ]
     },
     "audit": {
@@ -121,6 +126,7 @@
     "organization": "Organisation",
     "billing": "Abrechnung",
     "admin": {
+      "ops": "Ops Dashboard",
       "training-certificates": "Schulungszertifikate"
     },
     "audit": {
@@ -149,6 +155,7 @@
     "organization": "Hier verwaltest du deine Organisationsstruktur, Verantwortlichkeiten und Meldewege.",
     "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
     "admin": {
+      "ops": "Operative Metriken: E-Mail-Queue, Fehleranalyse, System-Gesundheit.",
       "training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation."
     },
     "audit": {

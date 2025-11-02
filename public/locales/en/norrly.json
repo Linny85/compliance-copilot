@@ -52,6 +52,7 @@
     "controls": "Controls",
     "evidence": "Evidence",
     "admin": {
+      "ops": "Ops Dashboard",
       "training-certificates": "Training Certificates"
     },
     "audit": {
@@ -74,6 +75,7 @@
     "controls": "Manage controls and verify related requirements.",
     "evidence": "Upload and organize supporting evidence.",
     "admin": {
+      "ops": "Operational metrics: email queue, error analysis, system health.",
       "training-certificates": "Manage course records, certificates, and staff assignments."
     },
     "audit": {
@@ -112,10 +114,15 @@
       { "label": "Filter evidence", "to": "/evidence" }
     ],
     "admin": {
+      "ops": [
+        { "label": "Check queue", "to": "/admin/integrations?tab=pending" },
+        { "label": "View error logs", "to": "/admin/integrations?tab=dead" },
+        { "label": "Email statistics", "to": "/admin/ops" }
+      ],
       "training-certificates": [
         { "label": "Issue certificate", "to": "/admin/training-certificates" },
         { "label": "Assign course", "to": "/admin/training-certificates" },
-        { "label": "Open reports", "to": "/reports" }
+        { "label": "Open reports", "to": "/admin/ops" }
       ]
     },
     "audit": {

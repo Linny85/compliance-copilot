@@ -24,6 +24,7 @@ export function getContextKey(pathname: string): string | undefined {
     '/organization': 'organization',
     '/company-profile': 'company-profile',
     '/billing': 'billing',
+    '/admin/ops': 'admin:ops',
     '/admin/training-certificates': 'admin:training-certificates'
   };
 
