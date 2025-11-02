@@ -10,10 +10,10 @@ const BUILD_ID =
 
 // ✔️ Correct signature: (languages, namespaces) can be string OR string[]
 function resolveLocalesPath(languages: string[] | string, namespaces: string[] | string): string {
-  const href = typeof window !== 'undefined' ? window.location.href : 'http://localhost/';
+  const origin = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
   const lng = Array.isArray(languages) ? (languages[0] || 'de') : (languages || 'de');
   const ns  = Array.isArray(namespaces) ? (namespaces[0] || 'norrly') : (namespaces || 'norrly');
-  return new URL(`locales/${String(lng).toLowerCase()}/${ns}.json?v=${BUILD_ID}`, href).toString();
+  return `${origin}/locales/${String(lng).toLowerCase()}/${ns}.json?v=${BUILD_ID}`;
 }
 
 i18n
@@ -74,5 +74,31 @@ i18n.on('languageChanged', (lng) => {
 });
 // Set initial lang
 document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
+
+// Diagnostic helper
+if (typeof window !== 'undefined') {
+  (window as any).__I18N_DIAG__ = async () => {
+    try {
+      const ns = 'norrly';
+      const lng = i18n.resolvedLanguage || i18n.language || 'de';
+      const url = (i18n.options as any).backend.loadPath(lng, ns);
+      console.log('[i18n] url', url);
+      const res = await fetch(url, { cache: 'no-store' });
+      console.log('[i18n] http', res.status);
+      const text = await res.text();
+      console.log('[i18n] sample', text.slice(0, 200));
+      console.log('[i18n] hasBundle?', i18n.hasResourceBundle(lng, ns));
+      if (!i18n.hasResourceBundle(lng, ns)) {
+        await i18n.loadNamespaces(ns);
+        console.log('[i18n] loaded via loadNamespaces → hasBundle?', i18n.hasResourceBundle(lng, ns));
+      }
+      console.log('[i18n] t(cta.name)', i18n.t('cta.name', { ns }));
+      console.log('[i18n] store keys', Object.keys((i18n.store?.data?.[lng]) || {}));
+    } catch (e) {
+      console.error('[i18n] diag error', e);
+    }
+  };
+  console.log('Run window.__I18N_DIAG__() to verify i18n setup.');
+}
 
 export default i18n;
