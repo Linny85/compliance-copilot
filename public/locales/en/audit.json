@@ -1,0 +1,86 @@
+{
+  "title": "Audit Tasks",
+  "subtitle": "Post-implementation reviews and compliance audits",
+  "list": {
+    "title": "All Tasks",
+    "empty": "No audit tasks found"
+  },
+  "columns": {
+    "title": "Title",
+    "status": "Status",
+    "priority": "Priority",
+    "dueDate": "Due Date",
+    "report": "Report",
+    "created": "Created"
+  },
+  "actions": {
+    "new": "New Audit Task",
+    "view": "View",
+    "save": "Save",
+    "saving": "Saving...",
+    "create": "Create Audit Task",
+    "creating": "Creating...",
+    "cancel": "Cancel",
+    "generateReport": "Generate Report",
+    "generateAndSend": "Generate & Send Email",
+    "generating": "Generating...",
+    "download": "Download"
+  },
+  "new": {
+    "title": "New Audit Task",
+    "subtitle": "Create a new post-implementation audit task",
+    "taskInfo": "Task Information",
+    "taskInfoDesc": "Enter the details for the new audit task"
+  },
+  "detail": {
+    "loading": "Loading...",
+    "notFound": "Audit Task Not Found",
+    "taskDetails": "Task Details",
+    "taskDetailsDesc": "Basic information about the audit task",
+    "auditResults": "Audit Results",
+    "auditResultsDesc": "Findings and corrective actions",
+    "reportGeneration": "Report Generation",
+    "reportGenerationDesc": "Generate and download audit reports",
+    "lastReportGenerated": "Last report generated"
+  },
+  "fields": {
+    "title": "Title",
+    "titlePlaceholder": "e.g., Q4 2024 Security Controls Review",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe the scope and objectives of this audit...",
+    "priority": "Priority",
+    "dueDate": "Due Date",
+    "status": "Status",
+    "findings": "Findings",
+    "findingsPlaceholder": "Document audit findings here...",
+    "correctiveActions": "Corrective Actions",
+    "correctiveActionsPlaceholder": "List corrective actions taken..."
+  },
+  "status": {
+    "open": "Open",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
+  },
+  "report": {
+    "generated": "Generated",
+    "noReport": "No report"
+  },
+  "toast": {
+    "titleRequired": "Title is required",
+    "loadFailed": "Failed to load audit tasks",
+    "saveFailed": "Failed to save audit task",
+    "saveSuccess": "Audit task saved",
+    "createFailed": "Failed to create audit task",
+    "createSuccess": "Audit task created",
+    "generateReportFailed": "Failed to generate report",
+    "generateReportSuccess": "Report generated successfully",
+    "generateReportAndSendSuccess": "Report generated and sent",
+    "downloadFailed": "Failed to download report"
+  }
+}

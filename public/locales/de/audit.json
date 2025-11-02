@@ -1,0 +1,86 @@
+{
+  "title": "Audit-Aufgaben",
+  "subtitle": "Nachprüfungen und Compliance-Audits",
+  "list": {
+    "title": "Alle Aufgaben",
+    "empty": "Keine Audit-Aufgaben gefunden"
+  },
+  "columns": {
+    "title": "Titel",
+    "status": "Status",
+    "priority": "Priorität",
+    "dueDate": "Fälligkeitsdatum",
+    "report": "Bericht",
+    "created": "Erstellt"
+  },
+  "actions": {
+    "new": "Neue Audit-Aufgabe",
+    "view": "Ansehen",
+    "save": "Speichern",
+    "saving": "Wird gespeichert...",
+    "create": "Audit-Aufgabe erstellen",
+    "creating": "Wird erstellt...",
+    "cancel": "Abbrechen",
+    "generateReport": "Bericht erstellen",
+    "generateAndSend": "Bericht erstellen & senden",
+    "generating": "Wird erstellt...",
+    "download": "Herunterladen"
+  },
+  "new": {
+    "title": "Neue Audit-Aufgabe",
+    "subtitle": "Neue Nachprüfungsaufgabe erstellen",
+    "taskInfo": "Aufgabeninformationen",
+    "taskInfoDesc": "Details für die neue Audit-Aufgabe eingeben"
+  },
+  "detail": {
+    "loading": "Lädt...",
+    "notFound": "Audit-Aufgabe nicht gefunden",
+    "taskDetails": "Aufgabendetails",
+    "taskDetailsDesc": "Grundlegende Informationen über die Audit-Aufgabe",
+    "auditResults": "Audit-Ergebnisse",
+    "auditResultsDesc": "Feststellungen und Korrekturmaßnahmen",
+    "reportGeneration": "Berichtserstellung",
+    "reportGenerationDesc": "Audit-Berichte erstellen und herunterladen",
+    "lastReportGenerated": "Letzter Bericht erstellt"
+  },
+  "fields": {
+    "title": "Titel",
+    "titlePlaceholder": "z.B. Q4 2024 Sicherheitskontrollen-Review",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Umfang und Ziele dieses Audits beschreiben...",
+    "priority": "Priorität",
+    "dueDate": "Fälligkeitsdatum",
+    "status": "Status",
+    "findings": "Feststellungen",
+    "findingsPlaceholder": "Audit-Feststellungen hier dokumentieren...",
+    "correctiveActions": "Korrekturmaßnahmen",
+    "correctiveActionsPlaceholder": "Ergriffene Korrekturmaßnahmen auflisten..."
+  },
+  "status": {
+    "open": "Offen",
+    "inProgress": "In Bearbeitung",
+    "completed": "Abgeschlossen",
+    "cancelled": "Abgebrochen"
+  },
+  "priority": {
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch"
+  },
+  "report": {
+    "generated": "Erstellt",
+    "noReport": "Kein Bericht"
+  },
+  "toast": {
+    "titleRequired": "Titel ist erforderlich",
+    "loadFailed": "Fehler beim Laden der Audit-Aufgaben",
+    "saveFailed": "Fehler beim Speichern der Audit-Aufgabe",
+    "saveSuccess": "Audit-Aufgabe gespeichert",
+    "createFailed": "Fehler beim Erstellen der Audit-Aufgabe",
+    "createSuccess": "Audit-Aufgabe erstellt",
+    "generateReportFailed": "Fehler beim Erstellen des Berichts",
+    "generateReportSuccess": "Bericht erfolgreich erstellt",
+    "generateReportAndSendSuccess": "Bericht erstellt und versendet",
+    "downloadFailed": "Fehler beim Herunterladen des Berichts"
+  }
+}

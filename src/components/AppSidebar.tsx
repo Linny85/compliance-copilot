@@ -61,7 +61,7 @@ export function AppSidebar() {
     { title: t.nav.controls, url: "/controls", icon: Wrench },
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck, feature: "evidence" },
     { title: t.nav.checks, url: "/checks", icon: PlayCircle, feature: "checks" },
-    { title: "Audit Tasks", url: "/audit", icon: ClipboardCheck },
+    { title: t.nav.audits, url: "/audit", icon: ClipboardCheck },
     // Dokumente nur in Trial/Prod
     ...(!isDemo() ? [{ title: t.nav.docs, url: "/documents", icon: FileText }] : []),
     { title: t.nav.certificates, url: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },

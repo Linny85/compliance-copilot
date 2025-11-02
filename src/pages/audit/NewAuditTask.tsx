@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
 export default function NewAuditTask() {
+  const { t } = useTranslation(['audit', 'common']);
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,7 +24,7 @@ export default function NewAuditTask() {
 
   async function handleCreate() {
     if (!formData.title.trim()) {
-      toast.error("Title is required");
+      toast.error(t('audit:toast.titleRequired'));
       return;
     }
 
@@ -55,11 +57,11 @@ export default function NewAuditTask() {
 
       if (error) throw error;
 
-      toast.success("Audit task created");
+      toast.success(t('audit:toast.createSuccess'));
       navigate(`/audit/${data.id}`);
     } catch (error) {
       console.error("Failed to create audit task:", error);
-      toast.error("Failed to create audit task");
+      toast.error(t('audit:toast.createFailed'));
     } finally {
       setCreating(false);
     }
@@ -72,32 +74,32 @@ export default function NewAuditTask() {
           <ArrowLeft className="w-4 h-4" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">New Audit Task</h1>
-          <p className="text-muted-foreground mt-1">Create a new post-implementation audit task</p>
+          <h1 className="text-3xl font-bold">{t('audit:new.title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('audit:new.subtitle')}</p>
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Task Information</CardTitle>
-          <CardDescription>Enter the details for the new audit task</CardDescription>
+          <CardTitle>{t('audit:new.taskInfo')}</CardTitle>
+          <CardDescription>{t('audit:new.taskInfoDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">{t('audit:fields.title')} *</Label>
             <Input
               id="title"
-              placeholder="e.g., Q4 2024 Security Controls Review"
+              placeholder={t('audit:fields.titlePlaceholder')}
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             />
           </div>
 
           <div>
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t('audit:fields.description')}</Label>
             <Textarea
               id="description"
-              placeholder="Describe the scope and objectives of this audit..."
+              placeholder={t('audit:fields.descriptionPlaceholder')}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={6}
@@ -106,21 +108,21 @@ export default function NewAuditTask() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="priority">Priority</Label>
+              <Label htmlFor="priority">{t('audit:fields.priority')}</Label>
               <Select value={formData.priority} onValueChange={(value) => setFormData({ ...formData, priority: value })}>
                 <SelectTrigger id="priority">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="low">{t('audit:priority.low')}</SelectItem>
+                  <SelectItem value="medium">{t('audit:priority.medium')}</SelectItem>
+                  <SelectItem value="high">{t('audit:priority.high')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="due_date">Due Date</Label>
+              <Label htmlFor="due_date">{t('audit:fields.dueDate')}</Label>
               <Input
                 id="due_date"
                 type="date"
@@ -132,10 +134,10 @@ export default function NewAuditTask() {
 
           <div className="flex gap-2 pt-4">
             <Button onClick={handleCreate} disabled={creating}>
-              {creating ? "Creating..." : "Create Audit Task"}
+              {creating ? t('audit:actions.creating') : t('audit:actions.create')}
             </Button>
             <Button variant="outline" onClick={() => navigate("/audit")}>
-              Cancel
+              {t('audit:actions.cancel')}
             </Button>
           </div>
         </CardContent>

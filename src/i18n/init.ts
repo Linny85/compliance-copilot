@@ -10,7 +10,7 @@ i18n
   .init({
     fallbackLng: 'de',
     debug: import.meta.env.DEV,
-    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization'],
+    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'organization', 'audit'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',

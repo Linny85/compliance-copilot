@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ interface AuditTask {
 }
 
 export default function AuditTaskDetail() {
+  const { t } = useTranslation(['audit', 'common']);
   const { id } = useParams();
   const navigate = useNavigate();
   const [task, setTask] = useState<AuditTask | null>(null);
@@ -51,7 +53,7 @@ export default function AuditTaskDetail() {
       setTask(data);
     } catch (error) {
       console.error("Failed to load audit task:", error);
-      toast.error("Failed to load audit task");
+      toast.error(t('audit:toast.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -76,10 +78,10 @@ export default function AuditTaskDetail() {
         .eq("id", task.id);
 
       if (error) throw error;
-      toast.success("Audit task saved");
+      toast.success(t('audit:toast.saveSuccess'));
     } catch (error) {
       console.error("Failed to save:", error);
-      toast.error("Failed to save audit task");
+      toast.error(t('audit:toast.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -110,11 +112,11 @@ export default function AuditTaskDetail() {
 
       if (error) throw error;
 
-      toast.success(sendEmail ? "Report generated and sent" : "Report generated successfully");
+      toast.success(sendEmail ? t('audit:toast.generateReportAndSendSuccess') : t('audit:toast.generateReportSuccess'));
       await loadTask(); // Reload to get updated report path
     } catch (error) {
       console.error("Failed to generate report:", error);
-      toast.error("Failed to generate report");
+      toast.error(t('audit:toast.generateReportFailed'));
     } finally {
       setGenerating(false);
     }
@@ -138,7 +140,7 @@ export default function AuditTaskDetail() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to download report:", error);
-      toast.error("Failed to download report");
+      toast.error(t('audit:toast.downloadFailed'));
     }
   }
 
@@ -147,7 +149,7 @@ export default function AuditTaskDetail() {
       <div className="container mx-auto p-6">
         <Card>
           <CardHeader>
-            <CardTitle>Loading...</CardTitle>
+            <CardTitle>{t('audit:detail.loading')}</CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -159,7 +161,7 @@ export default function AuditTaskDetail() {
       <div className="container mx-auto p-6">
         <Card>
           <CardHeader>
-            <CardTitle>Audit Task Not Found</CardTitle>
+            <CardTitle>{t('audit:detail.notFound')}</CardTitle>
           </CardHeader>
         </Card>
       </div>
@@ -182,7 +184,7 @@ export default function AuditTaskDetail() {
         <div className="flex gap-2">
           <Button onClick={handleSave} disabled={saving}>
             <Save className="w-4 h-4 mr-2" />
-            {saving ? "Saving..." : "Save"}
+            {saving ? t('audit:actions.saving') : t('audit:actions.save')}
           </Button>
         </div>
       </div>
@@ -190,12 +192,12 @@ export default function AuditTaskDetail() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Task Details</CardTitle>
-            <CardDescription>Basic information about the audit task</CardDescription>
+            <CardTitle>{t('audit:detail.taskDetails')}</CardTitle>
+            <CardDescription>{t('audit:detail.taskDetailsDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">{t('audit:fields.title')}</Label>
               <Input
                 id="title"
                 value={task.title}
@@ -204,7 +206,7 @@ export default function AuditTaskDetail() {
             </div>
 
             <div>
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">{t('audit:fields.description')}</Label>
               <Textarea
                 id="description"
                 value={task.description || ""}
@@ -215,37 +217,37 @@ export default function AuditTaskDetail() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="status">Status</Label>
+                <Label htmlFor="status">{t('audit:fields.status')}</Label>
                 <Select value={task.status} onValueChange={(value) => setTask({ ...task, status: value })}>
                   <SelectTrigger id="status">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="open">Open</SelectItem>
-                    <SelectItem value="in-progress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                    <SelectItem value="open">{t('audit:status.open')}</SelectItem>
+                    <SelectItem value="in-progress">{t('audit:status.inProgress')}</SelectItem>
+                    <SelectItem value="completed">{t('audit:status.completed')}</SelectItem>
+                    <SelectItem value="cancelled">{t('audit:status.cancelled')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div>
-                <Label htmlFor="priority">Priority</Label>
+                <Label htmlFor="priority">{t('audit:fields.priority')}</Label>
                 <Select value={task.priority} onValueChange={(value) => setTask({ ...task, priority: value })}>
                   <SelectTrigger id="priority">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="low">{t('audit:priority.low')}</SelectItem>
+                    <SelectItem value="medium">{t('audit:priority.medium')}</SelectItem>
+                    <SelectItem value="high">{t('audit:priority.high')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div>
-              <Label htmlFor="due_date">Due Date</Label>
+              <Label htmlFor="due_date">{t('audit:fields.dueDate')}</Label>
               <Input
                 id="due_date"
                 type="date"
@@ -258,29 +260,29 @@ export default function AuditTaskDetail() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Audit Results</CardTitle>
-            <CardDescription>Findings and corrective actions</CardDescription>
+            <CardTitle>{t('audit:detail.auditResults')}</CardTitle>
+            <CardDescription>{t('audit:detail.auditResultsDesc')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="findings">Findings</Label>
+              <Label htmlFor="findings">{t('audit:fields.findings')}</Label>
               <Textarea
                 id="findings"
                 value={task.findings || ""}
                 onChange={(e) => setTask({ ...task, findings: e.target.value })}
                 rows={6}
-                placeholder="Document audit findings here..."
+                placeholder={t('audit:fields.findingsPlaceholder')}
               />
             </div>
 
             <div>
-              <Label htmlFor="corrective_actions">Corrective Actions</Label>
+              <Label htmlFor="corrective_actions">{t('audit:fields.correctiveActions')}</Label>
               <Textarea
                 id="corrective_actions"
                 value={task.corrective_actions || ""}
                 onChange={(e) => setTask({ ...task, corrective_actions: e.target.value })}
                 rows={6}
-                placeholder="List corrective actions taken..."
+                placeholder={t('audit:fields.correctiveActionsPlaceholder')}
               />
             </div>
           </CardContent>
@@ -289,22 +291,22 @@ export default function AuditTaskDetail() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Report Generation</CardTitle>
-          <CardDescription>Generate and download audit reports</CardDescription>
+          <CardTitle>{t('audit:detail.reportGeneration')}</CardTitle>
+          <CardDescription>{t('audit:detail.reportGenerationDesc')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {task.report_generated_at && (
             <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
               <FileText className="w-5 h-5 text-primary" />
               <div className="flex-1">
-                <p className="text-sm font-medium">Last report generated</p>
+                <p className="text-sm font-medium">{t('audit:detail.lastReportGenerated')}</p>
                 <p className="text-xs text-muted-foreground">
                   {format(new Date(task.report_generated_at), "PPpp")}
                 </p>
               </div>
               <Button variant="outline" size="sm" onClick={handleDownloadReport}>
                 <Download className="w-4 h-4 mr-2" />
-                Download
+                {t('audit:actions.download')}
               </Button>
             </div>
           )}
@@ -312,11 +314,11 @@ export default function AuditTaskDetail() {
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => handleGenerateReport(false)} disabled={generating}>
               <FileText className="w-4 h-4 mr-2" />
-              {generating ? "Generating..." : "Generate Report"}
+              {generating ? t('audit:actions.generating') : t('audit:actions.generateReport')}
             </Button>
             <Button variant="secondary" onClick={() => handleGenerateReport(true)} disabled={generating}>
               <Send className="w-4 h-4 mr-2" />
-              Generate & Send Email
+              {t('audit:actions.generateAndSend')}
             </Button>
           </div>
         </CardContent>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ interface AuditTask {
 }
 
 export default function AuditTasks() {
+  const { t } = useTranslation(['audit', 'common']);
   const [tasks, setTasks] = useState<AuditTask[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -39,7 +41,7 @@ export default function AuditTasks() {
       setTasks(data || []);
     } catch (error) {
       console.error("Failed to load audit tasks:", error);
-      toast.error("Failed to load audit tasks");
+      toast.error(t('audit:toast.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -69,8 +71,8 @@ export default function AuditTasks() {
       <div className="container mx-auto p-6">
         <Card>
           <CardHeader>
-            <CardTitle>Audit Tasks</CardTitle>
-            <CardDescription>Loading...</CardDescription>
+            <CardTitle>{t('audit:title')}</CardTitle>
+            <CardDescription>{t('audit:detail.loading')}</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -81,30 +83,30 @@ export default function AuditTasks() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Audit Tasks</h1>
-          <p className="text-muted-foreground mt-2">Post-implementation reviews and compliance audits</p>
+          <h1 className="text-3xl font-bold">{t('audit:title')}</h1>
+          <p className="text-muted-foreground mt-2">{t('audit:subtitle')}</p>
         </div>
         <Button onClick={() => navigate("/audit/new")}>
           <Plus className="w-4 h-4 mr-2" />
-          New Audit Task
+          {t('audit:actions.new')}
         </Button>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>All Tasks</CardTitle>
-          <CardDescription>{tasks.length} audit tasks</CardDescription>
+          <CardTitle>{t('audit:list.title')}</CardTitle>
+          <CardDescription>{tasks.length} {t('audit:title').toLowerCase()}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Report</TableHead>
-                <TableHead>Created</TableHead>
+                <TableHead>{t('audit:columns.title')}</TableHead>
+                <TableHead>{t('audit:columns.status')}</TableHead>
+                <TableHead>{t('audit:columns.priority')}</TableHead>
+                <TableHead>{t('audit:columns.dueDate')}</TableHead>
+                <TableHead>{t('audit:columns.report')}</TableHead>
+                <TableHead>{t('audit:columns.created')}</TableHead>
                 <TableHead></TableHead>
               </TableRow>
             </TableHeader>
@@ -113,10 +115,10 @@ export default function AuditTasks() {
                 <TableRow key={task.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/audit/${task.id}`)}>
                   <TableCell className="font-medium">{task.title}</TableCell>
                   <TableCell>
-                    <Badge variant={getStatusColor(task.status)}>{task.status}</Badge>
+                    <Badge variant={getStatusColor(task.status)}>{t(`audit:status.${task.status.replace('-', '')}`)}</Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getPriorityColor(task.priority)}>{task.priority}</Badge>
+                    <Badge variant={getPriorityColor(task.priority)}>{t(`audit:priority.${task.priority}`)}</Badge>
                   </TableCell>
                   <TableCell>
                     {task.due_date ? (
@@ -132,10 +134,10 @@ export default function AuditTasks() {
                     {task.report_generated_at ? (
                       <Badge variant="outline" className="gap-1">
                         <FileText className="w-3 h-3" />
-                        Generated
+                        {t('audit:report.generated')}
                       </Badge>
                     ) : (
-                      <span className="text-muted-foreground text-sm">No report</span>
+                      <span className="text-muted-foreground text-sm">{t('audit:report.noReport')}</span>
                     )}
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
@@ -143,7 +145,7 @@ export default function AuditTasks() {
                   </TableCell>
                   <TableCell>
                     <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); navigate(`/audit/${task.id}`); }}>
-                      View
+                      {t('audit:actions.view')}
                     </Button>
                   </TableCell>
                 </TableRow>

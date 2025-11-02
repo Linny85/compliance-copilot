@@ -1,0 +1,86 @@
+{
+  "title": "Granskningsuppgifter",
+  "subtitle": "Efterimplementeringsgranskningar och efterlevnadsrevisioner",
+  "list": {
+    "title": "Alla uppgifter",
+    "empty": "Inga granskningsuppgifter hittades"
+  },
+  "columns": {
+    "title": "Titel",
+    "status": "Status",
+    "priority": "Prioritet",
+    "dueDate": "Förfallodatum",
+    "report": "Rapport",
+    "created": "Skapad"
+  },
+  "actions": {
+    "new": "Ny granskningsuppgift",
+    "view": "Visa",
+    "save": "Spara",
+    "saving": "Sparar...",
+    "create": "Skapa granskningsuppgift",
+    "creating": "Skapar...",
+    "cancel": "Avbryt",
+    "generateReport": "Generera rapport",
+    "generateAndSend": "Generera & skicka e-post",
+    "generating": "Genererar...",
+    "download": "Ladda ner"
+  },
+  "new": {
+    "title": "Ny granskningsuppgift",
+    "subtitle": "Skapa en ny efterimplementeringsgranskningsuppgift",
+    "taskInfo": "Uppgiftsinformation",
+    "taskInfoDesc": "Ange detaljer för den nya granskningsuppgiften"
+  },
+  "detail": {
+    "loading": "Laddar...",
+    "notFound": "Granskningsuppgift hittades inte",
+    "taskDetails": "Uppgiftsdetaljer",
+    "taskDetailsDesc": "Grundläggande information om granskningsuppgiften",
+    "auditResults": "Granskningsresultat",
+    "auditResultsDesc": "Fynd och korrigerande åtgärder",
+    "reportGeneration": "Rapportgenerering",
+    "reportGenerationDesc": "Generera och ladda ner granskningsrapporter",
+    "lastReportGenerated": "Senaste rapporten genererad"
+  },
+  "fields": {
+    "title": "Titel",
+    "titlePlaceholder": "t.ex. Q4 2024 Säkerhetskontroller Granskning",
+    "description": "Beskrivning",
+    "descriptionPlaceholder": "Beskriv omfattningen och målen för denna granskning...",
+    "priority": "Prioritet",
+    "dueDate": "Förfallodatum",
+    "status": "Status",
+    "findings": "Fynd",
+    "findingsPlaceholder": "Dokumentera granskningsfynd här...",
+    "correctiveActions": "Korrigerande åtgärder",
+    "correctiveActionsPlaceholder": "Lista vidtagna korrigerande åtgärder..."
+  },
+  "status": {
+    "open": "Öppen",
+    "inProgress": "Pågår",
+    "completed": "Slutförd",
+    "cancelled": "Avbruten"
+  },
+  "priority": {
+    "low": "Låg",
+    "medium": "Medel",
+    "high": "Hög"
+  },
+  "report": {
+    "generated": "Genererad",
+    "noReport": "Ingen rapport"
+  },
+  "toast": {
+    "titleRequired": "Titel krävs",
+    "loadFailed": "Misslyckades att ladda granskningsuppgifter",
+    "saveFailed": "Misslyckades att spara granskningsuppgift",
+    "saveSuccess": "Granskningsuppgift sparad",
+    "createFailed": "Misslyckades att skapa granskningsuppgift",
+    "createSuccess": "Granskningsuppgift skapad",
+    "generateReportFailed": "Misslyckades att generera rapport",
+    "generateReportSuccess": "Rapport genererad framgångsrikt",
+    "generateReportAndSendSuccess": "Rapport genererad och skickad",
+    "downloadFailed": "Misslyckades att ladda ner rapport"
+  }
+}
