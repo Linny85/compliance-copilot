@@ -165,7 +165,7 @@ export default function EmailStatsDashboard() {
             variant="outline"
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? t('reports:emailStats.refreshing') : t('reports:controls.refresh')}
+            {refreshing ? t('ops:emailStats.refreshing') : t('ops:actions.refresh')}
           </Button>
         </div>
       </CardHeader>

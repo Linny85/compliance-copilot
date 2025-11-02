@@ -10,6 +10,7 @@
   "emailStats": {
     "title": "E-poststatistik per mall",
     "total": "{{count}} totalt",
+    "refreshing": "Uppdaterar…",
     "metrics": {
       "sent": "Skickade",
       "delivered": "Levererade",

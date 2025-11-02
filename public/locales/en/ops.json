@@ -10,6 +10,7 @@
   "emailStats": {
     "title": "Email stats by template",
     "total": "{{count}} total",
+    "refreshing": "Refreshing…",
     "metrics": {
       "sent": "Sent",
       "delivered": "Delivered",

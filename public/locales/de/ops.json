@@ -10,6 +10,7 @@
   "emailStats": {
     "title": "E-Mail-Statistiken nach Vorlage",
     "total": "{{count}} gesamt",
+    "refreshing": "Aktualisiere…",
     "metrics": {
       "sent": "Gesendet",
       "delivered": "Zugestellt",
