@@ -1,6 +1,10 @@
-import i18n from 'i18next';
+import _i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
+
+// Singleton: reuse if already on window
+const i18n = (typeof window !== 'undefined' && (window as any).__I18N__) || _i18n as typeof _i18n;
+if (typeof window !== 'undefined') { (window as any).__I18N__ = i18n; }
 
 const BUILD_ID =
   (typeof import.meta !== 'undefined' &&
@@ -49,6 +53,26 @@ i18n
       if (import.meta.env.DEV) console.warn('[i18n missing]', key);
       return key;
     },
+    resources: import.meta.env.DEV ? {
+      de: { norrly: {
+        'cta.name': 'Norrly',
+        'header.subtitle': 'Norrly – dein Kollege für Klarheit in NIS2 & dem AI Act.',
+        'intro.headline': 'Hi, ich bin Norrly 👋',
+        'intro.text': 'Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung.',
+        'cta.incident': 'Sicherheitsvorfall melden',
+        'cta.register': 'NIS2-Register prüfen',
+        'cta.roles': 'Verantwortlichkeiten klären',
+        'cta.auditList': 'Audit-Übersicht',
+        'cta.auditNew': 'Neuen Audit anlegen',
+        'cta.training': 'Schulung starten',
+        'input.placeholder': 'Frage eingeben…',
+        'input.open': 'Öffnen',
+        'input.cancel': 'Abbrechen',
+        'input.loading': 'Lädt…',
+        'voice.on': 'Stimme an',
+        'voice.off': 'Stimme aus'
+      }}
+    } : undefined,
   });
 
 /** Promise resolves when i18n is fully initialized */

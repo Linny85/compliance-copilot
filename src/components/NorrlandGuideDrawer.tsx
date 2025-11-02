@@ -27,7 +27,18 @@ export function NorrlandGuideDrawer({
   setOpen: (v: boolean) => void 
 }) {
   // 1) i18n – EIN Namespace
-  const { t, i18n, ready } = useTranslation('norrly', { useSuspense: false });
+  const { t, i18n: componentI18n, ready } = useTranslation('norrly', { useSuspense: false });
+
+  // DEV: Runtime probe for debugging
+  if (import.meta.env.DEV && typeof window !== 'undefined') {
+    const sameInstance = (window as any).__I18N__ === componentI18n;
+    if (!sameInstance) {
+      console.warn('[Norrly] Different i18n instance detected!');
+    }
+    console.debug('[Norrly] i18n same instance?', sameInstance);
+    console.debug('[Norrly] sample t(cta.name):', t('cta.name'));
+    console.debug('[Norrly] hasResourceBundle?', componentI18n.hasResourceBundle(componentI18n.language || 'de', 'norrly'));
+  }
 
   // 2) Refs – immer gleich
   const firstSeen = useRef(!sessionStorage.getItem(FIRST_SEEN_KEY));
@@ -213,8 +224,8 @@ export function NorrlandGuideDrawer({
     utterance.rate = 0.95;
     utterance.pitch = 1.0;
     utterance.volume = 0.9;
-    if (i18n.language?.startsWith("de")) utterance.lang = "de-DE";
-    else if (i18n.language?.startsWith("sv")) utterance.lang = "sv-SE";
+    if (componentI18n.language?.startsWith("de")) utterance.lang = "de-DE";
+    else if (componentI18n.language?.startsWith("sv")) utterance.lang = "sv-SE";
     else utterance.lang = "en-US";
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
@@ -230,7 +241,7 @@ export function NorrlandGuideDrawer({
     
     try {
       // Normalize language to valid options
-      const rawLang = i18n.language?.slice(0, 2)?.toLowerCase() ?? 'de';
+      const rawLang = componentI18n.language?.slice(0, 2)?.toLowerCase() ?? 'de';
       const validLangs = ['de', 'en', 'sv'] as const;
       const currentLang = (validLangs.includes(rawLang as any) ? rawLang : 'en') as 'de' | 'en' | 'sv';
       
@@ -530,8 +541,8 @@ export function NorrlandGuideDrawer({
             />
             <div className="flex gap-2">
               <select 
-                value={i18n.language?.slice(0, 2) ?? 'de'} 
-                onChange={e => i18n.changeLanguage(e.target.value)}
+                value={componentI18n.language?.slice(0, 2) ?? 'de'} 
+                onChange={e => componentI18n.changeLanguage(e.target.value)}
                 className="border border-border rounded bg-background text-foreground p-2 text-sm"
                 disabled={loading}
               >
