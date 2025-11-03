@@ -162,7 +162,8 @@
     "ai-systems": {
       "register": "KI-System-Register"
     },
-    "company-profile": "Unternehmensprofil"
+    "company-profile": "Unternehmensprofil",
+    "incidents": "Sicherheitsvorfälle"
   },
   "contextHelp": {
     "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
@@ -188,6 +189,14 @@
     },
     "dpia": {
       "list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten."
-    }
+    },
+    "incidents": "Hier meldest du Sicherheitsvorfälle und verfolgst deren Bearbeitung. Ich helfe dir, Vorfälle zu dokumentieren und Maßnahmen zu planen."
+  },
+  "quickstart": {
+    "incidents": [
+      { "label": "Sicherheitsvorfall melden", "to": "/incidents/new" },
+      { "label": "Vorfallsübersicht", "to": "/incidents" },
+      { "label": "Audit starten", "to": "/audit/new" }
+    ]
   }
 }

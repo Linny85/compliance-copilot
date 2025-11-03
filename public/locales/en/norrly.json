@@ -69,7 +69,8 @@
     },
     "ai-act": "AI Act",
     "organization": "Organization",
-    "billing": "Billing"
+    "billing": "Billing",
+    "incidents": "Security Incidents"
   },
   "contextHelp": {
     "dashboard": "Your home view: progress, next steps, and latest reports.",
@@ -93,7 +94,8 @@
     },
     "ai-act": "Register and manage AI systems for compliance.",
     "organization": "Configure your organization settings and team.",
-    "billing": "Manage your subscription and payment details."
+    "billing": "Manage your subscription and payment details.",
+    "incidents": "Report and track security incidents. I'll help you document events and plan response measures."
   },
   "quickstart": {
     "dashboard": [
@@ -180,6 +182,11 @@
     "billing": [
       { "label": "Upgrade plan", "to": "/billing" },
       { "label": "Manage trial", "to": "/dashboard" }
+    ],
+    "incidents": [
+      { "label": "Report security incident", "to": "/incidents/new" },
+      { "label": "Incident overview", "to": "/incidents" },
+      { "label": "Start audit", "to": "/audit/new" }
     ]
   }
 }

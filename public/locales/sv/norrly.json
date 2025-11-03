@@ -69,7 +69,8 @@
     },
     "ai-act": "AI-förordningen",
     "organization": "Organisation",
-    "billing": "Fakturering"
+    "billing": "Fakturering",
+    "incidents": "Säkerhetsincidenter"
   },
   "contextHelp": {
     "dashboard": "Din startsida: framsteg, nästa steg och senaste rapporter.",
@@ -93,7 +94,8 @@
     },
     "ai-act": "Registrera och hantera AI-system för regelefterlevnad.",
     "organization": "Konfigurera dina organisationsinställningar och team.",
-    "billing": "Hantera din prenumeration och betalningsuppgifter."
+    "billing": "Hantera din prenumeration och betalningsuppgifter.",
+    "incidents": "Rapportera och spåra säkerhetsincidenter. Jag hjälper dig dokumentera händelser och planera åtgärder."
   },
   "quickstart": {
     "dashboard": [
@@ -180,6 +182,11 @@
     "billing": [
       { "label": "Uppgradera plan", "to": "/billing" },
       { "label": "Hantera provperiod", "to": "/dashboard" }
+    ],
+    "incidents": [
+      { "label": "Rapportera säkerhetsincident", "to": "/incidents/new" },
+      { "label": "Incidentöversikt", "to": "/incidents" },
+      { "label": "Starta revision", "to": "/audit/new" }
     ]
   }
 }

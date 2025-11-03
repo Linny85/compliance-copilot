@@ -1,6 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { AuthGuard } from "./components/AuthGuard";
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -99,6 +99,7 @@ const App = () => (
               <Route path="/nis2" element={<NIS2 />} />
               <Route path="/incidents" element={<Incidents />} />
               <Route path="/incidents/new" element={<Incidents />} />
+              <Route path="/incident/new" element={<Navigate to="/incidents/new" replace />} />
               <Route path="/ai-act" element={<AIAct />} />
               <Route path="/documents" element={<Documents />} />
               <Route path="/documents/new" element={<DocumentsNew />} />
