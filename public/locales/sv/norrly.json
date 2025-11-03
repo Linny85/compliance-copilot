@@ -97,7 +97,7 @@
   },
   "quickstart": {
     "dashboard": [
-      { "label": "Rapportera säkerhetsincident", "to": "/incident/new" },
+      { "label": "Rapportera säkerhetsincident", "to": "/nis2" },
       { "label": "Kontrollera NIS2-registret", "to": "/nis2" },
       { "label": "Klargör ansvar", "to": "/controls/mapping" },
       { "label": "Revisionsöversikt", "to": "/audit" },

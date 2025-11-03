@@ -97,7 +97,7 @@
   },
   "quickstart": {
     "dashboard": [
-      { "label": "Report security incident", "to": "/incident/new" },
+      { "label": "Report security incident", "to": "/nis2" },
       { "label": "Check NIS2 registry", "to": "/nis2" },
       { "label": "Clarify responsibilities", "to": "/controls/mapping" },
       { "label": "Audit overview", "to": "/audit" },
