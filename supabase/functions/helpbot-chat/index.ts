@@ -1,5 +1,5 @@
 // Kollege Norrly - Hardened AI Compliance Assistant
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.46.1";
+import { createClient } from "@supabase/supabase-js";
 import { corsHeaders } from "../_shared/cors.ts";
 import { classifyQuery, getDenialMessage, checkRateLimit as checkGuardRateLimit, recordDenial } from "./guardRails.ts";
 
