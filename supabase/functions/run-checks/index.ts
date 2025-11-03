@@ -1,6 +1,6 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.76.1';
+import { createClient } from "@supabase/supabase-js";
 import { corsHeaders } from '../_shared/cors.ts';
-import { z } from 'https://esm.sh/zod@3';
+import { z } from "zod";
 
 type Rule = {
   id: string;

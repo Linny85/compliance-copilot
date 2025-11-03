@@ -1,5 +1,8 @@
 project_id = "eadjoqlyjxwqjfvukvqx"
 
+[functions]
+import_map = "./functions/deno.json"
+
 [[functions]]
 name = "email-dispatcher"
 verify_jwt = false
