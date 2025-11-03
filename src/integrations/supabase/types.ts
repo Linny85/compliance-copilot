@@ -2322,6 +2322,36 @@ export type Database = {
         }
         Relationships: []
       }
+      incidents: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          impact: string | null
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          impact?: string | null
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          impact?: string | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
       integration_dlq: {
         Row: {
           attempts: number
@@ -3201,6 +3231,48 @@ export type Database = {
           performed_at?: string
           performed_by?: string
           summary?: string | null
+        }
+        Relationships: []
+      }
+      security_incidents: {
+        Row: {
+          company_id: string
+          created_at: string
+          description: string
+          id: string
+          reported_at: string
+          reported_by: string | null
+          resolved_at: string | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          description: string
+          id?: string
+          reported_at?: string
+          reported_by?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          reported_at?: string
+          reported_by?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }

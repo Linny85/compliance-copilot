@@ -47,7 +47,7 @@
   },
   "quickstart": {
     "dashboard": [
-      { "label": "Sicherheitsvorfall melden", "to": "/nis2" },
+      { "label": "Sicherheitsvorfall melden", "to": "/incidents/new" },
       { "label": "NIS2-Register prüfen", "to": "/nis2" },
       { "label": "Verantwortlichkeiten klären", "to": "/controls/mapping" },
       { "label": "Audit-Übersicht", "to": "/audit" },

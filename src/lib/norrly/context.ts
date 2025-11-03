@@ -7,6 +7,8 @@ export function getContextKey(pathname: string): string | undefined {
 
   const map: Record<string, string> = {
     '/dashboard': 'dashboard',
+    '/incidents': 'incidents',
+    '/incidents/new': 'incidents',
     '/checks': 'checks',
     '/checks/new': 'checks:new',
     '/audit': 'audit:list',
