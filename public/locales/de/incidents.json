@@ -1,0 +1,29 @@
+{
+  "form": {
+    "incident": {
+      "title": "Titel des Vorfalls *",
+      "titlePlaceholder": "z. B. Unbefugter Zugriff auf Kundendaten",
+      "searchOrType": "Suchen oder eigenen Titel eingeben…",
+      "useEntered": "„{{text}}" verwenden",
+      "templates": [
+        "Unbefugter Zugriff auf Kundendaten",
+        "Kontoübernahme / kompromittiertes Administratorkonto",
+        "Datenexfiltration",
+        "Cloud-Fehlkonfiguration mit Datenfreigabe",
+        "Phishing mit erfolgreichem Login",
+        "Ransomware-Befall mit Systemverschlüsselung",
+        "DDoS-Attacke auf Produktivsysteme",
+        "Kritischer Dienst-/Systemausfall",
+        "Ausfall eines kritischen Drittanbieters",
+        "Malware-Ausbruch im Unternehmensnetz",
+        "Ausnutzung einer kritischen Schwachstelle",
+        "Manipulation kritischer Konfiguration",
+        "Kompromittiertes Code-Repository (Supply Chain)",
+        "SQL-Injection / Web-Exploit",
+        "Diebstahl/Verlust unverschlüsselter Geräte",
+        "Fehlversand / Fehlberechtigung",
+        "Insider-Vorfall"
+      ]
+    }
+  }
+}

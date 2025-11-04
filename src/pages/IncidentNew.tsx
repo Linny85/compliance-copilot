@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import IncidentTitleCombobox from '@/components/incidents/IncidentTitleCombobox';
 
 export default function IncidentNew() {
   const navigate = useNavigate();
@@ -77,18 +77,7 @@ export default function IncidentNew() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="title">
-                Titel des Vorfalls <span className="text-destructive">*</span>
-              </Label>
-              <Input
-                id="title"
-                placeholder="z. B. Unbefugter Zugriff auf Kundendaten"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
+            <IncidentTitleCombobox value={title} onChange={setTitle} />
 
             <div className="space-y-2">
               <Label htmlFor="description">Beschreibung</Label>

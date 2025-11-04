@@ -1,0 +1,29 @@
+{
+  "form": {
+    "incident": {
+      "title": "Incident title *",
+      "titlePlaceholder": "e.g., Unauthorized access to customer data",
+      "searchOrType": "Search or type your own…",
+      "useEntered": "Use "{{text}}"",
+      "templates": [
+        "Unauthorized access to customer data",
+        "Account takeover / compromised admin account",
+        "Data exfiltration",
+        "Cloud misconfiguration exposing data",
+        "Phishing with successful login",
+        "Ransomware infection with encryption",
+        "DDoS attack on production systems",
+        "Critical service/system outage",
+        "Critical third-party service outage",
+        "Malware outbreak in corporate network",
+        "Exploitation of critical vulnerability",
+        "Manipulation of critical configuration",
+        "Compromised code repository (supply chain risk)",
+        "SQL injection / web exploit",
+        "Theft/loss of unencrypted device",
+        "Misdelivery / mispermission",
+        "Insider incident"
+      ]
+    }
+  }
+}
