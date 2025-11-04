@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { encodeBase64 } from "https://deno.land/std@0.224.0/encoding/base64.ts";
+import { createClient } from "@supabase/supabase-js";
+import { encodeBase64 } from "std/encoding/base64.ts";
 
 export type Role = 'viewer' | 'member' | 'manager' | 'admin';
 

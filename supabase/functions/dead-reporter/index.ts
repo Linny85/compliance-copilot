@@ -1,5 +1,5 @@
 // Daily dead jobs reporter → posts a Slack summary per tenant
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "@supabase/supabase-js";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

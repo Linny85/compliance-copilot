@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "std/http/server.ts";
 
 // Use Stripe SDK for proper webhook verification
 const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY")!;

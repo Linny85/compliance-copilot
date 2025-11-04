@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { PDFDocument, StandardFonts } from "https://esm.sh/pdf-lib@1.17.1";
+import { createClient } from "@supabase/supabase-js";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { corsHeaders } from "../_shared/cors.ts";
 
 const URL = Deno.env.get("SUPABASE_URL")!;
