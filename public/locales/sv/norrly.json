@@ -144,9 +144,13 @@
       { "label": "Filtrera underlag", "to": "/evidence" }
     ],
     "measures": [
-      { "label": "Skapa åtgärd", "to": "/controls/new" },
-      { "label": "Länka kontroll", "to": "/checks" },
-      { "label": "Lägg till bevis", "to": "/evidence" }
+      { "label": "Skapa ny åtgärd", "to": "/measures/new" },
+      { "label": "Granska öppna åtgärder", "to": "/measures?status=open" },
+      { "label": "Länka bevis", "to": "/evidence" }
+    ],
+    "controls.mapping": [
+      { "label": "Öppna kontrollkartläggning", "to": "/controls/mapping" },
+      { "label": "Skapa ny kontroll", "to": "/controls/new" }
     ],
     "admin": {
       "ops": [

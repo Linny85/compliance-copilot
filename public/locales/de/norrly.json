@@ -48,56 +48,56 @@
   "contextNames": {
     "dashboard": "Dashboard",
     "documents": "Dokumente",
-    "documents:new": "Dokumente – Neu",
+    "documents.new": "Dokumente – Neu",
     "checks": "Prüfungen",
-    "checks:new": "Prüfungen – Neu",
+    "checks.new": "Prüfungen – Neu",
     "controls": "Kontrollen",
-    "controls:mapping": "Kontrollen – Mapping",
+    "controls.mapping": "Kontrollen – Mapping",
     "measures": "Maßnahmen",
-    "measures:new": "Maßnahmen – Neu",
+    "measures.new": "Maßnahmen – Neu",
     "evidence": "Nachweise",
     "scope": "Anwendungsbereich",
     "nis2": "NIS2",
     "ai-act": "AI Act",
-    "ai-systems:register": "KI-System-Register",
+    "ai-systems.register": "KI-System-Register",
     "organization": "Organisation",
     "company-profile": "Unternehmensprofil",
     "billing": "Abrechnung",
     "incidents": "Sicherheitsvorfälle",
-    "admin:ops": "Ops Dashboard",
-    "admin:training-certificates": "Schulungszertifikate",
-    "audit:list": "Audits",
-    "audit:new": "Neues Audit",
-    "audit:detail": "Audit-Detail",
-    "dpia:list": "Datenschutz-Folgenabschätzungen",
-    "dpia:detail": "DPIA-Detail"
+    "admin.ops": "Ops Dashboard",
+    "admin.training-certificates": "Schulungszertifikate",
+    "audit.list": "Audits",
+    "audit.new": "Neues Audit",
+    "audit.detail": "Audit-Detail",
+    "dpia.list": "Datenschutz-Folgenabschätzungen",
+    "dpia.detail": "DPIA-Detail"
   },
   "contextHelp": {
     "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
     "documents": "Hier findest du deine Compliance-Dokumente. Ich erkläre dir, wie du Nachweise und Richtlinien verwaltest.",
-    "documents:new": "Erstelle eine neue Richtlinie oder ein anderes Compliance-Dokument, verknüpfe Evidenzen und speichere es zur Freigabe.",
+    "documents.new": "Erstelle eine neue Richtlinie oder ein anderes Compliance-Dokument, verknüpfe Evidenzen und speichere es zur Freigabe.",
     "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
-    "checks:new": "Plane eine neue Compliance-Prüfung, weise Verantwortliche zu und lege Fristen fest.",
+    "checks.new": "Plane eine neue Compliance-Prüfung, weise Verantwortliche zu und lege Fristen fest.",
     "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
-    "controls:mapping": "Ordne Kontrollen den jeweiligen Anforderungen und Verantwortlichen zu – für klare Compliance-Strukturen.",
-    "measures": "In diesem Bereich kannst du Maßnahmen planen, umsetzen und mit Prüfungen/Nachweisen verknüpfen.",
-    "measures:new": "Erstelle eine neue Maßnahme, verknüpfe sie mit Kontrollen und lege Verantwortliche fest.",
+    "controls.mapping": "Ordne Kontrollen den jeweiligen Anforderungen und Verantwortlichen zu – für klare Compliance-Strukturen.",
+    "measures": "Hier planst, dokumentierst und bewertest du Maßnahmen (Ziel, Status, Wirksamkeit).",
+    "measures.new": "Lege eine neue Maßnahme an, verknüpfe sie mit Nachweisen und weise Verantwortliche zu.",
     "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
     "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
     "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",
     "ai-act": "Hier lernst du alles über den EU AI Act und kannst den Reifegrad deiner KI-Systeme prüfen.",
-    "ai-systems:register": "Registriere hier deine KI-Systeme und prüfe deren Compliance-Anforderungen.",
+    "ai-systems.register": "Registriere hier deine KI-Systeme und prüfe deren Compliance-Anforderungen.",
     "organization": "Hier verwaltest du deine Organisationsstruktur, Verantwortlichkeiten und Meldewege.",
     "company-profile": "Hier bearbeitest du dein Unternehmensprofil und organisatorische Details.",
     "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
     "incidents": "Hier meldest du Sicherheitsvorfälle und verfolgst deren Bearbeitung. Ich helfe dir, Vorfälle zu dokumentieren und Maßnahmen zu planen.",
-    "admin:ops": "Operative Metriken: E-Mail-Queue, Fehleranalyse, System-Gesundheit.",
-    "admin:training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation.",
-    "audit:list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
-    "audit:new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren.",
-    "audit:detail": "Hier findest du alle Details zu einem spezifischen Audit, inkl. Nachweise und Status.",
-    "dpia:list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten.",
-    "dpia:detail": "Hier findest du alle Details zu einer spezifischen DPIA, inkl. Risikobewertung und Maßnahmen."
+    "admin.ops": "Operative Metriken: E-Mail-Queue, Fehleranalyse, System-Gesundheit.",
+    "admin.training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation.",
+    "audit.list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
+    "audit.new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren.",
+    "audit.detail": "Hier findest du alle Details zu einem spezifischen Audit, inkl. Nachweise und Status.",
+    "dpia.list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten.",
+    "dpia.detail": "Hier findest du alle Details zu einer spezifischen DPIA, inkl. Risikobewertung und Maßnahmen."
   },
   "quickstart": {
     "dashboard": [
@@ -142,9 +142,13 @@
       { "label": "Nachweise filtern", "to": "/evidence" }
     ],
     "measures": [
-      { "label": "Neue Maßnahme anlegen", "to": "/controls/new" },
-      { "label": "Prüfung verknüpfen", "to": "/checks" },
-      { "label": "Nachweis hinzufügen", "to": "/evidence" }
+      { "label": "Neue Maßnahme anlegen", "to": "/measures/new" },
+      { "label": "Offene Maßnahmen prüfen", "to": "/measures?status=open" },
+      { "label": "Nachweise verknüpfen", "to": "/evidence" }
+    ],
+    "controls.mapping": [
+      { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" },
+      { "label": "Neue Kontrolle anlegen", "to": "/controls/new" }
     ],
     "admin": {
       "ops": [
@@ -189,73 +193,6 @@
     "billing": [
       { "label": "Plan upgraden", "to": "/billing" },
       { "label": "Testversion verwalten", "to": "/dashboard" }
-    ]
-  },
-  "contextNames": {
-    "dashboard": "Dashboard",
-    "documents": "Dokumente",
-    "documents.new": "Dokumente – Neu",
-    "checks": "Prüfungen",
-    "checks.new": "Prüfungen – Neu",
-    "controls": "Kontrollen",
-    "controls.mapping": "Kontrollen – Mapping",
-    "evidence": "Nachweise",
-    "scope": "Anwendungsbereich",
-    "nis2": "NIS2",
-    "ai-act": "AI Act",
-    "organization": "Organisation",
-    "billing": "Abrechnung",
-    "admin": {
-      "ops": "Ops Dashboard",
-      "training-certificates": "Schulungszertifikate"
-    },
-    "audit": {
-      "list": "Audits",
-      "new": "Neues Audit",
-      "detail": "Audit-Detail"
-    },
-    "dpia": {
-      "list": "Datenschutz-Folgenabschätzungen",
-      "detail": "DPIA-Detail"
-    },
-    "ai-systems": {
-      "register": "KI-System-Register"
-    },
-    "company-profile": "Unternehmensprofil",
-    "incidents": "Sicherheitsvorfälle"
-  },
-  "contextHelp": {
-    "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
-    "documents": "Hier findest du deine Compliance-Dokumente. Ich erkläre dir, wie du Nachweise und Richtlinien verwaltest.",
-    "documents.new": "Erstelle eine neue Richtlinie oder ein anderes Compliance-Dokument, verknüpfe Evidenzen und speichere es zur Freigabe.",
-    "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
-    "checks.new": "Plane eine neue Compliance-Prüfung, weise Verantwortliche zu und lege Fristen fest.",
-    "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
-    "controls.mapping": "Ordne Kontrollen den jeweiligen Anforderungen und Verantwortlichen zu – für klare Compliance-Strukturen.",
-    "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
-    "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
-    "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",
-    "ai-act": "Hier lernst du alles über den EU AI Act und kannst den Reifegrad deiner KI-Systeme prüfen.",
-    "organization": "Hier verwaltest du deine Organisationsstruktur, Verantwortlichkeiten und Meldewege.",
-    "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
-    "admin": {
-      "ops": "Operative Metriken: E-Mail-Queue, Fehleranalyse, System-Gesundheit.",
-      "training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation."
-    },
-    "audit": {
-      "list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
-      "new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren."
-    },
-    "dpia": {
-      "list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten."
-    },
-    "incidents": "Hier meldest du Sicherheitsvorfälle und verfolgst deren Bearbeitung. Ich helfe dir, Vorfälle zu dokumentieren und Maßnahmen zu planen."
-  },
-  "quickstart": {
-    "incidents": [
-      { "label": "Sicherheitsvorfall melden", "to": "/incidents/new" },
-      { "label": "Vorfallsübersicht", "to": "/incidents" },
-      { "label": "Audit starten", "to": "/audit/new" }
     ]
   }
 }

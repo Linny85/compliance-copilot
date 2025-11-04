@@ -83,8 +83,7 @@ export function NorrlandGuideDrawer({
   // === Page & Form Context Helpers ===
   const getPageCtx = () => {
     const ctx = getContextKey(window.location?.pathname || '');
-    // Convert colon to dot for i18n keys: 'admin:training-certificates' -> 'admin.training-certificates'
-    return ctx ? ctx.replace(/:/g, '.') : null;
+    return ctx || null;
   };
 
   const getFormCtx = (pageCtx: string | null) => {

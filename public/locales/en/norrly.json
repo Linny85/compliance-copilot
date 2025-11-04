@@ -144,9 +144,13 @@
       { "label": "Filter evidence", "to": "/evidence" }
     ],
     "measures": [
-      { "label": "Create measure", "to": "/controls/new" },
-      { "label": "Link a check", "to": "/checks" },
-      { "label": "Add evidence", "to": "/evidence" }
+      { "label": "Create new measure", "to": "/measures/new" },
+      { "label": "Review open measures", "to": "/measures?status=open" },
+      { "label": "Link evidence", "to": "/evidence" }
+    ],
+    "controls.mapping": [
+      { "label": "Open control mapping", "to": "/controls/mapping" },
+      { "label": "Create new control", "to": "/controls/new" }
     ],
     "admin": {
       "ops": [
