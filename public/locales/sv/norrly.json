@@ -99,7 +99,8 @@
     "ai-act": "Registrera och hantera AI-system för regelefterlevnad.",
     "organization": "Konfigurera dina organisationsinställningar och team.",
     "billing": "Hantera din prenumeration och betalningsuppgifter.",
-    "incidents": "Rapportera och spåra säkerhetsincidenter. Jag hjälper dig dokumentera händelser och planera åtgärder."
+    "incidents": "Rapportera och spåra säkerhetsincidenter. Jag hjälper dig dokumentera händelser och planera åtgärder.",
+    "incidents.new": "Registrera en ny säkerhetsincident med alla relevanta detaljer, tidsstämplar och inledande bedömningar."
   },
   "quickstart": {
     "dashboard": [
@@ -199,9 +200,11 @@
       { "label": "Hantera provperiod", "to": "/dashboard" }
     ],
     "incidents": [
-      { "label": "Rapportera säkerhetsincident", "to": "/incidents/new" },
-      { "label": "Incidentöversikt", "to": "/incidents" },
-      { "label": "Starta revision", "to": "/audit/new" }
+      { "label": "Rapportera ny incident", "icon": "AlertTriangle", "action": "navigate:/incidents/new" },
+      { "label": "Incidentöversikt", "icon": "List", "action": "navigate:/incidents" },
+      { "label": "Kontrollera eskalering", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
+      { "label": "Länka åtgärder", "icon": "Link", "action": "navigate:/measures" },
+      { "label": "Exportera incidentrapport", "icon": "FileDown", "action": "export:/incidents/report" }
     ]
   }
 }

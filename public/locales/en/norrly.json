@@ -99,7 +99,8 @@
     "ai-act": "Register and manage AI systems for compliance.",
     "organization": "Configure your organization settings and team.",
     "billing": "Manage your subscription and payment details.",
-    "incidents": "Report and track security incidents. I'll help you document events and plan response measures."
+    "incidents": "Report and track security incidents. I'll help you document events and plan response measures.",
+    "incidents.new": "Record a new security incident with all relevant details, timestamps and initial assessments."
   },
   "quickstart": {
     "dashboard": [
@@ -199,9 +200,11 @@
       { "label": "Manage trial", "to": "/dashboard" }
     ],
     "incidents": [
-      { "label": "Report security incident", "to": "/incidents/new" },
-      { "label": "Incident overview", "to": "/incidents" },
-      { "label": "Start audit", "to": "/audit/new" }
+      { "label": "Report new incident", "icon": "AlertTriangle", "action": "navigate:/incidents/new" },
+      { "label": "Incident overview", "icon": "List", "action": "navigate:/incidents" },
+      { "label": "Check escalation", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
+      { "label": "Link measures", "icon": "Link", "action": "navigate:/measures" },
+      { "label": "Export incident report", "icon": "FileDown", "action": "export:/incidents/report" }
     ]
   }
 }
