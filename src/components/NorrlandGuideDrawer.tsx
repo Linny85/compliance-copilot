@@ -284,47 +284,62 @@ export function NorrlandGuideDrawer({
   // Safe navigation helper (works inside and outside Router context)
   function navigateSafe(path: string, opts?: { replace?: boolean }) {
     const target = path.startsWith('/') ? path : `/${path}`;
-    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe]', { inRouter, target });
+    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:pre]', { inRouter, target });
     
+    // 1) Router context available → Use React Router
     if (navigateRR) {
-      // Inside Router context - use React Router
+      if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:router]', target);
       navigateRR(target, { replace: !!opts?.replace });
-    } else {
-      // Outside Router context - use global navigation event
-      navigateGlobal(target, !!opts?.replace);
+      return;
     }
+
+    // 2) Global navigation event available → Use event bridge
+    try {
+      if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:global]', target);
+      navigateGlobal(target, !!opts?.replace);
+      return;
+    } catch (err) {
+      if (import.meta.env.DEV) console.warn('[norrly:navigateSafe:global failed]', err);
+    }
+
+    // 3) Hard fallback → Direct window navigation
+    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:window]', target);
+    window.location.assign(target);
   }
 
   // Action handler for quickstart buttons
   function handleQuickAction(action?: string) {
-    if (!action) return;
+    if (!action) {
+      if (import.meta.env.DEV) console.warn('[norrly:quickstart:handle] No action provided');
+      return;
+    }
 
-    // Debug
-    if (import.meta.env.DEV) console.debug('[norrly:quickstart:action]', action);
+    if (import.meta.env.DEV) console.debug('[norrly:quickstart:handle]', { action });
 
     if (action.startsWith('navigate:')) {
       const target = action.slice('navigate:'.length);
       const path = target.startsWith('/') ? target : `/${target}`;
-      // Router-Navigation (kein Reload)
-      navigateSafe(path, { replace: false });
       if (import.meta.env.DEV) console.debug('[norrly:quickstart:navigate]', path);
+      navigateSafe(path, { replace: false });
       return;
     }
 
     if (action.startsWith('export:')) {
       const target = action.slice('export:'.length);
       const path = target.startsWith('/') ? target : `/${target}`;
-      // Für Exporte ggf. File-Download triggern
-      window.location.assign(path);
       if (import.meta.env.DEV) console.debug('[norrly:quickstart:export]', path);
+      window.location.assign(path);
       return;
     }
 
     // Fallback: absolute URL?
     if (/^https?:\/\//i.test(action)) {
+      if (import.meta.env.DEV) console.debug('[norrly:quickstart:external]', action);
       window.open(action, '_blank', 'noopener,noreferrer');
       return;
     }
+
+    if (import.meta.env.DEV) console.warn('[norrly:quickstart:unhandled]', action);
   }
 
   if (!open) return null;
@@ -422,6 +437,8 @@ export function NorrlandGuideDrawer({
                 const fallbackQuickstarts = t('norrly:quickstart.dashboard', { returnObjects: true });
                 const items = Array.isArray(quickstarts) && quickstarts.length ? quickstarts : fallbackQuickstarts;
                 
+                if (import.meta.env.DEV) console.debug('[norrly:quickstart:items]', { ctxKeyDot, items });
+                
                 if (!Array.isArray(items) || items.length === 0) return null;
                 
                 return (
@@ -431,8 +448,14 @@ export function NorrlandGuideDrawer({
                       {items.map((q: any, i: number) => (
                         <button
                           key={i}
-                          onClick={() => handleQuickAction(q.action)}
-                          className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors w-full"
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (import.meta.env.DEV) console.debug('[norrly:quickstart:click]', q);
+                            handleQuickAction(q.action);
+                          }}
+                          className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors w-full cursor-pointer"
                         >
                           {q.label}
                         </button>
