@@ -144,9 +144,11 @@
       { "label": "Filter evidence", "to": "/evidence" }
     ],
     "measures": [
-      { "label": "Create new measure", "to": "/measures/new" },
-      { "label": "Review open measures", "to": "/measures?status=open" },
-      { "label": "Link evidence", "to": "/evidence" }
+      { "label": "Create new measure", "icon": "PlusCircle", "action": "navigate:/measures/new" },
+      { "label": "Review open measures", "icon": "ListChecks", "action": "navigate:/measures?status=open" },
+      { "label": "Evaluate effectiveness", "icon": "BarChart", "action": "navigate:/measures?tab=evaluation" },
+      { "label": "Assign responsible persons", "icon": "UserPlus", "action": "navigate:/organization/roles" },
+      { "label": "Export measures report", "icon": "FileDown", "action": "export:/measures/report" }
     ],
     "controls.mapping": [
       { "label": "Open control mapping", "to": "/controls/mapping" },

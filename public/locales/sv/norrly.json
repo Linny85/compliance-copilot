@@ -144,9 +144,11 @@
       { "label": "Filtrera underlag", "to": "/evidence" }
     ],
     "measures": [
-      { "label": "Skapa ny åtgärd", "to": "/measures/new" },
-      { "label": "Granska öppna åtgärder", "to": "/measures?status=open" },
-      { "label": "Länka bevis", "to": "/evidence" }
+      { "label": "Skapa ny åtgärd", "icon": "PlusCircle", "action": "navigate:/measures/new" },
+      { "label": "Granska öppna åtgärder", "icon": "ListChecks", "action": "navigate:/measures?status=open" },
+      { "label": "Utvärdera effektivitet", "icon": "BarChart", "action": "navigate:/measures?tab=evaluation" },
+      { "label": "Tilldela ansvariga", "icon": "UserPlus", "action": "navigate:/organization/roles" },
+      { "label": "Exportera åtgärdsrapport", "icon": "FileDown", "action": "export:/measures/report" }
     ],
     "controls.mapping": [
       { "label": "Öppna kontrollkartläggning", "to": "/controls/mapping" },

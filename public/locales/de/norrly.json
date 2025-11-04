@@ -142,9 +142,11 @@
       { "label": "Nachweise filtern", "to": "/evidence" }
     ],
     "measures": [
-      { "label": "Neue Maßnahme anlegen", "to": "/measures/new" },
-      { "label": "Offene Maßnahmen prüfen", "to": "/measures?status=open" },
-      { "label": "Nachweise verknüpfen", "to": "/evidence" }
+      { "label": "Neue Maßnahme anlegen", "icon": "PlusCircle", "action": "navigate:/measures/new" },
+      { "label": "Offene Maßnahmen prüfen", "icon": "ListChecks", "action": "navigate:/measures?status=open" },
+      { "label": "Wirksamkeit bewerten", "icon": "BarChart", "action": "navigate:/measures?tab=evaluation" },
+      { "label": "Verantwortliche zuweisen", "icon": "UserPlus", "action": "navigate:/organization/roles" },
+      { "label": "Maßnahmenbericht exportieren", "icon": "FileDown", "action": "export:/measures/report" }
     ],
     "controls.mapping": [
       { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" },
