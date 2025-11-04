@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getTenantId } from "@/lib/tenant";
 import { NextStepsCard } from "@/components/dashboard/NextStepsCard";
 import { TrialCard } from "@/components/dashboard/TrialCard";
 import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
@@ -47,14 +48,10 @@ const Dashboard = () => {
 
       setUserId(session.user.id);
 
-      // Get user's company
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", session.user.id)
-        .maybeSingle();
-
-      if (!profile?.company_id) {
+      // Get tenant ID (tenant_id or company_id)
+      const tid = await getTenantId();
+      
+      if (!tid) {
         setLoading(false);
         return;
       }
@@ -63,8 +60,8 @@ const Dashboard = () => {
       const { data: company } = await supabase
         .from("Unternehmen")
         .select("name, country, sector")
-        .eq("id", profile.company_id)
-        .single();
+        .eq("id", tid)
+        .maybeSingle();
 
       if (company) {
         setCompanyData({
@@ -78,7 +75,7 @@ const Dashboard = () => {
       const { data: subscription } = await supabase
         .from("subscriptions")
         .select("status, trial_end")
-        .eq("company_id", profile.company_id)
+        .eq("company_id", tid)
         .maybeSingle();
 
       if (subscription) {
