@@ -43,12 +43,19 @@ function toStringArray(raw: unknown): string[] {
 export default function IncidentTitleCombobox({
   value, onChange, placeholder
 }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
-  const { t } = useTranslation(["incidents"]);
+  const { t, i18n } = useTranslation(["incidents"]);
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
 
+  if (import.meta.env.DEV) {
+    console.debug('[i18n:bundles]', {
+      lang: i18n.language,
+      hasIncidents: i18n.hasResourceBundle(i18n.language, 'incidents')
+    });
+  }
+
   const options: string[] = useMemo(() => {
-    const raw = t("incidents:form.incident.templates", { returnObjects: true });
+    const raw = t("form.incident.templates", { returnObjects: true });
     const list = toStringArray(raw);
     const normalized = list.length ? list : DEFAULT_TITLES;
     if (import.meta.env.DEV) console.debug("[incident:title:options]", { raw, normalized });
@@ -71,12 +78,12 @@ export default function IncidentTitleCombobox({
 
   return (
     <div className="space-y-1">
-      <span className="text-sm font-medium">{t("incidents:form.incident.title")}</span>
+      <span className="text-sm font-medium">{t("form.incident.title")}</span>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-between">
             <span className={value ? "" : "text-muted-foreground"}>
-              {value || (placeholder || (t("incidents:form.incident.titlePlaceholder") as string))}
+              {value || (placeholder || (t("form.incident.titlePlaceholder") as string))}
             </span>
             <ChevronDown className="h-4 w-4 opacity-70" />
           </Button>
@@ -84,7 +91,7 @@ export default function IncidentTitleCombobox({
         <PopoverContent className="p-0 w-[420px]">
           <Command shouldFilter={false}>
             <CommandInput
-              placeholder={t("incidents:form.incident.searchOrType") as string}
+              placeholder={t("form.incident.searchOrType") as string}
               value={q}
               onValueChange={setQ}
               onKeyDown={(e) => {
@@ -94,7 +101,7 @@ export default function IncidentTitleCombobox({
             <CommandList>
               <CommandEmpty>
                 <Button variant="ghost" onClick={() => apply(q)} disabled={!q.trim()}>
-                  {t("incidents:form.incident.useEntered", { text: q || "…" }) as string}
+                  {t("form.incident.useEntered", { text: q || "…" }) as string}
                 </Button>
               </CommandEmpty>
               {filtered.map((opt) => (
