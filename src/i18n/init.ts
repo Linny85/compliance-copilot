@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
 const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
+const DEV = import.meta.env.DEV;
 
 i18n
   .use(Backend)
@@ -46,5 +47,42 @@ i18n.on('languageChanged', (lng) => {
 });
 // Set initial lang
 document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
+
+// DEV fallback for incidents namespace
+const INCIDENTS_FALLBACK = {
+  form: {
+    incident: {
+      title: "Titel des Vorfalls *",
+      titlePlaceholder: "z. B. Unbefugter Zugriff auf Kundendaten",
+      searchOrType: "Suchen oder eigenen Titel eingeben…",
+      useEntered: '"{{text}}" verwenden',
+      templates: [
+        "Unbefugter Zugriff auf Kundendaten",
+        "Kontoübernahme / kompromittiertes Administratorkonto",
+        "Datenexfiltration",
+        "Cloud-Fehlkonfiguration mit Datenfreigabe",
+        "Phishing mit erfolgreichem Login",
+        "Ransomware-Befall mit Systemverschlüsselung",
+        "DDoS-Attacke auf Produktivsysteme",
+        "Kritischer Dienst-/Systemausfall",
+        "Ausfall eines kritischen Drittanbieters",
+        "Malware-Ausbruch im Unternehmensnetz",
+        "Ausnutzung einer kritischen Schwachstelle",
+        "Manipulation kritischer Konfiguration",
+        "Kompromittiertes Code-Repository (Supply Chain)",
+        "SQL-Injection / Web-Exploit",
+        "Diebstahl/Verlust unverschlüsselter Geräte",
+        "Fehlversand / Fehlberechtigung",
+        "Insider-Vorfall"
+      ]
+    }
+  }
+};
+
+const lang = i18n.language || 'de';
+if (!i18n.hasResourceBundle(lang, 'incidents')) {
+  i18n.addResourceBundle(lang, 'incidents', INCIDENTS_FALLBACK, true, true);
+  if (DEV) console.debug('[i18n] injected DEV incidents fallback for', lang);
+}
 
 export default i18n;
