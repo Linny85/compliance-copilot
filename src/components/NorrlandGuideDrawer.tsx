@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -25,6 +26,7 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
+  const navigate = useNavigate();
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
   // Helper function for translations with default values
@@ -278,12 +280,37 @@ export function NorrlandGuideDrawer({
     }
   }
 
-  // Navigation helper without Router context
-  const go = (to: string) => {
-    if (typeof window !== 'undefined' && window.location) {
-      window.location.href = to;
+  // Action handler for quickstart buttons
+  function handleQuickAction(action?: string) {
+    if (!action) return;
+
+    // Debug
+    if (import.meta.env.DEV) console.debug('[norrly:quickstart:action]', action);
+
+    if (action.startsWith('navigate:')) {
+      const target = action.slice('navigate:'.length);
+      const path = target.startsWith('/') ? target : `/${target}`;
+      // Router-Navigation (kein Reload)
+      navigate(path, { replace: false });
+      if (import.meta.env.DEV) console.debug('[norrly:quickstart:navigate]', path);
+      return;
     }
-  };
+
+    if (action.startsWith('export:')) {
+      const target = action.slice('export:'.length);
+      const path = target.startsWith('/') ? target : `/${target}`;
+      // Für Exporte ggf. File-Download triggern
+      window.location.assign(path);
+      if (import.meta.env.DEV) console.debug('[norrly:quickstart:export]', path);
+      return;
+    }
+
+    // Fallback: absolute URL?
+    if (/^https?:\/\//i.test(action)) {
+      window.open(action, '_blank', 'noopener,noreferrer');
+      return;
+    }
+  }
 
   if (!open) return null;
 
@@ -389,7 +416,7 @@ export function NorrlandGuideDrawer({
                       {items.map((q: any, i: number) => (
                         <button
                           key={i}
-                          onClick={() => go(q.to)}
+                          onClick={() => handleQuickAction(q.action)}
                           className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors w-full"
                         >
                           {q.label}

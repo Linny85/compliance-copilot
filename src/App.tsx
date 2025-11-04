@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import NIS2 from "./pages/NIS2";
 import AIAct from "./pages/AIAct";
 import Incidents from "./pages/Incidents";
+import IncidentNew from "./pages/IncidentNew";
 import Documents from "./pages/Documents";
 import DocumentsNew from "./pages/DocumentsNew";
 import Admin from "./pages/Admin";
@@ -98,7 +99,7 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/nis2" element={<NIS2 />} />
               <Route path="/incidents" element={<Incidents />} />
-              <Route path="/incidents/new" element={<Incidents />} />
+              <Route path="/incidents/new" element={<IncidentNew />} />
               <Route path="/incident/new" element={<Navigate to="/incidents/new" replace />} />
               <Route path="/ai-act" element={<AIAct />} />
               <Route path="/documents" element={<Documents />} />
