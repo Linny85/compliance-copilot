@@ -53,6 +53,8 @@
     "checks:new": "Prüfungen – Neu",
     "controls": "Kontrollen",
     "controls:mapping": "Kontrollen – Mapping",
+    "measures": "Maßnahmen",
+    "measures:new": "Maßnahmen – Neu",
     "evidence": "Nachweise",
     "scope": "Anwendungsbereich",
     "nis2": "NIS2",
@@ -78,6 +80,8 @@
     "checks:new": "Plane eine neue Compliance-Prüfung, weise Verantwortliche zu und lege Fristen fest.",
     "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
     "controls:mapping": "Ordne Kontrollen den jeweiligen Anforderungen und Verantwortlichen zu – für klare Compliance-Strukturen.",
+    "measures": "In diesem Bereich kannst du Maßnahmen planen, umsetzen und mit Prüfungen/Nachweisen verknüpfen.",
+    "measures:new": "Erstelle eine neue Maßnahme, verknüpfe sie mit Kontrollen und lege Verantwortliche fest.",
     "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
     "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
     "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",
@@ -136,6 +140,11 @@
       { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" },
       { "label": "Neue Kontrolle anlegen", "to": "/controls" },
       { "label": "Nachweise filtern", "to": "/evidence" }
+    ],
+    "measures": [
+      { "label": "Neue Maßnahme anlegen", "to": "/controls/new" },
+      { "label": "Prüfung verknüpfen", "to": "/checks" },
+      { "label": "Nachweis hinzufügen", "to": "/evidence" }
     ],
     "admin": {
       "ops": [

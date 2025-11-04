@@ -53,6 +53,8 @@
     "checks.new": "Kontroller – Ny",
     "controls": "Kontroller",
     "controls.mapping": "Kontroller – Mapping",
+    "measures": "Åtgärder",
+    "measures.new": "Åtgärder – Ny",
     "evidence": "Underlag",
     "admin": {
       "ops": "Ops Dashboard",
@@ -80,6 +82,8 @@
     "checks.new": "Planera en ny efterlevnadskontroll, tilldela ansvariga och sätt deadlines.",
     "controls": "Här hanterar du kontroller och granskar tillhörande krav.",
     "controls.mapping": "Mappa kontroller till krav och tilldela ägarskap för tydliga strukturer i regelefterlevnad.",
+    "measures": "Här kan du planera och genomföra åtgärder och länka dem till kontroller och bevis.",
+    "measures.new": "Skapa en ny åtgärd, länka den till kontroller och tilldela ansvar.",
     "evidence": "Ladda upp och organisera stödjande underlag.",
     "admin": {
       "ops": "Operativa mätvärden: e-postkö, felanalys, systemhälsa.",
@@ -138,6 +142,11 @@
       { "label": "Öppna kontrollmapping", "to": "/controls/mapping" },
       { "label": "Skapa ny kontroll", "to": "/controls" },
       { "label": "Filtrera underlag", "to": "/evidence" }
+    ],
+    "measures": [
+      { "label": "Skapa åtgärd", "to": "/controls/new" },
+      { "label": "Länka kontroll", "to": "/checks" },
+      { "label": "Lägg till bevis", "to": "/evidence" }
     ],
     "admin": {
       "ops": [

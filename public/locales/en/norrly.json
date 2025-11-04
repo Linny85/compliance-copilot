@@ -53,6 +53,8 @@
     "checks.new": "Checks – New",
     "controls": "Controls",
     "controls.mapping": "Controls – Mapping",
+    "measures": "Measures",
+    "measures.new": "Measures – New",
     "evidence": "Evidence",
     "admin": {
       "ops": "Ops Dashboard",
@@ -80,6 +82,8 @@
     "checks.new": "Plan a new compliance check, assign responsibilities, and set deadlines.",
     "controls": "Manage controls and verify related requirements.",
     "controls.mapping": "Map controls to requirements and assign ownership for clear compliance structures.",
+    "measures": "Here you can plan and execute measures and link them to checks and evidence.",
+    "measures.new": "Create a new measure, link it to controls and assign responsibilities.",
     "evidence": "Upload and organize supporting evidence.",
     "admin": {
       "ops": "Operational metrics: email queue, error analysis, system health.",
@@ -138,6 +142,11 @@
       { "label": "Open control mapping", "to": "/controls/mapping" },
       { "label": "Create new control", "to": "/controls" },
       { "label": "Filter evidence", "to": "/evidence" }
+    ],
+    "measures": [
+      { "label": "Create measure", "to": "/controls/new" },
+      { "label": "Link a check", "to": "/checks" },
+      { "label": "Add evidence", "to": "/evidence" }
     ],
     "admin": {
       "ops": [
