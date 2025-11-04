@@ -283,63 +283,77 @@ export function NorrlandGuideDrawer({
 
   // Safe navigation helper (works inside and outside Router context)
   function navigateSafe(path: string, opts?: { replace?: boolean }) {
-    const target = path.startsWith('/') ? path : `/${path}`;
-    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:pre]', { inRouter, target });
+    const target = path?.startsWith('/') ? path : `/${path ?? ''}`;
+    if (!target || target === '/') return; // nothing to do
+    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe]', { inRouter, target });
     
-    // 1) Router context available → Use React Router
     if (navigateRR) {
-      if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:router]', target);
       navigateRR(target, { replace: !!opts?.replace });
-      return;
+    } else {
+      window.location.assign(target);
     }
-
-    // 2) Global navigation event available → Use event bridge
-    try {
-      if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:global]', target);
-      navigateGlobal(target, !!opts?.replace);
-      return;
-    } catch (err) {
-      if (import.meta.env.DEV) console.warn('[norrly:navigateSafe:global failed]', err);
-    }
-
-    // 3) Hard fallback → Direct window navigation
-    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe:window]', target);
-    window.location.assign(target);
   }
 
-  // Action handler for quickstart buttons
-  function handleQuickAction(action?: string) {
-    if (!action) {
-      if (import.meta.env.DEV) console.warn('[norrly:quickstart:handle] No action provided');
-      return;
+  // Universal action handler - supports all item formats
+  function handleQuickActionUniversal(q: any) {
+    try {
+      if (import.meta.env.DEV) console.debug('[norrly:quickstart:handle:raw]', q);
+
+      // 1) Extract action from different formats: object with "action", "to", "href", or string
+      let act = (q && typeof q === 'object') ? (q.action ?? q.to ?? q.href) : q;
+
+      // 2) Handle string actions
+      if (typeof act === 'string') {
+        // Format: "navigate:/path"
+        if (act.startsWith('navigate:')) {
+          const target = act.slice('navigate:'.length);
+          const path = target.startsWith('/') ? target : `/${target}`;
+          if (import.meta.env.DEV) console.debug('[norrly:quickstart:action:navigate]', path);
+          navigateSafe(path);
+          return;
+        }
+        
+        // Format: "export:/path"
+        if (act.startsWith('export:')) {
+          const target = act.slice('export:'.length);
+          const path = target.startsWith('/') ? target : `/${target}`;
+          if (import.meta.env.DEV) console.debug('[norrly:quickstart:action:export]', path);
+          window.location.assign(path);
+          return;
+        }
+        
+        // Format: absolute URL
+        if (/^https?:\/\//i.test(act)) {
+          if (import.meta.env.DEV) console.debug('[norrly:quickstart:action:external]', act);
+          window.open(act, '_blank', 'noopener,noreferrer');
+          return;
+        }
+        
+        // Format: plain path "/path"
+        if (act.startsWith('/')) {
+          if (import.meta.env.DEV) console.debug('[norrly:quickstart:action:path]', act);
+          navigateSafe(act);
+          return;
+        }
+      }
+
+      // 3) Fallback: object with "to" / "href"
+      if (q && typeof q === 'object') {
+        const maybePath = q.to ?? q.href;
+        if (typeof maybePath === 'string') {
+          if (/^https?:\/\//i.test(maybePath)) {
+            window.open(maybePath, '_blank', 'noopener,noreferrer');
+          } else {
+            navigateSafe(maybePath.startsWith('/') ? maybePath : `/${maybePath}`);
+          }
+          return;
+        }
+      }
+
+      console.warn('[norrly:quickstart:unhandled]', q);
+    } catch (err) {
+      console.error('[norrly:quickstart:error]', err);
     }
-
-    if (import.meta.env.DEV) console.debug('[norrly:quickstart:handle]', { action });
-
-    if (action.startsWith('navigate:')) {
-      const target = action.slice('navigate:'.length);
-      const path = target.startsWith('/') ? target : `/${target}`;
-      if (import.meta.env.DEV) console.debug('[norrly:quickstart:navigate]', path);
-      navigateSafe(path, { replace: false });
-      return;
-    }
-
-    if (action.startsWith('export:')) {
-      const target = action.slice('export:'.length);
-      const path = target.startsWith('/') ? target : `/${target}`;
-      if (import.meta.env.DEV) console.debug('[norrly:quickstart:export]', path);
-      window.location.assign(path);
-      return;
-    }
-
-    // Fallback: absolute URL?
-    if (/^https?:\/\//i.test(action)) {
-      if (import.meta.env.DEV) console.debug('[norrly:quickstart:external]', action);
-      window.open(action, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    if (import.meta.env.DEV) console.warn('[norrly:quickstart:unhandled]', action);
   }
 
   if (!open) return null;
@@ -445,21 +459,28 @@ export function NorrlandGuideDrawer({
                   <div className="space-y-2">
                     <p className="text-xs font-medium text-muted-foreground">Schnellstart:</p>
                     <div className="flex flex-col gap-2">
-                      {items.map((q: any, i: number) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (import.meta.env.DEV) console.debug('[norrly:quickstart:click]', q);
-                            handleQuickAction(q.action);
-                          }}
-                          className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors w-full cursor-pointer"
-                        >
-                          {q.label}
-                        </button>
-                      ))}
+                      {items.map((q: any, i: number) => {
+                        const label = (q && typeof q === 'object') 
+                          ? (q.label ?? q.text ?? q.title ?? String(i + 1)) 
+                          : String(q);
+                        
+                        return (
+                          <button
+                            type="button"
+                            key={i}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (import.meta.env.DEV) console.debug('[norrly:quickstart:click]', q);
+                              handleQuickActionUniversal(q);
+                            }}
+                            className="text-left text-sm px-3 py-2 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors w-full cursor-pointer"
+                            style={{ pointerEvents: 'auto' }}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 );
