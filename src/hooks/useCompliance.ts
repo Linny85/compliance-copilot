@@ -29,7 +29,7 @@ export function useComplianceData() {
         
         setTenantId(tid);
 
-        // Check admin role (use tid for company_id check)
+        // Check admin role (user_roles table uses company_id as FK)
         const { data: roleData } = await supabase
           .from('user_roles')
           .select('role')
