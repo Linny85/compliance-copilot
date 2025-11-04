@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useInRouterContext } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Volume2, VolumeX } from "lucide-react";
@@ -26,7 +26,8 @@ export function NorrlandGuideDrawer({
   open: boolean; 
   setOpen: (v: boolean) => void 
 }) {
-  const navigate = useNavigate();
+  const inRouter = useInRouterContext();
+  const navigateRR = inRouter ? useNavigate() : null;
   const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
   
   // Helper function for translations with default values
@@ -280,6 +281,20 @@ export function NorrlandGuideDrawer({
     }
   }
 
+  // Safe navigation helper (works inside and outside Router context)
+  function navigateSafe(path: string, opts?: { replace?: boolean }) {
+    const target = path.startsWith('/') ? path : `/${path}`;
+    if (import.meta.env.DEV) console.debug('[norrly:navigateSafe]', { inRouter, target });
+    
+    if (navigateRR) {
+      // Inside Router context - use React Router
+      navigateRR(target, { replace: !!opts?.replace });
+    } else {
+      // Outside Router context - use global navigation event
+      navigateGlobal(target, !!opts?.replace);
+    }
+  }
+
   // Action handler for quickstart buttons
   function handleQuickAction(action?: string) {
     if (!action) return;
@@ -291,7 +306,7 @@ export function NorrlandGuideDrawer({
       const target = action.slice('navigate:'.length);
       const path = target.startsWith('/') ? target : `/${target}`;
       // Router-Navigation (kein Reload)
-      navigate(path, { replace: false });
+      navigateSafe(path, { replace: false });
       if (import.meta.env.DEV) console.debug('[norrly:quickstart:navigate]', path);
       return;
     }
