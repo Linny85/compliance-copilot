@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { VComplianceSummaryRow, VFrameworkComplianceRow, TrendData } from '@/lib/compliance/score';
-import { getTenantId, buildTenantFilter } from '@/lib/tenant';
+import { getTenantId } from '@/lib/tenant';
 
 export function useComplianceData() {
   const [summary, setSummary] = useState<VComplianceSummaryRow | null>(null);
@@ -40,11 +40,11 @@ export function useComplianceData() {
 
         setIsAdmin(!!roleData);
 
-        // Load compliance summary with flexible OR filter (tenant_id or company_id)
+        // Load compliance summary (tenant_id only)
         const { data: s1, error: e1 } = await supabase
           .from('mv_compliance_summary' as any)
           .select('*')
-          .or(buildTenantFilter(tid))
+          .eq('tenant_id', tid)
           .limit(1)
           .maybeSingle();
 
@@ -54,7 +54,7 @@ export function useComplianceData() {
           const { data: s2 } = await supabase
             .from('v_compliance_summary' as any)
             .select('*')
-            .or(buildTenantFilter(tid))
+            .eq('tenant_id', tid)
             .limit(1)
             .maybeSingle();
 
@@ -63,21 +63,21 @@ export function useComplianceData() {
           }
         }
 
-        // Load framework scores with flexible filter
+        // Load framework scores
         const { data: f } = await supabase
           .from('v_framework_compliance' as any)
           .select('tenant_id, framework, score')
-          .or(buildTenantFilter(tid));
+          .eq('tenant_id', tid);
 
         if (f) {
           setFrameworks(f as unknown as VFrameworkComplianceRow[]);
         }
 
-        // Load trend data with flexible filter
+        // Load trend data
         const { data: t } = await supabase
           .from('v_control_compliance_trend' as any)
           .select('cur_score, prev_score, delta_score')
-          .or(buildTenantFilter(tid))
+          .eq('tenant_id', tid)
           .limit(1)
           .maybeSingle();
 
@@ -105,11 +105,11 @@ export function useComplianceData() {
       const { error } = await (supabase.rpc as any)('refresh_compliance_summary_rpc');
       if (error) throw error;
 
-      // Reload data after refresh with flexible filter
+      // Reload data after refresh
       const { data: s } = await supabase
         .from('mv_compliance_summary' as any)
         .select('*')
-        .or(buildTenantFilter(tenantId))
+        .eq('tenant_id', tenantId)
         .limit(1)
         .maybeSingle();
       
@@ -120,7 +120,7 @@ export function useComplianceData() {
       const { data: t } = await supabase
         .from('v_control_compliance_trend' as any)
         .select('cur_score, prev_score, delta_score')
-        .or(buildTenantFilter(tenantId))
+        .eq('tenant_id', tenantId)
         .limit(1)
         .maybeSingle();
       

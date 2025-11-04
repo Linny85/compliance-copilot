@@ -21,10 +21,3 @@ export async function getTenantId(): Promise<string | null> {
     return null;
   }
 }
-
-/**
- * Build a flexible OR filter for querying views that support both tenant_id and company_id
- */
-export function buildTenantFilter(tenantId: string): string {
-  return `tenant_id.eq.${tenantId},company_id.eq.${tenantId}`;
-}
