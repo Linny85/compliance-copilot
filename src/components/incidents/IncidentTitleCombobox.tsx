@@ -58,17 +58,19 @@ export default function IncidentTitleCombobox({
     const raw = t("form.incident.templates", { returnObjects: true });
     const list = toStringArray(raw);
     const normalized = list.length ? list : DEFAULT_TITLES;
+
     if (import.meta.env.DEV) {
+      const hasInc = i18n.hasResourceBundle(i18n.language, "incidents");
       console.debug("[incident:title QA]", {
         lang: i18n.language,
-        hasIncidents: i18n.hasResourceBundle(i18n.language, 'incidents'),
-        count: options.length || normalized.length,
-        sample: (options.length ? options : normalized).slice(0, 3),
+        hasIncidents: hasInc,
+        count: normalized.length,
+        sample: normalized.slice(0, 3),
       });
-      console.debug("[incident:title:options]", { raw, normalized });
+      console.debug("[incident:title:raw]", raw);
     }
     return normalized;
-  }, [t, i18n]);
+  }, [t, i18n.language]);
 
   const apply = (v: string) => {
     const s = (v ?? "").trim();
