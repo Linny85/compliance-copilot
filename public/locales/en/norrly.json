@@ -72,7 +72,8 @@
     "ai-act": "AI Act",
     "organization": "Organization",
     "billing": "Billing",
-    "incidents": "Security Incidents"
+    "incidents": "Security Incidents",
+    "incidents.new": "Report Incident"
   },
   "contextHelp": {
     "dashboard": "Your home view: progress, next steps, and latest reports.",
@@ -100,7 +101,7 @@
     "organization": "Configure your organization settings and team.",
     "billing": "Manage your subscription and payment details.",
     "incidents": "Report and track security incidents. I'll help you document events and plan response measures.",
-    "incidents.new": "Record a new security incident with all relevant details, timestamps and initial assessments."
+    "incidents.new": "Create a new security incident with details, timestamps and initial assessment. Mind reporting deadlines (NIS2 initial notification typically within 24h)."
   },
   "quickstart": {
     "dashboard": [
@@ -205,6 +206,13 @@
       { "label": "Check escalation", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
       { "label": "Link measures", "icon": "Link", "action": "navigate:/measures" },
       { "label": "Export incident report", "icon": "FileDown", "action": "export:/incidents/report" }
+    ],
+    "incidents.new": [
+      { "label": "Prepare initial report (24h)", "action": "navigate:/incidents/new?step=report" },
+      { "label": "Add evidence", "action": "navigate:/evidence?ref=incident" },
+      { "label": "Select measures", "action": "navigate:/measures" },
+      { "label": "Link checks/audits", "action": "navigate:/checks" },
+      { "label": "Create report document", "action": "navigate:/documents/new?template=incident-report" }
     ]
   }
 }

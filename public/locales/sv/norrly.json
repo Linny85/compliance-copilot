@@ -72,7 +72,8 @@
     "ai-act": "AI-förordningen",
     "organization": "Organisation",
     "billing": "Fakturering",
-    "incidents": "Säkerhetsincidenter"
+    "incidents": "Säkerhetsincidenter",
+    "incidents.new": "Rapportera incident"
   },
   "contextHelp": {
     "dashboard": "Din startsida: framsteg, nästa steg och senaste rapporter.",
@@ -100,7 +101,7 @@
     "organization": "Konfigurera dina organisationsinställningar och team.",
     "billing": "Hantera din prenumeration och betalningsuppgifter.",
     "incidents": "Rapportera och spåra säkerhetsincidenter. Jag hjälper dig dokumentera händelser och planera åtgärder.",
-    "incidents.new": "Registrera en ny säkerhetsincident med alla relevanta detaljer, tidsstämplar och inledande bedömningar."
+    "incidents.new": "Skapa en ny säkerhetsincident med detaljer, tidsstämplar och första bedömning. Tänk på rapporteringsfrister (NIS2 – initial anmälan oftast inom 24 h)."
   },
   "quickstart": {
     "dashboard": [
@@ -205,6 +206,13 @@
       { "label": "Kontrollera eskalering", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
       { "label": "Länka åtgärder", "icon": "Link", "action": "navigate:/measures" },
       { "label": "Exportera incidentrapport", "icon": "FileDown", "action": "export:/incidents/report" }
+    ],
+    "incidents.new": [
+      { "label": "Förbered första rapporten (24 h)", "action": "navigate:/incidents/new?step=report" },
+      { "label": "Lägg till bevis", "action": "navigate:/evidence?ref=incident" },
+      { "label": "Välj åtgärder", "action": "navigate:/measures" },
+      { "label": "Koppla kontroller", "action": "navigate:/checks" },
+      { "label": "Skapa rapportdokument", "action": "navigate:/documents/new?template=incident-report" }
     ]
   }
 }

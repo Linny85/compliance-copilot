@@ -410,7 +410,7 @@ export function NorrlandGuideDrawer({
               {(() => {
                 const pageCtx = getPageCtx();
                 const ctxKeyDot = pageCtx || 'dashboard';
-                const pageName = t(`norrly:contextNames.${ctxKeyDot}`, ctxKeyDot);
+                const pageName = t(`norrly:contextNames.${ctxKeyDot}`, { defaultValue: ctxKeyDot.replace(/\./g, ' / ') });
                 
                 return (
                   <div className="text-xs text-muted-foreground border border-border rounded-lg p-2 bg-muted/20">

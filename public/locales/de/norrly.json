@@ -64,6 +64,7 @@
     "company-profile": "Unternehmensprofil",
     "billing": "Abrechnung",
     "incidents": "Sicherheitsvorfälle",
+    "incidents.new": "Vorfall melden",
     "admin.ops": "Ops Dashboard",
     "admin.training-certificates": "Schulungszertifikate",
     "audit.list": "Audits",
@@ -91,7 +92,7 @@
     "company-profile": "Hier bearbeitest du dein Unternehmensprofil und organisatorische Details.",
     "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
     "incidents": "Hier meldest du Sicherheitsvorfälle und verfolgst deren Bearbeitung. Ich helfe dir, Vorfälle zu dokumentieren und Maßnahmen zu planen.",
-    "incidents.new": "Erfasse einen neuen Sicherheitsvorfall mit allen relevanten Details, Zeitstempel und ersten Einschätzungen.",
+    "incidents.new": "Erfasse einen neuen Sicherheitsvorfall mit allen relevanten Details, Zeitstempel und erster Einschätzung. Denken Sie an Meldefristen (NIS2 Erstmeldung i. d. R. binnen 24 Stunden).",
     "admin.ops": "Operative Metriken: E-Mail-Queue, Fehleranalyse, System-Gesundheit.",
     "admin.training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation.",
     "audit.list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
@@ -203,6 +204,13 @@
       { "label": "Eskalation prüfen", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
       { "label": "Maßnahmen verknüpfen", "icon": "Link", "action": "navigate:/measures" },
       { "label": "Vorfallsbericht exportieren", "icon": "FileDown", "action": "export:/incidents/report" }
+    ],
+    "incidents.new": [
+      { "label": "Erstmeldung vorbereiten (24 h)", "action": "navigate:/incidents/new?step=report" },
+      { "label": "Nachweise hinzufügen", "action": "navigate:/evidence?ref=incident" },
+      { "label": "Maßnahmen wählen", "action": "navigate:/measures" },
+      { "label": "Prüfungen/Checks zuordnen", "action": "navigate:/checks" },
+      { "label": "Report-Dokument anlegen", "action": "navigate:/documents/new?template=incident-report" }
     ]
   }
 }
