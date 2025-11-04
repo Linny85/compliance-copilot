@@ -5,6 +5,41 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+const DEFAULT_TITLES = [
+  "Unbefugter Zugriff auf Kundendaten",
+  "Kontoübernahme / kompromittiertes Administratorkonto",
+  "Datenexfiltration",
+  "Cloud-Fehlkonfiguration mit Datenfreigabe",
+  "Phishing mit erfolgreichem Login",
+  "Ransomware-Befall mit Systemverschlüsselung",
+  "DDoS-Attacke auf Produktivsysteme",
+  "Kritischer Dienst-/Systemausfall",
+  "Ausfall eines kritischen Drittanbieters",
+  "Malware-Ausbruch im Unternehmensnetz",
+  "Ausnutzung einer kritischen Schwachstelle",
+  "Manipulation kritischer Konfiguration",
+  "Kompromittiertes Code-Repository (Supply Chain)",
+  "SQL-Injection / Web-Exploit",
+  "Diebstahl/Verlust unverschlüsselter Geräte",
+  "Fehlversand / Fehlberechtigung",
+  "Insider-Vorfall",
+];
+
+function toStringArray(raw: unknown): string[] {
+  if (Array.isArray(raw)) return raw.filter((v): v is string => typeof v === "string").map(s => s.trim()).filter(Boolean);
+  if (typeof raw === "string") {
+    const maybeSplit = raw.includes("|") ? raw.split("|") : [raw];
+    return maybeSplit.map(s => s.trim()).filter(Boolean);
+  }
+  if (raw && typeof raw === "object") {
+    return Object.values(raw)
+      .filter((v): v is string => typeof v === "string")
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+  return [];
+}
+
 export default function IncidentTitleCombobox({
   value, onChange, placeholder
 }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
@@ -12,10 +47,13 @@ export default function IncidentTitleCombobox({
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
 
-  const options: string[] = useMemo(
-    () => (t("incidents:form.incident.templates", { returnObjects: true }) as string[]) || [],
-    [t]
-  );
+  const options: string[] = useMemo(() => {
+    const raw = t("incidents:form.incident.templates", { returnObjects: true });
+    const list = toStringArray(raw);
+    const normalized = list.length ? list : DEFAULT_TITLES;
+    if (import.meta.env.DEV) console.debug("[incident:title:options]", { raw, normalized });
+    return normalized;
+  }, [t]);
 
   const apply = (v: string) => {
     const s = (v ?? "").trim();
@@ -25,7 +63,11 @@ export default function IncidentTitleCombobox({
     if (import.meta.env.DEV) console.debug("[incident:title] set", s);
   };
 
-  const filtered = !q ? options : options.filter(o => o.toLowerCase().includes(q.toLowerCase()));
+  const filtered = useMemo(() => {
+    const query = q.trim().toLowerCase();
+    if (!query) return options;
+    return options.filter(o => o.toLowerCase().includes(query));
+  }, [q, options]);
 
   return (
     <div className="space-y-1">
@@ -34,7 +76,7 @@ export default function IncidentTitleCombobox({
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-between">
             <span className={value ? "" : "text-muted-foreground"}>
-              {value || (placeholder || t("incidents:form.incident.titlePlaceholder"))}
+              {value || (placeholder || (t("incidents:form.incident.titlePlaceholder") as string))}
             </span>
             <ChevronDown className="h-4 w-4 opacity-70" />
           </Button>
@@ -52,7 +94,7 @@ export default function IncidentTitleCombobox({
             <CommandList>
               <CommandEmpty>
                 <Button variant="ghost" onClick={() => apply(q)} disabled={!q.trim()}>
-                  {t("incidents:form.incident.useEntered", { text: q || "…" })}
+                  {t("incidents:form.incident.useEntered", { text: q || "…" }) as string}
                 </Button>
               </CommandEmpty>
               {filtered.map((opt) => (
