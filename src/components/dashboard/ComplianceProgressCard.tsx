@@ -143,13 +143,13 @@ export function ComplianceProgressCard() {
           {/* Framework Badges */}
           <div className="flex flex-wrap gap-2 justify-center">
             <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.NIS2))}>
-              NIS2: {getFrameworkScorePct(FRAMEWORK_CODES.NIS2)}%
+              {t('dashboard:labels.nis2')}: {getFrameworkScorePct(FRAMEWORK_CODES.NIS2)}%
             </Badge>
             <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT))}>
-              AI Act: {getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT)}%
+              {t('dashboard:labels.ai_act')}: {getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT)}%
             </Badge>
             <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.GDPR))}>
-              GDPR: {getFrameworkScorePct(FRAMEWORK_CODES.GDPR)}%
+              {t('dashboard:labels.gdpr')}: {getFrameworkScorePct(FRAMEWORK_CODES.GDPR)}%
             </Badge>
           </div>
         </div>
@@ -159,7 +159,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('dashboard:complianceControls')}
+                {t('dashboard:sections.controls')}
               </span>
               <span className="font-medium">{formatScore(summary.controls_score ?? 0)}</span>
             </div>
@@ -168,7 +168,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('dashboard:complianceEvidence')}
+                {t('dashboard:sections.evidence')}
               </span>
               <span className="font-medium">{formatScore(summary.evidence_score ?? 0)}</span>
             </div>
@@ -177,7 +177,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('dashboard:complianceTraining')}
+                {t('dashboard:sections.trainings')}
               </span>
               <span className="font-medium">{formatScore(summary.training_score ?? 0)}</span>
             </div>
@@ -186,7 +186,7 @@ export function ComplianceProgressCard() {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">
-                {t('dashboard:complianceDpia')}
+                {t('dashboard:sections.dpia')}
               </span>
               <span className="font-medium">{formatScore(summary.dpia_score ?? 0)}</span>
             </div>

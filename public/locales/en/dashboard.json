@@ -35,6 +35,17 @@
   "complianceEvidence": "Evidence",
   "complianceTraining": "Training",
   "complianceDpia": "DPIA",
+  "labels": {
+    "nis2": "NIS2",
+    "ai_act": "AI Act",
+    "gdpr": "GDPR"
+  },
+  "sections": {
+    "controls": "Controls",
+    "evidence": "Evidence",
+    "trainings": "Training",
+    "dpia": "DPIA"
+  },
   "complianceStatusExcellent": "Excellent compliance status",
   "complianceStatusGood": "Good progress, keep improving",
   "complianceStatusNeeds": "Needs improvement",

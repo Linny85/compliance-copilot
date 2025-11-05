@@ -35,6 +35,17 @@
   "complianceEvidence": "Bevis",
   "complianceTraining": "Utbildning",
   "complianceDpia": "DPIA",
+  "labels": {
+    "nis2": "NIS2",
+    "ai_act": "AI Act",
+    "gdpr": "GDPR"
+  },
+  "sections": {
+    "controls": "Kontroller",
+    "evidence": "Bevis",
+    "trainings": "Utbildning",
+    "dpia": "DPIA"
+  },
   "complianceStatusExcellent": "Utmärkt efterlevnadsstatus",
   "complianceStatusGood": "Goda framsteg, fortsätt förbättra",
   "complianceStatusNeeds": "Behöver förbättring",
