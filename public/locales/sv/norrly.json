@@ -56,24 +56,22 @@
     "measures": "Åtgärder",
     "measures.new": "Åtgärder – Ny",
     "evidence": "Underlag",
-    "admin": {
-      "ops": "Ops Dashboard",
-      "training-certificates": "Utbildningsintyg"
-    },
-    "audit": {
-      "list": "Revisioner",
-      "new": "Ny Revision",
-      "detail": "Revisionsdetalj"
-    },
-    "dpia": {
-      "list": "Dataskyddskonsekvensbedömningar",
-      "detail": "DPIA-detalj"
-    },
+    "scope": "Tillämpningsområde",
+    "nis2": "NIS2",
     "ai-act": "AI-förordningen",
+    "ai-systems.register": "AI-systemregister",
     "organization": "Organisation",
+    "company-profile": "Företagsprofil",
     "billing": "Fakturering",
     "incidents": "Säkerhetsincidenter",
-    "incidents.new": "Rapportera incident"
+    "incidents.new": "Rapportera incident",
+    "admin.ops": "Ops Dashboard",
+    "admin.training-certificates": "Utbildningsintyg",
+    "audit.list": "Revisioner",
+    "audit.new": "Ny Revision",
+    "audit.detail": "Revisionsdetalj",
+    "dpia.list": "Dataskyddskonsekvensbedömningar",
+    "dpia.detail": "DPIA-detalj"
   },
   "contextHelp": {
     "dashboard": "Din startsida: framsteg, nästa steg och senaste rapporter.",
@@ -86,22 +84,22 @@
     "measures": "Här kan du planera och genomföra åtgärder och länka dem till kontroller och bevis.",
     "measures.new": "Skapa en ny åtgärd, länka den till kontroller och tilldela ansvar.",
     "evidence": "Ladda upp och organisera stödjande underlag.",
-    "admin": {
-      "ops": "Operativa mätvärden: e-postkö, felanalys, systemhälsa.",
-      "training-certificates": "Hantera kursregister, intyg och tilldelningar för personal."
-    },
-    "audit": {
-      "list": "Visa och hantera alla revisionsuppgifter.",
-      "new": "Skapa och schemalägg nya revisionsaktiviteter."
-    },
-    "dpia": {
-      "list": "Spåra alla dataskyddskonsekvensbedömningar."
-    },
+    "scope": "Definiera här tillämpningsområdet för ditt informationssäkerhets- eller AI-hanteringssystem.",
+    "nis2": "Här hittar du information om NIS2 och kan hantera dina compliance-statusrapporter.",
     "ai-act": "Registrera och hantera AI-system för regelefterlevnad.",
+    "ai-systems.register": "Registrera här dina AI-system och granska deras compliance-krav.",
     "organization": "Konfigurera dina organisationsinställningar och team.",
+    "company-profile": "Här redigerar du din företagsprofil och organisatoriska detaljer.",
     "billing": "Hantera din prenumeration och betalningsuppgifter.",
     "incidents": "Rapportera och spåra säkerhetsincidenter. Jag hjälper dig dokumentera händelser och planera åtgärder.",
-    "incidents.new": "Skapa en ny säkerhetsincident med detaljer, tidsstämplar och första bedömning. Tänk på rapporteringsfrister (NIS2 – initial anmälan oftast inom 24 h)."
+    "incidents.new": "Skapa en ny säkerhetsincident med detaljer, tidsstämplar och första bedömning. Tänk på rapporteringsfrister (NIS2 – initial anmälan oftast inom 24 h).",
+    "admin.ops": "Operativa mätvärden: e-postkö, felanalys, systemhälsa.",
+    "admin.training-certificates": "Hantera kursregister, intyg och tilldelningar för personal.",
+    "audit.list": "Visa och hantera alla revisionsuppgifter.",
+    "audit.new": "Skapa och schemalägg nya revisionsaktiviteter.",
+    "audit.detail": "Här hittar du alla detaljer om en specifik revision, inkl. bevis och status.",
+    "dpia.list": "Spåra alla dataskyddskonsekvensbedömningar.",
+    "dpia.detail": "Här hittar du alla detaljer om en specifik DPIA, inkl. riskbedömning och åtgärder."
   },
   "quickstart": {
     "dashboard": [

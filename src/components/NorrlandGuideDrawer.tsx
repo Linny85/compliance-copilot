@@ -28,7 +28,7 @@ export function NorrlandGuideDrawer({
 }) {
   const inRouter = useInRouterContext();
   const navigateRR = inRouter ? useNavigate() : null;
-  const { t, i18n, ready } = useTranslation(["assistant", "helpbot", "norrly"], { useSuspense: false });
+  const { t, i18n, ready } = useTranslation(["norrly", "assistant", "helpbot"], { useSuspense: false });
   
   // Helper function for translations with default values
   const tn = (key: string, defaultValue: string) => t(key, { defaultValue });
@@ -447,8 +447,8 @@ export function NorrlandGuideDrawer({
               {(() => {
                 const pageCtx = getPageCtx();
                 const ctxKeyDot = pageCtx || 'dashboard';
-                const quickstarts = t(`norrly:quickstart.${ctxKeyDot}`, { returnObjects: true });
-                const fallbackQuickstarts = t('norrly:quickstart.dashboard', { returnObjects: true });
+                const quickstarts = t(`norrly:quickstart.${ctxKeyDot}`, { ns: 'norrly', returnObjects: true });
+                const fallbackQuickstarts = t('quickstart.dashboard', { ns: 'norrly', returnObjects: true });
                 const items = Array.isArray(quickstarts) && quickstarts.length ? quickstarts : fallbackQuickstarts;
                 
                 if (import.meta.env.DEV) console.debug('[norrly:quickstart:items]', { ctxKeyDot, items });
