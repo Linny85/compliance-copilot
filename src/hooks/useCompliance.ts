@@ -40,27 +40,25 @@ export function useComplianceData() {
 
         setIsAdmin(!!roleData);
 
-        // Load compliance summary (tenant_id only)
-        const { data: s1, error: e1 } = await supabase
-          .from('mv_compliance_summary' as any)
+        // Load compliance summary from v_compliance_overview
+        const { data: s1 } = await supabase
+          .from('v_compliance_overview' as any)
           .select('*')
           .eq('tenant_id', tid)
-          .limit(1)
           .maybeSingle();
 
-        if (s1 && !e1) {
+        if (s1) {
           setSummary(s1 as unknown as VComplianceSummaryRow);
         } else {
-          const { data: s2 } = await supabase
-            .from('v_compliance_summary' as any)
-            .select('*')
-            .eq('tenant_id', tid)
-            .limit(1)
-            .maybeSingle();
-
-          if (s2) {
-            setSummary(s2 as unknown as VComplianceSummaryRow);
-          }
+          // No data yet - set zeros
+          setSummary({
+            tenant_id: tid,
+            overall_score: 0,
+            controls_score: 0,
+            evidence_score: 0,
+            training_score: 0,
+            dpia_score: 0,
+          });
         }
 
         // Load framework scores
@@ -73,16 +71,19 @@ export function useComplianceData() {
           setFrameworks(f as unknown as VFrameworkComplianceRow[]);
         }
 
-        // Load trend data
+        // Load trend data - only if there's actual data
         const { data: t } = await supabase
           .from('v_control_compliance_trend' as any)
           .select('cur_score, prev_score, delta_score')
           .eq('tenant_id', tid)
-          .limit(1)
           .maybeSingle();
 
-        if (t) {
-          setTrend(t as unknown as TrendData);
+        // Only set trend if we have meaningful data (not 0 -> 0)
+        const trendData = t as unknown as TrendData | null;
+        if (trendData && ((trendData.cur_score ?? 0) > 0 || (trendData.prev_score ?? 0) > 0)) {
+          setTrend(trendData);
+        } else {
+          setTrend(null);
         }
       } catch (error) {
         console.error('Error loading compliance data:', error);
@@ -107,10 +108,9 @@ export function useComplianceData() {
 
       // Reload data after refresh
       const { data: s } = await supabase
-        .from('mv_compliance_summary' as any)
+        .from('v_compliance_overview' as any)
         .select('*')
         .eq('tenant_id', tenantId)
-        .limit(1)
         .maybeSingle();
       
       if (s) {
