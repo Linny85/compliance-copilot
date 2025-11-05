@@ -98,6 +98,12 @@ export function useComplianceData() {
     return Math.round(((m?.score ?? 0) * 100));
   };
 
+  const getDpiaTotal = (): number => {
+    // For now return 0 - will be populated when we have the actual count from DB
+    // This should ideally come from a view or be queried separately
+    return 0;
+  };
+
   const refreshSummary = async () => {
     if (!tenantId) return;
     
@@ -141,7 +147,8 @@ export function useComplianceData() {
     frameworks, 
     trend,
     tenantId, 
-    getFrameworkScorePct, 
+    getFrameworkScorePct,
+    getDpiaTotal,
     isAdmin,
     refreshSummary,
     refreshing

@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);
-  const { loading, summary, trend, getFrameworkScorePct, isAdmin, refreshSummary, refreshing } = useComplianceData();
+  const { loading, summary, trend, getFrameworkScorePct, getDpiaTotal, isAdmin, refreshSummary, refreshing } = useComplianceData();
 
   if (loading) {
     return (
@@ -54,6 +54,11 @@ export function ComplianceProgressCard() {
   
   // Calculate delta in percentage points
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
+  
+  // DPIA should only show percentage if there are at least 2 cases
+  const dpiaTotal = getDpiaTotal();
+  const dpiaScore = summary.dpia_score ?? 0;
+  const dpiaDisplay = dpiaTotal > 1 ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
   const getCircleColor = (score: number) => {
     if (score >= 0.80) return "hsl(var(--success))";
@@ -188,9 +193,11 @@ export function ComplianceProgressCard() {
               <span className="text-muted-foreground">
                 {t('dashboard:sections.dpia')}
               </span>
-              <span className="font-medium">{formatScore(summary.dpia_score ?? 0)}</span>
+              <span className="font-medium" title={dpiaTotal <= 1 ? t('dashboard:tooltips.dpia_na') : undefined}>
+                {dpiaDisplay}
+              </span>
             </div>
-            <Progress value={(summary.dpia_score ?? 0) * 100} />
+            <Progress value={dpiaTotal > 1 ? (summary.dpia_score ?? 0) * 100 : 0} />
           </div>
         </div>
 

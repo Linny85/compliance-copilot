@@ -46,6 +46,12 @@
     "trainings": "Schulungen",
     "dpia": "DSFA"
   },
+  "badges": {
+    "na": "n/a"
+  },
+  "tooltips": {
+    "dpia_na": "Wird bewertet, sobald ≥2 DSFA vorliegen."
+  },
   "complianceStatusExcellent": "Ausgezeichneter Compliance-Status",
   "complianceStatusGood": "Guter Fortschritt, weiter so",
   "complianceStatusNeeds": "Verbesserungsbedarf",
