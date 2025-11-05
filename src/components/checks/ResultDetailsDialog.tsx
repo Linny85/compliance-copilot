@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { useTranslation } from "react-i18next";
@@ -101,9 +101,12 @@ export function ResultDetailsDialog({ open, onOpenChange, runId, onRerun }: Prop
   if (loading || !data) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" aria-describedby="result-details-desc">
           <DialogHeader>
             <DialogTitle>{t("checks:drilldown.title")}</DialogTitle>
+            <DialogDescription id="result-details-desc">
+              {loading ? t("common:loading") : t("checks:drilldown.noData")}
+            </DialogDescription>
           </DialogHeader>
           <div className="flex items-center justify-center py-8">
             {loading ? t("common:loading") : t("checks:drilldown.noData")}
@@ -118,9 +121,12 @@ export function ResultDetailsDialog({ open, onOpenChange, runId, onRerun }: Prop
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto" aria-describedby="result-main-desc">
         <DialogHeader>
           <DialogTitle>{t("checks:drilldown.title")}</DialogTitle>
+          <DialogDescription id="result-main-desc">
+            {t("checks:drilldown.description", "View detailed results and information for this check run")}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

@@ -16,9 +16,22 @@ i18n
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json?v=20251105e',
+      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      queryStringParams: {
+        v: import.meta.env.DEV ? String(Date.now()) : '20251105f'
+      },
       allowMultiLoading: false,
-      crossDomain: false
+      crossDomain: false,
+      parse: (data: string) => {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          if (import.meta.env.DEV) {
+            console.warn('[i18n] parse error fallback - returning empty object', e);
+          }
+          return {};
+        }
+      }
     },
     interpolation: { escapeValue: false },
     returnNull: false,

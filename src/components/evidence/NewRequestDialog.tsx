@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
 import { ControlSelect } from '@/components/controls/ControlSelect';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -98,9 +98,12 @@ export function NewRequestDialog({ open, onOpenChange, tenantId, onSuccess }: Pr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[560px]">
+      <DialogContent className="max-w-[560px]" aria-describedby="new-request-desc">
         <DialogHeader>
           <DialogTitle>{t('evidence:actions.newRequest')}</DialogTitle>
+          <DialogDescription id="new-request-desc">
+            {t('evidence:dialogs.newRequest.description', 'Create a new evidence request for a control')}
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
