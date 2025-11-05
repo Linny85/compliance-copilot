@@ -17,13 +17,14 @@ function normPct(v: unknown): number {
   return n <= 1 ? Math.round(n * 100) : Math.round(n);
 }
 
-// Helper to extract framework score from frameworks array
+// Extract framework score from array where score can be 0..1 or 0..100
 function pickFrameworkScore(frameworks: any[] | undefined, code: string): number {
   if (!Array.isArray(frameworks)) return 0;
   const f = frameworks.find(x =>
-    String(x?.framework_code ?? x?.framework ?? x?.code ?? '').toUpperCase() === code.toUpperCase()
+    String(x?.framework_code ?? x?.framework ?? x?.code ?? '')
+      .toUpperCase() === code.toUpperCase()
   );
-  const raw = f?.score ?? f?.pct ?? f?.percentage ?? 0; // 0..1 or 0..100
+  const raw = f?.score ?? f?.pct ?? f?.percentage ?? 0;
   const n = Number(raw);
   if (!Number.isFinite(n)) return 0;
   return n <= 1 ? Math.round(n * 100) : Math.round(n);
@@ -77,15 +78,15 @@ export function ComplianceProgressCard() {
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
   
   // Framework scores from frameworks array
-  const nis2Pct = Number(pickFrameworkScore(frameworks, 'NIS2')) || 0;
-  const aiPct = Number(pickFrameworkScore(frameworks, 'AI_ACT')) || 0;
-  const gdprPct = Number(pickFrameworkScore(frameworks, 'GDPR')) || 0;
+  const nis2Pct = pickFrameworkScore(frameworks, 'NIS2') || 0;
+  const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT') || 0;
+  const gdprPct = pickFrameworkScore(frameworks, 'GDPR') || 0;
   
   // DPIA should show percentage from >=1 case onwards
   const dpiaTotal = Number(summary?.dpia_total ?? 0);
   const dpiaScore = normPct(summary?.dpia_score);
-  const showDpia = dpiaTotal >= 1; // Show from 1 case onwards
-  const dpiaDisplay = showDpia ? formatScore(summary.dpia_score ?? 0) : t('dashboard:badges.na');
+  const showDpia  = dpiaTotal >= 1;
+  const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
   // Debug values in dev mode
   if (import.meta.env.DEV) {

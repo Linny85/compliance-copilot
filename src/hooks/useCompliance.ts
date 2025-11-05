@@ -57,14 +57,16 @@ export function useComplianceData() {
     if (ov) {
       setSummary({
         tenant_id: tid,
-        overall_score: (ov.overall_pct ?? 0) / 100,
-        controls_score: (ov.controls_pct ?? 0) / 100,
-        evidence_score: (ov.evidence_pct ?? 0) / 100,
-        training_score: (ov.trainings_pct ?? 0) / 100,
-        dpia_score: (ov.dpia_pct ?? 0) / 100,
-        dpia_total: ov.dpia_total ?? 0,
+        // backend may return 0..1 or 0..100 → normalize to 0..1 here
+        overall_score: Number(ov.overall_pct ?? 0) > 1 ? Number(ov.overall_pct)/100 : Number(ov.overall_pct ?? 0),
+        controls_score: Number(ov.controls_pct ?? 0) > 1 ? Number(ov.controls_pct)/100 : Number(ov.controls_pct ?? 0),
+        evidence_score: Number(ov.evidence_pct ?? 0) > 1 ? Number(ov.evidence_pct)/100 : Number(ov.evidence_pct ?? 0),
+        training_score: Number(ov.trainings_pct ?? 0) > 1 ? Number(ov.trainings_pct)/100 : Number(ov.trainings_pct ?? 0),
+        dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
+        dpia_total: Number(ov.dpia_total ?? 0),
       });
-      setFrameworks(fwArr);
+      // Accept a variety of shapes and keep original objects
+      setFrameworks(Array.isArray(fwArr) ? fwArr : []);
         } else {
           setSummary({
             tenant_id: tid,
@@ -100,8 +102,15 @@ export function useComplianceData() {
   }, []);
 
   const getFrameworkScorePct = (fw: string) => {
-    const m = frameworks.find(x => x.framework === fw);
-    return Math.round(((m?.score ?? 0) * 100));
+    if (!Array.isArray(frameworks)) return 0;
+    const f = frameworks.find((x: any) =>
+      String(x?.framework_code ?? x?.framework ?? x?.code ?? '')
+        .toUpperCase() === fw.toUpperCase()
+    );
+    const raw = (f as any)?.score ?? (f as any)?.pct ?? (f as any)?.percentage ?? 0;
+    const n = Number(raw);
+    if (!Number.isFinite(n)) return 0;
+    return n <= 1 ? Math.round(n * 100) : Math.round(n);
   };
 
   const getDpiaTotal = (): number => {
@@ -126,13 +135,15 @@ export function useComplianceData() {
       if (ov) {
         setSummary({
           tenant_id: tenantId,
-          overall_score: (ov.overall_pct ?? 0) / 100,
-          controls_score: (ov.controls_pct ?? 0) / 100,
-          evidence_score: (ov.evidence_pct ?? 0) / 100,
-          training_score: (ov.trainings_pct ?? 0) / 100,
-          dpia_score: (ov.dpia_pct ?? 0) / 100,
-          dpia_total: ov.dpia_total ?? 0,
+          // backend may return 0..1 or 0..100 → normalize to 0..1 here
+          overall_score: Number(ov.overall_pct ?? 0) > 1 ? Number(ov.overall_pct)/100 : Number(ov.overall_pct ?? 0),
+          controls_score: Number(ov.controls_pct ?? 0) > 1 ? Number(ov.controls_pct)/100 : Number(ov.controls_pct ?? 0),
+          evidence_score: Number(ov.evidence_pct ?? 0) > 1 ? Number(ov.evidence_pct)/100 : Number(ov.evidence_pct ?? 0),
+          training_score: Number(ov.trainings_pct ?? 0) > 1 ? Number(ov.trainings_pct)/100 : Number(ov.trainings_pct ?? 0),
+          dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
+          dpia_total: Number(ov.dpia_total ?? 0),
         });
+        // Accept a variety of shapes and keep original objects
         setFrameworks(Array.isArray(ov.frameworks) ? ov.frameworks : []);
       }
 
