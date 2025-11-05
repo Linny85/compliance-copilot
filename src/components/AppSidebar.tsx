@@ -79,11 +79,31 @@ export function AppSidebar() {
     ...(isAdmin ? [{ key: 'admin', url: "/admin", icon: Settings }] : []),
   ].filter(item => !item.feature || hasFeature(item.feature as any));
 
-  // Debug in dev: Log actual labels being rendered
+  // Debug in dev: Comprehensive label mapping analysis
   if (import.meta.env.DEV) {
-    console.table([...mainNavItems, ...systemNavItems].map(i => ({
-      key: i.key, url: i.url, label: getLabel(i.key)
-    })));
+    try {
+      const allItems = [...mainNavItems, ...systemNavItems];
+      const rows = allItems.map((i: any) => ({
+        key: i.key ?? '(none)',
+        route: i.url ?? i.to ?? '(none)',
+        icon: i.icon?.name ?? '(none)',
+        label_from_i18n: getLabel(i.key),
+        label_from_item: i.title ?? '(none)'
+      }));
+      
+      const seen: Record<string, number> = {};
+      const rowsWithDup = rows.map(r => {
+        const L = r.label_from_i18n;
+        seen[L] = (seen[L] ?? 0) + 1;
+        return { ...r, duplicate_label_count: seen[L] };
+      });
+      
+      console.group('[AppSidebar] Navigation Console Table');
+      console.table(rowsWithDup);
+      console.groupEnd();
+    } catch(e) {
+      console.error('[AppSidebar] console.table failed', e);
+    }
   }
 
   return (
