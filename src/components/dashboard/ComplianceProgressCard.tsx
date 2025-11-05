@@ -9,9 +9,28 @@ import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/sc
 import { useComplianceData } from "@/hooks/useCompliance";
 import { toast } from "sonner";
 
+// Helper to normalize percentage values (0..1 or 0..100 -> 0..100)
+function normPct(v: unknown): number {
+  if (v == null) return 0;
+  const n = Number(v);
+  if (!Number.isFinite(n)) return 0;
+  return n <= 1 ? Math.round(n * 100) : Math.round(n);
+}
+
+// Helper to extract framework score from frameworks array
+function pickFrameworkScore(frameworks: any[] | undefined, code: string): number {
+  if (!Array.isArray(frameworks)) return 0;
+  const found = frameworks.find((x) => {
+    const k = String(x?.framework ?? x?.framework_code ?? x?.code ?? '').toUpperCase();
+    return k === code.toUpperCase();
+  });
+  const raw = found?.score ?? found?.pct ?? found?.percentage ?? 0;
+  return Math.max(0, Math.min(100, normPct(raw)));
+}
+
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);
-  const { loading, summary, trend, getFrameworkScorePct, isAdmin, refreshSummary, refreshing } = useComplianceData();
+  const { loading, summary, frameworks, trend, isAdmin, refreshSummary, refreshing } = useComplianceData();
 
   if (loading) {
     return (
@@ -48,6 +67,7 @@ export function ComplianceProgressCard() {
     );
   }
 
+  // Overall score
   const overall = summary.overall_score ?? 0;
   const overallPercent = Math.round(overall * 100);
   const scoreVariant = getScoreColor(overall);
@@ -55,18 +75,23 @@ export function ComplianceProgressCard() {
   // Calculate delta in percentage points
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
   
+  // Framework scores from frameworks array
+  const nis2Pct = pickFrameworkScore(frameworks, FRAMEWORK_CODES.NIS2);
+  const aiPct = pickFrameworkScore(frameworks, FRAMEWORK_CODES.AI_ACT);
+  const gdprPct = pickFrameworkScore(frameworks, FRAMEWORK_CODES.GDPR);
+  
   // DPIA should only show percentage if there are at least 2 cases
   const dpiaTotal = summary.dpia_total ?? 0;
   const dpiaScore = summary.dpia_score ?? 0;
   const showDpia = dpiaTotal > 1;
   const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
-  // Debug DPIA values in dev mode
+  // Debug values in dev mode
   if (import.meta.env.DEV) {
-    console.debug('[dashboard:dsfa]', {
-      dpia_total: dpiaTotal,
-      dpia_pct: dpiaScore,
-      showDpia
+    console.debug('[dashboard:progress]', {
+      overall: overallPercent,
+      frameworks: { nis2: nis2Pct, ai: aiPct, gdpr: gdprPct },
+      dpia: { total: dpiaTotal, score: dpiaScore, showDpia }
     });
   }
   
@@ -157,14 +182,14 @@ export function ComplianceProgressCard() {
 
           {/* Framework Badges */}
           <div className="flex flex-wrap gap-2 justify-center">
-            <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.NIS2))}>
-              {t('dashboard:labels.nis2')}: {getFrameworkScorePct(FRAMEWORK_CODES.NIS2)}%
+            <Badge variant={getBadgeVariant(nis2Pct)}>
+              {t('dashboard:labels.nis2')}: {nis2Pct}%
             </Badge>
-            <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT))}>
-              {t('dashboard:labels.ai_act')}: {getFrameworkScorePct(FRAMEWORK_CODES.AI_ACT)}%
+            <Badge variant={getBadgeVariant(aiPct)}>
+              {t('dashboard:labels.ai_act')}: {aiPct}%
             </Badge>
-            <Badge variant={getBadgeVariant(getFrameworkScorePct(FRAMEWORK_CODES.GDPR))}>
-              {t('dashboard:labels.gdpr')}: {getFrameworkScorePct(FRAMEWORK_CODES.GDPR)}%
+            <Badge variant={getBadgeVariant(gdprPct)}>
+              {t('dashboard:labels.gdpr')}: {gdprPct}%
             </Badge>
           </div>
         </div>
