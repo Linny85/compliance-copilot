@@ -109,6 +109,7 @@ const App = () => (
               <Route path="/evidence" element={<Evidence />} />
               <Route path="/checks" element={<Checks />} />
               <Route path="/checks/new" element={<ChecksNewRule />} />
+              <Route path="/pruefungen" element={<Navigate to="/checks" replace />} />
               <Route path="/controls/mapping" element={<ControlsMapping />} />
               <Route path="/settings/notifications" element={<SettingsNotifications />} />
               <Route path="/admin" element={<RequireAdmin><Admin /></RequireAdmin>} />
@@ -133,6 +134,7 @@ const App = () => (
               <Route path="/audit" element={<AuditTasks />} />
               <Route path="/audit/new" element={<NewAuditTask />} />
               <Route path="/audit/:id" element={<AuditTaskDetail />} />
+              <Route path="/audits" element={<Navigate to="/audit" replace />} />
               <Route path="/privacy/dpia" element={<DPIAList />} />
               <Route path="/privacy/dpia/:id" element={<DPIADetail />} />
               <Route path="/billing" element={<Billing />} />

@@ -5,7 +5,7 @@ import {
   Brain,
   Wrench,
   FileCheck,
-  PlayCircle,
+  BadgeCheck,
   FileText,
   BarChart3,
   Building2,
@@ -15,7 +15,7 @@ import {
   LogOut,
   Database,
   Award,
-  ClipboardCheck,
+  ClipboardList,
 } from "lucide-react";
 import {
   Sidebar,
@@ -60,8 +60,8 @@ export function AppSidebar() {
     { title: t.nav.ai, url: "/ai-act", icon: Brain },
     { title: t.nav.controls, url: "/controls", icon: Wrench },
     { title: t.nav.evidence, url: "/evidence", icon: FileCheck, feature: "evidence" },
-    { title: t.nav.checks, url: "/checks", icon: PlayCircle, feature: "checks" },
-    { title: t.nav.audits, url: "/audit", icon: ClipboardCheck },
+    { title: t.nav.checks, url: "/checks", icon: BadgeCheck, feature: "checks" },
+    { title: t.nav.audits, url: "/audit", icon: ClipboardList },
     // Dokumente nur in Trial/Prod
     ...(!isDemo() ? [{ title: t.nav.docs, url: "/documents", icon: FileText }] : []),
     { title: t.nav.certificates, url: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
