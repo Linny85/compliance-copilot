@@ -53,28 +53,38 @@ export function AppSidebar() {
   // Don't render until i18n is ready
   if (!ready) return null;
 
-  // Main Navigation Items - recreate when language changes
+  // Helper: Get label from nav namespace at render time
+  const getLabel = (key: string) => t.nav[key] || key;
+
+  // Main Navigation Items - key-based for reliable i18n
   const mainNavItems = [
-    { title: t.nav.dashboard, url: "/dashboard", icon: LayoutDashboard },
-    { title: t.nav.risks, url: "/nis2", icon: ShieldAlert },
-    { title: t.nav.ai, url: "/ai-act", icon: Brain },
-    { title: t.nav.controls, url: "/controls", icon: Wrench },
-    { title: t.nav.evidence, url: "/evidence", icon: FileCheck, feature: "evidence" },
-    { title: t.nav.checks, url: "/checks", icon: BadgeCheck, feature: "checks" },
-    { title: t.nav.audits, url: "/audit", icon: ClipboardList },
+    { key: 'dashboard', url: "/dashboard", icon: LayoutDashboard },
+    { key: 'risks', url: "/nis2", icon: ShieldAlert },
+    { key: 'ai', url: "/ai-act", icon: Brain },
+    { key: 'controls', url: "/controls", icon: Wrench },
+    { key: 'evidence', url: "/evidence", icon: FileCheck, feature: "evidence" },
+    { key: 'checks', url: "/checks", icon: BadgeCheck, feature: "checks" },
+    { key: 'audits', url: "/audit", icon: ClipboardList },
     // Dokumente nur in Trial/Prod
-    ...(!isDemo() ? [{ title: t.nav.docs, url: "/documents", icon: FileText }] : []),
-    { title: t.nav.certificates, url: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
-    { title: t.nav.reports, url: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
+    ...(!isDemo() ? [{ key: 'docs', url: "/documents", icon: FileText }] : []),
+    { key: 'certificates', url: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
+    { key: 'reports', url: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
   ].filter(item => !item.feature || hasFeature(item.feature as any));
 
-  // System Items - recreate when language changes
+  // System Items - key-based for reliable i18n
   const systemNavItems = [
-    { title: t.nav.organization, url: "/organization", icon: Building2 },
-    { title: t.nav.integrations, url: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
-    { title: t.nav.helpbot_manager, url: "/admin/helpbot", icon: Database, adminOnly: true },
-    ...(isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Settings }] : []),
+    { key: 'organization', url: "/organization", icon: Building2 },
+    { key: 'integrations', url: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
+    { key: 'helpbot_manager', url: "/admin/helpbot", icon: Database, adminOnly: true },
+    ...(isAdmin ? [{ key: 'admin', url: "/admin", icon: Settings }] : []),
   ].filter(item => !item.feature || hasFeature(item.feature as any));
+
+  // Debug in dev: Log actual labels being rendered
+  if (import.meta.env.DEV) {
+    console.table([...mainNavItems, ...systemNavItems].map(i => ({
+      key: i.key, url: i.url, label: getLabel(i.key)
+    })));
+  }
 
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon">
@@ -110,7 +120,7 @@ export function AppSidebar() {
                         }
                       >
                         <item.icon className="h-4 w-4" />
-                        {!isCollapsed && <span>{item.title}</span>}
+                        {!isCollapsed && <span>{getLabel(item.key)}</span>}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -138,7 +148,7 @@ export function AppSidebar() {
                       }
                     >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
+                      {!isCollapsed && <span>{getLabel(item.key)}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
