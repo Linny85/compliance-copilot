@@ -46,6 +46,12 @@
     "trainings": "Utbildning",
     "dpia": "DPIA"
   },
+  "badges": {
+    "na": "ej tillämpligt"
+  },
+  "tooltips": {
+    "dpia_na": "Kommer att bedömas när ≥2 DPIA finns tillgängliga."
+  },
   "complianceStatusExcellent": "Utmärkt efterlevnadsstatus",
   "complianceStatusGood": "Goda framsteg, fortsätt förbättra",
   "complianceStatusNeeds": "Behöver förbättring",

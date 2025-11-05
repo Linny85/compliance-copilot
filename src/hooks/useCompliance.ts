@@ -40,24 +40,31 @@ export function useComplianceData() {
 
         setIsAdmin(!!roleData);
 
-        // Load from v_compliance_overview (returns 0..100 percentages)
-        const { data: ov } = await supabase
-          .from('v_compliance_overview' as any)
-          .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
-          .eq('tenant_id', tid)
-          .maybeSingle() as any;
+    // Load from v_compliance_overview (returns 0..100 percentages)
+    const { data: ov } = await supabase
+      .from('v_compliance_overview' as any)
+      .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
+      .eq('tenant_id', tid)
+      .maybeSingle() as any;
 
-        if (ov) {
-          setSummary({
-            tenant_id: tid,
-            overall_score: (ov.overall_pct ?? 0) / 100,
-            controls_score: (ov.controls_pct ?? 0) / 100,
-            evidence_score: (ov.evidence_pct ?? 0) / 100,
-            training_score: (ov.trainings_pct ?? 0) / 100,
-            dpia_score: (ov.dpia_pct ?? 0) / 100,
-            dpia_total: ov.dpia_total ?? 0,
-          });
-          setFrameworks(Array.isArray(ov.frameworks) ? ov.frameworks : []);
+    // frameworks can be JSON, JSON-string or null → normalize
+    const fwRaw = ov?.frameworks;
+    const fwArr = Array.isArray(fwRaw) ? fwRaw :
+      (typeof fwRaw === 'string' ? (() => { try { return JSON.parse(fwRaw); } catch { return []; } })() : []);
+
+    if (import.meta.env.DEV) console.debug('[progress:fw]', { frameworks: fwArr });
+
+    if (ov) {
+      setSummary({
+        tenant_id: tid,
+        overall_score: (ov.overall_pct ?? 0) / 100,
+        controls_score: (ov.controls_pct ?? 0) / 100,
+        evidence_score: (ov.evidence_pct ?? 0) / 100,
+        training_score: (ov.trainings_pct ?? 0) / 100,
+        dpia_score: (ov.dpia_pct ?? 0) / 100,
+        dpia_total: ov.dpia_total ?? 0,
+      });
+      setFrameworks(fwArr);
         } else {
           setSummary({
             tenant_id: tid,

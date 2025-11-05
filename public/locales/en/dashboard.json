@@ -46,6 +46,12 @@
     "trainings": "Training",
     "dpia": "DPIA"
   },
+  "badges": {
+    "na": "n/a"
+  },
+  "tooltips": {
+    "dpia_na": "Will be assessed when ≥2 DPIAs are available."
+  },
   "complianceStatusExcellent": "Excellent compliance status",
   "complianceStatusGood": "Good progress, keep improving",
   "complianceStatusNeeds": "Needs improvement",

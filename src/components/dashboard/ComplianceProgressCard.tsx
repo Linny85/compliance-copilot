@@ -20,12 +20,13 @@ function normPct(v: unknown): number {
 // Helper to extract framework score from frameworks array
 function pickFrameworkScore(frameworks: any[] | undefined, code: string): number {
   if (!Array.isArray(frameworks)) return 0;
-  const found = frameworks.find((x) => {
-    const k = String(x?.framework ?? x?.framework_code ?? x?.code ?? '').toUpperCase();
-    return k === code.toUpperCase();
-  });
-  const raw = found?.score ?? found?.pct ?? found?.percentage ?? 0;
-  return Math.max(0, Math.min(100, normPct(raw)));
+  const f = frameworks.find(x =>
+    String(x?.framework_code ?? x?.framework ?? x?.code ?? '').toUpperCase() === code.toUpperCase()
+  );
+  const raw = f?.score ?? f?.pct ?? f?.percentage ?? 0; // 0..1 or 0..100
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return 0;
+  return n <= 1 ? Math.round(n * 100) : Math.round(n);
 }
 
 export function ComplianceProgressCard() {
@@ -76,21 +77,21 @@ export function ComplianceProgressCard() {
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
   
   // Framework scores from frameworks array
-  const nis2Pct = pickFrameworkScore(frameworks, FRAMEWORK_CODES.NIS2);
-  const aiPct = pickFrameworkScore(frameworks, FRAMEWORK_CODES.AI_ACT);
-  const gdprPct = pickFrameworkScore(frameworks, FRAMEWORK_CODES.GDPR);
+  const nis2Pct = Number(pickFrameworkScore(frameworks, 'NIS2')) || 0;
+  const aiPct = Number(pickFrameworkScore(frameworks, 'AI_ACT')) || 0;
+  const gdprPct = Number(pickFrameworkScore(frameworks, 'GDPR')) || 0;
   
-  // DPIA should only show percentage if there are at least 2 cases
-  const dpiaTotal = summary.dpia_total ?? 0;
-  const dpiaScore = summary.dpia_score ?? 0;
-  const showDpia = dpiaTotal > 1;
-  const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
+  // DPIA should show percentage from >=1 case onwards
+  const dpiaTotal = Number(summary?.dpia_total ?? 0);
+  const dpiaScore = normPct(summary?.dpia_score);
+  const showDpia = dpiaTotal >= 1; // Show from 1 case onwards
+  const dpiaDisplay = showDpia ? formatScore(summary.dpia_score ?? 0) : t('dashboard:badges.na');
   
   // Debug values in dev mode
   if (import.meta.env.DEV) {
     console.debug('[dashboard:progress]', {
       overall: overallPercent,
-      frameworks: { nis2: nis2Pct, ai: aiPct, gdpr: gdprPct },
+      frameworks: { nis2: nis2Pct, ai: aiPct, gdpr: gdprPct, raw: frameworks },
       dpia: { total: dpiaTotal, score: dpiaScore, showDpia }
     });
   }
