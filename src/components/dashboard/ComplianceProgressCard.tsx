@@ -60,6 +60,14 @@ export function ComplianceProgressCard() {
   const dpiaScore = summary.dpia_score ?? 0;
   const dpiaDisplay = dpiaTotal > 1 ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
+  // Debug DPIA values in dev mode
+  if (import.meta.env.DEV) {
+    console.debug('[dashboard:dsfa]', {
+      dpia_total: dpiaTotal,
+      dpia_pct: dpiaScore
+    });
+  }
+  
   const getCircleColor = (score: number) => {
     if (score >= 0.80) return "hsl(var(--success))";
     if (score >= 0.50) return "hsl(var(--warning))";
