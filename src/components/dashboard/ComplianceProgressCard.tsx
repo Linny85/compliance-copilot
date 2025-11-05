@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, CheckCircle2, TrendingUp, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
+import { calcOverall } from "@/lib/compliance/overall";
 import { useComplianceData } from "@/hooks/useCompliance";
 import { toast } from "sonner";
 
@@ -73,18 +74,17 @@ export function ComplianceProgressCard() {
   const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT') || 0;
   const gdprPct = pickFrameworkScore(frameworks, 'GDPR') || 0;
   
-  // Calculate proper overall score from frameworks (weighted average)
-  // If backend overall_score is 0 or inconsistent, compute from frameworks
+  // Calculate proper overall score from frameworks using utility function
   const backendOverall = summary.overall_score ?? 0;
   const backendOverallPct = Math.round(backendOverall * 100);
   
-  // Compute framework-based overall (equal weights for now)
-  const fwScores = [nis2Pct, aiPct, gdprPct].filter(s => s > 0);
-  const computedOverallPct = fwScores.length > 0 
-    ? Math.round(fwScores.reduce((sum, s) => sum + s, 0) / fwScores.length)
-    : 0;
+  const computedOverallPct = calcOverall([
+    { key: 'nis2', score: nis2Pct },
+    { key: 'ai_act', score: aiPct },
+    { key: 'gdpr', score: gdprPct },
+  ]) ?? 0;
   
-  // Use computed if backend is 0 or implausible, otherwise trust backend
+  // Use computed if backend is 0 or implausible (>30pp difference)
   const overallPercent = (backendOverallPct === 0 || Math.abs(backendOverallPct - computedOverallPct) > 30)
     ? computedOverallPct
     : backendOverallPct;
