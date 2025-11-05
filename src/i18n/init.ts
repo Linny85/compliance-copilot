@@ -16,7 +16,7 @@ i18n
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json?v=20251105d',
+      loadPath: '/locales/{{lng}}/{{ns}}.json?v=20251105e',
       allowMultiLoading: false,
       crossDomain: false
     },
