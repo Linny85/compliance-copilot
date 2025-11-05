@@ -68,18 +68,32 @@ export function ComplianceProgressCard() {
     );
   }
 
-  // Overall score
-  const overall = summary.overall_score ?? 0;
-  const overallPercent = Math.round(overall * 100);
-  const scoreVariant = getScoreColor(overall);
-  
-  // Calculate delta in percentage points
-  const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
-  
   // Framework scores from frameworks array
   const nis2Pct = pickFrameworkScore(frameworks, 'NIS2') || 0;
   const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT') || 0;
   const gdprPct = pickFrameworkScore(frameworks, 'GDPR') || 0;
+  
+  // Calculate proper overall score from frameworks (weighted average)
+  // If backend overall_score is 0 or inconsistent, compute from frameworks
+  const backendOverall = summary.overall_score ?? 0;
+  const backendOverallPct = Math.round(backendOverall * 100);
+  
+  // Compute framework-based overall (equal weights for now)
+  const fwScores = [nis2Pct, aiPct, gdprPct].filter(s => s > 0);
+  const computedOverallPct = fwScores.length > 0 
+    ? Math.round(fwScores.reduce((sum, s) => sum + s, 0) / fwScores.length)
+    : 0;
+  
+  // Use computed if backend is 0 or implausible, otherwise trust backend
+  const overallPercent = (backendOverallPct === 0 || Math.abs(backendOverallPct - computedOverallPct) > 30)
+    ? computedOverallPct
+    : backendOverallPct;
+  
+  const overall = overallPercent / 100;
+  const scoreVariant = getScoreColor(overall);
+  
+  // Calculate delta in percentage points
+  const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
   
   // DPIA should show percentage from >=1 case onwards
   const dpiaTotal = Number(summary?.dpia_total ?? 0);
@@ -87,12 +101,21 @@ export function ComplianceProgressCard() {
   const showDpia  = dpiaTotal >= 1;
   const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
+  // Evidence display - show "—" if denominator is 0
+  const evidenceScore = normPct(summary?.evidence_score);
+  const evidenceDisplay = evidenceScore === 0 && summary?.evidence_score === 0 
+    ? '—' 
+    : formatScore(summary.evidence_score ?? 0);
+  
   // Debug values in dev mode
   if (import.meta.env.DEV) {
     console.debug('[dashboard:progress]', {
-      overall: overallPercent,
+      backend: backendOverallPct,
+      computed: computedOverallPct,
+      final: overallPercent,
       frameworks: { nis2: nis2Pct, ai: aiPct, gdpr: gdprPct, raw: frameworks },
-      dpia: { total: dpiaTotal, score: dpiaScore, showDpia }
+      dpia: { total: dpiaTotal, score: dpiaScore, showDpia },
+      evidence: { score: evidenceScore, display: evidenceDisplay }
     });
   }
   
@@ -177,7 +200,12 @@ export function ComplianceProgressCard() {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-3xl font-bold">{overallPercent}%</span>
-              <span className="text-xs text-muted-foreground">Overall</span>
+              <span 
+                className="text-xs text-muted-foreground" 
+                title={t('dashboard:complianceOverallTooltip')}
+              >
+                {t('dashboard:complianceOverall')}
+              </span>
             </div>
           </div>
 
@@ -211,7 +239,7 @@ export function ComplianceProgressCard() {
               <span className="text-muted-foreground">
                 {t('dashboard:sections.evidence')}
               </span>
-              <span className="font-medium">{formatScore(summary.evidence_score ?? 0)}</span>
+              <span className="font-medium">{evidenceDisplay}</span>
             </div>
             <Progress value={(summary.evidence_score ?? 0) * 100} />
           </div>

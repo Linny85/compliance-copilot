@@ -35,6 +35,8 @@
   "complianceEvidence": "Bevis",
   "complianceTraining": "Utbildning",
   "complianceDpia": "DPIA",
+  "complianceOverall": "Totalt",
+  "complianceOverallTooltip": "Genomsnittlig efterlevnad över alla ramverk (NIS2, AI Act, GDPR)",
   "labels": {
     "nis2": "NIS2",
     "ai_act": "AI Act",

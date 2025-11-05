@@ -35,6 +35,8 @@
   "complianceEvidence": "Nachweise",
   "complianceTraining": "Schulungen",
   "complianceDpia": "DSFA",
+  "complianceOverall": "Gesamt",
+  "complianceOverallTooltip": "Durchschnittliche Compliance über alle Frameworks (NIS2, AI Act, DSGVO)",
   "labels": {
     "nis2": "NIS2",
     "ai_act": "AI Act",
