@@ -35,6 +35,17 @@
   "complianceEvidence": "Nachweise",
   "complianceTraining": "Schulungen",
   "complianceDpia": "DSFA",
+  "labels": {
+    "nis2": "NIS2",
+    "ai_act": "AI Act",
+    "gdpr": "DSGVO"
+  },
+  "sections": {
+    "controls": "Kontrollen",
+    "evidence": "Nachweise",
+    "trainings": "Schulungen",
+    "dpia": "DSFA"
+  },
   "complianceStatusExcellent": "Ausgezeichneter Compliance-Status",
   "complianceStatusGood": "Guter Fortschritt, weiter so",
   "complianceStatusNeeds": "Verbesserungsbedarf",
