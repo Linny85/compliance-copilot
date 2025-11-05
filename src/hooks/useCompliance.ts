@@ -40,17 +40,25 @@ export function useComplianceData() {
 
         setIsAdmin(!!roleData);
 
-        // Load compliance summary from v_compliance_overview
-        const { data: s1 } = await supabase
+        // Load from v_compliance_overview (returns 0..100 percentages)
+        const { data: ov } = await supabase
           .from('v_compliance_overview' as any)
-          .select('overall_score, controls_score, evidence_score, training_score, dpia_score, dpia_total')
+          .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
           .eq('tenant_id', tid)
-          .maybeSingle();
+          .maybeSingle() as any;
 
-        if (s1) {
-          setSummary(s1 as unknown as VComplianceSummaryRow);
+        if (ov) {
+          setSummary({
+            tenant_id: tid,
+            overall_score: (ov.overall_pct ?? 0) / 100,
+            controls_score: (ov.controls_pct ?? 0) / 100,
+            evidence_score: (ov.evidence_pct ?? 0) / 100,
+            training_score: (ov.trainings_pct ?? 0) / 100,
+            dpia_score: (ov.dpia_pct ?? 0) / 100,
+            dpia_total: ov.dpia_total ?? 0,
+          });
+          setFrameworks(Array.isArray(ov.frameworks) ? ov.frameworks : []);
         } else {
-          // No data yet - set zeros
           setSummary({
             tenant_id: tid,
             overall_score: 0,
@@ -60,16 +68,6 @@ export function useComplianceData() {
             dpia_score: 0,
             dpia_total: 0,
           });
-        }
-
-        // Load framework scores
-        const { data: f } = await supabase
-          .from('v_framework_compliance' as any)
-          .select('tenant_id, framework, score')
-          .eq('tenant_id', tid);
-
-        if (f) {
-          setFrameworks(f as unknown as VFrameworkComplianceRow[]);
         }
 
         // Load trend data - only if there's actual data
@@ -107,49 +105,58 @@ export function useComplianceData() {
 
   const refreshSummary = async () => {
     if (!tenantId) return;
-    
-    setRefreshing(true);
-    try {
-      const { error } = await (supabase.rpc as any)('refresh_compliance_summary_rpc');
-      if (error) throw error;
 
-      // Reload data after refresh
-      const { data: s } = await supabase
+    try {
+      setRefreshing(true);
+
+      // Re-fetch from v_compliance_overview
+      const { data: ov } = await supabase
         .from('v_compliance_overview' as any)
+        .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
+        .eq('tenant_id', tenantId)
+        .maybeSingle() as any;
+
+      if (ov) {
+        setSummary({
+          tenant_id: tenantId,
+          overall_score: (ov.overall_pct ?? 0) / 100,
+          controls_score: (ov.controls_pct ?? 0) / 100,
+          evidence_score: (ov.evidence_pct ?? 0) / 100,
+          training_score: (ov.trainings_pct ?? 0) / 100,
+          dpia_score: (ov.dpia_pct ?? 0) / 100,
+          dpia_total: ov.dpia_total ?? 0,
+        });
+        setFrameworks(Array.isArray(ov.frameworks) ? ov.frameworks : []);
+      }
+
+      // Re-fetch trend
+      const { data: trendData } = await supabase
+        .from('v_control_compliance_trend')
         .select('*')
         .eq('tenant_id', tenantId)
         .maybeSingle();
-      
-      if (s) {
-        setSummary(s as unknown as VComplianceSummaryRow);
-      }
 
-      const { data: t } = await supabase
-        .from('v_control_compliance_trend' as any)
-        .select('cur_score, prev_score, delta_score')
-        .eq('tenant_id', tenantId)
-        .limit(1)
-        .maybeSingle();
-      
-      if (t) {
-        setTrend(t as unknown as TrendData);
+      if (trendData) {
+        setTrend({
+          cur_score: trendData.cur_score,
+          prev_score: trendData.prev_score,
+          delta_score: trendData.delta_score
+        });
       }
     } catch (error) {
-      console.error('Error refreshing compliance summary:', error);
+      console.error('Error refreshing compliance data:', error);
       throw error;
     } finally {
       setRefreshing(false);
     }
   };
 
-  return { 
-    loading, 
-    summary, 
-    frameworks, 
+  return {
+    loading,
+    summary,
+    frameworks,
     trend,
-    tenantId, 
-    getFrameworkScorePct,
-    getDpiaTotal,
+    tenantId,
     isAdmin,
     refreshSummary,
     refreshing

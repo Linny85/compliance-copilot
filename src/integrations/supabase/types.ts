@@ -4500,29 +4500,16 @@ export type Database = {
       }
       v_compliance_overview: {
         Row: {
-          controls_score: number | null
-          dpia_score: number | null
-          evidence_score: number | null
-          overall_score: number | null
+          controls_pct: number | null
+          dpia_pct: number | null
+          dpia_total: number | null
+          evidence_pct: number | null
+          frameworks: Json | null
+          overall_pct: number | null
           tenant_id: string | null
-          training_score: number | null
+          trainings_pct: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "check_rules_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "mv_tenant_scope"
-            referencedColumns: ["tenant_id"]
-          },
-          {
-            foreignKeyName: "check_rules_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "Unternehmen"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       v_compliance_summary: {
         Row: {
