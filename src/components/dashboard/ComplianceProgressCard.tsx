@@ -17,18 +17,17 @@ function normPct(v: unknown): number {
   return n <= 1 ? Math.round(n * 100) : Math.round(n);
 }
 
-// Extract framework score from array where score can be 0..1 or 0..100
-function pickFrameworkScore(frameworks: any[] | undefined, code: string): number {
-  if (!Array.isArray(frameworks)) return 0;
-  const f = frameworks.find(x =>
-    String(x?.framework_code ?? x?.framework ?? x?.code ?? '')
-      .toUpperCase() === code.toUpperCase()
-  );
-  const raw = f?.score ?? f?.pct ?? f?.percentage ?? 0;
-  const n = Number(raw);
-  if (!Number.isFinite(n)) return 0;
-  return n <= 1 ? Math.round(n * 100) : Math.round(n);
-}
+  // Extract framework score from normalized view (always 0..1)
+  function pickFrameworkScore(frameworks: any[] | undefined, code: string): number {
+    if (!Array.isArray(frameworks)) return 0;
+    const f = frameworks.find(x =>
+      String(x?.framework_code ?? x?.code ?? '').toUpperCase() === code.toUpperCase()
+    );
+    const raw = Number(f?.score ?? 0);
+    if (!Number.isFinite(raw)) return 0;
+    // View returns 0..1, convert to percentage
+    return Math.round(raw * 100);
+  }
 
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);

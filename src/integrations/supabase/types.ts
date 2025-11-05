@@ -707,6 +707,24 @@ export type Database = {
           },
         ]
       }
+      compliance_frameworks: {
+        Row: {
+          code: string
+          created_at: string
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          name?: string
+        }
+        Relationships: []
+      }
       controls: {
         Row: {
           code: string
@@ -1797,6 +1815,48 @@ export type Database = {
           weight_gradient?: number | null
         }
         Relationships: []
+      }
+      framework_progress: {
+        Row: {
+          created_at: string
+          framework_code: string
+          id: string
+          score: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          framework_code: string
+          id?: string
+          score?: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          framework_code?: string
+          id?: string
+          score?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "framework_progress_framework_code_fkey"
+            columns: ["framework_code"]
+            isOneToOne: false
+            referencedRelation: "compliance_frameworks"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "framework_progress_framework_code_fkey"
+            columns: ["framework_code"]
+            isOneToOne: false
+            referencedRelation: "v_framework_progress"
+            referencedColumns: ["framework_code"]
+          },
+        ]
       }
       frameworks: {
         Row: {
@@ -5176,6 +5236,16 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_framework_progress: {
+        Row: {
+          framework_code: string | null
+          framework_name: string | null
+          score: number | null
+          tenant_id: string | null
+          updated_at: string | null
+        }
+        Relationships: []
       }
       v_integration_pending: {
         Row: {

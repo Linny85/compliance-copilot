@@ -43,14 +43,17 @@ export function useComplianceData() {
     // Load from v_compliance_overview (returns 0..100 percentages)
     const { data: ov } = await supabase
       .from('v_compliance_overview' as any)
-      .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
+      .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total')
       .eq('tenant_id', tid)
       .maybeSingle() as any;
 
-    // frameworks can be JSON, JSON-string or null → normalize
-    const fwRaw = ov?.frameworks;
-    const fwArr = Array.isArray(fwRaw) ? fwRaw :
-      (typeof fwRaw === 'string' ? (() => { try { return JSON.parse(fwRaw); } catch { return []; } })() : []);
+    // Load framework progress from normalized view (always has all frameworks)
+    const { data: fwData } = await supabase
+      .from('v_framework_progress' as any)
+      .select('framework_code, score')
+      .eq('tenant_id', tid) as any;
+
+    const fwArr = Array.isArray(fwData) ? fwData : [];
 
     if (import.meta.env.DEV) console.debug('[progress:fw]', { frameworks: fwArr });
 
@@ -104,13 +107,13 @@ export function useComplianceData() {
   const getFrameworkScorePct = (fw: string) => {
     if (!Array.isArray(frameworks)) return 0;
     const f = frameworks.find((x: any) =>
-      String(x?.framework_code ?? x?.framework ?? x?.code ?? '')
+      String(x?.framework_code ?? x?.code ?? '')
         .toUpperCase() === fw.toUpperCase()
     );
-    const raw = (f as any)?.score ?? (f as any)?.pct ?? (f as any)?.percentage ?? 0;
-    const n = Number(raw);
-    if (!Number.isFinite(n)) return 0;
-    return n <= 1 ? Math.round(n * 100) : Math.round(n);
+    const raw = Number(f?.score ?? 0);
+    if (!Number.isFinite(raw)) return 0;
+    // View returns 0..1, convert to percentage
+    return Math.round(raw * 100);
   };
 
   const getDpiaTotal = (): number => {
@@ -128,9 +131,15 @@ export function useComplianceData() {
       // Re-fetch from v_compliance_overview
       const { data: ov } = await supabase
         .from('v_compliance_overview' as any)
-        .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
+        .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total')
         .eq('tenant_id', tenantId)
         .maybeSingle() as any;
+
+      // Re-fetch framework progress
+      const { data: fwData } = await supabase
+        .from('v_framework_progress' as any)
+        .select('framework_code, score')
+        .eq('tenant_id', tenantId) as any;
 
       if (ov) {
         setSummary({
@@ -143,8 +152,7 @@ export function useComplianceData() {
           dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
           dpia_total: Number(ov.dpia_total ?? 0),
         });
-        // Accept a variety of shapes and keep original objects
-        setFrameworks(Array.isArray(ov.frameworks) ? ov.frameworks : []);
+        setFrameworks(Array.isArray(fwData) ? fwData : []);
       }
 
       // Re-fetch trend
