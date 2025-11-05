@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
 import { calcOverall } from "@/lib/compliance/overall";
 import { useComplianceData } from "@/hooks/useCompliance";
+import { useOverallCompliance } from "@/hooks/useOverallCompliance";
 import { toast } from "sonner";
 
 // Helper to normalize percentage values (0..1 or 0..100 -> 0..100)
@@ -19,13 +20,14 @@ function normPct(v: unknown): number {
 }
 
   // Extract framework score from normalized view (always 0..1)
-  function pickFrameworkScore(frameworks: any[] | undefined, code: string): number {
-    if (!Array.isArray(frameworks)) return 0;
+  function pickFrameworkScore(frameworks: any[] | undefined, code: string): number | null {
+    if (!Array.isArray(frameworks)) return null;
     const f = frameworks.find(x =>
       String(x?.framework_code ?? x?.code ?? '').toUpperCase() === code.toUpperCase()
     );
-    const raw = Number(f?.score ?? 0);
-    if (!Number.isFinite(raw)) return 0;
+    if (!f) return null;
+    const raw = Number(f?.score);
+    if (!Number.isFinite(raw)) return null;
     // View returns 0..1, convert to percentage
     return Math.round(raw * 100);
   }
@@ -69,10 +71,10 @@ export function ComplianceProgressCard() {
     );
   }
 
-  // Framework scores from frameworks array
-  const nis2Pct = pickFrameworkScore(frameworks, 'NIS2') || 0;
-  const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT') || 0;
-  const gdprPct = pickFrameworkScore(frameworks, 'GDPR') || 0;
+  // Framework scores from frameworks array - keep null for missing data
+  const nis2Pct = pickFrameworkScore(frameworks, 'NIS2');
+  const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT');
+  const gdprPct = pickFrameworkScore(frameworks, 'GDPR');
   
   // Calculate proper overall score from frameworks using utility function
   const backendOverall = summary.overall_score ?? 0;
@@ -82,14 +84,14 @@ export function ComplianceProgressCard() {
     { key: 'nis2', score: nis2Pct },
     { key: 'ai_act', score: aiPct },
     { key: 'gdpr', score: gdprPct },
-  ]) ?? 0;
+  ]);
   
   // Use computed if backend is 0 or implausible (>30pp difference)
-  const overallPercent = (backendOverallPct === 0 || Math.abs(backendOverallPct - computedOverallPct) > 30)
+  const overallPercent = (backendOverallPct === 0 || (computedOverallPct != null && Math.abs(backendOverallPct - computedOverallPct) > 30))
     ? computedOverallPct
     : backendOverallPct;
   
-  const overall = overallPercent / 100;
+  const overall = overallPercent != null ? overallPercent / 100 : 0;
   const scoreVariant = getScoreColor(overall);
   
   // Calculate delta in percentage points
@@ -109,27 +111,20 @@ export function ComplianceProgressCard() {
   
   // Debug values in dev mode
   if (import.meta.env.DEV) {
-    console.debug('[dashboard:progress]', {
-      backend: backendOverallPct,
-      computed: computedOverallPct,
-      final: overallPercent,
-      frameworks: { nis2: nis2Pct, ai: aiPct, gdpr: gdprPct, raw: frameworks },
-      dpia: { total: dpiaTotal, score: dpiaScore, showDpia },
-      evidence: { score: evidenceScore, display: evidenceDisplay }
-    });
-    
-    // Detailed diagnostic table
     console.table({
-      '⚠️ EXPECTED': '~69%',
-      'Ring shows': `${overallPercent}%`,
-      'Backend overall': `${backendOverallPct}%`,
-      'Computed (82+67+58)/3': `${computedOverallPct}%`,
-      'NIS2 chip': `${nis2Pct}%`,
-      'AI Act chip': `${aiPct}%`,
-      'GDPR chip': `${gdprPct}%`,
-      'Controls bar': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
-      'Frameworks array length': frameworks?.length ?? 0,
+      '⚠️ DATA SOURCE CHECK': '---',
+      'nis2_chip': nis2Pct == null ? 'NULL' : `${nis2Pct}%`,
+      'ai_chip': aiPct == null ? 'NULL' : `${aiPct}%`,
+      'gdpr_chip': gdprPct == null ? 'NULL' : `${gdprPct}%`,
+      'overall_computed': computedOverallPct == null ? 'NULL' : `${computedOverallPct}%`,
+      'overall_final': overallPercent == null ? 'NULL' : `${overallPercent}%`,
+      'backend_overall': `${backendOverallPct}%`,
+      'controls_pct': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
+      'evidence_score': summary?.evidence_score ?? 0,
+      'dpia_score': summary?.dpia_score ?? 0,
+      'frameworks_array_length': frameworks?.length ?? 0,
     });
+    console.log('Frameworks raw data:', frameworks);
   }
   
   const getCircleColor = (score: number) => {
@@ -212,7 +207,9 @@ export function ComplianceProgressCard() {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold">{overallPercent}%</span>
+              <span className="text-3xl font-bold">
+                {overallPercent == null ? '—' : `${overallPercent}%`}
+              </span>
               <span 
                 className="text-xs text-muted-foreground" 
                 title={t('dashboard:complianceOverallTooltip')}
@@ -224,14 +221,14 @@ export function ComplianceProgressCard() {
 
           {/* Framework Badges */}
           <div className="flex flex-wrap gap-2 justify-center">
-            <Badge variant={getBadgeVariant(nis2Pct)}>
-              {t('dashboard:labels.nis2')}: {nis2Pct}%
+            <Badge variant={nis2Pct == null ? "secondary" : getBadgeVariant(nis2Pct)}>
+              {t('dashboard:labels.nis2')}: {nis2Pct == null ? '—' : `${nis2Pct}%`}
             </Badge>
-            <Badge variant={getBadgeVariant(aiPct)}>
-              {t('dashboard:labels.ai_act')}: {aiPct}%
+            <Badge variant={aiPct == null ? "secondary" : getBadgeVariant(aiPct)}>
+              {t('dashboard:labels.ai_act')}: {aiPct == null ? '—' : `${aiPct}%`}
             </Badge>
-            <Badge variant={getBadgeVariant(gdprPct)}>
-              {t('dashboard:labels.gdpr')}: {gdprPct}%
+            <Badge variant={gdprPct == null ? "secondary" : getBadgeVariant(gdprPct)}>
+              {t('dashboard:labels.gdpr')}: {gdprPct == null ? '—' : `${gdprPct}%`}
             </Badge>
           </div>
         </div>
