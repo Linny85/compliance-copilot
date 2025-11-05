@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);
-  const { loading, summary, trend, getFrameworkScorePct, getDpiaTotal, isAdmin, refreshSummary, refreshing } = useComplianceData();
+  const { loading, summary, trend, getFrameworkScorePct, isAdmin, refreshSummary, refreshing } = useComplianceData();
 
   if (loading) {
     return (
@@ -56,15 +56,17 @@ export function ComplianceProgressCard() {
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
   
   // DPIA should only show percentage if there are at least 2 cases
-  const dpiaTotal = getDpiaTotal();
+  const dpiaTotal = summary.dpia_total ?? 0;
   const dpiaScore = summary.dpia_score ?? 0;
-  const dpiaDisplay = dpiaTotal > 1 ? formatScore(dpiaScore) : t('dashboard:badges.na');
+  const showDpia = dpiaTotal > 1;
+  const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
   // Debug DPIA values in dev mode
   if (import.meta.env.DEV) {
     console.debug('[dashboard:dsfa]', {
       dpia_total: dpiaTotal,
-      dpia_pct: dpiaScore
+      dpia_pct: dpiaScore,
+      showDpia
     });
   }
   
@@ -201,11 +203,11 @@ export function ComplianceProgressCard() {
               <span className="text-muted-foreground">
                 {t('dashboard:sections.dpia')}
               </span>
-              <span className="font-medium" title={dpiaTotal <= 1 ? t('dashboard:tooltips.dpia_na') : undefined}>
+              <span className="font-medium" title={!showDpia ? t('dashboard:tooltips.dpia_na') : undefined}>
                 {dpiaDisplay}
               </span>
             </div>
-            <Progress value={dpiaTotal > 1 ? (summary.dpia_score ?? 0) * 100 : 0} />
+            <Progress value={showDpia ? (summary.dpia_score ?? 0) * 100 : 0} />
           </div>
         </div>
 
