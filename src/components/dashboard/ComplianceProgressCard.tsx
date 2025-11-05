@@ -101,9 +101,9 @@ export function ComplianceProgressCard() {
   const showDpia  = dpiaTotal >= 1;
   const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
   
-  // Evidence display - show "—" if denominator is 0
+  // Evidence display - show "—" if score is exactly 0 (no data)
   const evidenceScore = normPct(summary?.evidence_score);
-  const evidenceDisplay = evidenceScore === 0 && summary?.evidence_score === 0 
+  const evidenceDisplay = (evidenceScore === 0 && summary?.evidence_score === 0)
     ? '—' 
     : formatScore(summary.evidence_score ?? 0);
   
@@ -116,6 +116,19 @@ export function ComplianceProgressCard() {
       frameworks: { nis2: nis2Pct, ai: aiPct, gdpr: gdprPct, raw: frameworks },
       dpia: { total: dpiaTotal, score: dpiaScore, showDpia },
       evidence: { score: evidenceScore, display: evidenceDisplay }
+    });
+    
+    // Detailed diagnostic table
+    console.table({
+      '⚠️ EXPECTED': '~69%',
+      'Ring shows': `${overallPercent}%`,
+      'Backend overall': `${backendOverallPct}%`,
+      'Computed (82+67+58)/3': `${computedOverallPct}%`,
+      'NIS2 chip': `${nis2Pct}%`,
+      'AI Act chip': `${aiPct}%`,
+      'GDPR chip': `${gdprPct}%`,
+      'Controls bar': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
+      'Frameworks array length': frameworks?.length ?? 0,
     });
   }
   
