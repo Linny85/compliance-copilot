@@ -95,6 +95,7 @@ export interface VComplianceSummaryRow {
   evidence_score: number | null;
   training_score: number | null;
   dpia_score: number | null;
+  dpia_total?: number;
 }
 
 export interface VFrameworkComplianceRow {

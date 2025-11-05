@@ -43,7 +43,7 @@ export function useComplianceData() {
         // Load compliance summary from v_compliance_overview
         const { data: s1 } = await supabase
           .from('v_compliance_overview' as any)
-          .select('*')
+          .select('overall_score, controls_score, evidence_score, training_score, dpia_score, dpia_total')
           .eq('tenant_id', tid)
           .maybeSingle();
 
@@ -58,6 +58,7 @@ export function useComplianceData() {
             evidence_score: 0,
             training_score: 0,
             dpia_score: 0,
+            dpia_total: 0,
           });
         }
 
@@ -99,9 +100,9 @@ export function useComplianceData() {
   };
 
   const getDpiaTotal = (): number => {
-    // For now return 0 - will be populated when we have the actual count from DB
-    // This should ideally come from a view or be queried separately
-    return 0;
+    // Count total DPIA cases from summary metadata if available
+    // This will be 0 until we have actual DPIA records
+    return summary?.dpia_total ?? 0;
   };
 
   const refreshSummary = async () => {
