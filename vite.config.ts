@@ -33,4 +33,7 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    sourcemap: mode === 'production', // Enable source maps for Sentry
+  },
 }));
