@@ -5,6 +5,23 @@ import Backend from 'i18next-http-backend';
 const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
 const DEV = import.meta.env.DEV;
 
+// Add DEV-only fetch tracer to catch 404/HTML responses
+if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
+  // @ts-ignore
+  window.__I18N_FETCH_TRACER__ = true;
+  const origFetch = window.fetch;
+  window.fetch = async (input, init) => {
+    const res = await origFetch(input, init);
+    try {
+      const url = typeof input === 'string' ? input : (input instanceof Request ? input.url : input.toString());
+      if (/\/locales\/.+\.json/.test(url)) {
+        console.debug('[i18n] fetch', res.status, url);
+      }
+    } catch {}
+    return res;
+  };
+}
+
 // Singleton guard to prevent double initialization
 if (!i18n.isInitialized) {
   i18n
@@ -24,9 +41,7 @@ if (!i18n.isInitialized) {
       },
       allowMultiLoading: false,
       crossDomain: false,
-      requestOptions: {
-        cache: 'no-store'
-      },
+      requestOptions: { cache: 'no-store' },
       parse: (data: string, languages?: string | string[], namespaces?: string | string[]) => {
         try {
           return JSON.parse(data);
@@ -38,7 +53,7 @@ if (!i18n.isInitialized) {
               error: e instanceof Error ? e.message : String(e),
             });
             console.error('[i18n] Raw data (first 200 chars):', data.substring(0, 200));
-            console.error('[i18n] Data starts with HTML?', data.trim().startsWith('<!doctype html>'));
+            console.error('[i18n] Data starts with HTML?', /^\s*<!doctype html/i.test(data));
           }
           return {};
         }
