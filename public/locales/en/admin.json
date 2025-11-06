@@ -266,32 +266,4 @@
       }
     }
   }
-
-  "settings": {
-    "save": "Save",
-    "saving": "Saving...",
-    "saveSuccess": "Settings saved successfully",
-    "saveError": "Error saving settings",
-    "trainingInfluence": {
-      "title": "Training Influence on Overall Compliance",
-      "description": "Configure how training coverage affects the overall compliance score.",
-      "mode": {
-        "label": "Strict Mode",
-        "weightedDesc": "Weighted mode: Framework score and training coverage are blended (default 80/20)",
-        "strictDesc": "Strict mode: Framework score can never exceed training coverage"
-      },
-      "weight": {
-        "label": "Training Coverage Weight",
-        "hint": "{{framework}}% Framework + {{training}}% Training"
-      },
-      "preview": {
-        "title": "Live Preview",
-        "description": "See how settings affect your overall score",
-        "withoutTraining": "Without Training Influence",
-        "withTraining": "With Training Influence",
-        "noChange": "No change",
-        "frameworkDetails": "Framework Details (Score → Training Coverage)"
-      }
-    }
-  }
 }
