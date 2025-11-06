@@ -39,7 +39,7 @@ import { isDemo } from "@/config/appMode";
 export function AppSidebar() {
   const { state } = useSidebar();
   const navigate = useNavigate();
-  const { t, ready, lng } = useI18n();
+  const { t, ready } = useI18n();
   const isAdmin = useIsAdmin();
   const { hasFeature } = useFeatures();
 
@@ -51,81 +51,99 @@ export function AppSidebar() {
 
   const isCollapsed = state === "collapsed";
 
-  // Don't render until i18n is ready
-  if (!ready) return null;
-
-  // Main Navigation Items - key-based for reliable i18n
-  type NavItem = { key: string; to: string; icon: any; feature?: string; adminOnly?: boolean; label: string };
+  // Base navigation items - no conditions, pure data
+  type NavItem = { 
+    key: string; 
+    to: string; 
+    icon: any; 
+    feature?: string; 
+    adminOnly?: boolean;
+  };
   
-  // Stable, deterministic nav computation
-  const mainNavItems = React.useMemo<NavItem[]>(() => {
-    const baseItems: Omit<NavItem, 'label'>[] = [
-      { key: 'dashboard', to: "/dashboard", icon: LayoutDashboard },
-      { key: 'risks', to: "/nis2", icon: ShieldAlert },
-      { key: 'ai', to: "/ai-act", icon: Brain },
-      { key: 'controls', to: "/controls", icon: Wrench },
-      { key: 'evidence', to: "/evidence", icon: FileCheck, feature: "evidence" },
-      { key: 'checks', to: "/checks", icon: BadgeCheck, feature: "checks" },
-      { key: 'audits', to: "/audit", icon: ClipboardList },
-      ...(!isDemo() ? [{ key: 'docs', to: "/documents", icon: FileText }] : []),
-      { key: 'certificates', to: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
-      { key: 'reports', to: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
-    ];
+  const baseMainItems = React.useMemo<NavItem[]>(() => [
+    { key: 'dashboard', to: "/dashboard", icon: LayoutDashboard },
+    { key: 'risks', to: "/nis2", icon: ShieldAlert },
+    { key: 'ai', to: "/ai-act", icon: Brain },
+    { key: 'controls', to: "/controls", icon: Wrench },
+    { key: 'evidence', to: "/evidence", icon: FileCheck, feature: "evidence" },
+    { key: 'checks', to: "/checks", icon: BadgeCheck, feature: "checks" },
+    { key: 'audits', to: "/audit", icon: ClipboardList },
+    ...(!isDemo() ? [{ key: 'docs', to: "/documents", icon: FileText }] : []),
+    { key: 'certificates', to: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
+    { key: 'reports', to: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
+  ], []);
 
-    return baseItems
+  const baseSystemItems = React.useMemo<NavItem[]>(() => [
+    { key: 'organization', to: "/organization", icon: Building2 },
+    { key: 'integrations', to: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
+    { key: 'helpbot_manager', to: "/admin/helpbot", icon: Database, adminOnly: true },
+  ], []);
+
+  // Deterministic derivation: filter by features, add admin conditionally, dedupe, sort
+  const derivedMainItems = React.useMemo(() => {
+    return baseMainItems
       .filter(item => !item.feature || hasFeature(item.feature as any))
-      .map(item => ({ ...item, label: t.nav[item.key] || item.key }));
-  }, [hasFeature, t.nav, ready]);
+      .filter(item => !item.adminOnly || isAdmin === true);
+  }, [baseMainItems, hasFeature, isAdmin]);
 
-  const systemNavItems = React.useMemo<NavItem[]>(() => {
-    const baseItems: Omit<NavItem, 'label'>[] = [
-      { key: 'organization', to: "/organization", icon: Building2 },
-      { key: 'integrations', to: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
-      { key: 'helpbot_manager', to: "/admin/helpbot", icon: Database, adminOnly: true },
-      // Admin item - only when isAdmin is explicitly true (not null/loading)
-      ...(isAdmin === true ? [{ key: 'admin', to: "/admin", icon: Settings }] : []),
-    ];
-
-    return baseItems
+  const derivedSystemItems = React.useMemo(() => {
+    const items = baseSystemItems
       .filter(item => !item.feature || hasFeature(item.feature as any))
-      .map(item => ({ ...item, label: t.nav[item.key] || item.key }));
-  }, [isAdmin, hasFeature, t.nav, ready]);
+      .filter(item => !item.adminOnly || isAdmin === true);
+    
+    // Add admin item only when explicitly admin
+    const allowAdmin = isAdmin === true;
+    if (allowAdmin) {
+      items.push({ key: 'admin', to: "/admin", icon: Settings });
+    }
+    
+    return items;
+  }, [baseSystemItems, hasFeature, isAdmin]);
 
-  // Disambiguation helper - stable per render
-  const getDisambiguatedLabel = React.useCallback((items: NavItem[]) => {
+  // Materialize labels in stable memo
+  type NavItemWithLabel = NavItem & { displayLabel: string };
+  
+  const mainNavWithLabels = React.useMemo<NavItemWithLabel[]>(() => {
+    return derivedMainItems.map(item => ({
+      ...item,
+      displayLabel: ready ? (t.nav[item.key] || item.key) : item.key
+    }));
+  }, [derivedMainItems, t.nav, ready]);
+
+  const systemNavWithLabels = React.useMemo<NavItemWithLabel[]>(() => {
+    const items = derivedSystemItems.map(item => ({
+      ...item,
+      displayLabel: ready ? (t.nav[item.key] || item.key) : item.key
+    }));
+    
+    // Disambiguation for duplicate labels
     const seen = new Map<string, number>();
     return items.map(item => {
-      const text = item.label;
-      const count = (seen.get(text) ?? 0) + 1;
-      seen.set(text, count);
+      const count = (seen.get(item.displayLabel) ?? 0) + 1;
+      seen.set(item.displayLabel, count);
       
-      if (count === 1) return { ...item, displayLabel: text };
+      if (count === 1) return item;
       
-      // Second instance - make distinguishable
-      if (item.key === 'checks') return { ...item, displayLabel: `${text} · Auto` };
-      if (item.key === 'audits') return { ...item, displayLabel: `${text} · Manuell` };
-      return { ...item, displayLabel: `${text} · ${item.key}` };
+      // Make distinguishable
+      if (item.key === 'checks') return { ...item, displayLabel: `${item.displayLabel} · Auto` };
+      if (item.key === 'audits') return { ...item, displayLabel: `${item.displayLabel} · Manuell` };
+      return { ...item, displayLabel: `${item.displayLabel} · ${item.key}` };
     });
-  }, []);
+  }, [derivedSystemItems, t.nav, ready]);
 
-  const mainNavWithLabels = React.useMemo(() => getDisambiguatedLabel(mainNavItems), [mainNavItems, getDisambiguatedLabel]);
-  const systemNavWithLabels = React.useMemo(() => getDisambiguatedLabel(systemNavItems), [systemNavItems, getDisambiguatedLabel]);
-
-  // Debug logging in useEffect, not during render
+  // Debug logging ONLY in useEffect
   React.useEffect(() => {
-    if (import.meta.env.DEV) {
-      const allItems = [...mainNavWithLabels, ...systemNavWithLabels];
-      console.group('[AppSidebar] Navigation Table');
-      console.table(allItems.map(i => ({
-        key: i.key,
-        route: i.to,
-        label: i.label,
-        displayLabel: i.displayLabel,
-        adminOnly: i.adminOnly || false,
-        isAdmin: isAdmin ?? 'loading'
-      })));
-      console.groupEnd();
-    }
+    if (!import.meta.env.DEV) return;
+    const allItems = [...mainNavWithLabels, ...systemNavWithLabels];
+    console.group('[AppSidebar] Navigation Table');
+    console.table(allItems.map(i => ({
+      key: i.key,
+      route: i.to,
+      displayLabel: i.displayLabel,
+      adminOnly: i.adminOnly || false,
+      isAdmin: isAdmin ?? 'loading'
+    })));
+    console.groupEnd();
   }, [mainNavWithLabels, systemNavWithLabels, isAdmin]);
 
   return (
