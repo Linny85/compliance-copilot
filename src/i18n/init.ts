@@ -18,9 +18,9 @@ if (!i18n.isInitialized) {
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      loadPath: 'locales/{{lng}}/{{ns}}.json',
       queryStringParams: {
-        v: import.meta.env.DEV ? String(Date.now()) : '20251106a'
+        v: import.meta.env.DEV ? String(Date.now()) : '2025-11-06a'
       },
       allowMultiLoading: false,
       crossDomain: false,
@@ -31,16 +31,14 @@ if (!i18n.isInitialized) {
         try {
           return JSON.parse(data);
         } catch (e) {
-          const errorMsg = e instanceof Error ? e.message : String(e);
-          const context = {
-            languages: typeof languages === 'string' ? languages : languages?.[0],
-            namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
-            error: errorMsg
-          };
           if (import.meta.env.DEV) {
-            console.error('[i18n] JSON parse failed:', context);
+            console.error('[i18n] JSON parse failed:', {
+              languages: typeof languages === 'string' ? languages : languages?.[0],
+              namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
+              error: e instanceof Error ? e.message : String(e),
+            });
             console.error('[i18n] Raw data (first 200 chars):', data.substring(0, 200));
-            console.error('[i18n] Data starts with HTML?', data.trim().startsWith('<!'));
+            console.error('[i18n] Data starts with HTML?', data.trim().startsWith('<!doctype html>'));
           }
           return {};
         }
