@@ -10,6 +10,11 @@
     "upload": "Upload Evidence",
     "review": "Review"
   },
+  "dialogs": {
+    "newRequest": {
+      "description": "Create a new evidence request for a control"
+    }
+  },
   "fields": {
     "title": "Title",
     "description": "Description",

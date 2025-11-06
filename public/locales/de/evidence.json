@@ -12,6 +12,11 @@
     "cancel": "Abbrechen",
     "save": "Speichern"
   },
+  "dialogs": {
+    "newRequest": {
+      "description": "Neue Nachweis-Anfrage für eine Maßnahme erstellen"
+    }
+  },
   "fields": {
     "title": "Titel",
     "description": "Beschreibung",

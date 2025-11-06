@@ -10,6 +10,11 @@
     "upload": "Ladda upp bevis",
     "review": "Granska"
   },
+  "dialogs": {
+    "newRequest": {
+      "description": "Skapa en ny bevisförfrågan för en kontroll"
+    }
+  },
   "fields": {
     "title": "Titel",
     "description": "Beskrivning",
