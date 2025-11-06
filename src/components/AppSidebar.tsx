@@ -147,7 +147,7 @@ export function AppSidebar() {
   }, [mainNavWithLabels, systemNavWithLabels, isAdmin]);
 
   return (
-    <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon" data-testid="app-sidebar">
+    <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon" data-testid="app-sidebar" role="navigation" aria-label="Primary">
       {/* Logo Header */}
       {!isCollapsed && (
         <div className="p-4 border-b border-sidebar-border flex items-center gap-3">

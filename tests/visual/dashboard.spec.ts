@@ -1,8 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures';
 
 test.describe('Visual: dashboard', () => {
-  test('sidebar + header stable (DE)', async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem('e2e_isAdmin', 'true'));
+  test('sidebar + header stable (DE)', async ({ page, stubAuth, setLocale }) => {
+    await stubAuth({ admin: true });
+    await setLocale('de');
     await page.goto('/dashboard', { waitUntil: 'networkidle' });
 
     const mask = [
@@ -28,8 +29,9 @@ test.describe('Visual: dashboard', () => {
     });
   });
 
-  test('language switch snapshot (EN)', async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem('i18nextLng', 'en'));
+  test('language switch snapshot (EN)', async ({ page, stubAuth, setLocale }) => {
+    await stubAuth({ admin: true });
+    await setLocale('en');
     await page.goto('/dashboard', { waitUntil: 'networkidle' });
     
     const mask = [

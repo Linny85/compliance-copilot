@@ -36,6 +36,9 @@ jobs:
           CI: '1'
         run: npx playwright test
 
+      - name: Accessibility checks
+        run: npx playwright test tests/a11y
+
       - name: Smoke /debug/health
         run: |
           curl -fsS http://localhost:5173/debug/health || echo "Health check unavailable"
