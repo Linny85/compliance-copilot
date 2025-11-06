@@ -19,10 +19,15 @@ jobs:
           node-version: '20'
       - run: npm ci
       - run: npx playwright install --with-deps
+      - name: Start dev server
+        run: npm run dev &
+      - name: Wait for server
+        run: npx wait-on http://localhost:5173
       - run: npm run e2e:${{ matrix.mode }}
         env:
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          E2E_BASE_URL: http://localhost:5173
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -169,7 +169,7 @@ export function AppSidebar() {
               {mainNavWithLabels
                 .filter(item => !item.adminOnly || isAdmin)
                 .map((item) => (
-                    <SidebarMenuItem key={item.to}>
+                    <SidebarMenuItem key={item.to} data-testid={`nav-item-${item.key}`}>
                     <SidebarMenuButton asChild>
                       <NavLink
                         to={item.to}
@@ -197,7 +197,7 @@ export function AppSidebar() {
               {systemNavWithLabels
                 .filter(item => !item.adminOnly || isAdmin)
                 .map((item) => (
-                <SidebarMenuItem key={item.to}>
+                <SidebarMenuItem key={item.to} data-testid={`nav-item-${item.key}`}>
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.to}
@@ -215,7 +215,7 @@ export function AppSidebar() {
               ))}
               
               {/* Help Button (opens guide drawer) */}
-              <SidebarMenuItem>
+              <SidebarMenuItem data-testid="nav-item-help">
                 <SidebarMenuButton onClick={() => {}}>
                   <HelpCircle className="h-4 w-4" />
                   {!isCollapsed && <span>{t.nav.help}</span>}

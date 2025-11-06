@@ -55,6 +55,7 @@ import TestPhase3 from "./pages/admin/TestPhase3";
 import TestPhase4 from "./pages/admin/TestPhase4";
 import RedirectTracer from "./testmode/RedirectTracer";
 import NetProbe from "./testmode/NetProbe";
+import DebugHealth from "./debug/DebugHealth";
 
 installDomGuards();
 
@@ -154,6 +155,9 @@ const App = () => (
                   <Route path="/admin/test-mode/phase3" element={<RequireAdmin><TestPhase3 /></RequireAdmin>} />
                   <Route path="/admin/test-mode/phase4" element={<RequireAdmin><TestPhase4 /></RequireAdmin>} />
                 </>
+              )}
+              {import.meta.env.DEV && (
+                <Route path="/debug/health" element={<DebugHealth />} />
               )}
               <Route path="/audit" element={<AuditTasks />} />
               <Route path="/audit/new" element={<NewAuditTask />} />

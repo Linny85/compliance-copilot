@@ -8,6 +8,19 @@ export function useIsAdmin() {
     let active = true;
     
     (async () => {
+      // DEV-only e2e override
+      if (import.meta.env.DEV) {
+        const e2e = localStorage.getItem("e2e_isAdmin");
+        if (e2e === "true") {
+          if (active) setIsAdmin(true);
+          return;
+        }
+        if (e2e === "false") {
+          if (active) setIsAdmin(false);
+          return;
+        }
+      }
+      
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         if (active) setIsAdmin(false);
