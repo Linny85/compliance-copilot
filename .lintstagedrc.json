@@ -1,0 +1,8 @@
+{
+  "public/locales/**/*.json": [
+    "node tools/validate-locales.mjs"
+  ],
+  "src/**/*.{ts,tsx}": [
+    "eslint --fix"
+  ]
+}
