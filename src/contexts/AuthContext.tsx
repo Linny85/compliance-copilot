@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { setSentryUser, clearSentryUser } from "@/lib/sentry";
 
 type Role = 'viewer' | 'member' | 'manager' | 'admin';
 
@@ -29,6 +30,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       fetchUserTenant(session?.user?.id);
       setAuthReady(true);
+      
+      // Set Sentry user context
+      if (session?.user) {
+        setSentryUser(session.user.id, session.user.email);
+      } else {
+        clearSentryUser();
+      }
     });
 
     // Listen for auth changes
@@ -36,6 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(session?.user ?? null);
       fetchUserTenant(session?.user?.id);
       setAuthReady(true);
+      
+      // Update Sentry user context
+      if (session?.user) {
+        setSentryUser(session.user.id, session.user.email);
+      } else {
+        clearSentryUser();
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -54,7 +69,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq('id', userId)
         .maybeSingle();
       
-      setTenantId(data?.company_id ?? null);
+      const companyId = data?.company_id ?? null;
+      setTenantId(companyId);
+      
+      // Update Sentry context with tenant ID
+      if (companyId) {
+        setSentryUser(userId, undefined, companyId);
+      }
     } catch (error) {
       console.error('Error fetching tenant:', error);
       setTenantId(null);

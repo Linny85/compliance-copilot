@@ -1,0 +1,58 @@
+name: Sentry Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-upload-sourcemaps:
+    runs-on: ubuntu-latest
+    # Only run if Sentry secrets are configured
+    if: ${{ secrets.SENTRY_AUTH_TOKEN != '' }}
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+      VITE_APP_VERSION: ${{ github.sha }}
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build with source maps
+        run: npm run build
+        
+      - name: Install Sentry CLI
+        run: npm install -g @sentry/cli
+        
+      - name: Create Sentry release
+        run: |
+          # Create release
+          sentry-cli releases new "$VITE_APP_VERSION"
+          
+          # Associate commits with release
+          sentry-cli releases set-commits "$VITE_APP_VERSION" --auto
+          
+          # Upload source maps
+          sentry-cli releases files "$VITE_APP_VERSION" upload-sourcemaps \
+            dist \
+            --rewrite \
+            --url-prefix "~/" \
+            --validate
+          
+          # Finalize release
+          sentry-cli releases finalize "$VITE_APP_VERSION"
+          
+      - name: Create deployment
+        run: |
+          sentry-cli releases deploys "$VITE_APP_VERSION" new -e production

@@ -7,6 +7,8 @@ Das Projekt nutzt Sentry für Production Error Tracking mit:
 - ✅ Performance Monitoring (10% Sample Rate)
 - ✅ Session Replay bei Fehlern
 - ✅ Source Maps für bessere Stack Traces
+- ✅ User & Tenant Context Tracking
+- ✅ PII-Schutz (Email-Masking)
 
 ## Setup
 
@@ -15,13 +17,58 @@ Das Projekt nutzt Sentry für Production Error Tracking mit:
 1. Gehe zu [sentry.io](https://sentry.io)
 2. Erstelle ein neues Projekt (Platform: React)
 3. Kopiere den DSN (Data Source Name)
+4. Erstelle ein Auth Token mit Permissions: `project:releases`, `org:read`, `project:write`
 
-### 2. DSN konfigurieren
+### 2. GitHub Secrets konfigurieren
+
+In **GitHub Repository → Settings → Secrets and variables → Actions** anlegen:
+
+```
+SENTRY_AUTH_TOKEN=<your-sentry-auth-token>
+SENTRY_ORG=<your-org-slug>
+SENTRY_PROJECT=<your-project-slug>
+VITE_SENTRY_DSN=https://your-key@o000000.ingest.sentry.io/0000000
+```
+
+### 3. Lokale Development (optional)
 
 Füge in `.env.production` hinzu:
 
 ```env
 VITE_SENTRY_DSN=https://your-key@o000000.ingest.sentry.io/0000000
+VITE_APP_VERSION=dev
+```
+
+## CI/CD Integration
+
+### Automatischer Source Maps Upload
+
+Die GitHub Action `.github/workflows/sentry-release.yml` läuft bei jedem Push zu `main`:
+
+1. **Build** mit aktivierten Source Maps
+2. **Release erstellen** mit Git SHA als Version
+3. **Source Maps hochladen** zu Sentry
+4. **Commits verknüpfen** für besseres Debugging
+5. **Deployment tracken** in Sentry
+
+### Manueller Source Maps Upload
+
+Falls ohne CI/CD:
+
+```bash
+# Installiere Sentry CLI
+npm install -g @sentry/cli
+
+# Setze Auth Token
+export SENTRY_AUTH_TOKEN=your-token
+
+# Build mit Source Maps
+npm run build
+
+# Upload
+sentry-cli releases new "v1.0.0"
+sentry-cli releases files "v1.0.0" upload-sourcemaps dist --rewrite
+sentry-cli releases finalize "v1.0.0"
 ```
 
 ### 3. Geschützte Routen
@@ -34,6 +81,23 @@ Folgende Routen sind mit ErrorBoundary geschützt:
 - `/controls`
 - `/checks`
 - `/company-profile`
+
+## User & Tenant Context
+
+Sentry trackt automatisch:
+- **User ID** (bei Login gesetzt)
+- **Email** (maskiert: `ab***@domain.com`)
+- **Tenant ID** (company_id aus Profil)
+
+Diese Daten erscheinen in jedem Sentry-Event unter "User" und "Contexts → tenant".
+
+### PII-Schutz
+
+Emails werden automatisch maskiert:
+- Original: `john.doe@example.com`
+- Sentry: `jo***@example.com`
+
+Sensitive Headers (Authorization, Cookie) werden entfernt.
 
 ## Testing
 
