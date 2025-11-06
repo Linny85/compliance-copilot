@@ -18,16 +18,23 @@ i18n
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
       queryStringParams: {
-        v: import.meta.env.DEV ? String(Date.now()) : '20251105f'
+        v: import.meta.env.DEV ? String(Date.now()) : '20251106a'
       },
       allowMultiLoading: false,
       crossDomain: false,
-      parse: (data: string) => {
+      parse: (data: string, languages?: string | string[], namespaces?: string | string[]) => {
         try {
           return JSON.parse(data);
         } catch (e) {
+          const errorMsg = e instanceof Error ? e.message : String(e);
+          const context = {
+            languages: typeof languages === 'string' ? languages : languages?.[0],
+            namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
+            error: errorMsg
+          };
           if (import.meta.env.DEV) {
-            console.warn('[i18n] parse error fallback - returning empty object', e);
+            console.error('[i18n] JSON parse failed:', context);
+            console.error('[i18n] Raw data (first 200 chars):', data.substring(0, 200));
           }
           return {};
         }
