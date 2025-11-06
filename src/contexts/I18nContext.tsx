@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import React, { createContext, useContext, useMemo, useState, useEffect, useRef } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n/init';
 import { translations } from '@/lib/i18n';
@@ -24,9 +24,14 @@ const Ctx = createContext<CtxType | null>(null);
 let providerMounted = false;
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  // Prevent double mounting
-  if (providerMounted && import.meta.env.DEV) {
-    console.warn('[i18n] Provider already mounted – returning children without wrapper.');
+  const hasWarned = useRef(false);
+
+  // If already mounted, don't wrap again; just render children
+  if (providerMounted) {
+    if (import.meta.env.DEV && !hasWarned.current) {
+      console.warn('[i18n] Provider already mounted – returning children without wrapper.');
+      hasWarned.current = true;
+    }
     return <>{children}</>;
   }
   
