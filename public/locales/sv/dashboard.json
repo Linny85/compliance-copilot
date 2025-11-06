@@ -61,5 +61,11 @@
   "recentAuditReportsDesc": "Senast genererade efterlevnadsrapporter",
   "viewAll": "Visa alla",
   "noReportsYet": "Inga rapporter har skapats ännu",
-  "createAuditTask": "Skapa granskningsuppgift"
+  "createAuditTask": "Skapa granskningsuppgift",
+  "training": {
+    "coverage": "Utbildningstäckning",
+    "coverage_tooltip": "{{participants}} av {{required}} utbildningsskyldiga personer utbildade",
+    "missing_data": "Inga utbildningsdata tillgängliga",
+    "no_requirements": "Inga utbildningskrav definierade"
+  }
 }

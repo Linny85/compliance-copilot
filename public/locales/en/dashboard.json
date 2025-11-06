@@ -61,5 +61,11 @@
   "recentAuditReportsDesc": "Latest generated compliance reports",
   "viewAll": "View All",
   "noReportsYet": "No reports generated yet",
-  "createAuditTask": "Create Audit Task"
+  "createAuditTask": "Create Audit Task",
+  "training": {
+    "coverage": "Training coverage",
+    "coverage_tooltip": "{{participants}} of {{required}} training-obligated persons trained",
+    "missing_data": "No training data available",
+    "no_requirements": "No training requirements defined"
+  }
 }

@@ -61,5 +61,11 @@
   "recentAuditReportsDesc": "Zuletzt erstellte Compliance-Berichte",
   "viewAll": "Alle anzeigen",
   "noReportsYet": "Noch keine Berichte erstellt",
-  "createAuditTask": "Audit-Aufgabe erstellen"
+  "createAuditTask": "Audit-Aufgabe erstellen",
+  "training": {
+    "coverage": "Schulungsquote",
+    "coverage_tooltip": "{{participants}} von {{required}} schulungspflichtigen Personen geschult",
+    "missing_data": "Keine Schulungsdaten verfügbar",
+    "no_requirements": "Keine Schulungspflichten definiert"
+  }
 }

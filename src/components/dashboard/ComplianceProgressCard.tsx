@@ -9,6 +9,7 @@ import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/sc
 import { calcOverall } from "@/lib/compliance/overall";
 import { useComplianceData } from "@/hooks/useCompliance";
 import { useOverallCompliance } from "@/hooks/useOverallCompliance";
+import { useTrainingCoverage } from "@/hooks/useTrainingCoverage";
 import { toast } from "sonner";
 
 // Helper to normalize percentage values (0..1 or 0..100 -> 0..100)
@@ -85,6 +86,9 @@ export function ComplianceProgressCard() {
     { key: 'ai_act', score: aiPct },
     { key: 'gdpr', score: gdprPct },
   ]);
+  
+  // Training coverage with needs assessment
+  const training = useTrainingCoverage(summary);
   
   // Prefer computed overall if available, otherwise show "—"
   const overallPercent = computedOverallPct;
@@ -255,9 +259,20 @@ export function ComplianceProgressCard() {
               <span className="text-muted-foreground">
                 {t('dashboard:sections.trainings')}
               </span>
-              <span className="font-medium">{formatScore(summary.training_score ?? 0)}</span>
+              <span className="font-medium" title={
+                training.overall == null 
+                  ? t('dashboard:training.missing_data')
+                  : training.required.nis2 === 0 && training.required.aiAct === 0 && training.required.gdpr === 0
+                  ? t('dashboard:training.no_requirements')
+                  : t('dashboard:training.coverage_tooltip', {
+                      participants: training.participantsTotal ?? 0,
+                      required: (training.required.nis2 ?? 0) + (training.required.aiAct ?? 0) + (training.required.gdpr ?? 0)
+                    })
+              }>
+                {training.overall == null ? '—' : `${training.overall}%`}
+              </span>
             </div>
-            <Progress value={(summary.training_score ?? 0) * 100} />
+            <Progress value={training.overall ?? 0} />
           </div>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
