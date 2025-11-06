@@ -3,9 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 const browserName = (process.env.PW_BROWSER ?? 'chromium') as 'chromium'|'firefox'|'webkit';
 
 export default defineConfig({
-  testDir: 'tests/e2e',
+  testDir: 'tests',
   timeout: 60_000,
-  retries: 0,
+  retries: process.env.CI ? 1 : 0,
+  fullyParallel: true,
   use: {
     baseURL: process.env.E2E_BASE_URL || 'http://localhost:5173',
     browserName,
@@ -14,6 +15,7 @@ export default defineConfig({
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
+  snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}',
   projects: [
     {
       name: 'demo',

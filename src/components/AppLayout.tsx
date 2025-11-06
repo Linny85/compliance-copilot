@@ -17,7 +17,7 @@ export function AppLayout() {
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col overflow-auto">
-          <header className="h-12 flex items-center justify-between px-4 border-b border-border bg-background sticky top-0 z-40">
+          <header className="h-12 flex items-center justify-between px-4 border-b border-border bg-background sticky top-0 z-40" data-testid="app-header">
             <SidebarTrigger />
             <LanguageSwitcher />
           </header>
