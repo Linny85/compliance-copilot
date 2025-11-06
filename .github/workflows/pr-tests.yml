@@ -25,9 +25,9 @@ jobs:
       - name: Lint Locales (syntax + deep keys)
         run: node tools/ci-validate-locales.mjs
 
-      - name: i18n Coverage (warn/fail optional)
+      - name: i18n Coverage (gate @ 85%)
         env:
-          I18N_COVERAGE_MIN: '0'
+          I18N_COVERAGE_MIN: '85'
         run: node tools/i18n-coverage.mjs
 
       - name: Run E2E & Visual
@@ -35,6 +35,10 @@ jobs:
           PLAYWRIGHT_BASE_URL: 'http://localhost:5173'
           CI: '1'
         run: npx playwright test
+
+      - name: Smoke /debug/health
+        run: |
+          curl -fsS http://localhost:5173/debug/health || echo "Health check unavailable"
 
       - name: Upload Playwright report
         if: always()

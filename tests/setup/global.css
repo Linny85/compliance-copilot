@@ -1,0 +1,8 @@
+/**
+ * Test-only styles to ensure deterministic visual snapshots
+ * Disables all animations and transitions
+ */
+* {
+  animation: none !important;
+  transition: none !important;
+}

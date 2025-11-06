@@ -14,6 +14,10 @@ export default defineConfig({
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
     screenshot: 'only-on-failure',
+    viewport: { width: 1440, height: 900 },
+    launchOptions: {
+      args: ['--font-render-hinting=none'],
+    },
   },
   snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}',
   projects: [
