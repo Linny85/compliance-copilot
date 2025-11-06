@@ -36,6 +36,10 @@ function normPct(v: unknown): number {
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);
   const { loading, summary, frameworks, trend, isAdmin, refreshSummary, refreshing } = useComplianceData();
+  
+  // CRITICAL: All hooks must be called before any early returns
+  const { overall: overallFromHook } = useOverallCompliance(summary);
+  const training = useTrainingCoverage(summary);
 
   if (loading) {
     return (
@@ -77,18 +81,12 @@ export function ComplianceProgressCard() {
   const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT');
   const gdprPct = pickFrameworkScore(frameworks, 'GDPR');
   
-  // Use useOverallCompliance for the overall score calculation
-  const { overall: overallFromHook } = useOverallCompliance(summary);
-  
   // Use computed overall from all available framework scores
   const computedOverallPct = calcOverall([
     { key: 'nis2', score: nis2Pct },
     { key: 'ai_act', score: aiPct },
     { key: 'gdpr', score: gdprPct },
   ]);
-  
-  // Training coverage with needs assessment
-  const training = useTrainingCoverage(summary);
   
   // Prefer computed overall if available, otherwise show "—"
   const overallPercent = computedOverallPct;
