@@ -24,6 +24,9 @@ if (!i18n.isInitialized) {
       },
       allowMultiLoading: false,
       crossDomain: false,
+      requestOptions: {
+        cache: 'no-store'
+      },
       parse: (data: string, languages?: string | string[], namespaces?: string | string[]) => {
         try {
           return JSON.parse(data);
@@ -37,6 +40,7 @@ if (!i18n.isInitialized) {
           if (import.meta.env.DEV) {
             console.error('[i18n] JSON parse failed:', context);
             console.error('[i18n] Raw data (first 200 chars):', data.substring(0, 200));
+            console.error('[i18n] Data starts with HTML?', data.trim().startsWith('<!'));
           }
           return {};
         }
