@@ -10,7 +10,7 @@ import { Shield } from "lucide-react";
 import { toast } from "sonner";
 import { Session } from "@supabase/supabase-js";
 import { useI18n } from "@/contexts/I18nContext";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Auth = () => {
   const navigate = useNavigate();

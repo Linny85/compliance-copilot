@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Building2 } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Onboarding = () => {
   const navigate = useNavigate();

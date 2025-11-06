@@ -1,0 +1,26 @@
+name: Locales Validate
+
+on:
+  push:
+    paths:
+      - "public/locales/**"
+      - "tools/ci-validate-locales.mjs"
+  pull_request:
+    paths:
+      - "public/locales/**"
+      - "tools/ci-validate-locales.mjs"
+
+jobs:
+  locales-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate locales (syntax + deep keys)
+        run: node tools/ci-validate-locales.mjs

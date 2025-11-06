@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 type Step = 'company' | 'scope' | 'frameworks' | 'seed' | 'done';
 

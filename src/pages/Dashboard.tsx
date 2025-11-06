@@ -8,7 +8,7 @@ import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
 import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 
 interface CompanyData {
