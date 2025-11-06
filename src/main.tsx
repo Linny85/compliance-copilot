@@ -3,9 +3,13 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppModeProvider } from "@/state/AppModeProvider";
 import { I18nProvider } from "@/contexts/I18nContext";
+import { initSentry } from "@/lib/sentry";
 import "@/i18n/init";
 import App from "./App.tsx";
 import "./index.css";
+
+// Initialize Sentry early
+initSentry();
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -96,18 +96,42 @@ const App = () => (
                   <CompanyProfile />
                 </ErrorBoundary>
               } />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/nis2" element={<NIS2 />} />
+              <Route path="/dashboard" element={
+                <ErrorBoundary>
+                  <Dashboard />
+                </ErrorBoundary>
+              } />
+              <Route path="/nis2" element={
+                <ErrorBoundary>
+                  <NIS2 />
+                </ErrorBoundary>
+              } />
               <Route path="/incidents" element={<Incidents />} />
               <Route path="/incidents/new" element={<IncidentNew />} />
               <Route path="/incident/new" element={<Navigate to="/incidents/new" replace />} />
-              <Route path="/ai-act" element={<AIAct />} />
-              <Route path="/documents" element={<Documents />} />
+              <Route path="/ai-act" element={
+                <ErrorBoundary>
+                  <AIAct />
+                </ErrorBoundary>
+              } />
+              <Route path="/documents" element={
+                <ErrorBoundary>
+                  <Documents />
+                </ErrorBoundary>
+              } />
               <Route path="/documents/new" element={<DocumentsNew />} />
-              <Route path="/controls" element={<Controls />} />
+              <Route path="/controls" element={
+                <ErrorBoundary>
+                  <Controls />
+                </ErrorBoundary>
+              } />
               <Route path="/scope" element={<Scope />} />
               <Route path="/evidence" element={<Evidence />} />
-              <Route path="/checks" element={<Checks />} />
+              <Route path="/checks" element={
+                <ErrorBoundary>
+                  <Checks />
+                </ErrorBoundary>
+              } />
               <Route path="/checks/new" element={<ChecksNewRule />} />
               <Route path="/pruefungen" element={<Navigate to="/checks" replace />} />
               <Route path="/controls/mapping" element={<ControlsMapping />} />
