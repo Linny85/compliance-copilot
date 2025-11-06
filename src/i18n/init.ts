@@ -22,6 +22,11 @@ if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
   };
 }
 
+// Build absolute URL for locale files (works from any nested route)
+const ABS_BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '/');
+const loadPathFn = (lng: string, ns: string) =>
+  new URL(`${ABS_BASE}locales/${lng}/${ns}.json`, window.location.origin).toString();
+
 // Singleton guard to prevent double initialization
 if (!i18n.isInitialized) {
   i18n
@@ -35,7 +40,7 @@ if (!i18n.isInitialized) {
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',
     backend: {
-      loadPath: 'locales/{{lng}}/{{ns}}.json',
+      loadPath: loadPathFn,
       queryStringParams: {
         v: import.meta.env.DEV ? String(Date.now()) : '2025-11-06a'
       },
@@ -43,6 +48,21 @@ if (!i18n.isInitialized) {
       crossDomain: false,
       requestOptions: { cache: 'no-store' },
       parse: (data: string, languages?: string | string[], namespaces?: string | string[]) => {
+        const trimmed = data.trim();
+        const looksHTML = /^<!doctype html/i.test(trimmed) || /^</.test(trimmed);
+        
+        if (looksHTML) {
+          if (import.meta.env.DEV) {
+            console.error('[i18n] HTML received instead of JSON', {
+              languages: typeof languages === 'string' ? languages : languages?.[0],
+              namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
+              hint: 'Check absolute loadPath / public/locales structure / dev proxy.'
+            });
+            console.error('[i18n] First 200 chars:', trimmed.slice(0, 200));
+          }
+          return {};
+        }
+        
         try {
           return JSON.parse(data);
         } catch (e) {
@@ -52,8 +72,7 @@ if (!i18n.isInitialized) {
               namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
               error: e instanceof Error ? e.message : String(e),
             });
-            console.error('[i18n] Raw data (first 200 chars):', data.substring(0, 200));
-            console.error('[i18n] Data starts with HTML?', /^\s*<!doctype html/i.test(data));
+            console.error('[i18n] First 200 chars:', trimmed.slice(0, 200));
           }
           return {};
         }
