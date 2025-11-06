@@ -3545,6 +3545,8 @@ export type Database = {
           notification_email: string | null
           notification_webhook_url: string | null
           openai_api_key: string | null
+          overall_training_mode: string | null
+          overall_training_weight: number | null
           settings: Json
           tenant_id: string
           updated_at: string
@@ -3564,6 +3566,8 @@ export type Database = {
           notification_email?: string | null
           notification_webhook_url?: string | null
           openai_api_key?: string | null
+          overall_training_mode?: string | null
+          overall_training_weight?: number | null
           settings?: Json
           tenant_id: string
           updated_at?: string
@@ -3583,6 +3587,8 @@ export type Database = {
           notification_email?: string | null
           notification_webhook_url?: string | null
           openai_api_key?: string | null
+          overall_training_mode?: string | null
+          overall_training_weight?: number | null
           settings?: Json
           tenant_id?: string
           updated_at?: string

@@ -36,7 +36,9 @@
   "complianceTraining": "Utbildning",
   "complianceDpia": "DPIA",
   "complianceOverall": "Totalt",
+  "complianceOverallDesc": "Övergripande efterlevnadspoäng över alla ramverk",
   "complianceOverallTooltip": "Genomsnittlig efterlevnad över alla ramverk (NIS2, AI Act, GDPR)",
+  "complianceOverallTooltipWithTraining": "Total efterlevnad inklusive utbildningspåverkan (standard 80/20)",
   "labels": {
     "nis2": "NIS2",
     "ai_act": "AI Act",

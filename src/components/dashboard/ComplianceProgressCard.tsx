@@ -118,6 +118,9 @@ export function ComplianceProgressCard() {
       'nis2_chip': nis2Pct == null ? 'NULL' : `${nis2Pct}%`,
       'ai_chip': aiPct == null ? 'NULL' : `${aiPct}%`,
       'gdpr_chip': gdprPct == null ? 'NULL' : `${gdprPct}%`,
+      'tr_nis2': (summary as any)?.training_percent_nis2 ?? 'NULL',
+      'tr_ai': (summary as any)?.training_percent_ai_act ?? 'NULL',
+      'tr_gdpr': (summary as any)?.training_percent_gdpr ?? 'NULL',
       'overall_computed': computedOverallPct == null ? 'NULL' : `${computedOverallPct}%`,
       'overall_final': overallPercent == null ? 'NULL' : `${overallPercent}%`,
       'controls_pct': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
@@ -213,7 +216,7 @@ export function ComplianceProgressCard() {
               </span>
               <span 
                 className="text-xs text-muted-foreground" 
-                title={t('dashboard:complianceOverallTooltip')}
+                title={t('dashboard:complianceOverallTooltipWithTraining')}
               >
                 {t('dashboard:complianceOverall')}
               </span>

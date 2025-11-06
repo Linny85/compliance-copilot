@@ -36,7 +36,9 @@
   "complianceTraining": "Training",
   "complianceDpia": "DPIA",
   "complianceOverall": "Overall",
+  "complianceOverallDesc": "Overall compliance score across all frameworks",
   "complianceOverallTooltip": "Average compliance across all frameworks (NIS2, AI Act, GDPR)",
+  "complianceOverallTooltipWithTraining": "Overall compliance including training influence (default 80/20)",
   "labels": {
     "nis2": "NIS2",
     "ai_act": "AI Act",
