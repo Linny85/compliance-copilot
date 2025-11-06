@@ -20,11 +20,12 @@ type CtxType = {
 
 const Ctx = createContext<CtxType | null>(null);
 
-// Singleton guard for provider mounting
-let providerMounted = false;
+// Global guard that survives HMR + StrictMode
+const G = globalThis as any;
+if (G.__I18N_PROVIDER_COUNT__ == null) G.__I18N_PROVIDER_COUNT__ = 0;
+if (G.__I18N_PROVIDER_WARNED__ == null) G.__I18N_PROVIDER_WARNED__ = false;
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const hasWarned = useRef(false);
 
   // IMPORTANT: Call all hooks BEFORE any conditional returns
   const [currentLng, setCurrentLng] = useState<Lang>(() => {
@@ -169,28 +170,22 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     },
   }), [tObj, tx, currentLng]);
 
-  // Mark provider as mounted (after all hooks)
+  // Track provider mount count and warn only once in effect
   useEffect(() => {
-    providerMounted = true;
+    G.__I18N_PROVIDER_COUNT__++;
+
+    // Warn once (DEV only) if more than one provider is mounted at the same time
+    if (import.meta.env.DEV && G.__I18N_PROVIDER_COUNT__ > 1 && !G.__I18N_PROVIDER_WARNED__) {
+      console.warn('[i18n] Multiple I18nProviders detected — please keep exactly one at the app root.');
+      G.__I18N_PROVIDER_WARNED__ = true;
+    }
+
     return () => {
-      providerMounted = false;
+      G.__I18N_PROVIDER_COUNT__ = Math.max(0, G.__I18N_PROVIDER_COUNT__ - 1);
+      // Reset warn flag when count drops to 1 to re-warn after a genuine duplication
+      if (G.__I18N_PROVIDER_COUNT__ <= 1) G.__I18N_PROVIDER_WARNED__ = false;
     };
   }, []);
-
-  // Check if already mounted AFTER all hooks are called
-  if (providerMounted && hasWarned.current) {
-    // Already logged warning, just render normally
-    return (
-      <I18nextProvider i18n={i18n}>
-        <Ctx.Provider value={value}>{children}</Ctx.Provider>
-      </I18nextProvider>
-    );
-  }
-  
-  if (providerMounted && !hasWarned.current && import.meta.env.DEV) {
-    console.warn('[i18n] Provider already mounted – continuing with wrapper.');
-    hasWarned.current = true;
-  }
 
   return (
     <I18nextProvider i18n={i18n}>
