@@ -10,7 +10,10 @@ type TenantSettings = {
 
 export function useTenantSettings() {
   const { user } = useAuth();
-  const [settings, setSettings] = useState<TenantSettings | null>(null);
+  const [settings, setSettings] = useState<TenantSettings>({
+    overall_training_mode: 'weighted',
+    overall_training_weight: 0.2
+  });
 
   useEffect(() => {
     if (!user) return;
