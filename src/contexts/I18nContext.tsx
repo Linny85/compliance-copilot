@@ -26,22 +26,7 @@ let providerMounted = false;
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const hasWarned = useRef(false);
 
-  // If already mounted, don't wrap again; just render children
-  if (providerMounted) {
-    if (import.meta.env.DEV && !hasWarned.current) {
-      console.warn('[i18n] Provider already mounted – returning children without wrapper.');
-      hasWarned.current = true;
-    }
-    return <>{children}</>;
-  }
-  
-  useEffect(() => {
-    providerMounted = true;
-    return () => {
-      providerMounted = false;
-    };
-  }, []);
-
+  // IMPORTANT: Call all hooks BEFORE any conditional returns
   const [currentLng, setCurrentLng] = useState<Lang>(() => {
     const stored = localStorage.getItem('i18nextLng') as Lang;
     return stored && ['de', 'en', 'sv'].includes(stored) ? stored : 'de';
@@ -183,6 +168,29 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       i18n.changeLanguage(lng); 
     },
   }), [tObj, tx, currentLng]);
+
+  // Mark provider as mounted (after all hooks)
+  useEffect(() => {
+    providerMounted = true;
+    return () => {
+      providerMounted = false;
+    };
+  }, []);
+
+  // Check if already mounted AFTER all hooks are called
+  if (providerMounted && hasWarned.current) {
+    // Already logged warning, just render normally
+    return (
+      <I18nextProvider i18n={i18n}>
+        <Ctx.Provider value={value}>{children}</Ctx.Provider>
+      </I18nextProvider>
+    );
+  }
+  
+  if (providerMounted && !hasWarned.current && import.meta.env.DEV) {
+    console.warn('[i18n] Provider already mounted – continuing with wrapper.');
+    hasWarned.current = true;
+  }
 
   return (
     <I18nextProvider i18n={i18n}>
