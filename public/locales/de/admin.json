@@ -6,6 +6,7 @@
     "users": "Benutzer",
     "subscription": "Abonnement",
     "compliance": "Compliance",
+    "settings": "Einstellungen",
     "qa": "QA-Monitor",
     "knowledge": "Wissensgraph"
   },
@@ -236,5 +237,33 @@
   "toasts": {
     "saved": "Einstellungen gespeichert.",
     "error": "Es ist ein Fehler aufgetreten."
+  },
+
+  "settings": {
+    "save": "Speichern",
+    "saving": "Wird gespeichert...",
+    "saveSuccess": "Einstellungen erfolgreich gespeichert",
+    "saveError": "Fehler beim Speichern der Einstellungen",
+    "trainingInfluence": {
+      "title": "Trainingseinfluss auf Overall-Compliance",
+      "description": "Konfigurieren Sie, wie sich die Schulungsquote auf den Gesamt-Compliance-Score auswirkt.",
+      "mode": {
+        "label": "Strenger Modus",
+        "weightedDesc": "Gewichteter Modus: Framework-Score und Schulungsquote werden gemischt (Standard 80/20)",
+        "strictDesc": "Strenger Modus: Framework-Score kann nie über der Schulungsquote liegen"
+      },
+      "weight": {
+        "label": "Gewichtung der Schulungsquote",
+        "hint": "{{framework}}% Framework + {{training}}% Schulung"
+      },
+      "preview": {
+        "title": "Live-Vorschau",
+        "description": "Sehen Sie, wie sich die Einstellungen auf Ihren Overall-Score auswirken",
+        "withoutTraining": "Ohne Trainingseinfluss",
+        "withTraining": "Mit Trainingseinfluss",
+        "noChange": "Keine Änderung",
+        "frameworkDetails": "Framework-Details (Score → Schulungsquote)"
+      }
+    }
   }
 }

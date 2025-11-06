@@ -20,6 +20,7 @@ import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { OpsDashboardCard } from "@/components/dashboard/OpsDashboardCard";
 import { ForecastCard } from "@/components/dashboard/ForecastCard";
 import GraphManager from "@/pages/admin/GraphManager";
+import { TrainingInfluenceSettings } from "@/components/admin/TrainingInfluenceSettings";
 
 interface User {
   id: string;
@@ -184,6 +185,7 @@ const Admin = () => {
             <TabsTrigger value="users">{t('admin:tabs.users')}</TabsTrigger>
             <TabsTrigger value="subscription">{t('admin:tabs.subscription')}</TabsTrigger>
             <TabsTrigger value="compliance">{t('admin:tabs.compliance')}</TabsTrigger>
+            <TabsTrigger value="settings">{t('admin:tabs.settings')}</TabsTrigger>
             <TabsTrigger value="qa-monitor">{t('admin:tabs.qa')}</TabsTrigger>
             <TabsTrigger value="graph">{t('admin:tabs.knowledge')}</TabsTrigger>
           </TabsList>
@@ -340,6 +342,10 @@ const Admin = () => {
             </div>
             {companyId && <ForecastCard companyId={companyId} />}
             {companyId && <AlertsPanel companyId={companyId} />}
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-4">
+            {companyId && <TrainingInfluenceSettings companyId={companyId} />}
           </TabsContent>
 
           <TabsContent value="qa-monitor" className="space-y-4">

@@ -6,6 +6,7 @@
     "users": "Användare",
     "subscription": "Abonnemang",
     "compliance": "Compliance",
+    "settings": "Inställningar",
     "qa": "QA-övervakning",
     "knowledge": "Kunskapsgraf"
   },
@@ -236,5 +237,33 @@
   "toasts": {
     "saved": "Inställningar sparade.",
     "error": "Något gick fel."
+  },
+
+  "settings": {
+    "save": "Spara",
+    "saving": "Sparar...",
+    "saveSuccess": "Inställningar sparade",
+    "saveError": "Fel vid sparande av inställningar",
+    "trainingInfluence": {
+      "title": "Träningsinflytande på total efterlevnad",
+      "description": "Konfigurera hur utbildningstäckning påverkar den totala efterlevnadspoängen.",
+      "mode": {
+        "label": "Strikt läge",
+        "weightedDesc": "Viktat läge: Ramverkspoäng och utbildningstäckning blandas (standard 80/20)",
+        "strictDesc": "Strikt läge: Ramverkspoäng kan aldrig överstiga utbildningstäckning"
+      },
+      "weight": {
+        "label": "Vikt för utbildningstäckning",
+        "hint": "{{framework}}% Ramverk + {{training}}% Utbildning"
+      },
+      "preview": {
+        "title": "Live-förhandsvisning",
+        "description": "Se hur inställningar påverkar din totalpoäng",
+        "withoutTraining": "Utan träningsinflytande",
+        "withTraining": "Med träningsinflytande",
+        "noChange": "Ingen förändring",
+        "frameworkDetails": "Ramverksdetaljer (Poäng → Utbildningstäckning)"
+      }
+    }
   }
 }
