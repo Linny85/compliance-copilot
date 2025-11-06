@@ -76,20 +76,18 @@ export function ComplianceProgressCard() {
   const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT');
   const gdprPct = pickFrameworkScore(frameworks, 'GDPR');
   
-  // Calculate proper overall score from frameworks using utility function
-  const backendOverall = summary.overall_score ?? 0;
-  const backendOverallPct = Math.round(backendOverall * 100);
+  // Use useOverallCompliance for the overall score calculation
+  const { overall: overallFromHook } = useOverallCompliance(summary);
   
+  // Use computed overall from all available framework scores
   const computedOverallPct = calcOverall([
     { key: 'nis2', score: nis2Pct },
     { key: 'ai_act', score: aiPct },
     { key: 'gdpr', score: gdprPct },
   ]);
   
-  // Use computed if backend is 0 or implausible (>30pp difference)
-  const overallPercent = (backendOverallPct === 0 || (computedOverallPct != null && Math.abs(backendOverallPct - computedOverallPct) > 30))
-    ? computedOverallPct
-    : backendOverallPct;
+  // Prefer computed overall if available, otherwise show "—"
+  const overallPercent = computedOverallPct;
   
   const overall = overallPercent != null ? overallPercent / 100 : 0;
   const scoreVariant = getScoreColor(overall);
@@ -118,7 +116,6 @@ export function ComplianceProgressCard() {
       'gdpr_chip': gdprPct == null ? 'NULL' : `${gdprPct}%`,
       'overall_computed': computedOverallPct == null ? 'NULL' : `${computedOverallPct}%`,
       'overall_final': overallPercent == null ? 'NULL' : `${overallPercent}%`,
-      'backend_overall': `${backendOverallPct}%`,
       'controls_pct': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
       'evidence_score': summary?.evidence_score ?? 0,
       'dpia_score': summary?.dpia_score ?? 0,
