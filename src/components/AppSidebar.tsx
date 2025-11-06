@@ -1,3 +1,4 @@
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -54,67 +55,78 @@ export function AppSidebar() {
   if (!ready) return null;
 
   // Main Navigation Items - key-based for reliable i18n
-  type NavItem = { key: string; to: string; icon: any; feature?: string; adminOnly?: boolean };
+  type NavItem = { key: string; to: string; icon: any; feature?: string; adminOnly?: boolean; label: string };
   
-  const mainNavItems: NavItem[] = [
-    { key: 'dashboard', to: "/dashboard", icon: LayoutDashboard },
-    { key: 'risks', to: "/nis2", icon: ShieldAlert },
-    { key: 'ai', to: "/ai-act", icon: Brain },
-    { key: 'controls', to: "/controls", icon: Wrench },
-    { key: 'evidence', to: "/evidence", icon: FileCheck, feature: "evidence" },
-    { key: 'checks', to: "/checks", icon: BadgeCheck, feature: "checks" },        // automatisierte Prüfungen
-    { key: 'audits', to: "/audit", icon: ClipboardList },                          // manuelle Audits
-    // Dokumente nur in Trial/Prod
-    ...(!isDemo() ? [{ key: 'docs', to: "/documents", icon: FileText }] : []),
-    { key: 'certificates', to: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
-    { key: 'reports', to: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
-  ].filter(item => !item.feature || hasFeature(item.feature as any));
+  // Stable, deterministic nav computation
+  const mainNavItems = React.useMemo<NavItem[]>(() => {
+    const baseItems: Omit<NavItem, 'label'>[] = [
+      { key: 'dashboard', to: "/dashboard", icon: LayoutDashboard },
+      { key: 'risks', to: "/nis2", icon: ShieldAlert },
+      { key: 'ai', to: "/ai-act", icon: Brain },
+      { key: 'controls', to: "/controls", icon: Wrench },
+      { key: 'evidence', to: "/evidence", icon: FileCheck, feature: "evidence" },
+      { key: 'checks', to: "/checks", icon: BadgeCheck, feature: "checks" },
+      { key: 'audits', to: "/audit", icon: ClipboardList },
+      ...(!isDemo() ? [{ key: 'docs', to: "/documents", icon: FileText }] : []),
+      { key: 'certificates', to: "/admin/training-certificates", icon: Award, adminOnly: true, feature: "trainingCertificates" },
+      { key: 'reports', to: "/admin/ops", icon: BarChart3, adminOnly: true, feature: "reports" },
+    ];
 
-  // System Items - key-based for reliable i18n
-  const systemNavItems: NavItem[] = [
-    { key: 'organization', to: "/organization", icon: Building2 },
-    { key: 'integrations', to: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
-    { key: 'helpbot_manager', to: "/admin/helpbot", icon: Database, adminOnly: true },
-    ...(isAdmin ? [{ key: 'admin', to: "/admin", icon: Settings }] : []),
-  ].filter(item => !item.feature || hasFeature(item.feature as any));
+    return baseItems
+      .filter(item => !item.feature || hasFeature(item.feature as any))
+      .map(item => ({ ...item, label: t.nav[item.key] || item.key }));
+  }, [hasFeature, t.nav, ready]);
 
-  // Helper: Get label from nav namespace
-  const getLabel = (key: string) => t.nav[key] || key;
+  const systemNavItems = React.useMemo<NavItem[]>(() => {
+    const baseItems: Omit<NavItem, 'label'>[] = [
+      { key: 'organization', to: "/organization", icon: Building2 },
+      { key: 'integrations', to: "/admin/integrations", icon: Plug, adminOnly: true, feature: "integrations" },
+      { key: 'helpbot_manager', to: "/admin/helpbot", icon: Database, adminOnly: true },
+      // Admin item - only when isAdmin is explicitly true (not null/loading)
+      ...(isAdmin === true ? [{ key: 'admin', to: "/admin", icon: Settings }] : []),
+    ];
 
-  // Anti-duplicate guard: ensures unique labels even if i18n returns duplicates
-  const seen = new Map<string, number>();
-  const disambiguate = (key: string, text: string) => {
-    const count = (seen.get(text) ?? 0) + 1;
-    seen.set(text, count);
-    if (count === 1) return text;
-    // Second instance - make distinguishable
-    if (key === 'checks') return `${text} · Auto`;
-    if (key === 'audits') return `${text} · Manuell`;
-    return `${text} · ${key}`;
-  };
+    return baseItems
+      .filter(item => !item.feature || hasFeature(item.feature as any))
+      .map(item => ({ ...item, label: t.nav[item.key] || item.key }));
+  }, [isAdmin, hasFeature, t.nav, ready]);
 
-  // Debug in dev: Comprehensive label mapping analysis
-  if (import.meta.env.DEV) {
-    try {
-      const allItems = [...mainNavItems, ...systemNavItems];
-      const rows = allItems.map((i: any) => ({
+  // Disambiguation helper - stable per render
+  const getDisambiguatedLabel = React.useCallback((items: NavItem[]) => {
+    const seen = new Map<string, number>();
+    return items.map(item => {
+      const text = item.label;
+      const count = (seen.get(text) ?? 0) + 1;
+      seen.set(text, count);
+      
+      if (count === 1) return { ...item, displayLabel: text };
+      
+      // Second instance - make distinguishable
+      if (item.key === 'checks') return { ...item, displayLabel: `${text} · Auto` };
+      if (item.key === 'audits') return { ...item, displayLabel: `${text} · Manuell` };
+      return { ...item, displayLabel: `${text} · ${item.key}` };
+    });
+  }, []);
+
+  const mainNavWithLabels = React.useMemo(() => getDisambiguatedLabel(mainNavItems), [mainNavItems, getDisambiguatedLabel]);
+  const systemNavWithLabels = React.useMemo(() => getDisambiguatedLabel(systemNavItems), [systemNavItems, getDisambiguatedLabel]);
+
+  // Debug logging in useEffect, not during render
+  React.useEffect(() => {
+    if (import.meta.env.DEV) {
+      const allItems = [...mainNavWithLabels, ...systemNavWithLabels];
+      console.group('[AppSidebar] Navigation Table');
+      console.table(allItems.map(i => ({
         key: i.key,
         route: i.to,
-        icon: i.icon?.name ?? '(icon)',
-        label_from_i18n: getLabel(i.key),
-        will_render_as: disambiguate(i.key, getLabel(i.key))
-      }));
-      
-      // Reset for actual render
-      seen.clear();
-      
-      console.group('[AppSidebar] Navigation Console Table');
-      console.table(rows);
+        label: i.label,
+        displayLabel: i.displayLabel,
+        adminOnly: i.adminOnly || false,
+        isAdmin: isAdmin ?? 'loading'
+      })));
       console.groupEnd();
-    } catch(e) {
-      console.error('[AppSidebar] console.table failed', e);
     }
-  }
+  }, [mainNavWithLabels, systemNavWithLabels, isAdmin]);
 
   return (
     <Sidebar className={isCollapsed ? "w-14" : "w-60"} collapsible="icon">
@@ -136,7 +148,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainNavItems
+              {mainNavWithLabels
                 .filter(item => !item.adminOnly || isAdmin)
                 .map((item) => (
                     <SidebarMenuItem key={item.to}>
@@ -150,7 +162,7 @@ export function AppSidebar() {
                         }
                       >
                         <item.icon className="h-4 w-4" />
-                        {!isCollapsed && <span>{disambiguate(item.key, getLabel(item.key))}</span>}
+                        {!isCollapsed && <span>{item.displayLabel}</span>}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -164,7 +176,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>System</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {systemNavItems
+              {systemNavWithLabels
                 .filter(item => !item.adminOnly || isAdmin)
                 .map((item) => (
                 <SidebarMenuItem key={item.to}>
@@ -178,7 +190,7 @@ export function AppSidebar() {
                       }
                     >
                       <item.icon className="h-4 w-4" />
-                      {!isCollapsed && <span>{disambiguate(item.key, getLabel(item.key))}</span>}
+                      {!isCollapsed && <span>{item.displayLabel}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
