@@ -5,10 +5,12 @@ import Backend from 'i18next-http-backend';
 const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
 const DEV = import.meta.env.DEV;
 
-i18n
-  .use(Backend)
-  .use(initReactI18next)
-  .init({
+// Singleton guard to prevent double initialization
+if (!i18n.isInitialized) {
+  i18n
+    .use(Backend)
+    .use(initReactI18next)
+    .init({
     fallbackLng: 'de',
     debug: import.meta.env.DEV,
     ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'ops', 'organization', 'audit', 'incidents'],
@@ -54,6 +56,7 @@ i18n
       return key;
     },
   });
+}
 
 // Debug: Log when namespaces are loaded
 i18n.on('loaded', (loaded) => {

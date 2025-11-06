@@ -20,17 +20,21 @@ type CtxType = {
 
 const Ctx = createContext<CtxType | null>(null);
 
+// Singleton guard for provider mounting
+let providerMounted = false;
+
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  // Dev warning for double mounting
+  // Prevent double mounting
+  if (providerMounted && import.meta.env.DEV) {
+    console.warn('[i18n] Provider already mounted – returning children without wrapper.');
+    return <>{children}</>;
+  }
+  
   useEffect(() => {
-    if (import.meta.env.DEV) {
-      // @ts-ignore
-      if (window.__I18N_PROVIDER_MOUNTED) {
-        console.warn('[i18n] I18nProvider ist doppelt gemountet – bitte nur einmal verwenden.');
-      }
-      // @ts-ignore
-      window.__I18N_PROVIDER_MOUNTED = true;
-    }
+    providerMounted = true;
+    return () => {
+      providerMounted = false;
+    };
   }, []);
 
   const [currentLng, setCurrentLng] = useState<Lang>(() => {
