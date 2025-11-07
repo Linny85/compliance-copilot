@@ -42,7 +42,10 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
       // Handle specific error responses
       if (data?.ok === false) {
         if (data.error === 'not_set') {
-          setError(t('organization:master.notSet', 'Master password not set. Please contact your administrator.'));
+          // Trigger setup flow via callback
+          onSuccess('__SETUP_REQUIRED__');
+          handleClose();
+          return;
         } else if (data.error === 'invalid') {
           setError(t('organization:master.fail', 'Invalid master password') + 
             (data.attempts_remaining !== undefined ? ` (${data.attempts_remaining} attempts remaining)` : ''));

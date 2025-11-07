@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Building2, MapPin, Globe, Users, AlertCircle, ArrowLeft, Edit, Save, X, Loader2 } from "lucide-react";
 import { MasterPasswordDialog } from "@/components/security/MasterPasswordDialog";
 import { RotateMasterPasswordDialog } from "@/components/security/RotateMasterPasswordDialog";
+import { SetMasterPasswordDialog } from "@/components/security/SetMasterPasswordDialog";
 import { toast } from "sonner";
 
 interface CompanyData {
@@ -37,6 +38,7 @@ export default function OrganizationView() {
   const [editing, setEditing] = useState(false);
   const [masterDialogOpen, setMasterDialogOpen] = useState(false);
   const [rotateDialogOpen, setRotateDialogOpen] = useState(false);
+  const [setupDialogOpen, setSetupDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editForm, setEditForm] = useState<CompanyData | null>(null);
   const [editToken, setEditToken] = useState<string | null>(null);
@@ -108,9 +110,23 @@ export default function OrganizationView() {
 
   const handleMasterSuccess = (token: string) => {
     setMasterDialogOpen(false);
+    
+    // Check if setup is required
+    if (token === '__SETUP_REQUIRED__') {
+      setSetupDialogOpen(true);
+      return;
+    }
+    
     setEditToken(token);
     setEditForm(company);
     setEditing(true);
+  };
+
+  const handleSetupSuccess = () => {
+    setSetupDialogOpen(false);
+    toast.success(t('organization:master.setupComplete', 'Master password set successfully. You can now edit organization details.'));
+    // Reopen master dialog to verify new password
+    setTimeout(() => setMasterDialogOpen(true), 500);
   };
 
   const handleCancelEdit = () => {
@@ -398,6 +414,12 @@ export default function OrganizationView() {
         open={masterDialogOpen}
         onClose={() => setMasterDialogOpen(false)}
         onSuccess={handleMasterSuccess}
+      />
+
+      <SetMasterPasswordDialog
+        open={setupDialogOpen}
+        onClose={() => setSetupDialogOpen(false)}
+        onSuccess={handleSetupSuccess}
       />
 
       <RotateMasterPasswordDialog

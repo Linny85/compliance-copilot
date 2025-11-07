@@ -32,7 +32,19 @@
     "error": "Verifizierung derzeit nicht möglich. Bitte später erneut versuchen.",
     "notSet": "Master-Passwort ist nicht gesetzt. Bitte kontaktieren Sie Ihren Administrator.",
     "locked": "Zu viele Fehlversuche. Konto vorübergehend gesperrt.",
-    "rateLimited": "Zu viele Anfragen. Bitte später erneut versuchen."
+    "rateLimited": "Zu viele Anfragen. Bitte später erneut versuchen.",
+    "setTitle": "Master-Passwort festlegen",
+    "setDesc": "Erstellen Sie ein Master-Passwort zum Schutz der Organisationseinstellungen. Dieses Passwort wird für alle kritischen Änderungen benötigt.",
+    "requirements": "Das Passwort muss mindestens 10 Zeichen lang sein. Bewahren Sie es sicher auf - es kann nicht wiederhergestellt werden, wenn es verloren geht.",
+    "newPassword": "Master-Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "confirmPlaceholder": "Master-Passwort bestätigen",
+    "set": "Passwort festlegen",
+    "weakPassword": "Das Passwort muss mindestens 10 Zeichen lang sein",
+    "passwordMismatch": "Die Passwörter stimmen nicht überein",
+    "unauthorized": "Sie haben keine Berechtigung, das Master-Passwort festzulegen",
+    "setSuccess": "Master-Passwort erfolgreich festgelegt",
+    "setupComplete": "Master-Passwort erfolgreich festgelegt. Sie können jetzt die Organisationsdaten bearbeiten."
   },
   "sectors": {
     "agriculture": "Landwirtschaft",

@@ -32,7 +32,19 @@
     "error": "Verifiering är inte tillgänglig för tillfället. Försök igen senare.",
     "notSet": "Huvudlösenordet är inte inställt. Kontakta din administratör.",
     "locked": "För många misslyckade försök. Kontot är tillfälligt låst.",
-    "rateLimited": "För många förfrågningar. Försök igen senare."
+    "rateLimited": "För många förfrågningar. Försök igen senare.",
+    "setTitle": "Ange huvudlösenord",
+    "setDesc": "Skapa ett huvudlösenord för att skydda organisationsinställningar. Detta lösenord krävs för alla kritiska ändringar.",
+    "requirements": "Lösenordet måste vara minst 10 tecken långt. Förvara det säkert - det kan inte återställas om det förloras.",
+    "newPassword": "Huvudlösenord",
+    "confirmPassword": "Bekräfta lösenord",
+    "confirmPlaceholder": "Bekräfta huvudlösenord",
+    "set": "Ange lösenord",
+    "weakPassword": "Lösenordet måste vara minst 10 tecken långt",
+    "passwordMismatch": "Lösenorden matchar inte",
+    "unauthorized": "Du har inte behörighet att ange huvudlösenordet",
+    "setSuccess": "Huvudlösenordet har angetts",
+    "setupComplete": "Huvudlösenordet har angetts. Du kan nu redigera organisationsuppgifter."
   },
   "sectors": {
     "agriculture": "Jordbruk",

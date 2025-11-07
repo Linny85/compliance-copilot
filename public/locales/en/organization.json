@@ -32,7 +32,19 @@
     "error": "Verification failed",
     "notSet": "Master password not set. Please contact your administrator.",
     "locked": "Too many failed attempts. Account temporarily locked.",
-    "rateLimited": "Too many requests. Please try again later."
+    "rateLimited": "Too many requests. Please try again later.",
+    "setTitle": "Set Master Password",
+    "setDesc": "Create a master password to protect organization settings. This password will be required for all critical changes.",
+    "requirements": "Password must be at least 10 characters long. Store it securely - it cannot be recovered if lost.",
+    "newPassword": "Master Password",
+    "confirmPassword": "Confirm Password",
+    "confirmPlaceholder": "Confirm master password",
+    "set": "Set Password",
+    "weakPassword": "Password must be at least 10 characters long",
+    "passwordMismatch": "Passwords do not match",
+    "unauthorized": "You do not have permission to set the master password",
+    "setSuccess": "Master password set successfully",
+    "setupComplete": "Master password set successfully. You can now edit organization details."
   },
   "sectors": {
     "agriculture": "Agriculture",
