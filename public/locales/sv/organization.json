@@ -46,7 +46,14 @@
     "passwordMismatch": "Lösenorden matchar inte",
     "unauthorized": "Du har inte behörighet att ange huvudlösenordet",
     "setSuccess": "Huvudlösenordet har angetts",
-    "setupComplete": "Huvudlösenordet har angetts. Du kan nu redigera organisationsuppgifter."
+    "setupComplete": "Huvudlösenordet har angetts. Du kan nu redigera organisationsuppgifter.",
+    "rotateTitle": "Ändra huvudlösenord",
+    "currentPassword": "Nuvarande huvudlösenord",
+    "currentPasswordPlaceholder": "Ange nuvarande lösenord",
+    "newPasswordPlaceholder": "Nytt lösenord (min. 10 tecken)",
+    "confirmPasswordPlaceholder": "Upprepa nytt lösenord",
+    "rotate": "Ändra lösenord",
+    "rotateSuccess": "Huvudlösenordet har ändrats. Alla aktiva redigeringssessioner har avslutats."
   },
   "sectors": {
     "agriculture": "Jordbruk",

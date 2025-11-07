@@ -46,7 +46,14 @@
     "passwordMismatch": "Passwords do not match",
     "unauthorized": "You do not have permission to set the master password",
     "setSuccess": "Master password set successfully",
-    "setupComplete": "Master password set successfully. You can now edit organization details."
+    "setupComplete": "Master password set successfully. You can now edit organization details.",
+    "rotateTitle": "Change Master Password",
+    "currentPassword": "Current Master Password",
+    "currentPasswordPlaceholder": "Enter current password",
+    "newPasswordPlaceholder": "New password (min. 10 characters)",
+    "confirmPasswordPlaceholder": "Repeat new password",
+    "rotate": "Change Password",
+    "rotateSuccess": "Master password changed successfully. All active editing sessions have been terminated."
   },
   "sectors": {
     "agriculture": "Agriculture",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,11 +15,14 @@ interface RotateMasterPasswordDialogProps {
 }
 
 export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateMasterPasswordDialogProps) {
+  const { t, ready } = useTranslation(['organization', 'common']);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  if (!ready) return null;
 
   const handleClose = () => {
     setOldPassword("");
@@ -33,12 +37,12 @@ export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateM
     setError("");
 
     if (newPassword !== confirmPassword) {
-      setError("Die neuen Passwörter stimmen nicht überein");
+      setError(t('organization:master.passwordMismatch', 'Passwords do not match'));
       return;
     }
 
     if (newPassword.length < 10) {
-      setError("Das neue Passwort muss mindestens 10 Zeichen lang sein");
+      setError(t('organization:master.weakPassword', 'Password must be at least 10 characters long'));
       return;
     }
 
@@ -53,23 +57,24 @@ export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateM
 
       if (data?.error) {
         if (data.error === 'invalid_old_password') {
-          setError(`Altes Passwort ist falsch. ${data.attempts_remaining !== undefined ? `Verbleibende Versuche: ${data.attempts_remaining}` : ''}`);
+          const msg = t('organization:master.invalid', 'Invalid password');
+          setError(data.attempts_remaining !== undefined ? `${msg} (${data.attempts_remaining} ${t('common:attemptsRemaining', 'attempts remaining')})` : msg);
         } else if (data.error === 'locked') {
-          setError('Zu viele Fehlversuche. Konto ist vorübergehend gesperrt.');
+          setError(t('organization:master.locked', 'Too many failed attempts. Account temporarily locked.'));
         } else if (data.error === 'weak_password') {
-          setError('Das neue Passwort ist zu schwach');
+          setError(t('organization:master.weakPassword', 'Password is too weak'));
         } else {
-          setError('Fehler beim Ändern des Passworts');
+          setError(t('organization:master.error', 'Failed to change password'));
         }
         return;
       }
 
-      toast.success("Master-Passwort erfolgreich geändert. Alle aktiven Bearbeitungssitzungen wurden beendet.");
+      toast.success(t('organization:master.rotateSuccess', 'Master password changed successfully. All active editing sessions have been terminated.'));
       handleClose();
       onSuccess();
     } catch (err) {
       console.error('Rotation error:', err);
-      setError('Ein unerwarteter Fehler ist aufgetreten');
+      setError(t('organization:master.error', 'An unexpected error occurred'));
     } finally {
       setLoading(false);
     }
@@ -80,31 +85,31 @@ export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateM
       <DialogContent className="sm:max-w-md">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Master-Passwort ändern</DialogTitle>
+            <DialogTitle>{t('organization:master.rotateTitle', 'Change Master Password')}</DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="old-password">Aktuelles Master-Passwort</Label>
+              <Label htmlFor="old-password">{t('organization:master.currentPassword', 'Current Master Password')}</Label>
               <Input
                 id="old-password"
                 type="password"
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
-                placeholder="Aktuelles Passwort eingeben"
+                placeholder={t('organization:master.currentPasswordPlaceholder', 'Enter current password')}
                 required
                 disabled={loading}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="new-password">Neues Master-Passwort</Label>
+              <Label htmlFor="new-password">{t('organization:master.newPassword', 'New Master Password')}</Label>
               <Input
                 id="new-password"
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Neues Passwort (min. 10 Zeichen)"
+                placeholder={t('organization:master.newPasswordPlaceholder', 'New password (min. 10 characters)')}
                 required
                 disabled={loading}
                 minLength={10}
@@ -112,13 +117,13 @@ export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateM
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirm-password">Neues Passwort bestätigen</Label>
+              <Label htmlFor="confirm-password">{t('organization:master.confirmPassword', 'Confirm New Password')}</Label>
               <Input
                 id="confirm-password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Neues Passwort wiederholen"
+                placeholder={t('organization:master.confirmPasswordPlaceholder', 'Repeat new password')}
                 required
                 disabled={loading}
                 minLength={10}
@@ -134,11 +139,11 @@ export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateM
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose} disabled={loading}>
-              Abbrechen
+              {t('common:cancel', 'Cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Passwort ändern
+              {t('organization:master.rotate', 'Change Password')}
             </Button>
           </DialogFooter>
         </form>

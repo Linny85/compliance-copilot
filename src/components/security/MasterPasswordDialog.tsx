@@ -14,10 +14,12 @@ interface MasterPasswordDialogProps {
 }
 
 export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswordDialogProps) {
-  const { t } = useTranslation(['organization', 'common']);
+  const { t, ready } = useTranslation(['organization', 'common']);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (!ready) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

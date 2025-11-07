@@ -46,7 +46,14 @@
     "passwordMismatch": "Die Passwörter stimmen nicht überein",
     "unauthorized": "Sie haben keine Berechtigung, das Master-Passwort festzulegen",
     "setSuccess": "Master-Passwort erfolgreich festgelegt",
-    "setupComplete": "Master-Passwort erfolgreich festgelegt. Sie können jetzt die Organisationsdaten bearbeiten."
+    "setupComplete": "Master-Passwort erfolgreich festgelegt. Sie können jetzt die Organisationsdaten bearbeiten.",
+    "rotateTitle": "Master-Passwort ändern",
+    "currentPassword": "Aktuelles Master-Passwort",
+    "currentPasswordPlaceholder": "Aktuelles Passwort eingeben",
+    "newPasswordPlaceholder": "Neues Passwort (min. 10 Zeichen)",
+    "confirmPasswordPlaceholder": "Neues Passwort wiederholen",
+    "rotate": "Passwort ändern",
+    "rotateSuccess": "Master-Passwort erfolgreich geändert. Alle aktiven Bearbeitungssitzungen wurden beendet."
   },
   "sectors": {
     "agriculture": "Landwirtschaft",

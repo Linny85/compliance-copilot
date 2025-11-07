@@ -10,6 +10,7 @@
     "speak_on": "Sprachausgabe an",
     "speak_off": "Sprachausgabe aus"
   },
+  "attemptsRemaining": "Versuche verbleibend",
   "auth": {
     "signIn": "Anmelden",
     "signUp": "Registrieren",
