@@ -33,6 +33,8 @@
     "notSet": "Huvudlösenordet är inte inställt. Kontakta din administratör.",
     "locked": "För många misslyckade försök. Kontot är tillfälligt låst.",
     "rateLimited": "För många förfrågningar. Försök igen senare.",
+    "invalid": "Ogiltigt huvudlösenord.",
+    "generic": "Verifiering är inte tillgänglig för tillfället. Försök igen senare.",
     "setTitle": "Ange huvudlösenord",
     "setDesc": "Skapa ett huvudlösenord för att skydda organisationsinställningar. Detta lösenord krävs för alla kritiska ändringar.",
     "requirements": "Lösenordet måste vara minst 10 tecken långt. Förvara det säkert - det kan inte återställas om det förloras.",

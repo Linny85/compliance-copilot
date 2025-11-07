@@ -1,4 +1,4 @@
-import { requireAuth, supabaseAdmin, verifyMaster, rateLimit, signEditToken } from "@shared/utils/security.ts";
+import { requireAuth, supabaseAdmin, hashMaster } from "@shared/utils/security.ts";
 import { auditEvent } from "@shared/utils/audit.ts";
 
 const corsHeaders = {
@@ -8,6 +8,28 @@ const corsHeaders = {
 
 const MAX_FAILS = 5;
 const LOCK_MIN = 15;
+
+// SHA-256 hex digest helper
+function hex(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function sha256Hex(text: string): Promise<string> {
+  const data = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return hex(digest);
+}
+
+function constantTimeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -19,16 +41,8 @@ Deno.serve(async (req) => {
     if (base instanceof Response) return base;
     const { tenantId, userId } = base;
 
-    const okRL = await rateLimit(`${tenantId}:${userId}:verify`, 5, 900);
-    if (!okRL) {
-      return new Response(JSON.stringify({ ok: false, error: "rate_limited" }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
-    }
-
     const { master } = await req.json().catch(() => ({}));
-    if (typeof master !== "string") {
+    if (typeof master !== "string" || master.length < 1) {
       return new Response(JSON.stringify({ ok: false, error: "invalid_input" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -43,20 +57,23 @@ Deno.serve(async (req) => {
 
     if (!secret?.master_hash) {
       return new Response(JSON.stringify({ ok: false, error: "not_set" }), {
-        status: 404,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
     // Check lockout
     if (secret.locked_until && new Date(secret.locked_until) > new Date()) {
+      await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { reason: "locked" } });
       return new Response(JSON.stringify({ ok: false, error: 'locked', locked_until: secret.locked_until }), {
-        status: 429,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const ok = await verifyMaster(secret.master_hash, master);
+    // Compute hash with constant-time comparison
+    const inputHash = await hashMaster(master);
+    const ok = constantTimeCompare(inputHash, secret.master_hash);
 
     if (!ok) {
       const fails = (secret.failed_attempts ?? 0) + 1;
@@ -68,14 +85,18 @@ Deno.serve(async (req) => {
         updated_at: new Date().toISOString()
       }).eq("tenant_id", tenantId);
 
-      await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { fails } });
+      if (lock) {
+        await auditEvent({ tenantId, userId, event: "master.locked", details: { attempts: fails } });
+      } else {
+        await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { attempts: fails } });
+      }
       
       return new Response(JSON.stringify({ 
         ok: false,
-        error: 'invalid',
-        attempts_remaining: MAX_FAILS - fails 
+        error: fails >= MAX_FAILS ? 'locked' : 'invalid',
+        attempts_remaining: Math.max(0, MAX_FAILS - fails)
       }), {
-        status: 403,
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
@@ -89,8 +110,7 @@ Deno.serve(async (req) => {
 
     await auditEvent({ tenantId, userId, event: "master.verify.ok" });
 
-    const token = await signEditToken({ tenantId, scope: "org:edit", v: secret.version }, 600);
-    return new Response(JSON.stringify({ ok: true, editToken: token, ttl: 600 }), {
+    return new Response(JSON.stringify({ ok: true, version: secret.version }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });

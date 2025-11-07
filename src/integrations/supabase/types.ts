@@ -2688,6 +2688,33 @@ export type Database = {
         }
         Relationships: []
       }
+      org_secret_audit: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event: string
+          id: number
+          tenant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event: string
+          id?: number
+          tenant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event?: string
+          id?: number
+          tenant_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       org_secrets: {
         Row: {
           algo: string

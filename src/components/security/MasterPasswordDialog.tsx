@@ -41,30 +41,35 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
 
       // Handle specific error responses
       if (data?.ok === false) {
+        const errorMap: Record<string, string> = {
+          not_set: t('organization:master.notSet', 'Master password not set. Please contact your administrator.'),
+          invalid: t('organization:master.invalid', 'Invalid master password.'),
+          locked: t('organization:master.locked', 'Too many failed attempts. Account temporarily locked.'),
+          rate_limited: t('organization:master.rateLimited', 'Too many requests. Please try again later.')
+        };
+
         if (data.error === 'not_set') {
           // Trigger setup flow via callback
           onSuccess('__SETUP_REQUIRED__');
           handleClose();
           return;
-        } else if (data.error === 'invalid') {
-          setError(t('organization:master.fail', 'Invalid master password') + 
-            (data.attempts_remaining !== undefined ? ` (${data.attempts_remaining} attempts remaining)` : ''));
-        } else if (data.error === 'locked') {
-          setError(t('organization:master.locked', 'Too many failed attempts. Account temporarily locked.'));
-        } else if (data.error === 'rate_limited') {
-          setError(t('organization:master.rateLimited', 'Too many requests. Please try again later.'));
-        } else {
-          setError(t('organization:master.error', 'Verification failed'));
         }
+        
+        let errorMsg = errorMap[data.error] || t('organization:master.generic', 'Verification currently not available. Please try again later.');
+        if (data.error === 'invalid' && data.attempts_remaining !== undefined) {
+          errorMsg += ` (${data.attempts_remaining} attempts remaining)`;
+        }
+        
+        setError(errorMsg);
         return;
       }
 
-      if (data?.ok && data.editToken) {
-        onSuccess(data.editToken);
+      if (data?.ok) {
+        onSuccess('VERIFIED');
         setPassword('');
         handleClose();
       } else {
-        setError(t('organization:master.error', 'Verification failed'));
+        setError(t('organization:master.generic', 'Verification currently not available. Please try again later.'));
       }
     } catch (err: any) {
       setError(err.message || t('organization:master.error', 'Verification failed'));

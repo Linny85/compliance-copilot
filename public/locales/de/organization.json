@@ -33,6 +33,8 @@
     "notSet": "Master-Passwort ist nicht gesetzt. Bitte kontaktieren Sie Ihren Administrator.",
     "locked": "Zu viele Fehlversuche. Konto vorübergehend gesperrt.",
     "rateLimited": "Zu viele Anfragen. Bitte später erneut versuchen.",
+    "invalid": "Ungültiges Master-Passwort.",
+    "generic": "Verifizierung derzeit nicht möglich. Bitte später erneut versuchen.",
     "setTitle": "Master-Passwort festlegen",
     "setDesc": "Erstellen Sie ein Master-Passwort zum Schutz der Organisationseinstellungen. Dieses Passwort wird für alle kritischen Änderungen benötigt.",
     "requirements": "Das Passwort muss mindestens 10 Zeichen lang sein. Bewahren Sie es sicher auf - es kann nicht wiederhergestellt werden, wenn es verloren geht.",

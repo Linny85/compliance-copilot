@@ -33,6 +33,8 @@
     "notSet": "Master password not set. Please contact your administrator.",
     "locked": "Too many failed attempts. Account temporarily locked.",
     "rateLimited": "Too many requests. Please try again later.",
+    "invalid": "Invalid master password.",
+    "generic": "Verification currently not available. Please try again later.",
     "setTitle": "Set Master Password",
     "setDesc": "Create a master password to protect organization settings. This password will be required for all critical changes.",
     "requirements": "Password must be at least 10 characters long. Store it securely - it cannot be recovered if lost.",
