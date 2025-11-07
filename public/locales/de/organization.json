@@ -29,7 +29,10 @@
     "placeholder": "Master-Passwort",
     "confirm": "Bestätigen",
     "fail": "Master-Passwort ist ungültig.",
-    "error": "Verifizierung derzeit nicht möglich. Bitte später erneut versuchen."
+    "error": "Verifizierung derzeit nicht möglich. Bitte später erneut versuchen.",
+    "notSet": "Master-Passwort ist nicht gesetzt. Bitte kontaktieren Sie Ihren Administrator.",
+    "locked": "Zu viele Fehlversuche. Konto vorübergehend gesperrt.",
+    "rateLimited": "Zu viele Anfragen. Bitte später erneut versuchen."
   },
   "sectors": {
     "agriculture": "Landwirtschaft",

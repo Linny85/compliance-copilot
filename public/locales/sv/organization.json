@@ -29,7 +29,10 @@
     "placeholder": "Huvudlösenord",
     "confirm": "Bekräfta",
     "fail": "Huvudlösenordet är ogiltigt.",
-    "error": "Verifiering är inte tillgänglig för tillfället. Försök igen senare."
+    "error": "Verifiering är inte tillgänglig för tillfället. Försök igen senare.",
+    "notSet": "Huvudlösenordet är inte inställt. Kontakta din administratör.",
+    "locked": "För många misslyckade försök. Kontot är tillfälligt låst.",
+    "rateLimited": "För många förfrågningar. Försök igen senare."
   },
   "sectors": {
     "agriculture": "Jordbruk",

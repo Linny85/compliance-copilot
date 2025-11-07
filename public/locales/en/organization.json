@@ -29,7 +29,10 @@
     "placeholder": "Master password",
     "confirm": "Confirm",
     "fail": "Invalid master password",
-    "error": "Verification failed"
+    "error": "Verification failed",
+    "notSet": "Master password not set. Please contact your administrator.",
+    "locked": "Too many failed attempts. Account temporarily locked.",
+    "rateLimited": "Too many requests. Please try again later."
   },
   "sectors": {
     "agriculture": "Agriculture",

@@ -98,6 +98,22 @@ verify_jwt = false
 [functions.generate-audit-report.env]
 APP_MODE = "trial"
 
+[[functions]]
+name = "verify-master-pass"
+verify_jwt = true
+
+[[functions]]
+name = "rotate-master-code"
+verify_jwt = true
+
+[[functions]]
+name = "update-organization"
+verify_jwt = true
+
+[[functions]]
+name = "set-master-code"
+verify_jwt = true
+
 [[cron.jobs]]
 name = "email-dispatcher"
 schedule = "*/5 * * * *"

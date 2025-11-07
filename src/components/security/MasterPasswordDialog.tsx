@@ -34,16 +34,34 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
       });
 
       if (invokeError) {
+        console.error('Master password verification error:', invokeError);
         setError(t('organization:master.error', 'Verification failed'));
         return;
       }
 
-      if (data?.ok && data?.editToken) {
+      // Handle specific error responses
+      if (data?.ok === false) {
+        if (data.error === 'not_set') {
+          setError(t('organization:master.notSet', 'Master password not set. Please contact your administrator.'));
+        } else if (data.error === 'invalid') {
+          setError(t('organization:master.fail', 'Invalid master password') + 
+            (data.attempts_remaining !== undefined ? ` (${data.attempts_remaining} attempts remaining)` : ''));
+        } else if (data.error === 'locked') {
+          setError(t('organization:master.locked', 'Too many failed attempts. Account temporarily locked.'));
+        } else if (data.error === 'rate_limited') {
+          setError(t('organization:master.rateLimited', 'Too many requests. Please try again later.'));
+        } else {
+          setError(t('organization:master.error', 'Verification failed'));
+        }
+        return;
+      }
+
+      if (data?.ok && data.editToken) {
         onSuccess(data.editToken);
         setPassword('');
         handleClose();
       } else {
-        setError(t('organization:master.fail', 'Invalid master password'));
+        setError(t('organization:master.error', 'Verification failed'));
       }
     } catch (err: any) {
       setError(err.message || t('organization:master.error', 'Verification failed'));
