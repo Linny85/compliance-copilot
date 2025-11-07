@@ -42,7 +42,7 @@ if (!i18n.isInitialized) {
     backend: {
       loadPath: loadPathFn,
       queryStringParams: {
-        v: import.meta.env.DEV ? String(Date.now()) : '2025-11-07a'
+        v: import.meta.env.DEV ? String(Date.now()) : '2025-11-07b'
       },
       allowMultiLoading: false,
       crossDomain: false,
