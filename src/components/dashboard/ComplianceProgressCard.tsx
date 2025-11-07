@@ -76,10 +76,10 @@ export function ComplianceProgressCard() {
     );
   }
 
-  // Framework scores from frameworks array - keep null for missing data
-  const nis2Pct = pickFrameworkScore(frameworks, 'NIS2');
-  const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT');
-  const gdprPct = pickFrameworkScore(frameworks, 'GDPR');
+  // Framework scores from frameworks array - default to 0 for missing data
+  const nis2Pct = pickFrameworkScore(frameworks, 'NIS2') ?? 0;
+  const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT') ?? 0;
+  const gdprPct = pickFrameworkScore(frameworks, 'GDPR') ?? 0;
   
   // Use computed overall from all available framework scores
   const computedOverallPct = calcOverall([
@@ -88,8 +88,8 @@ export function ComplianceProgressCard() {
     { key: 'gdpr', score: gdprPct },
   ]);
   
-  // Prefer computed overall if available, otherwise show "—"
-  const overallPercent = computedOverallPct;
+  // Prefer computed overall if available, otherwise default to 0
+  const overallPercent = computedOverallPct ?? 0;
   
   const overall = overallPercent != null ? overallPercent / 100 : 0;
   const scoreVariant = getScoreColor(overall);
@@ -113,14 +113,14 @@ export function ComplianceProgressCard() {
   if (import.meta.env.DEV) {
     console.table({
       '⚠️ DATA SOURCE CHECK': '---',
-      'nis2_chip': nis2Pct == null ? 'NULL' : `${nis2Pct}%`,
-      'ai_chip': aiPct == null ? 'NULL' : `${aiPct}%`,
-      'gdpr_chip': gdprPct == null ? 'NULL' : `${gdprPct}%`,
+      'nis2_chip': `${nis2Pct}%`,
+      'ai_chip': `${aiPct}%`,
+      'gdpr_chip': `${gdprPct}%`,
       'tr_nis2': (summary as any)?.training_percent_nis2 ?? 'NULL',
       'tr_ai': (summary as any)?.training_percent_ai_act ?? 'NULL',
       'tr_gdpr': (summary as any)?.training_percent_gdpr ?? 'NULL',
-      'overall_computed': computedOverallPct == null ? 'NULL' : `${computedOverallPct}%`,
-      'overall_final': overallPercent == null ? 'NULL' : `${overallPercent}%`,
+      'overall_computed': `${computedOverallPct}%`,
+      'overall_final': `${overallPercent}%`,
       'controls_pct': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
       'evidence_score': summary?.evidence_score ?? 0,
       'dpia_score': summary?.dpia_score ?? 0,
@@ -210,7 +210,7 @@ export function ComplianceProgressCard() {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-3xl font-bold">
-                {overallPercent == null ? '—' : `${overallPercent}%`}
+                {overallPercent}%
               </span>
               <span 
                 className="text-xs text-muted-foreground" 
@@ -223,14 +223,14 @@ export function ComplianceProgressCard() {
 
           {/* Framework Badges */}
           <div className="flex flex-wrap gap-2 justify-center">
-            <Badge variant={nis2Pct == null ? "secondary" : getBadgeVariant(nis2Pct)}>
-              {t('dashboard:labels.nis2')}: {nis2Pct == null ? '—' : `${nis2Pct}%`}
+            <Badge variant={getBadgeVariant(nis2Pct)}>
+              {t('dashboard:labels.nis2')}: {nis2Pct}%
             </Badge>
-            <Badge variant={aiPct == null ? "secondary" : getBadgeVariant(aiPct)}>
-              {t('dashboard:labels.ai_act')}: {aiPct == null ? '—' : `${aiPct}%`}
+            <Badge variant={getBadgeVariant(aiPct)}>
+              {t('dashboard:labels.ai_act')}: {aiPct}%
             </Badge>
-            <Badge variant={gdprPct == null ? "secondary" : getBadgeVariant(gdprPct)}>
-              {t('dashboard:labels.gdpr')}: {gdprPct == null ? '—' : `${gdprPct}%`}
+            <Badge variant={getBadgeVariant(gdprPct)}>
+              {t('dashboard:labels.gdpr')}: {gdprPct}%
             </Badge>
           </div>
         </div>

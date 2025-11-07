@@ -8,7 +8,7 @@ import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
 import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+
 import { useTranslation } from "react-i18next";
 
 interface CompanyData {
@@ -105,18 +105,15 @@ const Dashboard = () => {
   return (
     <div data-testid="page-root" className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
       <div className="animate-fade-in space-y-6">
-        {/* Header with Language Switcher */}
-        <div className="flex items-start justify-between gap-4">
-              <div className="space-y-1 flex-1">
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                  {t('dashboard:welcome')}
-                </h1>
-                <p className="text-muted-foreground">
-                  {companyData.name}
-                </p>
-              </div>
-              <LanguageSwitcher />
-            </div>
+        {/* Header */}
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            {t('dashboard:welcome')}
+          </h1>
+          <p className="text-muted-foreground">
+            {companyData.name}
+          </p>
+        </div>
 
         {/* Main Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
