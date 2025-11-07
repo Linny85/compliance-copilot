@@ -53,7 +53,8 @@
     "newPasswordPlaceholder": "Neues Passwort (min. 10 Zeichen)",
     "confirmPasswordPlaceholder": "Neues Passwort wiederholen",
     "rotate": "Passwort ändern",
-    "rotateSuccess": "Master-Passwort erfolgreich geändert. Alle aktiven Bearbeitungssitzungen wurden beendet."
+    "rotateSuccess": "Master-Passwort erfolgreich geändert. Alle aktiven Bearbeitungssitzungen wurden beendet.",
+    "lastChanged": "Zuletzt geändert:"
   },
   "sectors": {
     "agriculture": "Landwirtschaft",

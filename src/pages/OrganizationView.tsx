@@ -42,6 +42,7 @@ export default function OrganizationView() {
   const [saving, setSaving] = useState(false);
   const [editForm, setEditForm] = useState<CompanyData | null>(null);
   const [editToken, setEditToken] = useState<string | null>(null);
+  const [masterPasswordMeta, setMasterPasswordMeta] = useState<{updated_at?: string} | null>(null);
 
   useEffect(() => {
     loadCompanyData();
@@ -82,6 +83,17 @@ export default function OrganizationView() {
       }
 
       setCompany(companyData);
+
+      // Load master password metadata
+      const { data: secretMeta } = await supabase
+        .from('org_secrets')
+        .select('updated_at')
+        .eq('tenant_id', profile.company_id)
+        .maybeSingle();
+      
+      if (secretMeta) {
+        setMasterPasswordMeta(secretMeta);
+      }
     } catch (err: any) {
       console.error('Error loading company:', err);
       setError(err.message || 'Failed to load organization data');
@@ -141,6 +153,8 @@ export default function OrganizationView() {
       setEditing(false);
       setEditToken(null);
     }
+    // Reload to get updated timestamp
+    loadCompanyData();
   };
 
   const handleSaveEdit = async () => {
@@ -230,14 +244,22 @@ export default function OrganizationView() {
             <p className="text-muted-foreground">{t('organization:subtitle')}</p>
           </div>
           {!editing && !loading && company && (
-            <div className="flex gap-2">
-              <Button onClick={handleEditClick} variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                {t('organization:actions.edit')}
-              </Button>
-              <Button onClick={() => setRotateDialogOpen(true)} variant="outline">
-                Master-Passwort ändern
-              </Button>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <Button onClick={handleEditClick} variant="outline">
+                  <Edit className="mr-2 h-4 w-4" />
+                  {t('organization:actions.edit')}
+                </Button>
+                <Button onClick={() => setRotateDialogOpen(true)} variant="outline">
+                  Master-Passwort ändern
+                </Button>
+              </div>
+              {masterPasswordMeta?.updated_at && (
+                <p className="text-sm text-muted-foreground">
+                  {t('organization:master.lastChanged', 'Zuletzt geändert')}{' '}
+                  {new Date(masterPasswordMeta.updated_at).toLocaleString()}
+                </p>
+              )}
             </div>
           )}
         </div>

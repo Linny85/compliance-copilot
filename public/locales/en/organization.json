@@ -53,7 +53,8 @@
     "newPasswordPlaceholder": "New password (min. 10 characters)",
     "confirmPasswordPlaceholder": "Repeat new password",
     "rotate": "Change Password",
-    "rotateSuccess": "Master password changed successfully. All active editing sessions have been terminated."
+    "rotateSuccess": "Master password changed successfully. All active editing sessions have been terminated.",
+    "lastChanged": "Last changed:"
   },
   "sectors": {
     "agriculture": "Agriculture",

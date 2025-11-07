@@ -52,8 +52,9 @@
     "currentPasswordPlaceholder": "Ange nuvarande lösenord",
     "newPasswordPlaceholder": "Nytt lösenord (min. 10 tecken)",
     "confirmPasswordPlaceholder": "Upprepa nytt lösenord",
-    "rotate": "Ändra lösenord",
-    "rotateSuccess": "Huvudlösenordet har ändrats. Alla aktiva redigeringssessioner har avslutats."
+    "rotate": "Byt lösenord",
+    "rotateSuccess": "Huvudlösenordet har ändrats. Alla aktiva redigeringssessioner har avslutats.",
+    "lastChanged": "Senast ändrad:"
   },
   "sectors": {
     "agriculture": "Jordbruk",
