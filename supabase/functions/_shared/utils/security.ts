@@ -60,26 +60,46 @@ export function requireRole(req: Request, min: Role = 'member'): {claims:any, te
   return base;
 }
 
-/* ----- Simple SHA-256 hash (placeholder for Argon2) ----- */
-async function sha256Hash(password: string): Promise<string> {
+/* ----- Tenant-specific SHA-256 hash with constant-time comparison ----- */
+async function sha256Hash(tenantId: string, password: string): Promise<string> {
   const encoder = new TextEncoder();
-  const data = encoder.encode(password + PEPPER);
+  // Include tenant ID to ensure different hashes per tenant even with same password
+  const data = encoder.encode(`${tenantId}:${password}:${PEPPER}`);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   return btoa(String.fromCharCode(...new Uint8Array(hashBuffer)));
 }
 
-export async function hashMaster(pw: string): Promise<string> {
-  return await sha256Hash(pw);
+export async function hashMaster(pw: string, tenantId: string): Promise<string> {
+  return await sha256Hash(tenantId, pw);
 }
 
-export async function verifyMaster(hash: string, pw: string): Promise<boolean> {
-  const computed = await sha256Hash(pw);
+export async function verifyMaster(hash: string, pw: string, tenantId: string): Promise<boolean> {
+  const computed = await sha256Hash(tenantId, pw);
   if (hash.length !== computed.length) return false;
   let diff = 0;
   for (let i = 0; i < hash.length; i++) {
     diff |= hash.charCodeAt(i) ^ computed.charCodeAt(i);
   }
   return diff === 0;
+}
+
+/* ----- Helper to extract tenant from JWT or profile ----- */
+export async function resolveTenantId(claims: any): Promise<string | null> {
+  // First try direct JWT claim
+  const directClaim = claims?.tenant_id || claims?.company_id;
+  if (directClaim) return directClaim;
+  
+  // Fallback: query profiles table for company_id
+  const userId = jwtUserId(claims);
+  if (!userId) return null;
+  
+  const { data } = await supabaseAdmin
+    .from('profiles')
+    .select('company_id')
+    .eq('id', userId)
+    .maybeSingle();
+  
+  return data?.company_id ?? null;
 }
 
 /* ----- Very small signed token for edit window (HS256) ----- */

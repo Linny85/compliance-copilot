@@ -1,4 +1,4 @@
-import { requireAuth, supabaseAdmin, hashMaster } from "@shared/utils/security.ts";
+import { requireAuth, supabaseAdmin, rateLimit, resolveTenantId } from "@shared/utils/security.ts";
 import { auditEvent } from "@shared/utils/audit.ts";
 
 const corsHeaders = {
@@ -8,16 +8,17 @@ const corsHeaders = {
 
 const MAX_FAILS = 5;
 const LOCK_MIN = 15;
+const PEPPER = Deno.env.get("ORG_MASTER_PEPPER") || "default-pepper-change-in-production";
 
-// SHA-256 hex digest helper
+// SHA-256 hex digest helper with tenant binding
 function hex(buf: ArrayBuffer): string {
   return Array.from(new Uint8Array(buf))
     .map(b => b.toString(16).padStart(2, '0'))
     .join('');
 }
 
-async function sha256Hex(text: string): Promise<string> {
-  const data = new TextEncoder().encode(text);
+async function sha256Hex(tenantId: string, password: string): Promise<string> {
+  const data = new TextEncoder().encode(`${tenantId}:${password}:${PEPPER}`);
   const digest = await crypto.subtle.digest('SHA-256', data);
   return hex(digest);
 }
@@ -39,7 +40,26 @@ Deno.serve(async (req) => {
   try {
     const base = requireAuth(req);
     if (base instanceof Response) return base;
-    const { tenantId, userId } = base;
+    const { claims, userId } = base;
+
+    // Resolve tenant ID (try JWT claim first, fallback to profiles table)
+    const tenantId = await resolveTenantId(claims);
+    if (!tenantId) {
+      return new Response(JSON.stringify({ ok: false, error: "no_tenant" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
+    // Rate limiting: 5 attempts per 15 minutes per tenant:user
+    const okRL = await rateLimit(`${tenantId}:${userId}:verify`, 5, 900);
+    if (!okRL) {
+      await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { reason: "rate_limited" } });
+      return new Response(JSON.stringify({ ok: false, error: "rate_limited" }), {
+        status: 200,
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
 
     const { master } = await req.json().catch(() => ({}));
     if (typeof master !== "string" || master.length < 1) {
@@ -71,8 +91,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Compute hash with constant-time comparison
-    const inputHash = await hashMaster(master);
+    // Compute hash with constant-time comparison (tenant-specific)
+    const inputHash = await sha256Hex(tenantId, master);
     const ok = constantTimeCompare(inputHash, secret.master_hash);
 
     if (!ok) {

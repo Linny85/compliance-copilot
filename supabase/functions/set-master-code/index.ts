@@ -1,10 +1,24 @@
-import { requireRole, hashMaster, supabaseAdmin } from "@shared/utils/security.ts";
+import { requireRole, supabaseAdmin, resolveTenantId } from "@shared/utils/security.ts";
 import { auditEvent } from "@shared/utils/audit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const PEPPER = Deno.env.get("ORG_MASTER_PEPPER") || "default-pepper-change-in-production";
+
+function hex(buf: ArrayBuffer): string {
+  return Array.from(new Uint8Array(buf))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function sha256Hex(tenantId: string, password: string): Promise<string> {
+  const data = new TextEncoder().encode(`${tenantId}:${password}:${PEPPER}`);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return hex(digest);
+}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -14,7 +28,16 @@ Deno.serve(async (req) => {
   try {
     const base = requireRole(req, "admin");
     if (base instanceof Response) return base;
-    const { tenantId, userId } = base;
+    const { claims, userId } = base;
+
+    // Resolve tenant ID
+    const tenantId = await resolveTenantId(claims);
+    if (!tenantId) {
+      return new Response(JSON.stringify({ error: "no_tenant" }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
 
     const { master } = await req.json().catch(() => ({}));
     if (typeof master !== "string" || master.trim().length < 10) {
@@ -24,7 +47,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const master_hash = await hashMaster(master.trim());
+    // Hash with tenant binding for security
+    const master_hash = await sha256Hex(tenantId, master.trim());
     
     // Check if secret already exists to determine if this is initial setup or rotation
     const { data: existing } = await supabaseAdmin
