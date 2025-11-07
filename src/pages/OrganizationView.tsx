@@ -12,6 +12,7 @@ import { Building2, MapPin, Globe, Users, AlertCircle, ArrowLeft, Edit, Save, X,
 import { MasterPasswordDialog } from "@/components/security/MasterPasswordDialog";
 import { RotateMasterPasswordDialog } from "@/components/security/RotateMasterPasswordDialog";
 import { SetMasterPasswordDialog } from "@/components/security/SetMasterPasswordDialog";
+import AuditTrailCard from "@/components/security/AuditTrailCard";
 import { toast } from "sonner";
 
 interface CompanyData {
@@ -447,9 +448,14 @@ export default function OrganizationView() {
             )}
           </div>
         </div>
+
+        {/* Audit Trail */}
+        {company?.id && (
+          <AuditTrailCard companyId={company.id} />
+        )}
       </div>
 
-      <MasterPasswordDialog 
+      <MasterPasswordDialog
         open={masterDialogOpen}
         onClose={() => setMasterDialogOpen(false)}
         onSuccess={handleMasterSuccess}

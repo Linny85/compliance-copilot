@@ -54,7 +54,23 @@
     "confirmPasswordPlaceholder": "Neues Passwort wiederholen",
     "rotate": "Passwort ändern",
     "rotateSuccess": "Master-Passwort erfolgreich geändert. Alle aktiven Bearbeitungssitzungen wurden beendet.",
-    "lastChanged": "Zuletzt geändert:"
+    "lastChanged": "Zuletzt geändert:",
+    "audit": {
+      "title": "Aktivitäten zum Master-Passwort",
+      "when": "Zeitpunkt",
+      "event": "Ereignis",
+      "user": "Benutzer",
+      "prev": "Zurück",
+      "next": "Weiter",
+      "empty": "Noch keine Aktivitäten",
+      "events": {
+        "master.set": "Master-Passwort gesetzt",
+        "master.rotate": "Master-Passwort geändert",
+        "master.verify.ok": "Verifikation erfolgreich",
+        "master.verify.fail": "Verifikation fehlgeschlagen",
+        "master.locked": "Konto gesperrt"
+      }
+    }
   },
   "sectors": {
     "agriculture": "Landwirtschaft",

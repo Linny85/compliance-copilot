@@ -54,7 +54,23 @@
     "confirmPasswordPlaceholder": "Repeat new password",
     "rotate": "Change Password",
     "rotateSuccess": "Master password changed successfully. All active editing sessions have been terminated.",
-    "lastChanged": "Last changed:"
+    "lastChanged": "Last changed:",
+    "audit": {
+      "title": "Master Password Activity",
+      "when": "When",
+      "event": "Event",
+      "user": "User",
+      "prev": "Previous",
+      "next": "Next",
+      "empty": "No activity yet",
+      "events": {
+        "master.set": "Master password set",
+        "master.rotate": "Master password changed",
+        "master.verify.ok": "Verification successful",
+        "master.verify.fail": "Verification failed",
+        "master.locked": "Account locked"
+      }
+    }
   },
   "sectors": {
     "agriculture": "Agriculture",

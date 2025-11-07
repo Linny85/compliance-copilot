@@ -84,5 +84,9 @@ test.describe('Master Password Rotation - Complete Flow', () => {
     if (initialTimestampVisible) {
       expect(newTimestamp).not.toBe(initialTimestamp);
     }
+
+    // Verify audit log shows rotation event
+    await expect(page.getByText(/Aktivitäten zum Master-Passwort|Master Password Activity|Aktivitet för huvudlösenord/i)).toBeVisible({ timeout: 2000 });
+    await expect(page.getByText(/Master-Passwort geändert|Master password changed|Huvudlösenord ändrat/i)).toBeVisible({ timeout: 3000 });
   });
 });

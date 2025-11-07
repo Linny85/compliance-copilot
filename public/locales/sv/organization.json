@@ -54,7 +54,23 @@
     "confirmPasswordPlaceholder": "Upprepa nytt lösenord",
     "rotate": "Byt lösenord",
     "rotateSuccess": "Huvudlösenordet har ändrats. Alla aktiva redigeringssessioner har avslutats.",
-    "lastChanged": "Senast ändrad:"
+    "lastChanged": "Senast ändrad:",
+    "audit": {
+      "title": "Aktivitet för huvudlösenord",
+      "when": "Tidpunkt",
+      "event": "Händelse",
+      "user": "Användare",
+      "prev": "Föregående",
+      "next": "Nästa",
+      "empty": "Ingen aktivitet ännu",
+      "events": {
+        "master.set": "Huvudlösenord inställt",
+        "master.rotate": "Huvudlösenord ändrat",
+        "master.verify.ok": "Verifiering lyckades",
+        "master.verify.fail": "Verifiering misslyckades",
+        "master.locked": "Konto låst"
+      }
+    }
   },
   "sectors": {
     "agriculture": "Jordbruk",
