@@ -22,7 +22,7 @@ export function SetMasterPasswordDialog({ open, onClose, onSuccess }: SetMasterP
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!ready) return null;
+  if (!ready) return <div style={{ minHeight: 320 }} />;
 
   const handleClose = () => {
     setPassword("");

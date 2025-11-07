@@ -19,7 +19,7 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!ready) return null;
+  if (!ready) return <div style={{ minHeight: 320 }} />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

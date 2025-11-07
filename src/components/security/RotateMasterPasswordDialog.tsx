@@ -22,7 +22,7 @@ export function RotateMasterPasswordDialog({ open, onClose, onSuccess }: RotateM
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  if (!ready) return null;
+  if (!ready) return <div style={{ minHeight: 320 }} />;
 
   const handleClose = () => {
     setOldPassword("");
