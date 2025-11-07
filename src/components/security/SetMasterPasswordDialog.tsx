@@ -16,7 +16,7 @@ interface SetMasterPasswordDialogProps {
 }
 
 export function SetMasterPasswordDialog({ open, onClose, onSuccess }: SetMasterPasswordDialogProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['organization', 'common']);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);

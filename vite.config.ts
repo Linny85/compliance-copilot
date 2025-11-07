@@ -20,14 +20,12 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     react(), 
     mode === "development" && componentTagger(),
-    // Plugin ONLY enabled locally (not in Lovable sandbox)
-    !isLovable && process.env.I18N_VERIFY === '1' &&
-      i18nVerify({
-        localesDir: 'public/locales',
-        cmd: 'npm run i18n:verify',
-        debounceMs: 300,
-      }),
-  ].filter(Boolean),
+    !isLovable && process.env.I18N_VERIFY === '1' && i18nVerify({
+      localesDir: 'public/locales',
+      cmd: 'npm run i18n:verify',
+      debounceMs: 300,
+    }),
+  ].filter(Boolean) as any[],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
