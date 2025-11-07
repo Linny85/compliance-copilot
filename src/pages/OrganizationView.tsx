@@ -31,7 +31,7 @@ interface CompanyData {
 
 export default function OrganizationView() {
   const navigate = useNavigate();
-  const { t } = useTranslation(['organization', 'common']);
+  const { t, i18n } = useTranslation(['organization', 'common']);
   const [loading, setLoading] = useState(true);
   const [company, setCompany] = useState<CompanyData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +47,28 @@ export default function OrganizationView() {
   useEffect(() => {
     loadCompanyData();
   }, []);
+
+  // Load master password metadata when company changes
+  useEffect(() => {
+    if (company?.id) {
+      loadMasterMeta(company.id);
+    }
+  }, [company?.id]);
+
+  const loadMasterMeta = async (tenantId: string) => {
+    try {
+      const { data } = await supabase
+        .from('org_secrets')
+        .select('updated_at')
+        .eq('tenant_id', tenantId)
+        .maybeSingle();
+      
+      setMasterPasswordMeta(data ? { updated_at: data.updated_at } : null);
+    } catch (err) {
+      console.error('Error loading master password metadata:', err);
+      setMasterPasswordMeta(null);
+    }
+  };
 
   const loadCompanyData = async () => {
     try {
@@ -83,17 +105,7 @@ export default function OrganizationView() {
       }
 
       setCompany(companyData);
-
-      // Load master password metadata
-      const { data: secretMeta } = await supabase
-        .from('org_secrets')
-        .select('updated_at')
-        .eq('tenant_id', profile.company_id)
-        .maybeSingle();
-      
-      if (secretMeta) {
-        setMasterPasswordMeta(secretMeta);
-      }
+      // Meta will be loaded by useEffect when company changes
     } catch (err: any) {
       console.error('Error loading company:', err);
       setError(err.message || 'Failed to load organization data');
@@ -153,8 +165,10 @@ export default function OrganizationView() {
       setEditing(false);
       setEditToken(null);
     }
-    // Reload to get updated timestamp
-    loadCompanyData();
+    // Reload metadata to get updated timestamp
+    if (company?.id) {
+      loadMasterMeta(company.id);
+    }
   };
 
   const handleSaveEdit = async () => {
@@ -251,13 +265,16 @@ export default function OrganizationView() {
                   {t('organization:actions.edit')}
                 </Button>
                 <Button onClick={() => setRotateDialogOpen(true)} variant="outline">
-                  Master-Passwort ändern
+                  {t('organization:master.rotate')}
                 </Button>
               </div>
               {masterPasswordMeta?.updated_at && (
                 <p className="text-sm text-muted-foreground">
-                  {t('organization:master.lastChanged', 'Zuletzt geändert')}{' '}
-                  {new Date(masterPasswordMeta.updated_at).toLocaleString()}
+                  {t('organization:master.lastChanged')}{' '}
+                  {new Intl.DateTimeFormat(i18n.resolvedLanguage || 'de-DE', { 
+                    dateStyle: 'short', 
+                    timeStyle: 'short' 
+                  }).format(new Date(masterPasswordMeta.updated_at))}
                 </p>
               )}
             </div>
