@@ -146,6 +146,12 @@ export function MitigationSelect({
             <button
               aria-label={`${t('common:remove', 'Entfernen')}: ${getLocalizedTitle(m, lang)}`}
               onClick={() => toggle(m.code)}
+              onKeyDown={(e) => {
+                if (e.key === 'Backspace' || e.key === 'Delete') {
+                  e.preventDefault();
+                  toggle(m.code);
+                }
+              }}
               className="ml-1 hover:text-destructive focus:outline-none focus:ring-2 focus:ring-ring rounded"
               type="button"
             >

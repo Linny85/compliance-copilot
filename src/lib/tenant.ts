@@ -17,13 +17,17 @@ export async function resolveTenantId(): Promise<string | null> {
     if (claim) return claim;
 
     // 2) Try profile
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('company_id')
-      .eq('id', user.id)
-      .maybeSingle();
-    
-    if (profile?.company_id) return profile.company_id;
+    try {
+      const { data } = await (supabase as any)
+        .from('profiles')
+        .select('company_id')
+        .eq('user_id', user.id)
+        .limit(1);
+      
+      if (data?.[0]?.company_id) return data[0].company_id as string;
+    } catch (profileError) {
+      console.warn('Profile lookup failed:', profileError);
+    }
 
     // 3) Fallback: localStorage
     return typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') : null;

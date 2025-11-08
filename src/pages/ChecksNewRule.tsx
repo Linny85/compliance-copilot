@@ -273,6 +273,7 @@ export default function ChecksNewRule() {
   };
 
   const validationStatus = getValidationStatus();
+  const canSave = validationStatus.status === 'valid';
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
