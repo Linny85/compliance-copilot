@@ -15,6 +15,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { ControlSelect } from "@/components/controls/ControlSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 
 // ========== Validation Schemas ==========
 const staticSpecSchema = z.object({
@@ -73,6 +75,16 @@ function toBool(v: string) {
   return v;
 }
 
+function deriveMetricKey(code: string): string {
+  if (!code) return '';
+  return code
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '.')
+    .replace(/\.+/g, '.')
+    .replace(/^\./, '')
+    .replace(/\.$/, '');
+}
+
 // ========== Main Component ==========
 export default function ChecksNewRule() {
   const { tx } = useI18n();
@@ -83,6 +95,8 @@ export default function ChecksNewRule() {
   const [testResult, setTestResult] = useState<null | { ok: boolean; rows?: any[]; error?: string }>(null);
   const [jsonMode, setJsonMode] = useState(false);
   const [rawSpec, setRawSpec] = useState("");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [metricKeyManuallySet, setMetricKeyManuallySet] = useState(false);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -112,8 +126,18 @@ export default function ChecksNewRule() {
   const { register, handleSubmit, control, watch, formState: { errors, isValid }, setValue, getValues } = methods;
   const kind = watch('kind');
   const specValue = watch('spec');
+  const code = watch('code');
+  const name = watch('name');
+  const currentSpec = watch('spec');
 
   // ========== Handlers ==========
+  const onCodeChange = (newCode: string) => {
+    setValue('code', newCode);
+    if (!metricKeyManuallySet && newCode) {
+      setValue('metric_key', deriveMetricKey(newCode));
+    }
+  };
+
   const onKindChange = (newKind: 'static' | 'query') => {
     setValue('kind', newKind);
     if (newKind === 'static') {
@@ -202,6 +226,29 @@ export default function ChecksNewRule() {
     }
   }
 
+  // Validation status for live preview
+  const getValidationStatus = () => {
+    const hasName = name && name.length >= 4;
+    const hasCode = code && /^[A-Z0-9_-]{3,40}$/.test(code);
+    
+    let hasValidSpec = false;
+    if (kind === 'static' && 'criteria' in currentSpec) {
+      hasValidSpec = !!(currentSpec.criteria?.path && currentSpec.criteria?.operator && currentSpec.criteria?.value !== undefined);
+    } else if (kind === 'query' && 'query' in currentSpec) {
+      hasValidSpec = !!(currentSpec.query && currentSpec.source && currentSpec.evaluator);
+    }
+    
+    if (hasName && hasCode && hasValidSpec) {
+      return { status: 'valid', icon: CheckCircle2, text: tx("checks.form.validation.valid") || '✓ Gültig', color: 'text-green-600' };
+    }
+    if (!hasName || !hasCode || !hasValidSpec) {
+      return { status: 'incomplete', icon: AlertCircle, text: tx("checks.form.validation.incomplete") || '⚠ Unvollständig', color: 'text-amber-600' };
+    }
+    return { status: 'invalid', icon: XCircle, text: tx("checks.form.validation.invalid") || '✖ Fehler', color: 'text-red-600' };
+  };
+
+  const validationStatus = getValidationStatus();
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-6xl px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
       {/* Header */}
@@ -224,7 +271,12 @@ export default function ChecksNewRule() {
               </Field>
 
               <Field label={tx("checks.form.fields.code")} hint={tx("checks.form.fields.help_code")} error={errors.code?.message}>
-                <Input {...register("code")} placeholder="NIS2-BACKUP-AGE" className="uppercase tracking-wide" />
+                <Input 
+                  {...register("code")} 
+                  onChange={(e) => onCodeChange(e.target.value.toUpperCase())}
+                  placeholder="NIS2-BACKUP-AGE" 
+                  className="uppercase tracking-wide" 
+                />
               </Field>
 
               <div className="grid grid-cols-2 gap-3">
@@ -303,7 +355,13 @@ export default function ChecksNewRule() {
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">{tx("checks.form.fields.spec")}</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">{tx("checks.form.fields.spec")}</CardTitle>
+                <div className={`flex items-center gap-1.5 text-sm ${validationStatus.color}`}>
+                  <validationStatus.icon className="h-4 w-4" />
+                  <span>{validationStatus.text}</span>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <Tabs value={jsonMode ? "json" : "form"} onValueChange={(v) => setJsonMode(v === "json")}>
@@ -336,78 +394,101 @@ export default function ChecksNewRule() {
             </CardContent>
           </Card>
 
-          {/* Metrics Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">{tx("checks.form.fields.metric_key")}</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label={tx("checks.form.fields.metric_key")}>
-                <Input {...register("metric_key")} placeholder="nis2.backup_age_days" />
-              </Field>
-              <Field label={tx("checks.form.fields.aggregation")}>
-                <Controller
-                  control={control}
-                  name="aggregation"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="latest">{tx("checks.form.aggregations.latest")}</SelectItem>
-                        <SelectItem value="avg">{tx("checks.form.aggregations.avg")}</SelectItem>
-                        <SelectItem value="min">{tx("checks.form.aggregations.min")}</SelectItem>
-                        <SelectItem value="max">{tx("checks.form.aggregations.max")}</SelectItem>
-                        <SelectItem value="sum">{tx("checks.form.aggregations.sum")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </Field>
-              <Field label={tx("checks.form.fields.pass_when")}>
-                <Controller
-                  control={control}
-                  name="pass_when"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="lte">{tx("checks.form.pass_ops.lte")}</SelectItem>
-                        <SelectItem value="lt">{tx("checks.form.pass_ops.lt")}</SelectItem>
-                        <SelectItem value="gte">{tx("checks.form.pass_ops.gte")}</SelectItem>
-                        <SelectItem value="gt">{tx("checks.form.pass_ops.gt")}</SelectItem>
-                        <SelectItem value="eq">{tx("checks.form.pass_ops.eq")}</SelectItem>
-                        <SelectItem value="ne">{tx("checks.form.pass_ops.ne")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </Field>
-              <Field label={tx("checks.form.fields.pass_value")}>
-                <Input {...register("pass_value")} placeholder="30" />
-              </Field>
-            </CardContent>
-          </Card>
+          {/* Metrics & Advanced Settings */}
+          <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+            <Card>
+              <CardHeader>
+                <CollapsibleTrigger asChild>
+                  <button type="button" className="flex w-full items-center justify-between text-left hover:opacity-70 transition-opacity">
+                    <CardTitle className="text-lg">{tx("checks.form.advanced") || "Erweiterte Einstellungen"}</CardTitle>
+                    <ChevronDown className={`h-5 w-5 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </CollapsibleTrigger>
+              </CardHeader>
+              <CollapsibleContent>
+                <CardContent className="space-y-6">
+                  {/* Metrics */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-medium">{tx("checks.form.sections.metrics") || "Metriken"}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Field 
+                        label={tx("checks.form.fields.metric_key")}
+                        hint={tx("checks.form.hints.metric_key") || "Technischer Name für Berichte; wird aus Code abgeleitet"}
+                      >
+                        <Input 
+                          {...register("metric_key")} 
+                          onChange={(e) => {
+                            setValue("metric_key", e.target.value);
+                            setMetricKeyManuallySet(e.target.value !== deriveMetricKey(code));
+                          }}
+                          placeholder="nis2.backup.age" 
+                        />
+                      </Field>
+                      <Field label={tx("checks.form.fields.aggregation")}>
+                        <Controller
+                          control={control}
+                          name="aggregation"
+                          render={({ field }) => (
+                            <Select value={field.value} onValueChange={field.onChange}>
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="latest">{tx("checks.form.aggregations.latest")}</SelectItem>
+                                <SelectItem value="avg">{tx("checks.form.aggregations.avg")}</SelectItem>
+                                <SelectItem value="min">{tx("checks.form.aggregations.min")}</SelectItem>
+                                <SelectItem value="max">{tx("checks.form.aggregations.max")}</SelectItem>
+                                <SelectItem value="sum">{tx("checks.form.aggregations.sum")}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      </Field>
+                      <Field label={tx("checks.form.fields.pass_when")}>
+                        <Controller
+                          control={control}
+                          name="pass_when"
+                          render={({ field }) => (
+                            <Select value={field.value} onValueChange={field.onChange}>
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="lte">{tx("checks.form.pass_ops.lte")}</SelectItem>
+                                <SelectItem value="lt">{tx("checks.form.pass_ops.lt")}</SelectItem>
+                                <SelectItem value="gte">{tx("checks.form.pass_ops.gte")}</SelectItem>
+                                <SelectItem value="gt">{tx("checks.form.pass_ops.gt")}</SelectItem>
+                                <SelectItem value="eq">{tx("checks.form.pass_ops.eq")}</SelectItem>
+                                <SelectItem value="ne">{tx("checks.form.pass_ops.ne")}</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      </Field>
+                      <Field label={tx("checks.form.fields.pass_value")}>
+                        <Input {...register("pass_value")} placeholder="30" />
+                      </Field>
+                    </div>
+                  </div>
 
-          {/* Governance Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Governance</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Field label={tx("checks.form.fields.owner_user_id")}>
-                <Input {...register("owner_user_id")} placeholder="UUID" />
-              </Field>
-              <Field label={tx("checks.form.fields.schedule_cron")}>
-                <Input {...register("schedule_cron")} placeholder="0 3 * * *" />
-              </Field>
-              <Field label={tx("checks.form.fields.tags")} className="sm:col-span-2">
-                <Input {...register("tags")} placeholder="backup, reporting" />
-              </Field>
-              <Field label={tx("checks.form.fields.remediation")} className="sm:col-span-2">
-                <Input {...register("remediation")} placeholder="Enable daily offsite backup" />
-              </Field>
-            </CardContent>
-          </Card>
+                  {/* Governance */}
+                  <div className="space-y-3 pt-3 border-t">
+                    <h3 className="text-sm font-medium">{tx("checks.form.sections.governance") || "Governance"}</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Field label={tx("checks.form.fields.owner_user_id")}>
+                        <Input {...register("owner_user_id")} placeholder="UUID" />
+                      </Field>
+                      <Field label={tx("checks.form.fields.schedule_cron")}>
+                        <Input {...register("schedule_cron")} placeholder="0 3 * * *" />
+                      </Field>
+                      <Field label={tx("checks.form.fields.tags")} className="sm:col-span-2">
+                        <Input {...register("tags")} placeholder="backup, reporting" />
+                      </Field>
+                      <Field label={tx("checks.form.fields.remediation")} className="sm:col-span-2">
+                        <Input {...register("remediation")} placeholder="Enable daily offsite backup" />
+                      </Field>
+                    </div>
+                  </div>
+                </CardContent>
+              </CollapsibleContent>
+            </Card>
+          </Collapsible>
         </div>
       </div>
 
@@ -460,10 +541,16 @@ function StaticSpecForm({ control, register, watch, setValue, tx }: any) {
 
   return (
     <div className="space-y-3">
-      <Field label={tx("checks.form.fields.query")}>
+      <Field 
+        label={tx("checks.form.fields.query")}
+        hint={tx("checks.form.hints.json_path") || "JSON-Pfad in Ihren Systemdaten, z. B. system.dataRetention.days"}
+      >
         <Input {...register('spec.criteria.path')} placeholder="system.dataRetention.days" />
       </Field>
-      <Field label="Operator">
+      <Field 
+        label="Operator"
+        hint={tx("checks.form.hints.operator") || "equals = ist gleich, gt = größer als, lt = kleiner als"}
+      >
         <Controller
           control={control}
           name="spec.criteria.operator"
@@ -471,15 +558,22 @@ function StaticSpecForm({ control, register, watch, setValue, tx }: any) {
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                {['equals','contains','gt','gte','lt','lte','regex'].map(op => (
-                  <SelectItem key={op} value={op}>{op}</SelectItem>
-                ))}
+                <SelectItem value="equals">equals (=)</SelectItem>
+                <SelectItem value="contains">contains (∋)</SelectItem>
+                <SelectItem value="gt">gt (&gt;)</SelectItem>
+                <SelectItem value="gte">gte (≥)</SelectItem>
+                <SelectItem value="lt">lt (&lt;)</SelectItem>
+                <SelectItem value="lte">lte (≤)</SelectItem>
+                <SelectItem value="regex">regex (pattern)</SelectItem>
               </SelectContent>
             </Select>
           )}
         />
       </Field>
-      <Field label="Value">
+      <Field 
+        label="Value"
+        hint={tx("checks.form.hints.value") || "Schwellwert, z. B. 30 (Tage) oder true/false"}
+      >
         <Input
           value={criteriaValue ?? ''}
           onChange={(e) => {
