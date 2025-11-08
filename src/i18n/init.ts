@@ -5,6 +5,30 @@ import { detectBrowserLocale } from './detect';
 
 const DEV = import.meta.env.DEV;
 
+// Helper: converts flat JSON {"a.b": "x", "a.c": "y"} to nested {a:{b:"x", c:"y"}}
+function undotKeys(obj: any): any {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+  const out: any = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (k.includes('.')) {
+      const parts = k.split('.');
+      let cur = out;
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i]!;
+        if (i === parts.length - 1) {
+          cur[p] = undotKeys(v as any);
+        } else {
+          cur[p] = cur[p] && typeof cur[p] === 'object' ? cur[p] : {};
+          cur = cur[p];
+        }
+      }
+    } else {
+      out[k] = undotKeys(v as any);
+    }
+  }
+  return out;
+}
+
 // Add DEV-only fetch tracer to catch 404/HTML responses
 if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
   // @ts-ignore
@@ -261,7 +285,9 @@ if (!i18n.isInitialized) {
         }
         
         try {
-          return JSON.parse(data);
+          const json = JSON.parse(data);
+          // Auto-convert flat JSON to nested structure
+          return undotKeys(json);
         } catch (e) {
           if (import.meta.env.DEV) {
             console.error('[i18n] JSON parse failed:', {
@@ -283,6 +309,9 @@ if (!i18n.isInitialized) {
     react: {
       useSuspense: false
     },
+    keySeparator: '.',
+    nsSeparator: ':',
+    returnObjects: true,
     parseMissingKeyHandler: (key) => {
       if (import.meta.env.DEV) {
         console.warn('[i18n missing]', key);

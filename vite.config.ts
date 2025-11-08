@@ -29,6 +29,8 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      react: path.resolve(__dirname, './node_modules/react'),
+      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
     },
     dedupe: ['react', 'react-dom'],
   },
@@ -41,6 +43,9 @@ export default defineConfig(({ mode }) => ({
       'react-i18next',
       'zustand',
     ],
+    esbuildOptions: {
+      target: 'es2020',
+    },
   },
   build: {
     sourcemap: mode === 'production', // Enable source maps for Sentry
