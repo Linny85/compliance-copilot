@@ -6,24 +6,23 @@ import { detectBrowserLocale } from './detect';
 const DEV = import.meta.env.DEV;
 
 // Helper: converts flat JSON {"a.b": "x", "a.c": "y"} to nested {a:{b:"x", c:"y"}}
-function undotKeys(obj: any): any {
-  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+function toNested(obj: Record<string, any>): Record<string, any> {
   const out: any = {};
   for (const [k, v] of Object.entries(obj)) {
-    if (k.includes('.')) {
-      const parts = k.split('.');
-      let cur = out;
-      for (let i = 0; i < parts.length; i++) {
-        const p = parts[i]!;
-        if (i === parts.length - 1) {
-          cur[p] = undotKeys(v as any);
-        } else {
-          cur[p] = cur[p] && typeof cur[p] === 'object' ? cur[p] : {};
-          cur = cur[p];
-        }
+    if (!k.includes('.')) {
+      out[k] = v;
+      continue;
+    }
+    const parts = k.split('.');
+    let cur = out;
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      if (i === parts.length - 1) {
+        cur[p] = v;
+      } else {
+        cur[p] ??= {};
+        cur = cur[p];
       }
-    } else {
-      out[k] = undotKeys(v as any);
     }
   }
   return out;
@@ -270,35 +269,36 @@ if (!i18n.isInitialized) {
       requestOptions: { cache: 'no-store' },
       parse: (data: string, languages?: string | string[], namespaces?: string | string[]) => {
         const trimmed = data.trim();
-        const looksHTML = /^<!doctype html/i.test(trimmed) || /^</.test(trimmed);
-        
-        if (looksHTML) {
-          if (import.meta.env.DEV) {
-            console.error('[i18n] HTML received instead of JSON', {
-              languages: typeof languages === 'string' ? languages : languages?.[0],
-              namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
-              hint: 'Check absolute loadPath / public/locales structure / dev proxy.'
-            });
-            console.error('[i18n] First 200 chars:', trimmed.slice(0, 200));
-          }
-          return {};
+
+        // 1) HTML/error pages defense
+        if (/^<!doctype html>/i.test(trimmed) || /^<html/i.test(trimmed)) {
+          const langInfo = typeof languages === 'string' ? languages : languages?.[0];
+          const nsInfo = typeof namespaces === 'string' ? namespaces : namespaces?.[0];
+          throw new Error(`[i18n] Received HTML instead of JSON for ${langInfo}/${nsInfo} (check loadPath / dev server)`);
         }
-        
+
+        // 2) Parse JSON
+        let parsed: any;
         try {
-          const json = JSON.parse(data);
-          // Auto-convert flat JSON to nested structure
-          return undotKeys(json);
+          parsed = JSON.parse(trimmed);
         } catch (e) {
-          if (import.meta.env.DEV) {
-            console.error('[i18n] JSON parse failed:', {
-              languages: typeof languages === 'string' ? languages : languages?.[0],
-              namespaces: typeof namespaces === 'string' ? namespaces : namespaces?.[0],
-              error: e instanceof Error ? e.message : String(e),
-            });
-            console.error('[i18n] First 200 chars:', trimmed.slice(0, 200));
-          }
-          return {};
+          const langInfo = typeof languages === 'string' ? languages : languages?.[0];
+          const nsInfo = typeof namespaces === 'string' ? namespaces : namespaces?.[0];
+          throw new Error(`[i18n] Invalid JSON in ${langInfo}/${nsInfo}: ${e instanceof Error ? e.message : String(e)}`);
         }
+
+        // 3) Auto-convert flat→nested only if needed
+        const hasFlat = Object.keys(parsed).some(k => k.includes('.'));
+        if (hasFlat) {
+          if (import.meta.env.DEV) {
+            const langInfo = typeof languages === 'string' ? languages : languages?.[0];
+            const nsInfo = typeof namespaces === 'string' ? namespaces : namespaces?.[0];
+            console.warn(`[i18n] Converting flat keys to nested for ${langInfo}/${nsInfo}`);
+          }
+          return toNested(parsed);
+        }
+
+        return parsed;
       }
     },
     interpolation: { escapeValue: false },
