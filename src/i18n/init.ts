@@ -38,6 +38,11 @@ const devResources = DEV ? {
         missingTitle: 'Kein Mandant ausgewählt',
         missingDesc: 'Bitte wählen Sie einen Mandanten, um Daten zu laden.'
       }
+    },
+    dashboard: {
+      labels: { ai_act: 'EU AI Act', gdpr: 'DSGVO', nis2: 'NIS2' },
+      sections: { controls: 'Kontrollen', evidence: 'Nachweise', trainings: 'Schulungen' },
+      training: { missing_data: 'Keine Daten' }
     }
   },
   en: {
@@ -50,6 +55,11 @@ const devResources = DEV ? {
         missingTitle: 'No tenant selected',
         missingDesc: 'Please choose a tenant to load data.'
       }
+    },
+    dashboard: {
+      labels: { ai_act: 'EU AI Act', gdpr: 'GDPR', nis2: 'NIS2' },
+      sections: { controls: 'Controls', evidence: 'Evidence', trainings: 'Trainings' },
+      training: { missing_data: 'No data' }
     }
   },
   sv: {
@@ -62,6 +72,11 @@ const devResources = DEV ? {
         missingTitle: 'Ingen tenant vald',
         missingDesc: 'Välj en tenant för att läsa in data.'
       }
+    },
+    dashboard: {
+      labels: { ai_act: 'EU AI Act', gdpr: 'GDPR', nis2: 'NIS2' },
+      sections: { controls: 'Kontroller', evidence: 'Bevis', trainings: 'Utbildningar' },
+      training: { missing_data: 'Ingen data' }
     }
   }
 } : undefined;
