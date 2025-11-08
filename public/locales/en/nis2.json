@@ -20,7 +20,9 @@
     "riskLevelLabel": "Risk Level",
     "statusLabel": "Status",
     "mitigationPlanLabel": "Mitigation Plan",
-    "mitigationPlanPlaceholder": "Describe planned measures..."
+    "mitigationPlanPlaceholder": "Describe planned measures...",
+    "chooseMitigations": "Choose Mitigations",
+    "suggestions": "Suggestions"
   },
   "riskLevels": {
     "low": "Low",

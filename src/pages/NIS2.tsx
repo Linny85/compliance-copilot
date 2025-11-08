@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { RiskTemplateSelect } from "@/components/risks/RiskTemplateSelect";
+import { MitigationSelect } from "@/components/risks/MitigationSelect";
 
 interface Risk {
   id: string;
@@ -41,6 +42,7 @@ const NIS2 = () => {
     status: "open",
     mitigation_plan: "",
   });
+  const [mitigationCodes, setMitigationCodes] = useState<string[]>([]);
 
   useEffect(() => {
     loadData();
@@ -104,6 +106,7 @@ const NIS2 = () => {
       status: "open",
       mitigation_plan: "",
     });
+    setMitigationCodes([]);
     loadData();
   };
 
@@ -246,12 +249,22 @@ const NIS2 = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="mitigation">{t('nis2:form.mitigationPlanLabel', 'Minderungsplan')}</Label>
+                <MitigationSelect
+                  value={mitigationCodes}
+                  currentBody={newRisk.mitigation_plan}
+                  onChange={(codes, mergedBody) => {
+                    setMitigationCodes(codes);
+                    setNewRisk({ ...newRisk, mitigation_plan: mergedBody });
+                  }}
+                  disabled={false}
+                />
                 <Textarea
                   id="mitigation"
                   value={newRisk.mitigation_plan}
                   onChange={(e) => setNewRisk({ ...newRisk, mitigation_plan: e.target.value })}
                   placeholder={t('nis2:form.mitigationPlanPlaceholder', 'Beschreiben Sie geplante Maßnahmen...') as string}
-                  rows={3}
+                  rows={6}
+                  className="mt-2"
                 />
               </div>
             </div>

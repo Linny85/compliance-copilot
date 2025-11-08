@@ -161,6 +161,10 @@
     },
     "none": "—"
   },
+  "search": "Search…",
+  "noResults": "No results",
+  "remove": "Remove",
+  "errorLoading": "Error loading",
   "status": {
     "running": "Running",
     "success": "Success",

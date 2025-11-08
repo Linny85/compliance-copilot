@@ -3106,6 +3106,63 @@ export type Database = {
         }
         Relationships: []
       }
+      risk_mitigation_templates: {
+        Row: {
+          body_de: string
+          body_en: string
+          body_sv: string
+          code: string
+          created_at: string | null
+          id: string
+          severity: string | null
+          tags: string[] | null
+          title_de: string
+          title_en: string
+          title_sv: string
+        }
+        Insert: {
+          body_de: string
+          body_en: string
+          body_sv: string
+          code: string
+          created_at?: string | null
+          id?: string
+          severity?: string | null
+          tags?: string[] | null
+          title_de: string
+          title_en: string
+          title_sv: string
+        }
+        Update: {
+          body_de?: string
+          body_en?: string
+          body_sv?: string
+          code?: string
+          created_at?: string | null
+          id?: string
+          severity?: string | null
+          tags?: string[] | null
+          title_de?: string
+          title_en?: string
+          title_sv?: string
+        }
+        Relationships: []
+      }
+      risk_template_mitigations: {
+        Row: {
+          mitigation_code: string
+          risk_template_code: string
+        }
+        Insert: {
+          mitigation_code: string
+          risk_template_code: string
+        }
+        Update: {
+          mitigation_code?: string
+          risk_template_code?: string
+        }
+        Relationships: []
+      }
       risk_templates: {
         Row: {
           code: string

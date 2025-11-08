@@ -20,7 +20,9 @@
     "riskLevelLabel": "Risknivå",
     "statusLabel": "Status",
     "mitigationPlanLabel": "Åtgärdsplan",
-    "mitigationPlanPlaceholder": "Beskriv planerade åtgärder..."
+    "mitigationPlanPlaceholder": "Beskriv planerade åtgärder...",
+    "chooseMitigations": "Välj åtgärder",
+    "suggestions": "Förslag"
   },
   "riskLevels": {
     "low": "Låg",

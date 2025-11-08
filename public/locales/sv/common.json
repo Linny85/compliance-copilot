@@ -139,6 +139,10 @@
     },
     "none": "—"
   },
+  "search": "Sök…",
+  "noResults": "Inga resultat",
+  "remove": "Ta bort",
+  "errorLoading": "Fel vid laddning",
   "status": {
     "running": "Pågår",
     "success": "Klart",
