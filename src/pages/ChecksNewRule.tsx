@@ -17,6 +17,7 @@ import { ControlSelect } from "@/components/controls/ControlSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
+import { deriveMetricKey } from "@/lib/checks/helpers";
 
 // ========== Validation Schemas ==========
 const staticSpecSchema = z.object({
@@ -73,16 +74,6 @@ function toBool(v: string) {
   if (v === 'true') return true;
   if (v === 'false') return false;
   return v;
-}
-
-function deriveMetricKey(code: string): string {
-  if (!code) return '';
-  return code
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '.')
-    .replace(/\.+/g, '.')
-    .replace(/^\./, '')
-    .replace(/\.$/, '');
 }
 
 // ========== Main Component ==========
