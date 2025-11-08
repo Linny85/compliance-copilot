@@ -38,8 +38,8 @@ export default function TenantSelector({ className }: { className?: string }) {
         .eq('user_id', user.id);
     }
     
-    // Invalidiere alle tenant-abhängigen Queries
-    queryClient.invalidateQueries();
+    // Gezielt tenant-abhängige Queries invalidieren
+    queryClient.invalidateQueries({ queryKey: ['tenant'] });
   };
 
   return (
