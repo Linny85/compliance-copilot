@@ -8,7 +8,7 @@ import { useTenantStore } from '@/store/tenant';
 type Tenant = { id: string; name: string };
 
 export default function TenantSelector({ className }: { className?: string }) {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('common', { useSuspense: false });
   const queryClient = useQueryClient();
   const { tenantId, setTenant } = useTenantStore();
   const [tenants, setTenants] = React.useState<Tenant[]>([]);

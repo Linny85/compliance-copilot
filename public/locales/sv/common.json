@@ -191,7 +191,9 @@
     "label": "Tenant",
     "choose": "Välj",
     "loading": "Laddar…",
-    "none": "Ingen tenant vald. Vänligen välj ovan."
+    "none": "Ingen tenant vald. Vänligen välj ovan.",
+    "missingTitle": "Ingen tenant vald",
+    "missingDesc": "Välj en tenant för att läsa in data."
   },
   "actions": {
     "reload": "Ladda om"

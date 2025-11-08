@@ -293,7 +293,9 @@
     "label": "Tenant",
     "choose": "Please select",
     "loading": "Loading…",
-    "none": "No tenant selected. Please choose one above."
+    "none": "No tenant selected. Please choose one above.",
+    "missingTitle": "No tenant selected",
+    "missingDesc": "Please choose a tenant to load data."
   },
   "actions": {
     "reload": "Reload"

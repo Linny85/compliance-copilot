@@ -265,7 +265,9 @@
     "label": "Mandant",
     "choose": "Bitte wählen",
     "loading": "Lädt…",
-    "none": "Kein Mandant gewählt. Bitte oben einen Mandanten auswählen."
+    "none": "Kein Mandant gewählt. Bitte oben einen Mandanten auswählen.",
+    "missingTitle": "Kein Mandant ausgewählt",
+    "missingDesc": "Bitte wählen Sie einen Mandanten, um Daten zu laden."
   },
   "actions": {
     "reload": "Neu laden"
