@@ -1,216 +1,24 @@
 {
+  "name": "Norrly",
   "header": {
-    "subtitle": "Norrly – dein Kollege für Klarheit in NIS2 & dem AI Act."
+    "subtitle": "Norrly – Ihr Kollege für Klarheit in NIS2 & AI Act."
   },
   "intro": {
-    "headline": "Hi, ich bin Norrly 👋",
-    "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung. Ich helfe dir, dich im NIS2-AI-Guard-Programm zurechtzufinden und beantworte alle Fragen rund um NIS2, den AI Act und Compliance."
-  },
-  "cta": {
-    "verify": "Verifizieren",
-    "whyAccess": "Warum ist ein Login nötig?",
-    "createDoc": "Neues Dokument erstellen",
-    "name": "Name",
-    "incident": "Sicherheitsvorfall melden",
-    "register": "NIS2-Register prüfen",
-    "roles": "Verantwortlichkeiten klären",
-    "audit": "Audit vorbereiten",
-    "auditList": "Audit-Übersicht",
-    "auditNew": "Neuen Audit anlegen",
-    "training": "Schulung starten"
+    "headline": "Hi, ich bin Norrly",
+    "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung."
   },
   "input": {
-    "placeholder": "Frage eingeben (Enter zum Senden, Shift+Enter für neue Zeile)…",
     "open": "Öffnen",
-    "loading": "Lädt…",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "loading": "Lädt…"
   },
   "voice": {
     "on": "Stimme an",
     "off": "Stimme aus"
   },
   "session": {
-    "reset": "Neue Session"
+    "reset": "Session zurücksetzen"
   },
-  "guard": {
-    "deny": {
-      "technical": "Dazu kann ich keine Details teilen. Wenn du Norrly nutzen möchtest, helfe ich dir gern mit den verfügbaren Funktionen und Anleitungen.",
-      "credentials": "Zugangs- und Systeminformationen sind vertraulich und werden nicht offengelegt. Benötigst du Hilfe bei der Anwendung?",
-      "license": "Ich kann nicht dabei helfen, Lizenz- oder Sicherheitsmechanismen zu umgehen. Gern erkläre ich dir die offiziellen Nutzungsmöglichkeiten.",
-      "cloning": "Ich kann nicht dabei helfen, unser Produkt zu kopieren oder nachzubauen. Gern erkläre ich dir die offiziellen Nutzungsmöglichkeiten.",
-      "generic": "Diese Anfrage kann ich aus Sicherheitsgründen nicht beantworten. Kann ich dir auf andere Weise helfen?"
-    },
-    "rateLimit": "Zu viele blockierte Anfragen. Bitte warte 2 Minuten und versuche es erneut."
-  },
-  "help": {
-    "whyAccess": "Dein Zugang läuft über dein Abonnement. Mit dem Login aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
-  },
-  "contextNames": {
-    "dashboard": "Dashboard",
-    "documents": "Dokumente",
-    "documents.new": "Dokumente – Neu",
-    "checks": "Prüfungen",
-    "checks.new": "Prüfungen – Neu",
-    "controls": "Kontrollen",
-    "controls.mapping": "Kontrollen – Mapping",
-    "measures": "Maßnahmen",
-    "measures.new": "Maßnahmen – Neu",
-    "evidence": "Nachweise",
-    "scope": "Anwendungsbereich",
-    "nis2": "NIS2",
-    "ai-act": "AI Act",
-    "ai-systems.register": "KI-System-Register",
-    "organization": "Organisation",
-    "company-profile": "Unternehmensprofil",
-    "billing": "Abrechnung",
-    "incidents": "Sicherheitsvorfälle",
-    "incidents.new": "Vorfall melden",
-    "admin.ops": "Ops Dashboard",
-    "admin.training-certificates": "Schulungszertifikate",
-    "audit.list": "Audits",
-    "audit.new": "Neues Audit",
-    "audit.detail": "Audit-Detail",
-    "dpia.list": "Datenschutz-Folgenabschätzungen",
-    "dpia.detail": "DPIA-Detail"
-  },
-  "contextHelp": {
-    "dashboard": "Hier siehst du deine gesamte Compliance-Übersicht – Fortschritt, Aufgaben und nächste Schritte.",
-    "documents": "Hier findest du deine Compliance-Dokumente. Ich erkläre dir, wie du Nachweise und Richtlinien verwaltest.",
-    "documents.new": "Erstelle eine neue Richtlinie oder ein anderes Compliance-Dokument, verknüpfe Evidenzen und speichere es zur Freigabe.",
-    "checks": "Hier kannst du deine Prüfungen verwalten und neue Tests planen. Ich helfe dir, die wichtigsten Schritte zu verstehen und Risiken im Blick zu behalten.",
-    "checks.new": "Plane eine neue Compliance-Prüfung, weise Verantwortliche zu und lege Fristen fest.",
-    "controls": "In diesem Bereich kannst du Kontrollen verwalten und zugehörige Anforderungen prüfen.",
-    "controls.mapping": "Ordne Kontrollen den jeweiligen Anforderungen und Verantwortlichen zu – für klare Compliance-Strukturen.",
-    "measures": "Hier planst, dokumentierst und bewertest du Maßnahmen (Ziel, Status, Wirksamkeit).",
-    "measures.new": "Lege eine neue Maßnahme an, verknüpfe sie mit Nachweisen und weise Verantwortliche zu.",
-    "evidence": "Hier lädst du Nachweise hoch und verwaltest Belege für deine Compliance-Aktivitäten.",
-    "scope": "Definiere hier den Anwendungsbereich deines Informationssicherheits- oder KI-Managementsystems.",
-    "nis2": "Hier findest du Informationen zu NIS2 und kannst deine Compliance-Statusmeldungen verwalten.",
-    "ai-act": "Hier lernst du alles über den EU AI Act und kannst den Reifegrad deiner KI-Systeme prüfen.",
-    "ai-systems.register": "Registriere hier deine KI-Systeme und prüfe deren Compliance-Anforderungen.",
-    "organization": "Hier verwaltest du deine Organisationsstruktur, Verantwortlichkeiten und Meldewege.",
-    "company-profile": "Hier bearbeitest du dein Unternehmensprofil und organisatorische Details.",
-    "billing": "Hier findest du Informationen zu deinem Plan, Rechnungen und Zahlungsdetails.",
-    "incidents": "Hier meldest du Sicherheitsvorfälle und verfolgst deren Bearbeitung. Ich helfe dir, Vorfälle zu dokumentieren und Maßnahmen zu planen.",
-    "incidents.new": "Erfasse einen neuen Sicherheitsvorfall mit allen relevanten Details, Zeitstempel und erster Einschätzung. Denken Sie an Meldefristen (NIS2 Erstmeldung i. d. R. binnen 24 Stunden).",
-    "admin.ops": "Operative Metriken: E-Mail-Queue, Fehleranalyse, System-Gesundheit.",
-    "admin.training-certificates": "Hier verwaltest du alle ausgestellten Schulungszertifikate deiner Organisation.",
-    "audit.list": "Hier findest du alle laufenden Audits und deren Status. Ich erkläre dir, wie du Ergebnisse bewertest und dokumentierst.",
-    "audit.new": "Im Audit-Bereich kannst du neue Sicherheitsprüfungen anlegen, Aufgaben verteilen und Fortschritte dokumentieren.",
-    "audit.detail": "Hier findest du alle Details zu einem spezifischen Audit, inkl. Nachweise und Status.",
-    "dpia.list": "Hier kannst du Datenschutz-Folgenabschätzungen (DPIA) verwalten und neue Bewertungen starten.",
-    "dpia.detail": "Hier findest du alle Details zu einer spezifischen DPIA, inkl. Risikobewertung und Maßnahmen."
-  },
-  "quickstart": {
-    "dashboard": [
-      { "label": "Sicherheitsvorfall melden", "to": "/incidents/new" },
-      { "label": "NIS2-Register prüfen", "to": "/nis2" },
-      { "label": "Verantwortlichkeiten klären", "to": "/controls/mapping" },
-      { "label": "Audit-Übersicht", "to": "/audit" },
-      { "label": "Schulung starten", "to": "/admin/training-certificates" }
-    ],
-    "documents": [
-      { "label": "Neues Dokument erstellen", "to": "/documents/new" },
-      { "label": "Nachweise hochladen", "to": "/evidence" },
-      { "label": "Richtlinie generieren", "to": "/controls" },
-      { "label": "Audit-Task anlegen", "to": "/audit/new" }
-    ],
-    "documents.new": [
-      { "label": "Richtlinien-Vorlage auswählen", "to": "/controls" },
-      { "label": "Evidenztyp hinzufügen", "to": "/evidence" },
-      { "label": "Dokument speichern & freigeben", "to": "/documents" },
-      { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" }
-    ],
-    "checks.new": [
-      { "label": "Prüfplan terminieren", "to": "/audit/new" },
-      { "label": "Nachweise prüfen", "to": "/evidence" },
-      { "label": "Kontrollen zuordnen", "to": "/controls/mapping" },
-      { "label": "Prüfungen-Übersicht", "to": "/checks" }
-    ],
-    "controls.mapping": [
-      { "label": "Neue Kontrolle anlegen", "to": "/controls" },
-      { "label": "Nachweise filtern", "to": "/evidence" },
-      { "label": "Verantwortlichkeiten zuweisen", "to": "/organization" },
-      { "label": "Audit planen", "to": "/audit/new" }
-    ],
-    "checks": [
-      { "label": "Neue Prüfung planen", "to": "/checks/new" },
-      { "label": "Prüfplan terminieren", "to": "/audit/new" },
-      { "label": "Nachweise prüfen", "to": "/evidence" }
-    ],
-    "controls": [
-      { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" },
-      { "label": "Neue Kontrolle anlegen", "to": "/controls" },
-      { "label": "Nachweise filtern", "to": "/evidence" }
-    ],
-    "measures": [
-      { "label": "Neue Maßnahme anlegen", "icon": "PlusCircle", "action": "navigate:/measures/new" },
-      { "label": "Offene Maßnahmen prüfen", "icon": "ListChecks", "action": "navigate:/measures?status=open" },
-      { "label": "Wirksamkeit bewerten", "icon": "BarChart", "action": "navigate:/measures?tab=evaluation" },
-      { "label": "Verantwortliche zuweisen", "icon": "UserPlus", "action": "navigate:/organization/roles" },
-      { "label": "Maßnahmenbericht exportieren", "icon": "FileDown", "action": "export:/measures/report" }
-    ],
-    "controls.mapping": [
-      { "label": "Kontroll-Mapping öffnen", "to": "/controls/mapping" },
-      { "label": "Neue Kontrolle anlegen", "to": "/controls/new" }
-    ],
-    "admin": {
-      "ops": [
-        { "label": "Warteschlange prüfen", "to": "/admin/integrations?tab=pending" },
-        { "label": "Fehler-Logs ansehen", "to": "/admin/integrations?tab=dead" },
-        { "label": "E-Mail-Statistiken", "to": "/admin/ops" }
-      ],
-      "training-certificates": [
-        { "label": "Zertifikat ausstellen", "to": "/admin/training-certificates" },
-        { "label": "Kurs zuweisen", "to": "/admin/training-certificates" },
-        { "label": "Berichte öffnen", "to": "/admin/ops" }
-      ]
-    },
-    "audit": {
-      "list": [
-        { "label": "Neues Audit anlegen", "to": "/audit/new" },
-        { "label": "Prüfungen öffnen", "to": "/checks" },
-        { "label": "Berichte & Exporte", "to": "/admin/ops" }
-      ],
-      "new": [
-        { "label": "Audit-Vorlagen laden", "to": "/audit" },
-        { "label": "Kontrollen zuordnen", "to": "/controls/mapping" },
-        { "label": "DPIA-Liste", "to": "/privacy/dpia" }
-      ]
-    },
-    "dpia": {
-      "list": [
-        { "label": "Neue DPIA starten", "to": "/privacy/dpia/new" },
-        { "label": "System ins Register", "to": "/ai-systems/register" },
-        { "label": "Nachweise hochladen", "to": "/evidence" }
-      ]
-    },
-    "ai-act": [
-      { "label": "KI-System registrieren", "to": "/ai-systems/register" },
-      { "label": "DPIA prüfen", "to": "/privacy/dpia" },
-      { "label": "Richtlinie generieren", "to": "/controls" }
-    ],
-    "organization": [
-      { "label": "Unternehmensprofil bearbeiten", "to": "/company-profile" },
-      { "label": "Zertifikate prüfen", "to": "/admin/training-certificates" }
-    ],
-    "billing": [
-      { "label": "Plan upgraden", "to": "/billing" },
-      { "label": "Testversion verwalten", "to": "/dashboard" }
-    ],
-    "incidents": [
-      { "label": "Neuen Vorfall melden", "icon": "AlertTriangle", "action": "navigate:/incidents/new" },
-      { "label": "Vorfallsübersicht", "icon": "List", "action": "navigate:/incidents" },
-      { "label": "Eskalation prüfen", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
-      { "label": "Maßnahmen verknüpfen", "icon": "Link", "action": "navigate:/measures" },
-      { "label": "Vorfallsbericht exportieren", "icon": "FileDown", "action": "export:/incidents/report" }
-    ],
-    "incidents.new": [
-      { "label": "Erstmeldung vorbereiten (24 h)", "action": "navigate:/incidents/new?step=report" },
-      { "label": "Nachweise hinzufügen", "action": "navigate:/evidence?ref=incident" },
-      { "label": "Maßnahmen wählen", "action": "navigate:/measures" },
-      { "label": "Prüfungen/Checks zuordnen", "action": "navigate:/checks" },
-      { "label": "Report-Dokument anlegen", "action": "navigate:/documents/new?template=incident-report" }
-    ]
-  }
+  "loading": "Lädt…",
+  "welcome": "Willkommen"
 }

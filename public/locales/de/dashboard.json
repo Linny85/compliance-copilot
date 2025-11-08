@@ -1,36 +1,40 @@
 {
   "welcome": "Willkommen zu Ihrem Dashboard",
   "organization": "Organisation",
-  "organizationDesc": "Informationen über Ihr Unternehmen",
-  "companyName": "Unternehmensname",
+  "organizationDesc": "Informationen über Ihre Organisation",
+  "companyName": "Firmenname",
   "country": "Land",
   "sector": "Sektor",
+  "sectors": {
+    "it": "IT",
+    "finance": "Finanzen",
+    "health": "Gesundheit"
+  },
   "editOrganization": "Organisation bearbeiten",
   "viewOrganization": "Organisation anzeigen",
-  "trialStatus": "Testversion",
+  "trialStatus": "Teststatus",
   "active": "Aktiv",
   "expired": "Abgelaufen",
   "trialStatusDesc": "Status Ihrer Testphase",
   "daysRemaining": "{{count}} Tage verbleibend",
   "daysRemaining_one": "{{count}} Tag verbleibend",
   "daysRemaining_other": "{{count}} Tage verbleibend",
-  "upgradePlan": "Upgrade durchführen",
-  "trialNote": "Ihre Testphase endet bald. Führen Sie ein Upgrade durch, um alle Funktionen weiter zu nutzen.",
+  "upgradePlan": "Plan upgraden",
+  "trialNote": "Ihre Testphase endet bald. Upgraden Sie, um alle Funktionen weiter zu nutzen.",
   "uploadEvidence": "Nachweise hochladen",
-  "uploadEvidenceDesc": "Dokumente zur Compliance-Dokumentation hochladen",
+  "uploadEvidenceDesc": "Laden Sie Dokumente hoch, um Compliance nachzuweisen",
   "scheduleChecks": "Compliance-Prüfungen planen",
-  "scheduleChecksDesc": "Automatisierte Compliance-Überprüfungen einrichten",
-  "addRisks": "Risikobewertung hinzufügen",
-  "addRisksDesc": "Potenzielle Risiken dokumentieren und bewerten",
+  "scheduleChecksDesc": "Richten Sie automatisierte Compliance-Überprüfung ein",
+  "addRisks": "Risikoanalyse hinzufügen",
+  "addRisksDesc": "Dokumentieren und bewerten Sie potenzielle Risiken",
   "generatePolicy": "Richtlinie erstellen",
-  "generatePolicyDesc": "Compliance-Richtlinien und Dokumente erstellen",
+  "generatePolicyDesc": "Erstellen Sie Compliance-Richtlinien und Dokumente",
   "nextStepsHeader": "Nächste Schritte",
   "nextStepsSub": "Empfohlene Maßnahmen zur Verbesserung Ihrer Compliance",
   "complianceProgress": "Compliance-Fortschritt",
-  "complianceProgressDesc": "Ihr gesamter Compliance-Status",
+  "complianceProgressDesc": "Ihr Gesamtstatus der Compliance",
   "complianceRefreshSuccess": "Compliance-Daten erfolgreich aktualisiert",
   "complianceRefreshError": "Fehler beim Aktualisieren der Compliance-Daten",
-  "complianceOverallDesc": "Gesamter Compliance-Score über alle Frameworks",
   "complianceControls": "Kontrollen",
   "complianceEvidence": "Nachweise",
   "complianceTraining": "Schulungen",
@@ -38,7 +42,7 @@
   "complianceOverall": "Gesamt",
   "complianceOverallDesc": "Gesamter Compliance-Score über alle Frameworks",
   "complianceOverallTooltip": "Durchschnittliche Compliance über alle Frameworks (NIS2, AI Act, DSGVO)",
-  "complianceOverallTooltipWithTraining": "Gesamt-Compliance inkl. Trainingseinfluss (Standard 80/20)",
+  "complianceOverallTooltipWithTraining": "Gesamt-Compliance inklusive Schulungseinfluss (Standard 80/20)",
   "labels": {
     "nis2": "NIS2",
     "ai_act": "AI Act",
@@ -51,24 +55,24 @@
     "dpia": "DSFA"
   },
   "badges": {
-    "na": "n/a"
+    "na": "n. z."
   },
   "tooltips": {
-    "dpia_na": "Wird bewertet, sobald ≥2 DSFA vorliegen."
+    "dpia_na": "Wird bewertet, sobald ≥2 DSFAs verfügbar sind."
   },
   "complianceStatusExcellent": "Ausgezeichneter Compliance-Status",
-  "complianceStatusGood": "Guter Fortschritt, weiter so",
+  "complianceStatusGood": "Guter Fortschritt, weiter verbessern",
   "complianceStatusNeeds": "Verbesserungsbedarf",
-  "recentAuditReports": "Aktuelle Audit-Berichte",
-  "recentAuditReportsDesc": "Zuletzt erstellte Compliance-Berichte",
+  "recentAuditReports": "Aktuelle Auditberichte",
+  "recentAuditReportsDesc": "Zuletzt generierte Compliance-Berichte",
   "viewAll": "Alle anzeigen",
   "noReportsYet": "Noch keine Berichte erstellt",
   "createAuditTask": "Audit-Aufgabe erstellen",
   "training": {
-    "coverage": "Schulungsquote",
+    "coverage": "Schulungsabdeckung",
     "coverage_tooltip": "{{participants}} von {{required}} schulungspflichtigen Personen geschult",
     "missing_data": "Keine Schulungsdaten verfügbar",
-    "no_requirements": "Keine Schulungspflichten definiert"
+    "no_requirements": "Keine Schulungsanforderungen definiert"
   },
-  "noTenantSelected": "Kein Mandant gewählt. Bitte oben einen Mandanten auswählen."
+  "noTenantSelected": "Kein Mandant ausgewählt. Bitte wählen Sie einen oben aus."
 }

@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
 
-test('loads common/dashboard namespaces without warnings', async ({ page }) => {
+test('loads common/dashboard/norrly namespaces without warnings', async ({ page }) => {
   const warnings: string[] = [];
   
   page.on('console', (msg) => {
-    if (msg.type() === 'warning' && /i18n missing|was not yet loaded/i.test(msg.text())) {
+    if (msg.type() === 'warning' && /i18n missing|was not yet loaded|flat JSON/i.test(msg.text())) {
       warnings.push(msg.text());
     }
   });
@@ -15,7 +15,7 @@ test('loads common/dashboard namespaces without warnings', async ({ page }) => {
   await expect(page.getByTestId('lang-btn-de')).toBeVisible();
   
   // Give backend a moment to fetch locales
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(1500);
   
   // Check for i18n warnings
   expect(warnings.length, `i18n warnings found:\n${warnings.join('\n')}`).toBe(0);

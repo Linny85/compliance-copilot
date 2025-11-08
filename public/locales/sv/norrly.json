@@ -1,216 +1,24 @@
 {
+  "name": "Norrly",
   "header": {
-    "subtitle": "Norrly – din kollega för klarhet i NIS2 och AI-förordningen."
+    "subtitle": "Norrly – din kollega för NIS2 & AI-lagen."
   },
   "intro": {
-    "headline": "Hej, jag är Norrly 👋",
-    "text": "Jag förklarar, vägleder och hjälper dig – från regler till genomförande. Jag guidar dig i NIS2-AI-Guard-programmet och svarar på dina frågor om NIS2, AI-förordningen och regelefterlevnad."
-  },
-  "cta": {
-    "verify": "Verifiera",
-    "whyAccess": "Varför behöver jag logga in?",
-    "createDoc": "Skapa nytt dokument",
-    "name": "Namn",
-    "incident": "Rapportera en säkerhetsincident",
-    "register": "Kontrollera NIS2-registret",
-    "roles": "Klart ansvar",
-    "audit": "Förbered revision",
-    "auditList": "Revisionsöversikt",
-    "auditNew": "Skapa ny revision",
-    "training": "Starta utbildning"
+    "headline": "Hej, jag är Norrly",
+    "text": "Jag förklarar, rådgiver och guidar dig till införande."
   },
   "input": {
-    "placeholder": "Skriv en fråga (Enter för att skicka, Shift+Enter för ny rad)…",
     "open": "Öppna",
-    "loading": "Laddar…",
-    "cancel": "Avbryt"
+    "cancel": "Avbryt",
+    "loading": "Laddar…"
   },
   "voice": {
     "on": "Röst på",
     "off": "Röst av"
   },
   "session": {
-    "reset": "Ny session"
+    "reset": "Återställ session"
   },
-  "guard": {
-    "deny": {
-      "technical": "Jag kan inte dela detaljer om det. Om du vill använda Norrly hjälper jag dig gärna med tillgängliga funktioner och dokumentation.",
-      "credentials": "Åtkomst- och systeminformation är konfidentiell och kan inte avslöjas. Behöver du hjälp med applikationen?",
-      "license": "Jag kan inte hjälpa till att kringgå licens- eller säkerhetsmekanismer. Jag förklarar gärna officiella användningsalternativ.",
-      "cloning": "Jag kan inte hjälpa till att kopiera eller replikera vår produkt. Jag förklarar gärna officiella användningsalternativ.",
-      "generic": "Jag kan inte svara på denna förfrågan av säkerhetsskäl. Kan jag hjälpa dig på annat sätt?"
-    },
-    "rateLimit": "För många blockerade förfrågningar. Vänta 2 minuter och försök igen."
-  },
-  "help": {
-    "whyAccess": "Din åtkomst går genom din prenumeration. Genom att logga in aktiverar jag din licens och kan tilldela dokument & bevis direkt till din organisation – säkert och GDPR-kompatibelt."
-  },
-  "contextNames": {
-    "dashboard": "Översikt",
-    "documents": "Dokument",
-    "documents.new": "Dokument – Nytt",
-    "checks": "Kontroller",
-    "checks.new": "Kontroller – Ny",
-    "controls": "Kontroller",
-    "controls.mapping": "Kontroller – Mapping",
-    "measures": "Åtgärder",
-    "measures.new": "Åtgärder – Ny",
-    "evidence": "Underlag",
-    "scope": "Tillämpningsområde",
-    "nis2": "NIS2",
-    "ai-act": "AI-förordningen",
-    "ai-systems.register": "AI-systemregister",
-    "organization": "Organisation",
-    "company-profile": "Företagsprofil",
-    "billing": "Fakturering",
-    "incidents": "Säkerhetsincidenter",
-    "incidents.new": "Rapportera incident",
-    "admin.ops": "Ops Dashboard",
-    "admin.training-certificates": "Utbildningsintyg",
-    "audit.list": "Revisioner",
-    "audit.new": "Ny Revision",
-    "audit.detail": "Revisionsdetalj",
-    "dpia.list": "Dataskyddskonsekvensbedömningar",
-    "dpia.detail": "DPIA-detalj"
-  },
-  "contextHelp": {
-    "dashboard": "Din startsida: framsteg, nästa steg och senaste rapporter.",
-    "documents": "Hantera din dokumentation för regelefterlevnad.",
-    "documents.new": "Skapa en ny policy eller annat compliance-dokument, länka bevis och spara för godkännande.",
-    "checks": "Schemalägg och granska efterlevnadskontroller.",
-    "checks.new": "Planera en ny efterlevnadskontroll, tilldela ansvariga och sätt deadlines.",
-    "controls": "Här hanterar du kontroller och granskar tillhörande krav.",
-    "controls.mapping": "Mappa kontroller till krav och tilldela ägarskap för tydliga strukturer i regelefterlevnad.",
-    "measures": "Här kan du planera och genomföra åtgärder och länka dem till kontroller och bevis.",
-    "measures.new": "Skapa en ny åtgärd, länka den till kontroller och tilldela ansvar.",
-    "evidence": "Ladda upp och organisera stödjande underlag.",
-    "scope": "Definiera här tillämpningsområdet för ditt informationssäkerhets- eller AI-hanteringssystem.",
-    "nis2": "Här hittar du information om NIS2 och kan hantera dina compliance-statusrapporter.",
-    "ai-act": "Registrera och hantera AI-system för regelefterlevnad.",
-    "ai-systems.register": "Registrera här dina AI-system och granska deras compliance-krav.",
-    "organization": "Konfigurera dina organisationsinställningar och team.",
-    "company-profile": "Här redigerar du din företagsprofil och organisatoriska detaljer.",
-    "billing": "Hantera din prenumeration och betalningsuppgifter.",
-    "incidents": "Rapportera och spåra säkerhetsincidenter. Jag hjälper dig dokumentera händelser och planera åtgärder.",
-    "incidents.new": "Skapa en ny säkerhetsincident med detaljer, tidsstämplar och första bedömning. Tänk på rapporteringsfrister (NIS2 – initial anmälan oftast inom 24 h).",
-    "admin.ops": "Operativa mätvärden: e-postkö, felanalys, systemhälsa.",
-    "admin.training-certificates": "Hantera kursregister, intyg och tilldelningar för personal.",
-    "audit.list": "Visa och hantera alla revisionsuppgifter.",
-    "audit.new": "Skapa och schemalägg nya revisionsaktiviteter.",
-    "audit.detail": "Här hittar du alla detaljer om en specifik revision, inkl. bevis och status.",
-    "dpia.list": "Spåra alla dataskyddskonsekvensbedömningar.",
-    "dpia.detail": "Här hittar du alla detaljer om en specifik DPIA, inkl. riskbedömning och åtgärder."
-  },
-  "quickstart": {
-    "dashboard": [
-      { "label": "Rapportera säkerhetsincident", "to": "/incidents/new" },
-      { "label": "Kontrollera NIS2-registret", "to": "/nis2" },
-      { "label": "Klargör ansvar", "to": "/controls/mapping" },
-      { "label": "Revisionsöversikt", "to": "/audit" },
-      { "label": "Starta utbildning", "to": "/admin/training-certificates" }
-    ],
-    "documents": [
-      { "label": "Skapa nytt dokument", "to": "/documents/new" },
-      { "label": "Ladda upp underlag", "to": "/evidence" },
-      { "label": "Generera policy", "to": "/controls" },
-      { "label": "Skapa revisionsuppgift", "to": "/audit/new" }
-    ],
-    "documents.new": [
-      { "label": "Välj policymall", "to": "/controls" },
-      { "label": "Lägg till bevis-typ", "to": "/evidence" },
-      { "label": "Spara & publicera", "to": "/documents" },
-      { "label": "Öppna kontroll-mapping", "to": "/controls/mapping" }
-    ],
-    "checks.new": [
-      { "label": "Schemalägg revision", "to": "/audit/new" },
-      { "label": "Granska underlag", "to": "/evidence" },
-      { "label": "Mappa kontroller", "to": "/controls/mapping" },
-      { "label": "Kontrollöversikt", "to": "/checks" }
-    ],
-    "controls.mapping": [
-      { "label": "Skapa ny kontroll", "to": "/controls" },
-      { "label": "Filtrera underlag", "to": "/evidence" },
-      { "label": "Tilldela ansvar", "to": "/organization" },
-      { "label": "Planera revision", "to": "/audit/new" }
-    ],
-    "checks": [
-      { "label": "Planera ny kontroll", "to": "/checks/new" },
-      { "label": "Schemalägg revision", "to": "/audit/new" },
-      { "label": "Granska underlag", "to": "/evidence" }
-    ],
-    "controls": [
-      { "label": "Öppna kontrollmapping", "to": "/controls/mapping" },
-      { "label": "Skapa ny kontroll", "to": "/controls" },
-      { "label": "Filtrera underlag", "to": "/evidence" }
-    ],
-    "measures": [
-      { "label": "Skapa ny åtgärd", "icon": "PlusCircle", "action": "navigate:/measures/new" },
-      { "label": "Granska öppna åtgärder", "icon": "ListChecks", "action": "navigate:/measures?status=open" },
-      { "label": "Utvärdera effektivitet", "icon": "BarChart", "action": "navigate:/measures?tab=evaluation" },
-      { "label": "Tilldela ansvariga", "icon": "UserPlus", "action": "navigate:/organization/roles" },
-      { "label": "Exportera åtgärdsrapport", "icon": "FileDown", "action": "export:/measures/report" }
-    ],
-    "controls.mapping": [
-      { "label": "Öppna kontrollkartläggning", "to": "/controls/mapping" },
-      { "label": "Skapa ny kontroll", "to": "/controls/new" }
-    ],
-    "admin": {
-      "ops": [
-        { "label": "Kontrollera kö", "to": "/admin/integrations?tab=pending" },
-        { "label": "Visa felloggar", "to": "/admin/integrations?tab=dead" },
-        { "label": "E-poststatistik", "to": "/admin/ops" }
-      ],
-      "training-certificates": [
-        { "label": "Utfärda intyg", "to": "/admin/training-certificates" },
-        { "label": "Tilldela kurs", "to": "/admin/training-certificates" },
-        { "label": "Öppna rapporter", "to": "/admin/ops" }
-      ]
-    },
-    "audit": {
-      "list": [
-        { "label": "Skapa ny revision", "to": "/audit/new" },
-        { "label": "Öppna kontroller", "to": "/checks" },
-        { "label": "Rapporter & exporter", "to": "/admin/ops" }
-      ],
-      "new": [
-        { "label": "Ladda revisionsmallar", "to": "/audit" },
-        { "label": "Mappa kontroller", "to": "/controls/mapping" },
-        { "label": "DPIA-lista", "to": "/privacy/dpia" }
-      ]
-    },
-    "dpia": {
-      "list": [
-        { "label": "Starta ny DPIA", "to": "/privacy/dpia/new" },
-        { "label": "Registrera system", "to": "/ai-systems/register" },
-        { "label": "Ladda upp underlag", "to": "/evidence" }
-      ]
-    },
-    "ai-act": [
-      { "label": "Registrera AI-system", "to": "/ai-systems/register" },
-      { "label": "Kontrollera DPIA", "to": "/privacy/dpia" },
-      { "label": "Generera policy", "to": "/controls" }
-    ],
-    "organization": [
-      { "label": "Redigera företagsprofil", "to": "/company-profile" },
-      { "label": "Kontrollera certifikat", "to": "/admin/training-certificates" }
-    ],
-    "billing": [
-      { "label": "Uppgradera plan", "to": "/billing" },
-      { "label": "Hantera provperiod", "to": "/dashboard" }
-    ],
-    "incidents": [
-      { "label": "Rapportera ny incident", "icon": "AlertTriangle", "action": "navigate:/incidents/new" },
-      { "label": "Incidentöversikt", "icon": "List", "action": "navigate:/incidents" },
-      { "label": "Kontrollera eskalering", "icon": "TrendingUp", "action": "navigate:/incidents?priority=critical" },
-      { "label": "Länka åtgärder", "icon": "Link", "action": "navigate:/measures" },
-      { "label": "Exportera incidentrapport", "icon": "FileDown", "action": "export:/incidents/report" }
-    ],
-    "incidents.new": [
-      { "label": "Förbered första rapporten (24 h)", "action": "navigate:/incidents/new?step=report" },
-      { "label": "Lägg till bevis", "action": "navigate:/evidence?ref=incident" },
-      { "label": "Välj åtgärder", "action": "navigate:/measures" },
-      { "label": "Koppla kontroller", "action": "navigate:/checks" },
-      { "label": "Skapa rapportdokument", "action": "navigate:/documents/new?template=incident-report" }
-    ]
-  }
+  "loading": "Laddar…",
+  "welcome": "Välkommen"
 }

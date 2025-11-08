@@ -5,6 +5,11 @@
   "companyName": "Company Name",
   "country": "Country",
   "sector": "Sector",
+  "sectors": {
+    "it": "IT",
+    "finance": "Finance",
+    "health": "Health"
+  },
   "editOrganization": "Edit Organization",
   "viewOrganization": "View Organization",
   "trialStatus": "Trial Status",
@@ -30,7 +35,6 @@
   "complianceProgressDesc": "Your overall compliance status",
   "complianceRefreshSuccess": "Compliance data refreshed successfully",
   "complianceRefreshError": "Failed to refresh compliance data",
-  "complianceProgressDesc": "Your overall compliance status",
   "complianceControls": "Controls",
   "complianceEvidence": "Evidence",
   "complianceTraining": "Training",
@@ -39,7 +43,6 @@
   "complianceOverallDesc": "Overall compliance score across all frameworks",
   "complianceOverallTooltip": "Average compliance across all frameworks (NIS2, AI Act, GDPR)",
   "complianceOverallTooltipWithTraining": "Overall compliance including training influence (default 80/20)",
-  "complianceProgress": "Compliance Progress",
   "labels": {
     "nis2": "NIS2",
     "ai_act": "AI Act",

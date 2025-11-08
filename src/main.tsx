@@ -11,6 +11,15 @@ import "./index.css";
 // Initialize Sentry early
 initSentry();
 
+// DEV: Verify single React instance
+if (import.meta.env.DEV) {
+  import('react').then(r => {
+    import('react-dom').then(rd => {
+      console.info('[react]', r.version, '[react-dom]', rd.version);
+    });
+  });
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
