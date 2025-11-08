@@ -8,6 +8,8 @@ import { OrganizationCard } from "@/components/dashboard/OrganizationCard";
 import { TrainingCertificatesCard } from "@/components/training/TrainingCertificatesCard";
 import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
+import TenantBanner from "@/components/TenantBanner";
+import { useTenantStore } from "@/store/tenant";
 
 import { useTranslation } from "react-i18next";
 
@@ -25,6 +27,7 @@ interface SubscriptionData {
 const Dashboard = () => {
   const navigate = useNavigate();
   const { t, ready } = useTranslation(['dashboard', 'common']);
+  const { tenantId } = useTenantStore();
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string>("");
   const [companyData, setCompanyData] = useState<CompanyData>({
@@ -105,6 +108,9 @@ const Dashboard = () => {
   return (
     <div data-testid="page-root" className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
       <div className="animate-fade-in space-y-6">
+        {/* Tenant Banner */}
+        {!tenantId && <TenantBanner />}
+        
         {/* Header */}
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
