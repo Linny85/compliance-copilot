@@ -1,7 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { VComplianceSummaryRow, VFrameworkComplianceRow, TrendData } from '@/lib/compliance/score';
 import { getTenantId } from '@/lib/tenant';
+
+// Helper: normalize 0..1 or 0..100 → 0..1
+const toUnit = (x: any): number => {
+  const n = Number(x ?? 0);
+  if (!Number.isFinite(n)) return 0;
+  return n > 1 ? n / 100 : n;
+};
+
+// Helper: convert to percentage for display (0..100 int)
+export const toPct = (x: any): number => {
+  const v = Number.isFinite(+x) ? +x : 0;
+  const pct = v <= 1 ? v * 100 : v;
+  return Math.max(0, Math.min(100, Math.round(pct)));
+};
 
 export function useComplianceData() {
   const [summary, setSummary] = useState<VComplianceSummaryRow | null>(null);
@@ -11,6 +25,9 @@ export function useComplianceData() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  
+  // Keep last valid state to prevent 0-flicker during reload
+  const lastSummaryRef = useRef<VComplianceSummaryRow | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -41,55 +58,45 @@ export function useComplianceData() {
         setIsAdmin(!!roleData);
 
     // Load from v_compliance_overview (returns 0..100 percentages)
-    const { data: ov } = await supabase
+    const { data: ov, error: ovError } = await supabase
       .from('v_compliance_overview' as any)
       .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
       .eq('tenant_id', tid)
       .maybeSingle() as any;
 
-    // Extract framework scores from JSON array
-    const fwArr = Array.isArray(ov?.frameworks) ? ov.frameworks : [];
-    
-    // Extract NIS2, AI, GDPR scores for useOverallCompliance
-    const nis2Fw = fwArr.find((f: any) => f.framework_code === 'NIS2');
-    const aiFw = fwArr.find((f: any) => f.framework_code === 'AI_ACT');
-    const gdprFw = fwArr.find((f: any) => f.framework_code === 'GDPR');
-
-    if (import.meta.env.DEV) console.debug('[progress:fw]', { frameworks: fwArr });
-
-    if (ov) {
-      setSummary({
-        tenant_id: tid,
-        // backend may return 0..1 or 0..100 → normalize to 0..1 here
-        overall_score: Number(ov.overall_pct ?? 0) > 1 ? Number(ov.overall_pct)/100 : Number(ov.overall_pct ?? 0),
-        controls_score: Number(ov.controls_pct ?? 0) > 1 ? Number(ov.controls_pct)/100 : Number(ov.controls_pct ?? 0),
-        evidence_score: Number(ov.evidence_pct ?? 0) > 1 ? Number(ov.evidence_pct)/100 : Number(ov.evidence_pct ?? 0),
-        training_score: Number(ov.trainings_pct ?? 0) > 1 ? Number(ov.trainings_pct)/100 : Number(ov.trainings_pct ?? 0),
-        dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
-        dpia_total: Number(ov.dpia_total ?? 0),
-        // Add framework scores extracted from JSON (0..1 range)
-        nis2: nis2Fw?.score ?? null,
-        aiAct: aiFw?.score ?? null,
-        gdpr: gdprFw?.score ?? null,
-      });
-      // Store frameworks with their codes for getFrameworkScorePct
-      setFrameworks(fwArr.map((f: any) => ({
-        framework_code: f.framework_code,
-        score: f.score
-      })));
+    if (ovError) {
+      console.error('[useComplianceData] query error:', ovError);
+      // Keep last valid state on error
+      if (lastSummaryRef.current) {
+        setSummary(lastSummaryRef.current);
+      }
     } else {
-      setSummary({
+      // Extract framework scores from JSON array
+      const fwArr = Array.isArray(ov?.frameworks) ? ov.frameworks : [];
+      const f = (code: string) => fwArr.find((x: any) => x.framework_code === code)?.score ?? null;
+
+      if (import.meta.env.DEV) console.debug('[compliance:data]', { ov, frameworks: fwArr });
+
+      const normalized: VComplianceSummaryRow = {
         tenant_id: tid,
-        overall_score: 0,
-        controls_score: 0,
-        evidence_score: 0,
-        training_score: 0,
-        dpia_score: 0,
-        dpia_total: 0,
-        nis2: null,
-        aiAct: null,
-        gdpr: null,
-      });
+        overall_score: toUnit(ov?.overall_pct),
+        controls_score: toUnit(ov?.controls_pct),
+        evidence_score: toUnit(ov?.evidence_pct),
+        training_score: toUnit(ov?.trainings_pct),
+        dpia_score: toUnit(ov?.dpia_pct),
+        dpia_total: Number(ov?.dpia_total ?? 0),
+        nis2: toUnit(f('NIS2')),
+        aiAct: toUnit(f('AI_ACT')),
+        gdpr: toUnit(f('GDPR')),
+      };
+
+      lastSummaryRef.current = normalized;
+      setSummary(normalized);
+
+      setFrameworks(fwArr.map((x: any) => ({
+        framework_code: x.framework_code,
+        score: toUnit(x.score),
+      })));
     }
 
         // Load trend data - only if there's actual data
@@ -120,10 +127,7 @@ export function useComplianceData() {
       String(x?.framework_code ?? x?.code ?? '')
         .toUpperCase() === fw.toUpperCase()
     );
-    const raw = Number(f?.score ?? 0);
-    if (!Number.isFinite(raw)) return 0;
-    // View returns 0..1, convert to percentage
-    return Math.round(raw * 100);
+    return toPct(f?.score ?? 0);
   };
 
   const getDpiaTotal = (): number => {
@@ -139,38 +143,42 @@ export function useComplianceData() {
       setRefreshing(true);
 
       // Re-fetch from v_compliance_overview
-      const { data: ov } = await supabase
+      const { data: ov, error: ovError } = await supabase
         .from('v_compliance_overview' as any)
         .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
         .eq('tenant_id', tenantId)
         .maybeSingle() as any;
 
-      // Extract framework scores from JSON array
-      const fwArr = Array.isArray(ov?.frameworks) ? ov.frameworks : [];
-      
-      // Extract NIS2, AI, GDPR scores
-      const nis2Fw = fwArr.find((f: any) => f.framework_code === 'NIS2');
-      const aiFw = fwArr.find((f: any) => f.framework_code === 'AI_ACT');
-      const gdprFw = fwArr.find((f: any) => f.framework_code === 'GDPR');
+      if (ovError) {
+        console.error('[refreshSummary] query error:', ovError);
+        // Keep last valid state
+        if (lastSummaryRef.current) {
+          setSummary(lastSummaryRef.current);
+        }
+      } else {
+        // Extract framework scores from JSON array
+        const fwArr = Array.isArray(ov?.frameworks) ? ov.frameworks : [];
+        const f = (code: string) => fwArr.find((x: any) => x.framework_code === code)?.score ?? null;
 
-      if (ov) {
-        setSummary({
+        const normalized: VComplianceSummaryRow = {
           tenant_id: tenantId,
-          // backend may return 0..1 or 0..100 → normalize to 0..1 here
-          overall_score: Number(ov.overall_pct ?? 0) > 1 ? Number(ov.overall_pct)/100 : Number(ov.overall_pct ?? 0),
-          controls_score: Number(ov.controls_pct ?? 0) > 1 ? Number(ov.controls_pct)/100 : Number(ov.controls_pct ?? 0),
-          evidence_score: Number(ov.evidence_pct ?? 0) > 1 ? Number(ov.evidence_pct)/100 : Number(ov.evidence_pct ?? 0),
-          training_score: Number(ov.trainings_pct ?? 0) > 1 ? Number(ov.trainings_pct)/100 : Number(ov.trainings_pct ?? 0),
-          dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
-          dpia_total: Number(ov.dpia_total ?? 0),
-          // Add framework scores extracted from JSON (0..1 range)
-          nis2: nis2Fw?.score ?? null,
-          aiAct: aiFw?.score ?? null,
-          gdpr: gdprFw?.score ?? null,
-        });
-        setFrameworks(fwArr.map((f: any) => ({
-          framework_code: f.framework_code,
-          score: f.score
+          overall_score: toUnit(ov?.overall_pct),
+          controls_score: toUnit(ov?.controls_pct),
+          evidence_score: toUnit(ov?.evidence_pct),
+          training_score: toUnit(ov?.trainings_pct),
+          dpia_score: toUnit(ov?.dpia_pct),
+          dpia_total: Number(ov?.dpia_total ?? 0),
+          nis2: toUnit(f('NIS2')),
+          aiAct: toUnit(f('AI_ACT')),
+          gdpr: toUnit(f('GDPR')),
+        };
+
+        lastSummaryRef.current = normalized;
+        setSummary(normalized);
+
+        setFrameworks(fwArr.map((x: any) => ({
+          framework_code: x.framework_code,
+          score: toUnit(x.score),
         })));
       }
 
