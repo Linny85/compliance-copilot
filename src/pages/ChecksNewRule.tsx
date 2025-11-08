@@ -546,8 +546,9 @@ export default function ChecksNewRule() {
           <Button 
             type="submit" 
             disabled={submitting || validationStatus.status !== 'valid'} 
+            aria-disabled={submitting || validationStatus.status !== 'valid'}
             className="w-full"
-            title={validationStatus.status !== 'valid' ? (tx("checks.form.validation.complete_required") || "Bitte Titel, Code und Spezifikation vervollständigen") : undefined}
+            title={validationStatus.status !== 'valid' ? (tx("checks.form.validation.complete_required") || "Bitte Titel, Code und Spezifikation vervollständigen.") : undefined}
           >
             {submitting ? tx("common.saving") : tx("checks.form.actions.save")}
           </Button>
