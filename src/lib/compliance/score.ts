@@ -96,6 +96,10 @@ export interface VComplianceSummaryRow {
   training_score: number | null;
   dpia_score: number | null;
   dpia_total?: number;
+  // Framework scores extracted from JSON (0..1 range)
+  nis2?: number | null;
+  aiAct?: number | null;
+  gdpr?: number | null;
 }
 
 export interface VFrameworkComplianceRow {

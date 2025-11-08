@@ -43,17 +43,17 @@ export function useComplianceData() {
     // Load from v_compliance_overview (returns 0..100 percentages)
     const { data: ov } = await supabase
       .from('v_compliance_overview' as any)
-      .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total')
+      .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
       .eq('tenant_id', tid)
       .maybeSingle() as any;
 
-    // Load framework progress from normalized view (always has all frameworks)
-    const { data: fwData } = await supabase
-      .from('v_framework_progress' as any)
-      .select('framework_code, score')
-      .eq('tenant_id', tid) as any;
-
-    const fwArr = Array.isArray(fwData) ? fwData : [];
+    // Extract framework scores from JSON array
+    const fwArr = Array.isArray(ov?.frameworks) ? ov.frameworks : [];
+    
+    // Extract NIS2, AI, GDPR scores for useOverallCompliance
+    const nis2Fw = fwArr.find((f: any) => f.framework_code === 'NIS2');
+    const aiFw = fwArr.find((f: any) => f.framework_code === 'AI_ACT');
+    const gdprFw = fwArr.find((f: any) => f.framework_code === 'GDPR');
 
     if (import.meta.env.DEV) console.debug('[progress:fw]', { frameworks: fwArr });
 
@@ -67,20 +67,30 @@ export function useComplianceData() {
         training_score: Number(ov.trainings_pct ?? 0) > 1 ? Number(ov.trainings_pct)/100 : Number(ov.trainings_pct ?? 0),
         dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
         dpia_total: Number(ov.dpia_total ?? 0),
+        // Add framework scores extracted from JSON (0..1 range)
+        nis2: nis2Fw?.score ?? null,
+        aiAct: aiFw?.score ?? null,
+        gdpr: gdprFw?.score ?? null,
       });
-      // Accept a variety of shapes and keep original objects
-      setFrameworks(Array.isArray(fwArr) ? fwArr : []);
-        } else {
-          setSummary({
-            tenant_id: tid,
-            overall_score: 0,
-            controls_score: 0,
-            evidence_score: 0,
-            training_score: 0,
-            dpia_score: 0,
-            dpia_total: 0,
-          });
-        }
+      // Store frameworks with their codes for getFrameworkScorePct
+      setFrameworks(fwArr.map((f: any) => ({
+        framework_code: f.framework_code,
+        score: f.score
+      })));
+    } else {
+      setSummary({
+        tenant_id: tid,
+        overall_score: 0,
+        controls_score: 0,
+        evidence_score: 0,
+        training_score: 0,
+        dpia_score: 0,
+        dpia_total: 0,
+        nis2: null,
+        aiAct: null,
+        gdpr: null,
+      });
+    }
 
         // Load trend data - only if there's actual data
         const { data: t } = await supabase
@@ -131,15 +141,17 @@ export function useComplianceData() {
       // Re-fetch from v_compliance_overview
       const { data: ov } = await supabase
         .from('v_compliance_overview' as any)
-        .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total')
+        .select('overall_pct, controls_pct, evidence_pct, trainings_pct, dpia_pct, dpia_total, frameworks')
         .eq('tenant_id', tenantId)
         .maybeSingle() as any;
 
-      // Re-fetch framework progress
-      const { data: fwData } = await supabase
-        .from('v_framework_progress' as any)
-        .select('framework_code, score')
-        .eq('tenant_id', tenantId) as any;
+      // Extract framework scores from JSON array
+      const fwArr = Array.isArray(ov?.frameworks) ? ov.frameworks : [];
+      
+      // Extract NIS2, AI, GDPR scores
+      const nis2Fw = fwArr.find((f: any) => f.framework_code === 'NIS2');
+      const aiFw = fwArr.find((f: any) => f.framework_code === 'AI_ACT');
+      const gdprFw = fwArr.find((f: any) => f.framework_code === 'GDPR');
 
       if (ov) {
         setSummary({
@@ -151,8 +163,15 @@ export function useComplianceData() {
           training_score: Number(ov.trainings_pct ?? 0) > 1 ? Number(ov.trainings_pct)/100 : Number(ov.trainings_pct ?? 0),
           dpia_score: Number(ov.dpia_pct ?? 0) > 1 ? Number(ov.dpia_pct)/100 : Number(ov.dpia_pct ?? 0),
           dpia_total: Number(ov.dpia_total ?? 0),
+          // Add framework scores extracted from JSON (0..1 range)
+          nis2: nis2Fw?.score ?? null,
+          aiAct: aiFw?.score ?? null,
+          gdpr: gdprFw?.score ?? null,
         });
-        setFrameworks(Array.isArray(fwData) ? fwData : []);
+        setFrameworks(fwArr.map((f: any) => ({
+          framework_code: f.framework_code,
+          score: f.score
+        })));
       }
 
       // Re-fetch trend
