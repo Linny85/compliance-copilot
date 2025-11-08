@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { RiskTemplateSelect } from "@/components/risks/RiskTemplateSelect";
 
 interface Risk {
   id: string;
@@ -161,6 +162,27 @@ const NIS2 = () => {
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Vorlage</Label>
+                <RiskTemplateSelect
+                  value={newRisk.title}
+                  onSelect={(template) => {
+                    if (template) {
+                      const lang = (navigator.language || 'de').slice(0, 2) as 'de' | 'en' | 'sv';
+                      const title = lang === 'sv' ? template.title_sv : 
+                                   lang === 'en' ? template.title_en : template.title_de;
+                      setNewRisk({
+                        ...newRisk,
+                        title,
+                        risk_level: template.default_level,
+                        status: template.default_status
+                      });
+                    }
+                  }}
+                  disabled={false}
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="title">{t.nis2.form.titleLabel}</Label>
                 <Input

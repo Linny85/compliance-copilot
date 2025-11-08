@@ -135,6 +135,13 @@ export function ComplianceProgressCard() {
   const isLovable = typeof window !== 'undefined'
     && /lovableproject\.com|lovable\./i.test(window.location.hostname);
   
+  // Debug: Environment info
+  const envInfo = import.meta.env.DEV && !isLovable ? {
+    env: isLovable ? 'Preview' : 'Browser',
+    projectId: import.meta.env.VITE_SUPABASE_PROJECT_ID?.slice(-6) || 'N/A',
+    tenant: summary?.tenant_id?.slice(-6) || 'N/A'
+  } : null;
+  
   const getCircleColor = (score: number) => {
     if (score >= 0.80) return "hsl(var(--success))";
     if (score >= 0.50) return "hsl(var(--warning))";
@@ -224,10 +231,11 @@ export function ComplianceProgressCard() {
               >
                 {t('dashboard:complianceOverall')}
               </span>
-              {import.meta.env.DEV && !isLovable && (
-                <span className="text-[10px] opacity-60 mt-1">
-                  src: {overallSource}
-                </span>
+              {envInfo && (
+                <div className="text-[9px] opacity-50 mt-1 space-y-0.5">
+                  <div>src: {overallSource}</div>
+                  <div>{envInfo.env} • P:{envInfo.projectId} • T:{envInfo.tenant}</div>
+                </div>
               )}
             </div>
           </div>

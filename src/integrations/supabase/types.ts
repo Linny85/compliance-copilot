@@ -3106,6 +3106,39 @@ export type Database = {
         }
         Relationships: []
       }
+      risk_templates: {
+        Row: {
+          code: string
+          created_at: string | null
+          default_level: string | null
+          default_status: string | null
+          id: string
+          title_de: string
+          title_en: string
+          title_sv: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          default_level?: string | null
+          default_status?: string | null
+          id?: string
+          title_de: string
+          title_en: string
+          title_sv: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          default_level?: string | null
+          default_status?: string | null
+          id?: string
+          title_de?: string
+          title_en?: string
+          title_sv?: string
+        }
+        Relationships: []
+      }
       run_events_deadletter: {
         Row: {
           attempts: number
