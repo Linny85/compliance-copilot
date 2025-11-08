@@ -38,6 +38,15 @@ export default function TenantSelector() {
     } catch (e) {
       console.warn('Failed to save tenant to localStorage:', e);
     }
+    
+    // Optional: im Profil sichern
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      await (supabase as any).from('profiles')
+        .update({ company_id: id })
+        .eq('user_id', user.id);
+    }
+    
     // Reload für frische Daten
     window.location.reload();
   };

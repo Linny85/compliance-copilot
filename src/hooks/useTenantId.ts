@@ -2,7 +2,10 @@ import * as React from 'react';
 import { resolveTenantId } from '@/lib/tenant';
 
 export function useTenantId() {
-  const [tenantId, setTenantId] = React.useState<string | null>(null);
+  // Show last known tenant immediately to avoid empty flashes
+  const [tenantId, setTenantId] = React.useState<string | null>(
+    typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') : null
+  );
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<unknown>(null);
 
