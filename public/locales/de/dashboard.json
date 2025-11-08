@@ -69,5 +69,6 @@
     "coverage_tooltip": "{{participants}} von {{required}} schulungspflichtigen Personen geschult",
     "missing_data": "Keine Schulungsdaten verfügbar",
     "no_requirements": "Keine Schulungspflichten definiert"
-  }
+  },
+  "noTenantSelected": "Kein Mandant gewählt. Bitte oben einen Mandanten auswählen."
 }

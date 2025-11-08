@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { resolveTenantId } from '@/lib/tenant';
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useTenantStore } from '@/store/tenant';
 
 type Tenant = { id: string; name: string };
 
 export default function TenantSelector() {
   const { t } = useTranslation('common');
+  const queryClient = useQueryClient();
+  const { setTenant } = useTenantStore();
   const [tenants, setTenants] = React.useState<Tenant[]>([]);
   const [value, setValue] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -32,12 +36,7 @@ export default function TenantSelector() {
 
   const handleChange = async (id: string) => {
     setValue(id);
-    // Persistente Auswahl
-    try { 
-      localStorage.setItem('tenant_id', id); 
-    } catch (e) {
-      console.warn('Failed to save tenant to localStorage:', e);
-    }
+    setTenant(id);
     
     // Optional: im Profil sichern
     const { data: { user } } = await supabase.auth.getUser();
@@ -47,8 +46,8 @@ export default function TenantSelector() {
         .eq('user_id', user.id);
     }
     
-    // Reload für frische Daten
-    window.location.reload();
+    // Invalidiere alle tenant-abhängigen Queries
+    queryClient.invalidateQueries();
   };
 
   if (loading) {

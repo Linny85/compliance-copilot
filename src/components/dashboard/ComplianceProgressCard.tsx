@@ -9,9 +9,8 @@ import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/sc
 import { useComplianceData, toPct, toUnit, clampPct } from "@/hooks/useCompliance";
 import { useOverallCompliance } from "@/hooks/useOverallCompliance";
 import { useTrainingCoverage } from "@/hooks/useTrainingCoverage";
-import { resolveTenantId } from "@/lib/tenant";
+import { useTenantStore } from "@/store/tenant";
 import { toast } from "sonner";
-import { useEffect, useState } from "react";
 
   // Extract framework score from normalized view (always 0..1)
   function pickFrameworkScore(frameworks: any[] | undefined, code: string): number | null {
@@ -29,21 +28,13 @@ import { useEffect, useState } from "react";
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);
   const { loading, summary, frameworks, trend, isAdmin, refreshSummary, refreshing } = useComplianceData();
-  const [tenantId, setTenantId] = useState<string | null>(null);
-  const [tenantLoading, setTenantLoading] = useState(true);
+  const { tenantId } = useTenantStore();
   
   // CRITICAL: All hooks must be called before any early returns
   const { overall: overallFromHook } = useOverallCompliance(summary);
   const training = useTrainingCoverage(summary);
 
-  useEffect(() => {
-    resolveTenantId().then(id => {
-      setTenantId(id);
-      setTenantLoading(false);
-    });
-  }, []);
-
-  if (loading || tenantLoading) {
+  if (loading) {
     return (
       <Card>
         <CardHeader>

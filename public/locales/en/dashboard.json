@@ -69,5 +69,6 @@
     "coverage_tooltip": "{{participants}} of {{required}} training-obligated persons trained",
     "missing_data": "No training data available",
     "no_requirements": "No training requirements defined"
-  }
+  },
+  "noTenantSelected": "No tenant selected. Please choose one above."
 }
