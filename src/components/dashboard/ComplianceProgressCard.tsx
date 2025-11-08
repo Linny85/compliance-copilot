@@ -6,8 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, CheckCircle2, TrendingUp, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
-import { calcOverall } from "@/lib/compliance/overall";
-import { useComplianceData } from "@/hooks/useCompliance";
+import { useComplianceData, toPct, toUnit } from "@/hooks/useCompliance";
 import { useOverallCompliance } from "@/hooks/useOverallCompliance";
 import { useTrainingCoverage } from "@/hooks/useTrainingCoverage";
 import { toast } from "sonner";
@@ -81,18 +80,25 @@ export function ComplianceProgressCard() {
   const aiPct   = pickFrameworkScore(frameworks, 'AI_ACT') ?? 0;
   const gdprPct = pickFrameworkScore(frameworks, 'GDPR') ?? 0;
   
-  // Use computed overall from all available framework scores
-  const computedOverallPct = calcOverall([
-    { key: 'nis2', score: nis2Pct },
-    { key: 'ai_act', score: aiPct },
-    { key: 'gdpr', score: gdprPct },
-  ]);
+  // ✅ Primary source: overall_score from view (already 0..1)
+  // Fallback: weighted calculation from components (same weights as view)
+  const overallPercent = toPct(
+    typeof summary?.overall_score === 'number'
+      ? summary.overall_score  // 0..1 → % via toPct
+      : (() => {
+          const c = toUnit(summary?.controls_score);
+          const e = toUnit(summary?.evidence_score);
+          const t = toUnit(summary?.training_score);
+          const d = toUnit(summary?.dpia_score);
+          const weighted = (c * 0.5 + e * 0.2 + t * 0.1 + d * 0.2);
+          return weighted;  // 0..1 → % via toPct
+        })()
+  );
   
-  // Prefer computed overall if available, otherwise default to 0
-  const overallPercent = computedOverallPct ?? 0;
-  
-  const overall = overallPercent != null ? overallPercent / 100 : 0;
+  const displayOverall = Number.isFinite(overallPercent) ? overallPercent : 0;
+  const overall = displayOverall / 100;
   const scoreVariant = getScoreColor(overall);
+  const overallSource = typeof summary?.overall_score === 'number' ? 'overview.overall_pct' : 'fallback(weights)';
   
   // Calculate delta in percentage points
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
@@ -113,14 +119,12 @@ export function ComplianceProgressCard() {
   if (import.meta.env.DEV) {
     console.table({
       '⚠️ DATA SOURCE CHECK': '---',
+      'overall_source': overallSource,
+      'overall_raw': summary?.overall_score ?? 'NULL',
+      'overall_display': `${displayOverall}%`,
       'nis2_chip': `${nis2Pct}%`,
       'ai_chip': `${aiPct}%`,
       'gdpr_chip': `${gdprPct}%`,
-      'tr_nis2': (summary as any)?.training_percent_nis2 ?? 'NULL',
-      'tr_ai': (summary as any)?.training_percent_ai_act ?? 'NULL',
-      'tr_gdpr': (summary as any)?.training_percent_gdpr ?? 'NULL',
-      'overall_computed': `${computedOverallPct}%`,
-      'overall_final': `${overallPercent}%`,
       'controls_pct': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
       'evidence_score': summary?.evidence_score ?? 0,
       'dpia_score': summary?.dpia_score ?? 0,
@@ -210,7 +214,7 @@ export function ComplianceProgressCard() {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-3xl font-bold">
-                {overallPercent}%
+                {displayOverall}%
               </span>
               <span 
                 className="text-xs text-muted-foreground" 
@@ -218,6 +222,11 @@ export function ComplianceProgressCard() {
               >
                 {t('dashboard:complianceOverall')}
               </span>
+              {import.meta.env.DEV && (
+                <span className="text-[10px] opacity-60 mt-1">
+                  src: {overallSource}
+                </span>
+              )}
             </div>
           </div>
 

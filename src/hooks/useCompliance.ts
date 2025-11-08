@@ -4,7 +4,7 @@ import type { VComplianceSummaryRow, VFrameworkComplianceRow, TrendData } from '
 import { getTenantId } from '@/lib/tenant';
 
 // Helper: normalize 0..1 or 0..100 → 0..1
-const toUnit = (x: any): number => {
+export const toUnit = (x: any): number => {
   const n = Number(x ?? 0);
   if (!Number.isFinite(n)) return 0;
   return n > 1 ? n / 100 : n;

@@ -23,6 +23,27 @@ test.describe('Dashboard Compliance Display', () => {
     expect(percentBefore).toBe(percentAfter);
   });
 
+  test('Overall circle reflects overview.overall_pct (no 0% when data exists)', async ({ page }) => {
+    await page.goto('/dashboard');
+    await page.waitForSelector('text=Compliance Progress', { timeout: 10000 });
+    
+    // Get any percentage value from breakdown (e.g., Controls)
+    const breakdownPcts = await page.locator('text=/\\d+%/').allTextContents();
+    const hasNonZero = breakdownPcts.some(text => {
+      const num = parseInt(text.match(/\d+/)?.[0] ?? '0', 10);
+      return num > 0;
+    });
+    
+    // Get circle percentage (the large centered one)
+    const circleText = await page.locator('.text-3xl.font-bold').first().textContent();
+    const circlePercent = parseInt(circleText?.match(/\d+/)?.[0] ?? '0', 10);
+    
+    // If any breakdown shows >0%, circle should not be 0%
+    if (hasNonZero) {
+      expect(circlePercent).toBeGreaterThan(0);
+    }
+  });
+
   test('Always shows percentage values, never dashes', async ({ page }) => {
     await page.goto('/dashboard');
     await page.waitForSelector('text=Compliance Progress', { timeout: 10000 });
