@@ -103,8 +103,9 @@ export interface VComplianceSummaryRow {
 }
 
 export interface VFrameworkComplianceRow {
-  tenant_id: string;
-  framework: 'NIS2' | 'AI_ACT' | 'GDPR' | string;
+  tenant_id?: string;
+  framework?: 'NIS2' | 'AI_ACT' | 'GDPR' | string;
+  framework_code?: string;
   score: number | null;
 }
 

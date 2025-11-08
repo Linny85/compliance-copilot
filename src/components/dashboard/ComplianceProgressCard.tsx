@@ -221,7 +221,7 @@ export function ComplianceProgressCard() {
             </div>
           </div>
 
-          {/* Framework Badges */}
+          {/* Framework Badges - Core Frameworks */}
           <div className="flex flex-wrap gap-2 justify-center">
             <Badge variant={getBadgeVariant(nis2Pct)}>
               {t('dashboard:labels.nis2')}: {nis2Pct}%
@@ -233,6 +233,31 @@ export function ComplianceProgressCard() {
               {t('dashboard:labels.gdpr')}: {gdprPct}%
             </Badge>
           </div>
+
+          {/* Additional Frameworks */}
+          {(() => {
+            const coreFrameworks = new Set(['NIS2', 'AI_ACT', 'GDPR']);
+            const additionalFrameworks = (frameworks ?? []).filter(f => {
+              const code = String(f.framework_code ?? f.framework ?? '').toUpperCase();
+              return code && !coreFrameworks.has(code);
+            });
+            
+            if (additionalFrameworks.length === 0) return null;
+            
+            return (
+              <div className="flex flex-wrap gap-2 justify-center pt-2 border-t border-border/50" data-testid="fw-extra">
+                {additionalFrameworks.map(f => {
+                  const code = String(f.framework_code ?? f.framework);
+                  const fwScore = pickFrameworkScore([f], code) ?? 0;
+                  return (
+                    <Badge key={code} variant={getBadgeVariant(fwScore)}>
+                      {code}: {fwScore}%
+                    </Badge>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Breakdown Bars */}
