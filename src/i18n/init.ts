@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
+import { detectBrowserLocale } from './detect';
 
 const DEV = import.meta.env.DEV;
 
@@ -81,12 +82,16 @@ const devResources = DEV ? {
   }
 } : undefined;
 
+// Detect initial language
+const initialLng = detectBrowserLocale(['de', 'en', 'sv'], 'de');
+
 // Singleton guard to prevent double initialization
 if (!i18n.isInitialized) {
   i18n
     .use(Backend)
     .use(initReactI18next)
     .init({
+    lng: initialLng,
     fallbackLng: 'de',
     debug: import.meta.env.DEV,
     ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'ops', 'organization', 'audit', 'incidents'],
