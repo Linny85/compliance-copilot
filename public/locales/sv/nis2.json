@@ -1,1 +1,43 @@
-{}
+{
+  "title": "NIS2 Riskhantering",
+  "subtitle": "Hantera risker enligt NIS2-direktivet",
+  "addRisk": "Lägg till risk",
+  "createTitle": "Skapa ny risk",
+  "createDesc": "Registrera en ny risk för ditt företag",
+  "empty": {
+    "title": "Inga risker registrerade ännu",
+    "desc": "Börja registrera risker för ditt företag.",
+    "cta": "Lägg till första risken"
+  },
+  "form": {
+    "templateLabel": "Mall",
+    "templatePlaceholder": "Välj mall (valfritt)...",
+    "customRisk": "Använd egen formulering",
+    "titleLabel": "Risktitel",
+    "titlePlaceholder": "t.ex. Obehörig åtkomst till kritiska system",
+    "descriptionLabel": "Beskrivning",
+    "descriptionPlaceholder": "Detaljerad beskrivning av risken...",
+    "riskLevelLabel": "Risknivå",
+    "statusLabel": "Status",
+    "mitigationPlanLabel": "Åtgärdsplan",
+    "mitigationPlanPlaceholder": "Beskriv planerade åtgärder..."
+  },
+  "riskLevels": {
+    "low": "Låg",
+    "medium": "Medel",
+    "high": "Hög",
+    "critical": "Kritisk"
+  },
+  "statuses": {
+    "open": "Öppen",
+    "in_progress": "Pågående",
+    "mitigated": "Åtgärdad",
+    "closed": "Stängd"
+  },
+  "sections": {
+    "mitigationPlan": "Åtgärdsplan"
+  },
+  "actions": {
+    "create": "Skapa risk"
+  }
+}

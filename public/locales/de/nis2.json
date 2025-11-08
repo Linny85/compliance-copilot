@@ -1,1 +1,43 @@
-{}
+{
+  "title": "NIS2-Risikomanagement",
+  "subtitle": "Verwalten Sie Risiken gemäß NIS2-Richtlinie",
+  "addRisk": "Risiko hinzufügen",
+  "createTitle": "Neues Risiko erstellen",
+  "createDesc": "Erfassen Sie ein neues Risiko für Ihr Unternehmen",
+  "empty": {
+    "title": "Noch keine Risiken erfasst",
+    "desc": "Beginnen Sie mit der Erfassung von Risiken für Ihr Unternehmen.",
+    "cta": "Erstes Risiko hinzufügen"
+  },
+  "form": {
+    "templateLabel": "Vorlage",
+    "templatePlaceholder": "Vorlage wählen (optional)...",
+    "customRisk": "Eigene Formulierung verwenden",
+    "titleLabel": "Risikotitel",
+    "titlePlaceholder": "z.B. Unbefugter Zugriff auf kritische Systeme",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Detaillierte Beschreibung des Risikos...",
+    "riskLevelLabel": "Risikostufe",
+    "statusLabel": "Status",
+    "mitigationPlanLabel": "Minderungsplan",
+    "mitigationPlanPlaceholder": "Beschreiben Sie geplante Maßnahmen..."
+  },
+  "riskLevels": {
+    "low": "Niedrig",
+    "medium": "Mittel",
+    "high": "Hoch",
+    "critical": "Kritisch"
+  },
+  "statuses": {
+    "open": "Offen",
+    "in_progress": "In Bearbeitung",
+    "mitigated": "Gemindert",
+    "closed": "Geschlossen"
+  },
+  "sections": {
+    "mitigationPlan": "Minderungsplan"
+  },
+  "actions": {
+    "create": "Risiko erstellen"
+  }
+}

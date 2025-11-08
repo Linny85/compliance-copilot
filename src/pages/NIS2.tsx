@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useI18n } from "@/contexts/I18nContext";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,7 @@ interface Risk {
 
 const NIS2 = () => {
   const { t } = useI18n();
+  const { i18n } = useTranslation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [risks, setRisks] = useState<Risk[]>([]);
@@ -163,13 +165,13 @@ const NIS2 = () => {
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Vorlage</Label>
+                <Label>{t('nis2:form.templateLabel', 'Vorlage')}</Label>
                 <RiskTemplateSelect
                   value={newRisk.title}
                   onSelect={(template) => {
                     if (template) {
-                      const lang = (navigator.language || 'de').slice(0, 2) as 'de' | 'en' | 'sv';
-                      const title = lang === 'sv' ? template.title_sv : 
+                      const lang = (i18n.resolvedLanguage || 'de').slice(0, 2) as 'de' | 'en' | 'sv';
+                      const title = lang === 'sv' ? template.title_sv :
                                    lang === 'en' ? template.title_en : template.title_de;
                       setNewRisk({
                         ...newRisk,
@@ -184,29 +186,29 @@ const NIS2 = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="title">{t.nis2.form.titleLabel}</Label>
+                <Label htmlFor="title">{t('nis2:form.titleLabel', 'Risikotitel')}</Label>
                 <Input
                   id="title"
                   value={newRisk.title}
                   onChange={(e) => setNewRisk({ ...newRisk, title: e.target.value })}
-                  placeholder={t.nis2.form.titlePlaceholder}
+                  placeholder={t('nis2:form.titlePlaceholder', 'z.B. Unbefugter Zugriff auf kritische Systeme') as string}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">{t.nis2.form.descriptionLabel}</Label>
+                <Label htmlFor="description">{t('nis2:form.descriptionLabel', 'Beschreibung')}</Label>
                 <Textarea
                   id="description"
                   value={newRisk.description}
                   onChange={(e) => setNewRisk({ ...newRisk, description: e.target.value })}
-                  placeholder={t.nis2.form.descriptionPlaceholder}
+                  placeholder={t('nis2:form.descriptionPlaceholder', 'Detaillierte Beschreibung des Risikos...') as string}
                   rows={3}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="risk-level">{t.nis2.form.riskLevelLabel}</Label>
+                  <Label htmlFor="risk-level">{t('nis2:form.riskLevelLabel', 'Risikostufe')}</Label>
                   <Select
                     value={newRisk.risk_level}
                     onValueChange={(value) => setNewRisk({ ...newRisk, risk_level: value })}
@@ -215,16 +217,16 @@ const NIS2 = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="low">{t.nis2.riskLevels.low}</SelectItem>
-                      <SelectItem value="medium">{t.nis2.riskLevels.medium}</SelectItem>
-                      <SelectItem value="high">{t.nis2.riskLevels.high}</SelectItem>
-                      <SelectItem value="critical">{t.nis2.riskLevels.critical}</SelectItem>
+                      <SelectItem value="low">{t('nis2:riskLevels.low', 'Niedrig')}</SelectItem>
+                      <SelectItem value="medium">{t('nis2:riskLevels.medium', 'Mittel')}</SelectItem>
+                      <SelectItem value="high">{t('nis2:riskLevels.high', 'Hoch')}</SelectItem>
+                      <SelectItem value="critical">{t('nis2:riskLevels.critical', 'Kritisch')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="status">{t.nis2.form.statusLabel}</Label>
+                  <Label htmlFor="status">{t('nis2:form.statusLabel', 'Status')}</Label>
                   <Select
                     value={newRisk.status}
                     onValueChange={(value) => setNewRisk({ ...newRisk, status: value })}
@@ -233,22 +235,22 @@ const NIS2 = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="open">{t.nis2.statuses.open}</SelectItem>
-                      <SelectItem value="in_progress">{t.nis2.statuses.in_progress}</SelectItem>
-                      <SelectItem value="mitigated">{t.nis2.statuses.mitigated}</SelectItem>
-                      <SelectItem value="closed">{t.nis2.statuses.closed}</SelectItem>
+                      <SelectItem value="open">{t('nis2:statuses.open', 'Offen')}</SelectItem>
+                      <SelectItem value="in_progress">{t('nis2:statuses.in_progress', 'In Bearbeitung')}</SelectItem>
+                      <SelectItem value="mitigated">{t('nis2:statuses.mitigated', 'Gemindert')}</SelectItem>
+                      <SelectItem value="closed">{t('nis2:statuses.closed', 'Geschlossen')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mitigation">{t.nis2.form.mitigationPlanLabel}</Label>
+                <Label htmlFor="mitigation">{t('nis2:form.mitigationPlanLabel', 'Minderungsplan')}</Label>
                 <Textarea
                   id="mitigation"
                   value={newRisk.mitigation_plan}
                   onChange={(e) => setNewRisk({ ...newRisk, mitigation_plan: e.target.value })}
-                  placeholder={t.nis2.form.mitigationPlanPlaceholder}
+                  placeholder={t('nis2:form.mitigationPlanPlaceholder', 'Beschreiben Sie geplante Maßnahmen...') as string}
                   rows={3}
                 />
               </div>

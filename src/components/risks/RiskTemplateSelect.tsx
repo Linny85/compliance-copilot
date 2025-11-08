@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronsUpDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 type RiskTemplate = {
   id: string;
@@ -16,6 +17,10 @@ type RiskTemplate = {
   default_level: 'low' | 'medium' | 'high';
   default_status: 'open' | 'in_progress' | 'mitigated' | 'closed';
 };
+
+function getLocalizedTitle(tpl: RiskTemplate, lang: 'de' | 'en' | 'sv'): string {
+  return (lang === 'sv' ? tpl.title_sv : lang === 'en' ? tpl.title_en : tpl.title_de) || tpl.title_en || tpl.title_de || tpl.code;
+}
 
 interface RiskTemplateSelectProps {
   value?: string;
@@ -32,10 +37,15 @@ export function RiskTemplateSelect({ value, onSelect, disabled }: RiskTemplateSe
 
   useEffect(() => {
     const fetchTemplates = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('risk_templates')
         .select('*')
         .order('title_de');
+      
+      if (error) {
+        toast.error(t('common:errorLoading', 'Fehler beim Laden der Vorlagen'));
+        return;
+      }
       
       if (data) {
         setTemplates(data as RiskTemplate[]);
@@ -43,18 +53,7 @@ export function RiskTemplateSelect({ value, onSelect, disabled }: RiskTemplateSe
     };
 
     fetchTemplates();
-  }, []);
-
-  const getLocalizedTitle = (template: RiskTemplate) => {
-    switch (lang) {
-      case 'sv':
-        return template.title_sv;
-      case 'en':
-        return template.title_en;
-      default:
-        return template.title_de;
-    }
-  };
+  }, [t]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -81,7 +80,7 @@ export function RiskTemplateSelect({ value, onSelect, disabled }: RiskTemplateSe
           <CommandList>
             <CommandEmpty>{t('common:noResults', 'Keine Ergebnisse')}</CommandEmpty>
             {templates.map((template) => {
-              const localizedTitle = getLocalizedTitle(template);
+              const localizedTitle = getLocalizedTitle(template, lang);
               return (
                 <CommandItem
                   key={template.id}

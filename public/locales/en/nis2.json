@@ -1,1 +1,43 @@
-{}
+{
+  "title": "NIS2 Risk Management",
+  "subtitle": "Manage risks according to NIS2 directive",
+  "addRisk": "Add Risk",
+  "createTitle": "Create New Risk",
+  "createDesc": "Record a new risk for your company",
+  "empty": {
+    "title": "No risks recorded yet",
+    "desc": "Start recording risks for your company.",
+    "cta": "Add First Risk"
+  },
+  "form": {
+    "templateLabel": "Template",
+    "templatePlaceholder": "Choose template (optional)...",
+    "customRisk": "Use custom formulation",
+    "titleLabel": "Risk Title",
+    "titlePlaceholder": "e.g. Unauthorized access to critical systems",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Detailed description of the risk...",
+    "riskLevelLabel": "Risk Level",
+    "statusLabel": "Status",
+    "mitigationPlanLabel": "Mitigation Plan",
+    "mitigationPlanPlaceholder": "Describe planned measures..."
+  },
+  "riskLevels": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  },
+  "statuses": {
+    "open": "Open",
+    "in_progress": "In Progress",
+    "mitigated": "Mitigated",
+    "closed": "Closed"
+  },
+  "sections": {
+    "mitigationPlan": "Mitigation Plan"
+  },
+  "actions": {
+    "create": "Create Risk"
+  }
+}

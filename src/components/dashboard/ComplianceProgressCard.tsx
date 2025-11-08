@@ -131,15 +131,14 @@ export function ComplianceProgressCard() {
     console.log('Frameworks raw data:', frameworks);
   }
   
-  // Check if running in Lovable preview
-  const isLovable = typeof window !== 'undefined'
-    && /lovableproject\.com|lovable\./i.test(window.location.hostname);
-  
-  // Debug: Environment info
-  const envInfo = import.meta.env.DEV && !isLovable ? {
-    env: isLovable ? 'Preview' : 'Browser',
-    projectId: import.meta.env.VITE_SUPABASE_PROJECT_ID?.slice(-6) || 'N/A',
-    tenant: summary?.tenant_id?.slice(-6) || 'N/A'
+  const isDev = import.meta.env.DEV === true;
+  const host = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isLovable = /lovable(project)?\./i.test(host);
+
+  const envInfo = isDev && !isLovable ? {
+    env: import.meta.env.MODE ?? 'dev',
+    projectId: (import.meta.env.VITE_SUPABASE_URL ?? '').split('.co').at(0)?.slice(-6) ?? '????',
+    tenant: typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') ?? '—' : '—'
   } : null;
   
   const getCircleColor = (score: number) => {
