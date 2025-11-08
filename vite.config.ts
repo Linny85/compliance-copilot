@@ -30,6 +30,17 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      '@tanstack/react-query',
+      'i18next',
+      'react-i18next',
+      'zustand',
+    ],
   },
   build: {
     sourcemap: mode === 'production', // Enable source maps for Sentry
