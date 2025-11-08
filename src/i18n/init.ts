@@ -262,7 +262,7 @@ if (!i18n.isInitialized) {
     backend: {
       loadPath: loadPathFn,
       queryStringParams: {
-        v: import.meta.env.DEV ? String(Date.now()) : '2025-11-07b'
+        v: import.meta.env.DEV ? String(Date.now()) : '2025-11-08a'
       },
       allowMultiLoading: false,
       crossDomain: false,
@@ -289,6 +289,13 @@ if (!i18n.isInitialized) {
 
         // 3) Auto-convert flat→nested only if needed
         const hasFlat = Object.keys(parsed).some(k => k.includes('.'));
+        if (import.meta.env.DEV) {
+          const langInfo = typeof languages === 'string' ? languages : languages?.[0];
+          const nsInfo = typeof namespaces === 'string' ? namespaces : namespaces?.[0];
+          try {
+            console.debug('[i18n.parse]', `${langInfo}/${nsInfo}`, 'flat=', hasFlat, 'keys=', Object.keys(parsed).slice(0, 5));
+          } catch {}
+        }
         if (hasFlat) {
           if (import.meta.env.DEV) {
             const langInfo = typeof languages === 'string' ? languages : languages?.[0];
