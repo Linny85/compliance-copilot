@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Command, CommandInput, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, Loader2, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -41,23 +42,35 @@ export function MitigationSelect({
   const { t, i18n } = useTranslation(['nis2', 'common']);
   const [all, setAll] = useState<Mitigation[]>([]);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const lang = (i18n.resolvedLanguage || 'de').slice(0, 2) as 'de' | 'en' | 'sv';
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
+      setLoading(true);
+      setError(null);
+      
       const { data, error } = await supabase
         .from('risk_mitigation_templates')
         .select('*')
         .order('title_de');
       
+      if (!mounted) return;
+      
       if (error) {
+        setError(error.message);
         toast.error(t('common:errorLoading', 'Fehler beim Laden der Vorlagen'));
-        return;
+        setAll([]);
+      } else {
+        setAll((data as Mitigation[]) ?? []);
       }
       
-      setAll((data as Mitigation[]) ?? []);
+      setLoading(false);
     })();
+    return () => { mounted = false; };
   }, [t]);
 
   const selected = useMemo(() => all.filter(m => value.includes(m.code)), [all, value]);
@@ -105,35 +118,62 @@ export function MitigationSelect({
             </button>
           </Badge>
         ))}
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={disabled}
-          onClick={() => setOpen(v => !v)}
-          type="button"
-        >
-          {t('nis2:form.chooseMitigations', 'Maßnahmen auswählen')}
-        </Button>
+        
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={disabled || loading}
+              type="button"
+              className="gap-2"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t('common:loading', 'Lädt…')}
+                </>
+              ) : (
+                <>
+                  {t('nis2:form.chooseMitigations', 'Maßnahmen auswählen')}
+                  <ChevronDown className="h-4 w-4 opacity-50" />
+                </>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[400px] p-0" align="start">
+            {error ? (
+              <div className="p-4 text-sm text-destructive">
+                {t('common:errorLoading', 'Fehler beim Laden')}: {error}
+              </div>
+            ) : (
+              <Command>
+                <CommandInput placeholder={t('common:search', 'Suchen…') as string} />
+                <CommandEmpty>{t('common:noResults', 'Keine Ergebnisse')}</CommandEmpty>
+                <CommandGroup heading={t('nis2:form.suggestions', 'Vorschläge')} className="max-h-64 overflow-y-auto">
+                  {all.map(m => (
+                    <CommandItem 
+                      key={m.code} 
+                      onSelect={() => {
+                        toggle(m.code);
+                        setOpen(false);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      <div className="flex flex-col w-full">
+                        <span className="font-medium">{getLocalizedTitle(m, lang)}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {m.code} • {(m.tags || []).join(', ')}
+                        </span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            )}
+          </PopoverContent>
+        </Popover>
       </div>
-
-      {open && (
-        <Command className="border rounded-md">
-          <CommandInput placeholder={t('common:search', 'Suchen…') as string} />
-          <CommandEmpty>{t('common:noResults', 'Keine Ergebnisse')}</CommandEmpty>
-          <CommandGroup heading={t('nis2:form.suggestions', 'Vorschläge')}>
-            {all.map(m => (
-              <CommandItem key={m.code} onSelect={() => toggle(m.code)}>
-                <div className="flex flex-col">
-                  <span className="font-medium">{getLocalizedTitle(m, lang)}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {m.code} • {(m.tags || []).join(', ')}
-                  </span>
-                </div>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      )}
     </div>
   );
 }
