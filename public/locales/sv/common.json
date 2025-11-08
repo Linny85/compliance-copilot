@@ -186,5 +186,14 @@
   "adminAccess": {
     "denied": "Åtkomst nekad",
     "message": "Detta område är endast tillgängligt för administratörer. Vänligen logga in med ett konto som har administratörsbehörighet."
+  },
+  "tenant": {
+    "label": "Tenant",
+    "choose": "Välj",
+    "loading": "Laddar…",
+    "none": "Ingen tenant vald. Vänligen välj ovan."
+  },
+  "actions": {
+    "reload": "Ladda om"
   }
 }

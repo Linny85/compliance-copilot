@@ -260,5 +260,14 @@
   "adminAccess": {
     "denied": "Kein Zugriff",
     "message": "Dieser Bereich ist nur für Administratoren zugänglich. Bitte melden Sie sich mit einem Konto mit Administratorrechten an."
+  },
+  "tenant": {
+    "label": "Mandant",
+    "choose": "Bitte wählen",
+    "loading": "Lädt…",
+    "none": "Kein Mandant gewählt. Bitte oben einen Mandanten auswählen."
+  },
+  "actions": {
+    "reload": "Neu laden"
   }
 }

@@ -288,5 +288,14 @@
   "adminAccess": {
     "denied": "Access Denied",
     "message": "This area is only accessible to administrators. Please sign in with an account that has administrator privileges."
+  },
+  "tenant": {
+    "label": "Tenant",
+    "choose": "Please select",
+    "loading": "Loading…",
+    "none": "No tenant selected. Please choose one above."
+  },
+  "actions": {
+    "reload": "Reload"
   }
 }

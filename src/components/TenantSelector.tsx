@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { resolveTenantId } from '@/lib/tenant';
 import { supabase } from '@/integrations/supabase/client';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -6,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 type Tenant = { id: string; name: string };
 
 export default function TenantSelector() {
+  const { t } = useTranslation('common');
   const [tenants, setTenants] = React.useState<Tenant[]>([]);
   const [value, setValue] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -43,7 +45,7 @@ export default function TenantSelector() {
   if (loading) {
     return (
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <span>Lädt…</span>
+        <span>{t('tenant.loading')}</span>
       </div>
     );
   }
@@ -54,16 +56,21 @@ export default function TenantSelector() {
 
   return (
     <div className="flex items-center gap-2">
+      <label htmlFor="tenant-select" className="text-sm font-medium">
+        {t('tenant.label')}
+      </label>
       <Select
         value={value ?? ''}
         onValueChange={handleChange}
         disabled={loading}
       >
         <SelectTrigger 
+          id="tenant-select"
           className="w-[200px]" 
-          aria-label="Tenant auswählen"
+          aria-label={t('tenant.label')}
+          aria-busy={loading ? 'true' : 'false'}
         >
-          <SelectValue placeholder="Tenant wählen" />
+          <SelectValue placeholder={t('tenant.choose')} />
         </SelectTrigger>
         <SelectContent>
           {tenants.map(t => (

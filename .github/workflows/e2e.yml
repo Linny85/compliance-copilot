@@ -1,36 +1,46 @@
 name: E2E Tests
-
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
-  test:
+  e2e:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        mode: [demo, trial, prod]
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm ci
-      - run: npx playwright install --with-deps
-      - name: Start dev server
-        run: npm run dev &
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Start preview server
+        run: npm run preview &
+      
       - name: Wait for server
-        run: npx wait-on http://localhost:5173
-      - run: npm run e2e:${{ matrix.mode }}
+        run: npx wait-on http://localhost:4173 --timeout 60000
+      
+      - name: Run E2E tests
+        run: npx playwright test
         env:
-          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          E2E_BASE_URL: http://localhost:5173
-      - uses: actions/upload-artifact@v4
+          E2E_BASE_URL: http://localhost:4173
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{ matrix.mode }}
+          name: playwright-report
           path: playwright-report/
           retention-days: 30
