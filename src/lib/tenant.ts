@@ -12,27 +12,33 @@ export async function resolveTenantId(): Promise<string | null> {
     if (!user) return null;
 
     // 1) Try JWT claim
-    const { data: { session } } = await supabase.auth.getSession();
-    const claim = session?.user?.app_metadata?.tenant_id || session?.user?.user_metadata?.tenant_id;
-    if (claim) return claim;
+    const { data } = await supabase.auth.getSession();
+    const fromClaim: unknown =
+      (data.session?.user as any)?.app_metadata?.tenant_id ??
+      (data.session?.user as any)?.user_metadata?.tenant_id;
+    if (typeof fromClaim === 'string' && fromClaim) return fromClaim;
 
     // 2) Try profile
     try {
-      const { data } = await (supabase as any)
+      const { data: profileData } = await (supabase as any)
         .from('profiles')
         .select('company_id')
         .eq('user_id', user.id)
         .limit(1);
       
-      if (data?.[0]?.company_id) return data[0].company_id as string;
+      if (profileData?.[0]?.company_id) return profileData[0].company_id as string;
     } catch (profileError) {
       console.warn('Profile lookup failed:', profileError);
     }
 
     // 3) Fallback: localStorage
-    return typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') : null;
-  } catch (error) {
-    console.error('Error resolving tenant ID:', error);
+    if (typeof localStorage !== 'undefined') {
+      const ls = localStorage.getItem('tenant_id');
+      if (ls) return ls;
+    }
+    return null;
+  } catch (e) {
+    console.error('Error resolving tenant ID:', e);
     return null;
   }
 }
