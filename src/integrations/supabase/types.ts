@@ -3108,39 +3108,51 @@ export type Database = {
       }
       risk_mitigation_templates: {
         Row: {
-          body_de: string
-          body_en: string
-          body_sv: string
+          body_de: string | null
+          body_en: string | null
+          body_sv: string | null
           code: string
           created_at: string | null
+          default_due_days: number | null
+          default_owner_role: string | null
           id: string
+          risk_tags: string[] | null
           severity: string | null
+          steps: Json | null
           tags: string[] | null
           title_de: string
           title_en: string
           title_sv: string
         }
         Insert: {
-          body_de: string
-          body_en: string
-          body_sv: string
+          body_de?: string | null
+          body_en?: string | null
+          body_sv?: string | null
           code: string
           created_at?: string | null
+          default_due_days?: number | null
+          default_owner_role?: string | null
           id?: string
+          risk_tags?: string[] | null
           severity?: string | null
+          steps?: Json | null
           tags?: string[] | null
           title_de: string
           title_en: string
           title_sv: string
         }
         Update: {
-          body_de?: string
-          body_en?: string
-          body_sv?: string
+          body_de?: string | null
+          body_en?: string | null
+          body_sv?: string | null
           code?: string
           created_at?: string | null
+          default_due_days?: number | null
+          default_owner_role?: string | null
           id?: string
+          risk_tags?: string[] | null
           severity?: string | null
+          steps?: Json | null
           tags?: string[] | null
           title_de?: string
           title_en?: string

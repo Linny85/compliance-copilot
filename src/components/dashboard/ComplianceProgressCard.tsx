@@ -51,6 +51,26 @@ export function ComplianceProgressCard() {
     );
   }
 
+  // Tenant check: ensure tenant_id is set
+  const tenantId = typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') : null;
+  const hasTenant = !!tenantId;
+
+  if (!summary && !hasTenant) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-destructive" />
+            {t('dashboard:complianceProgress')}
+          </CardTitle>
+          <CardDescription className="text-destructive">
+            {t('dashboard:noTenantSelected', 'Kein Mandant gewählt. Bitte wählen Sie einen Mandanten aus.')}
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   if (!summary) {
     return (
       <Card>
@@ -134,11 +154,12 @@ export function ComplianceProgressCard() {
   const isDev = import.meta.env.DEV === true;
   const host = typeof window !== 'undefined' ? window.location.hostname : '';
   const isLovable = /lovable(project)?\./i.test(host);
+  const isPreview = isLovable; // Lovable hostnames are preview environments
 
-  const envInfo = isDev && !isLovable ? {
-    env: import.meta.env.MODE ?? 'dev',
+  const envInfo = (isDev || isPreview) ? {
+    env: isPreview ? 'Preview' : import.meta.env.MODE ?? 'dev',
     projectId: (import.meta.env.VITE_SUPABASE_URL ?? '').split('.co').at(0)?.slice(-6) ?? '????',
-    tenant: typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') ?? '—' : '—'
+    tenant: (typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') ?? '—' : '—').slice(0, 6)
   } : null;
   
   const getCircleColor = (score: number) => {

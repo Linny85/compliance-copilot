@@ -13,9 +13,13 @@ type Mitigation = {
   title_de: string;
   title_en: string;
   title_sv: string;
-  body_de: string;
-  body_en: string;
-  body_sv: string;
+  body_de?: string | null;
+  body_en?: string | null;
+  body_sv?: string | null;
+  steps?: string[] | null;
+  default_owner_role?: string | null;
+  default_due_days?: number | null;
+  risk_tags?: string[] | null;
   tags?: string[];
   severity?: 'low' | 'medium' | 'high' | null;
 };
@@ -81,15 +85,22 @@ export function MitigationSelect({
     onChange(next, merged);
   }
 
-  function mergeBodies(codes: string[]): string {
+function mergeBodies(codes: string[]): string {
     const blocks = codes
       .map(c => all.find(m => m.code === c))
       .filter(Boolean)
-      .map(m => `### ${getLocalizedTitle(m!, lang)}\n${getLocalizedBody(m!, lang)}`);
+      .map(m => {
+        const title = getLocalizedTitle(m!, lang);
+        // Prefer steps over body text
+        if (m!.steps && Array.isArray(m!.steps) && m!.steps.length > 0) {
+          const stepsList = m!.steps.map((step, i) => `${i + 1}. ${step}`).join('\n');
+          return `### ${title}\n${stepsList}`;
+        }
+        return `### ${title}\n${getLocalizedBody(m!, lang)}`;
+      });
     
     // Extract free text (anything not part of template blocks)
     const templatePattern = /^### .+\n[\s\S]*?(?=\n### |$)/gm;
-    const templateBlocks = new Set(blocks);
     const currentLines = currentBody?.trim() || '';
     
     // Remove old template blocks from current body
@@ -163,7 +174,10 @@ export function MitigationSelect({
                       <div className="flex flex-col w-full">
                         <span className="font-medium">{getLocalizedTitle(m, lang)}</span>
                         <span className="text-xs text-muted-foreground">
-                          {m.code} • {(m.tags || []).join(', ')}
+                          {m.code}
+                          {m.risk_tags && m.risk_tags.length > 0 && ` • ${m.risk_tags.join(', ')}`}
+                          {m.default_owner_role && ` • ${m.default_owner_role}`}
+                          {m.default_due_days && ` • ${m.default_due_days}d`}
                         </span>
                       </div>
                     </CommandItem>
