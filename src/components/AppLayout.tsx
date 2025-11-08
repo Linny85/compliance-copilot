@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { AppModeBanner } from "@/components/AppModeBanner";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import TenantSelector from "@/components/TenantSelector";
 
 /**
  * Shared layout for all authenticated routes
@@ -19,7 +20,10 @@ export function AppLayout() {
         <div className="flex-1 flex flex-col overflow-auto">
           <header className="h-12 flex items-center justify-between px-4 border-b border-border bg-background sticky top-0 z-40" data-testid="app-header" role="banner">
             <SidebarTrigger />
-            <LanguageSwitcher />
+            <div className="flex items-center gap-3">
+              <TenantSelector />
+              <LanguageSwitcher />
+            </div>
           </header>
           <main className="flex-1 flex flex-col overflow-auto" role="main">
             <AppModeBanner />
