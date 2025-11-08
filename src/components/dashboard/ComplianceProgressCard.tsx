@@ -125,6 +125,7 @@ export function ComplianceProgressCard() {
       'evidence_pct': `${evidencePct}%`,
       'training_pct': `${trainingPct}%`,
       'dpia_pct': `${dpiaPct}%`,
+      'dpia_total': dpiaTotal,
       'frameworks_array_length': frameworks?.length ?? 0,
     });
     console.log('Frameworks raw data:', frameworks);
