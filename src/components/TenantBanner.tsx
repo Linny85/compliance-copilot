@@ -3,10 +3,10 @@ import { useTenantStore } from '@/store/tenant';
 import TenantSelector from '@/components/TenantSelector';
 
 export default function TenantBanner() {
-  const { t } = useTranslation('common', { useSuspense: false });
+  const { t, ready } = useTranslation('common', { useSuspense: false });
   const { tenantId } = useTenantStore();
 
-  if (tenantId) return null;
+  if (!ready || tenantId) return null;
 
   return (
     <div

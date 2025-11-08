@@ -8,11 +8,13 @@ import { useTenantStore } from '@/store/tenant';
 type Tenant = { id: string; name: string };
 
 export default function TenantSelector({ className }: { className?: string }) {
-  const { t } = useTranslation('common', { useSuspense: false });
+  const { t, ready } = useTranslation('common', { useSuspense: false });
   const queryClient = useQueryClient();
   const { tenantId, setTenant } = useTenantStore();
   const [tenants, setTenants] = React.useState<Tenant[]>([]);
   const [loading, setLoading] = React.useState(true);
+
+  if (!ready) return null;
 
   React.useEffect(() => {
     (async () => {

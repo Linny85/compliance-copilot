@@ -2,7 +2,6 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 
-const buildId = (globalThis as any).__I18N_BUILD_ID__ ?? Date.now();
 const DEV = import.meta.env.DEV;
 
 // Add DEV-only fetch tracer to catch 404/HTML responses
@@ -26,6 +25,46 @@ if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
 const ABS_BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '/');
 const loadPathFn = (lng: string, ns: string) =>
   new URL(`${ABS_BASE}locales/${lng}/${ns}.json`, window.location.origin).toString();
+
+// DEV fallback resources to prevent "not loaded" warnings
+const devResources = DEV ? {
+  de: {
+    common: {
+      tenant: {
+        label: 'Mandant',
+        loading: 'Lädt…',
+        choose: 'Bitte wählen',
+        none: 'Kein Mandant gewählt',
+        missingTitle: 'Kein Mandant ausgewählt',
+        missingDesc: 'Bitte wählen Sie einen Mandanten, um Daten zu laden.'
+      }
+    }
+  },
+  en: {
+    common: {
+      tenant: {
+        label: 'Tenant',
+        loading: 'Loading…',
+        choose: 'Please select',
+        none: 'No tenant selected',
+        missingTitle: 'No tenant selected',
+        missingDesc: 'Please choose a tenant to load data.'
+      }
+    }
+  },
+  sv: {
+    common: {
+      tenant: {
+        label: 'Tenant',
+        loading: 'Laddar…',
+        choose: 'Välj',
+        none: 'Ingen tenant vald',
+        missingTitle: 'Ingen tenant vald',
+        missingDesc: 'Välj en tenant för att läsa in data.'
+      }
+    }
+  }
+} : undefined;
 
 // Singleton guard to prevent double initialization
 if (!i18n.isInitialized) {
@@ -82,6 +121,7 @@ if (!i18n.isInitialized) {
     returnNull: false,
     returnEmptyString: false,
     saveMissing: false,
+    resources: devResources,
     react: {
       useSuspense: false
     },
