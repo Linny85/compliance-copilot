@@ -88,6 +88,10 @@ export default function ChecksNewRule() {
   const [rawSpec, setRawSpec] = useState("");
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [metricKeyManuallySet, setMetricKeyManuallySet] = useState(false);
+  
+  // Separate state for static and query specs to preserve values when switching
+  const [staticSpec, setStaticSpec] = useState<any>({ criteria: { path: '', operator: 'equals', value: '' } });
+  const [querySpec, setQuerySpec] = useState<any>({ source: 'supabase', query: '', evaluator: 'any_pass', timeout_ms: 15000 });
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -115,6 +119,17 @@ export default function ChecksNewRule() {
   });
 
   const { register, handleSubmit, control, watch, formState: { errors, isValid }, setValue, getValues } = methods;
+  
+  // Watch metric_key changes to detect manual edits
+  React.useEffect(() => {
+    const subscription = watch((value, { name: fieldName }) => {
+      if (fieldName === 'metric_key' && value.metric_key !== deriveMetricKey(value.code || '')) {
+        setMetricKeyManuallySet(true);
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+  
   const kind = watch('kind');
   const specValue = watch('spec');
   const code = watch('code');
@@ -130,13 +145,25 @@ export default function ChecksNewRule() {
   };
 
   const onKindChange = (newKind: 'static' | 'query') => {
+    // Save current spec before switching
+    if (kind === 'static' && 'criteria' in currentSpec) {
+      setStaticSpec(currentSpec);
+    } else if (kind === 'query' && 'query' in currentSpec) {
+      setQuerySpec(currentSpec);
+    }
+    
     setValue('kind', newKind);
+    
+    // Restore appropriate spec
     if (newKind === 'static') {
-      setValue('spec', { criteria: { path: '', operator: 'equals', value: '' } } as any);
-      setRawSpec(JSON.stringify({ criteria: { path: '', operator: 'equals', value: '' } }, null, 2));
+      setValue('spec', staticSpec as any);
+      setRawSpec(JSON.stringify(staticSpec, null, 2));
     } else {
-      setValue('spec', { source: 'supabase', query: '', evaluator: 'any_pass', timeout_ms: 15000 } as any);
-      setRawSpec(JSON.stringify({ source: 'supabase', query: '', evaluator: 'any_pass', timeout_ms: 15000 }, null, 2));
+      // Set default timeout_ms if not already set
+      const spec = { ...querySpec };
+      if (!spec.timeout_ms) spec.timeout_ms = 15000;
+      setValue('spec', spec as any);
+      setRawSpec(JSON.stringify(spec, null, 2));
     }
   };
 
@@ -224,7 +251,14 @@ export default function ChecksNewRule() {
     
     let hasValidSpec = false;
     if (kind === 'static' && 'criteria' in currentSpec) {
-      hasValidSpec = !!(currentSpec.criteria?.path && currentSpec.criteria?.operator && currentSpec.criteria?.value !== undefined);
+      // CRITICAL: 0 and false are valid values, check for undefined/null only
+      hasValidSpec = !!(
+        currentSpec.criteria?.path && 
+        currentSpec.criteria?.operator && 
+        currentSpec.criteria?.value !== undefined &&
+        currentSpec.criteria?.value !== null &&
+        currentSpec.criteria?.value !== ''
+      );
     } else if (kind === 'query' && 'query' in currentSpec) {
       hasValidSpec = !!(currentSpec.query && currentSpec.source && currentSpec.evaluator);
     }
@@ -507,9 +541,16 @@ export default function ChecksNewRule() {
         <Button type="button" onClick={runTest} disabled={testing || !isValid} variant="outline" className="w-full sm:w-auto">
           {testing ? "..." : tx("checks.form.actions.test")}
         </Button>
-        <Button type="submit" disabled={submitting || !isValid} className="w-full sm:w-auto">
-          {submitting ? tx("common.saving") : tx("checks.form.actions.save")}
-        </Button>
+        <div className="w-full sm:w-auto relative group">
+          <Button 
+            type="submit" 
+            disabled={submitting || validationStatus.status !== 'valid'} 
+            className="w-full"
+            title={validationStatus.status !== 'valid' ? (tx("checks.form.validation.complete_required") || "Bitte Titel, Code und Spezifikation vervollständigen") : undefined}
+          >
+            {submitting ? tx("common.saving") : tx("checks.form.actions.save")}
+          </Button>
+        </div>
       </div>
     </form>
   );

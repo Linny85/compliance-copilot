@@ -9,7 +9,9 @@ import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/sc
 import { useComplianceData, toPct, toUnit, clampPct } from "@/hooks/useCompliance";
 import { useOverallCompliance } from "@/hooks/useOverallCompliance";
 import { useTrainingCoverage } from "@/hooks/useTrainingCoverage";
+import { resolveTenantId } from "@/lib/tenant";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
   // Extract framework score from normalized view (always 0..1)
   function pickFrameworkScore(frameworks: any[] | undefined, code: string): number | null {
@@ -27,12 +29,21 @@ import { toast } from "sonner";
 export function ComplianceProgressCard() {
   const { t } = useTranslation(['dashboard', 'common']);
   const { loading, summary, frameworks, trend, isAdmin, refreshSummary, refreshing } = useComplianceData();
+  const [tenantId, setTenantId] = useState<string | null>(null);
+  const [tenantLoading, setTenantLoading] = useState(true);
   
   // CRITICAL: All hooks must be called before any early returns
   const { overall: overallFromHook } = useOverallCompliance(summary);
   const training = useTrainingCoverage(summary);
 
-  if (loading) {
+  useEffect(() => {
+    resolveTenantId().then(id => {
+      setTenantId(id);
+      setTenantLoading(false);
+    });
+  }, []);
+
+  if (loading || tenantLoading) {
     return (
       <Card>
         <CardHeader>
@@ -52,10 +63,7 @@ export function ComplianceProgressCard() {
   }
 
   // Tenant check: ensure tenant_id is set
-  const tenantId = typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') : null;
-  const hasTenant = !!tenantId;
-
-  if (!summary && !hasTenant) {
+  if (!tenantId) {
     return (
       <Card>
         <CardHeader>
@@ -159,7 +167,7 @@ export function ComplianceProgressCard() {
   const envInfo = (isDev || isPreview) ? {
     env: isPreview ? 'Preview' : import.meta.env.MODE ?? 'dev',
     projectId: (import.meta.env.VITE_SUPABASE_URL ?? '').split('.co').at(0)?.slice(-6) ?? '????',
-    tenant: (typeof localStorage !== 'undefined' ? localStorage.getItem('tenant_id') ?? '—' : '—').slice(0, 6)
+    tenant: (tenantId ?? '—').slice(0, 6)
   } : null;
   
   const getCircleColor = (score: number) => {

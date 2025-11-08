@@ -77,7 +77,12 @@ export function MitigationSelect({
     return () => { mounted = false; };
   }, [t]);
 
-  const selected = useMemo(() => all.filter(m => value.includes(m.code)), [all, value]);
+  const selected = useMemo(() => {
+    // Maintain stable order based on value array, not DB order
+    return value
+      .map(code => all.find(m => m.code === code))
+      .filter((m): m is Mitigation => !!m);
+  }, [all, value]);
 
   function toggle(code: string) {
     const next = value.includes(code) ? value.filter(c => c !== code) : [...value, code];
@@ -85,18 +90,35 @@ export function MitigationSelect({
     onChange(next, merged);
   }
 
-function mergeBodies(codes: string[]): string {
+  function mergeBodies(codes: string[]): string {
+    const seen = new Set<string>();
     const blocks = codes
       .map(c => all.find(m => m.code === c))
-      .filter(Boolean)
+      .filter((m): m is Mitigation => {
+        // Validate schema: steps must be array of strings
+        if (m?.steps && !Array.isArray(m.steps)) {
+          console.warn(`Invalid steps format for ${m.code}: expected array`);
+          return false;
+        }
+        return !!m;
+      })
       .map(m => {
-        const title = getLocalizedTitle(m!, lang);
+        const title = getLocalizedTitle(m, lang);
         // Prefer steps over body text
-        if (m!.steps && Array.isArray(m!.steps) && m!.steps.length > 0) {
-          const stepsList = m!.steps.map((step, i) => `${i + 1}. ${step}`).join('\n');
+        if (m.steps && Array.isArray(m.steps) && m.steps.length > 0) {
+          // De-duplicate steps (case-insensitive, trimmed)
+          const uniqueSteps = m.steps
+            .map(s => String(s).trim())
+            .filter(s => {
+              const key = s.toLowerCase();
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return s.length > 0;
+            });
+          const stepsList = uniqueSteps.map((step, i) => `${i + 1}. ${step}`).join('\n');
           return `### ${title}\n${stepsList}`;
         }
-        return `### ${title}\n${getLocalizedBody(m!, lang)}`;
+        return `### ${title}\n${getLocalizedBody(m, lang)}`;
       });
     
     // Extract free text (anything not part of template blocks)
@@ -118,11 +140,13 @@ function mergeBodies(codes: string[]): string {
       <div className="flex flex-wrap gap-2">
         {selected.map(m => (
           <Badge key={m.code} variant="secondary" className="gap-1">
-            {getLocalizedTitle(m, lang)}
+            <span aria-label={`${t('nis2:form.selectedMitigation', 'Ausgewählte Maßnahme')}: ${getLocalizedTitle(m, lang)}`}>
+              {getLocalizedTitle(m, lang)}
+            </span>
             <button
-              aria-label={t('common:remove', 'Entfernen') as string}
+              aria-label={`${t('common:remove', 'Entfernen')}: ${getLocalizedTitle(m, lang)}`}
               onClick={() => toggle(m.code)}
-              className="ml-1 hover:text-destructive"
+              className="ml-1 hover:text-destructive focus:outline-none focus:ring-2 focus:ring-ring rounded"
               type="button"
             >
               <X className="h-3 w-3" />
@@ -138,6 +162,9 @@ function mergeBodies(codes: string[]): string {
               disabled={disabled || loading}
               type="button"
               className="gap-2"
+              aria-expanded={open}
+              aria-haspopup="listbox"
+              aria-label={t('nis2:form.chooseMitigations', 'Maßnahmen auswählen') as string}
             >
               {loading ? (
                 <>
@@ -152,7 +179,7 @@ function mergeBodies(codes: string[]): string {
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[400px] p-0" align="start">
+          <PopoverContent className="w-[400px] p-0" align="start" role="listbox" aria-multiselectable="true">
             {error ? (
               <div className="p-4 text-sm text-destructive">
                 {t('common:errorLoading', 'Fehler beim Laden')}: {error}
