@@ -74,4 +74,24 @@ test.describe('Dashboard Compliance Display', () => {
       expect(badgeText).toMatch(/\d+%/);
     }
   });
+
+  test('All percentages are within 0-100 range (no 10000%)', async ({ page }) => {
+    await page.goto('/dashboard');
+    await page.waitForSelector('text=Compliance Progress', { timeout: 10000 });
+    
+    // Get all percentage text values from compliance card
+    const pctTexts = await page.locator('text=/\\d+%/').allTextContents();
+    
+    // Every percentage should be 0-100
+    pctTexts.forEach(text => {
+      const matches = text.match(/(\d+)%/g);
+      if (matches) {
+        matches.forEach(match => {
+          const n = parseInt(match.replace('%', ''), 10);
+          expect(n).toBeGreaterThanOrEqual(0);
+          expect(n).toBeLessThanOrEqual(100);
+        });
+      }
+    });
+  });
 });

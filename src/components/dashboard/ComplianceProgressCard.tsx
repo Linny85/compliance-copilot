@@ -6,18 +6,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, CheckCircle2, TrendingUp, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { formatScore, getScoreColor, FRAMEWORK_CODES } from "@/lib/compliance/score";
-import { useComplianceData, toPct, toUnit } from "@/hooks/useCompliance";
+import { useComplianceData, toPct, toUnit, clampPct } from "@/hooks/useCompliance";
 import { useOverallCompliance } from "@/hooks/useOverallCompliance";
 import { useTrainingCoverage } from "@/hooks/useTrainingCoverage";
 import { toast } from "sonner";
-
-// Helper to normalize percentage values (0..1 or 0..100 -> 0..100)
-function normPct(v: unknown): number {
-  if (v == null) return 0;
-  const n = Number(v);
-  if (!Number.isFinite(n)) return 0;
-  return n <= 1 ? Math.round(n * 100) : Math.round(n);
-}
 
   // Extract framework score from normalized view (always 0..1)
   function pickFrameworkScore(frameworks: any[] | undefined, code: string): number | null {
@@ -95,7 +87,7 @@ export function ComplianceProgressCard() {
         })()
   );
   
-  const displayOverall = Number.isFinite(overallPercent) ? overallPercent : 0;
+  const displayOverall = clampPct(overallPercent);
   const overall = displayOverall / 100;
   const scoreVariant = getScoreColor(overall);
   const overallSource = typeof summary?.overall_score === 'number' ? 'overview.overall_pct' : 'fallback(weights)';
@@ -103,17 +95,21 @@ export function ComplianceProgressCard() {
   // Calculate delta in percentage points
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
   
-  // DPIA should show percentage from >=1 case onwards
+  // Unified percentage calculations for all breakdown bars (0..100)
+  const controlsPct = toPct(summary?.controls_score);
+  const evidencePct = toPct(summary?.evidence_score);
+  const trainingPct = toPct(summary?.training_score);
+  const dpiaPct = toPct(summary?.dpia_score);
+  
+  // DPIA display logic
   const dpiaTotal = Number(summary?.dpia_total ?? 0);
-  const dpiaScore = normPct(summary?.dpia_score);
-  const showDpia  = dpiaTotal >= 1;
-  const dpiaDisplay = showDpia ? formatScore(dpiaScore) : t('dashboard:badges.na');
+  const showDpia = dpiaTotal >= 1;
+  const dpiaDisplay = showDpia ? `${dpiaPct}%` : t('dashboard:badges.na');
   
   // Evidence display - show "—" if score is exactly 0 (no data)
-  const evidenceScore = normPct(summary?.evidence_score);
-  const evidenceDisplay = (evidenceScore === 0 && summary?.evidence_score === 0)
+  const evidenceDisplay = (evidencePct === 0 && summary?.evidence_score === 0)
     ? '—' 
-    : formatScore(summary.evidence_score ?? 0);
+    : `${evidencePct}%`;
   
   // Debug values in dev mode
   if (import.meta.env.DEV) {
@@ -125,13 +121,18 @@ export function ComplianceProgressCard() {
       'nis2_chip': `${nis2Pct}%`,
       'ai_chip': `${aiPct}%`,
       'gdpr_chip': `${gdprPct}%`,
-      'controls_pct': `${Math.round((summary.controls_score ?? 0) * 100)}%`,
-      'evidence_score': summary?.evidence_score ?? 0,
-      'dpia_score': summary?.dpia_score ?? 0,
+      'controls_pct': `${controlsPct}%`,
+      'evidence_pct': `${evidencePct}%`,
+      'training_pct': `${trainingPct}%`,
+      'dpia_pct': `${dpiaPct}%`,
       'frameworks_array_length': frameworks?.length ?? 0,
     });
     console.log('Frameworks raw data:', frameworks);
   }
+  
+  // Check if running in Lovable preview
+  const isLovable = typeof window !== 'undefined'
+    && /lovableproject\.com|lovable\./i.test(window.location.hostname);
   
   const getCircleColor = (score: number) => {
     if (score >= 0.80) return "hsl(var(--success))";
@@ -222,7 +223,7 @@ export function ComplianceProgressCard() {
               >
                 {t('dashboard:complianceOverall')}
               </span>
-              {import.meta.env.DEV && (
+              {import.meta.env.DEV && !isLovable && (
                 <span className="text-[10px] opacity-60 mt-1">
                   src: {overallSource}
                 </span>
@@ -276,9 +277,9 @@ export function ComplianceProgressCard() {
               <span className="text-muted-foreground">
                 {t('dashboard:sections.controls')}
               </span>
-              <span className="font-medium">{formatScore(summary.controls_score ?? 0)}</span>
+              <span className="font-medium">{controlsPct}%</span>
             </div>
-            <Progress value={(summary.controls_score ?? 0) * 100} />
+            <Progress value={controlsPct} />
           </div>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
@@ -287,7 +288,7 @@ export function ComplianceProgressCard() {
               </span>
               <span className="font-medium">{evidenceDisplay}</span>
             </div>
-            <Progress value={(summary.evidence_score ?? 0) * 100} />
+            <Progress value={evidencePct} />
           </div>
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
@@ -318,7 +319,7 @@ export function ComplianceProgressCard() {
                 {dpiaDisplay}
               </span>
             </div>
-            <Progress value={showDpia ? (summary.dpia_score ?? 0) * 100 : 0} />
+            <Progress value={showDpia ? dpiaPct : 0} />
           </div>
         </div>
 

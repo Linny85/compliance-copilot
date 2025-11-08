@@ -17,6 +17,10 @@ export const toPct = (x: any): number => {
   return Math.max(0, Math.min(100, Math.round(pct)));
 };
 
+// Helper: clamp percentage to 0..100
+export const clampPct = (n: number): number =>
+  Math.max(0, Math.min(100, Math.round(Number(n) || 0)));
+
 export function useComplianceData() {
   const [summary, setSummary] = useState<VComplianceSummaryRow | null>(null);
   const [frameworks, setFrameworks] = useState<VFrameworkComplianceRow[]>([]);
