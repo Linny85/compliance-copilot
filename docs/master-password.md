@@ -144,6 +144,9 @@ The script validates:
 - POST request returns 200 with CORS headers and expected JSON body
 - Both responses include correct `Access-Control-Allow-Origin` header
 
+**CI Integration:**
+Both E2E workflows (`master-password-e2e.yml` and `e2e-master-password-nightly.yml`) run the CORS self-test automatically after deployment and before Playwright tests. The workflow fails fast if CORS headers are missing or incorrect, preventing broken configurations from reaching production.
+
 ### Frontend Integration
 
 **Service**: `src/features/security/verifyMasterPassword.ts`
