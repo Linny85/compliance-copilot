@@ -63,6 +63,14 @@ export const useAuthGuard = () => {
 
       if (error) {
         console.error('Error fetching user info:', error);
+        // If unauthorized, clear session and redirect to auth
+        if (error.message?.includes('Unauthorized') || error.message?.includes('401')) {
+          await supabase.auth.signOut();
+          setUserInfo(null);
+          setLoading(false);
+          navigate('/auth');
+          return;
+        }
         setLoading(false);
         return;
       }
