@@ -118,6 +118,14 @@
   },
   "masterCode": "Master Code",
   "enterMasterCode": "Enter master code",
+  "badges": {
+    "na": "n/a"
+  },
+  "tooltips": {
+    "dpia_na": "No DPIA required or not yet created.",
+    "adminOnly": "Admins only",
+    "noRules": "No active rules"
+  },
   "common": {
     "save": "Save",
     "saving": "Saving…",
@@ -155,10 +163,6 @@
     "previous": "Previous",
     "next": "Next",
     "forbidden": "Access denied (admins only).",
-    "tooltips": {
-      "adminOnly": "Admins only",
-      "noRules": "No active rules"
-    },
     "none": "—"
   },
   "search": "Search…",

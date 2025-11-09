@@ -4,13 +4,14 @@
     "subtitle": "Norrly – your teammate for NIS2 & the AI Act."
   },
   "intro": {
-    "headline": "Hi, I'm Norrly",
+    "headline": "Hi, I'm Norrly 👋",
     "text": "I explain, advise and guide you from rule to rollout."
   },
   "input": {
     "open": "Open",
     "cancel": "Cancel",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "placeholder": "Ask a question..."
   },
   "voice": {
     "on": "Voice on",
@@ -20,5 +21,21 @@
     "reset": "Reset session"
   },
   "loading": "Loading…",
-  "welcome": "Welcome"
+  "welcome": "Welcome",
+  "contextNames": {
+    "dashboard": "Dashboard",
+    "controls": "Controls",
+    "evidence": "Evidence",
+    "training": "Training",
+    "dpia": "DPIA",
+    "admin": "Administration"
+  },
+  "contextHelp": {
+    "dashboard": "Here you can see an overview of your compliance progress.",
+    "controls": "Manage framework controls and requirements.",
+    "evidence": "Upload evidence and documents."
+  },
+  "quickstart": {
+    "dashboard": []
+  }
 }

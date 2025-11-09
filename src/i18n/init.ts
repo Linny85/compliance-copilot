@@ -337,13 +337,13 @@ if (!i18n.isInitialized) {
     returnNull: false,
     returnEmptyString: false,
     saveMissing: false,
-    resources: devResources,
+    // CRITICAL: NO devResources - use HTTP backend only for clean nested JSON
     react: {
       useSuspense: false
     },
     // keySeparator default (.) for nested keys like "header.subtitle"
     nsSeparator: ':',
-    returnObjects: true,
+    returnObjects: false, // Set to false to avoid returning nested objects by default
     parseMissingKeyHandler: (key) => {
       if (import.meta.env.DEV) {
         console.warn('[i18n missing]', key);

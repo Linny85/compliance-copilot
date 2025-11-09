@@ -123,7 +123,7 @@ export function ComplianceProgressCard() {
   // DPIA display logic
   const dpiaTotal = Number(summary?.dpia_total ?? 0);
   const showDpia = dpiaTotal >= 1;
-  const dpiaDisplay = showDpia ? `${dpiaPct}%` : t('dashboard:badges.na');
+  const dpiaDisplay = showDpia ? `${dpiaPct}%` : t('common:badges.na');
   
   // Evidence display - show "—" if score is exactly 0 (no data)
   const evidenceDisplay = (evidencePct === 0 && summary?.evidence_score === 0)
@@ -343,7 +343,7 @@ export function ComplianceProgressCard() {
               <span className="text-muted-foreground">
                 {t('dashboard:sections.dpia')}
               </span>
-              <span className="font-medium" title={!showDpia ? t('dashboard:tooltips.dpia_na') : undefined}>
+              <span className="font-medium" title={!showDpia ? t('common:tooltips.dpia_na') : undefined}>
                 {dpiaDisplay}
               </span>
             </div>

@@ -118,6 +118,14 @@
   },
   "masterCode": "Master-Code",
   "enterMasterCode": "Master-Code eingeben",
+  "badges": {
+    "na": "n/a"
+  },
+  "tooltips": {
+    "dpia_na": "Keine DSFA erforderlich bzw. noch nicht angelegt.",
+    "adminOnly": "Nur Admins",
+    "noRules": "Keine aktiven Regeln"
+  },
   "common": {
     "save": "Speichern",
     "saving": "Speichern…",
@@ -155,10 +163,6 @@
     "previous": "Zurück",
     "next": "Weiter",
     "forbidden": "Zugriff verweigert (nur Admin).",
-    "tooltips": {
-      "adminOnly": "Nur Admins",
-      "noRules": "Keine aktiven Regeln"
-    },
     "none": "—"
   },
   "search": "Suchen…",

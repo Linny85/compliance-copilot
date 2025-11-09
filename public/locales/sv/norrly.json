@@ -4,13 +4,14 @@
     "subtitle": "Norrly – din kollega för NIS2 & AI-lagen."
   },
   "intro": {
-    "headline": "Hej, jag är Norrly",
+    "headline": "Hej, jag är Norrly 👋",
     "text": "Jag förklarar, rådgiver och guidar dig till införande."
   },
   "input": {
     "open": "Öppna",
     "cancel": "Avbryt",
-    "loading": "Laddar…"
+    "loading": "Laddar…",
+    "placeholder": "Ställ en fråga..."
   },
   "voice": {
     "on": "Röst på",
@@ -20,5 +21,21 @@
     "reset": "Återställ session"
   },
   "loading": "Laddar…",
-  "welcome": "Välkommen"
+  "welcome": "Välkommen",
+  "contextNames": {
+    "dashboard": "Dashboard",
+    "controls": "Kontroller",
+    "evidence": "Bevis",
+    "training": "Utbildning",
+    "dpia": "DPIA",
+    "admin": "Administration"
+  },
+  "contextHelp": {
+    "dashboard": "Här kan du se en översikt över din efterlevnadsframsteg.",
+    "controls": "Hantera ramverkskontroller och krav.",
+    "evidence": "Ladda upp bevis och dokument."
+  },
+  "quickstart": {
+    "dashboard": []
+  }
 }

@@ -1,24 +1,41 @@
 {
   "name": "Norrly",
   "header": {
-    "subtitle": "Norrly – Ihr Kollege für Klarheit in NIS2 & AI Act."
+    "subtitle": "Norrly – dein Kollege für Klarheit in NIS2 & AI Act."
   },
   "intro": {
-    "headline": "Hi, ich bin Norrly",
+    "headline": "Hi, ich bin Norrly 👋",
     "text": "Ich erkläre, berate und begleite dich – von der Richtlinie bis zur Umsetzung."
   },
   "input": {
     "open": "Öffnen",
     "cancel": "Abbrechen",
-    "loading": "Lädt…"
+    "loading": "Lädt…",
+    "placeholder": "Frage stellen..."
   },
   "voice": {
     "on": "Stimme an",
     "off": "Stimme aus"
   },
   "session": {
-    "reset": "Session zurücksetzen"
+    "reset": "Sitzung zurücksetzen"
   },
   "loading": "Lädt…",
-  "welcome": "Willkommen"
+  "welcome": "Willkommen",
+  "contextNames": {
+    "dashboard": "Dashboard",
+    "controls": "Kontrollen",
+    "evidence": "Nachweise",
+    "training": "Schulungen",
+    "dpia": "DSFA",
+    "admin": "Verwaltung"
+  },
+  "contextHelp": {
+    "dashboard": "Hier siehst du den Überblick über deine Compliance-Fortschritte.",
+    "controls": "Verwalte Framework-Kontrollen und Anforderungen.",
+    "evidence": "Lade Nachweise und Dokumente hoch."
+  },
+  "quickstart": {
+    "dashboard": []
+  }
 }

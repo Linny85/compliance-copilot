@@ -118,6 +118,14 @@
   },
   "masterCode": "Huvudkod",
   "enterMasterCode": "Ange huvudkod",
+  "badges": {
+    "na": "n/a"
+  },
+  "tooltips": {
+    "dpia_na": "Ingen DPIA krävs eller ej skapad än.",
+    "adminOnly": "Endast admin",
+    "noRules": "Inga aktiva regler"
+  },
   "common": {
     "save": "Spara",
     "saving": "Sparar…",
@@ -133,10 +141,6 @@
     "previous": "Föregående",
     "next": "Nästa",
     "forbidden": "Åtkomst nekad (endast admin).",
-    "tooltips": {
-      "adminOnly": "Endast admin",
-      "noRules": "Inga aktiva regler"
-    },
     "none": "—"
   },
   "search": "Sök…",
