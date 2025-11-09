@@ -337,6 +337,32 @@ FROM information_schema.routine_privileges
 WHERE routine_name = 'verify_master_password';
 ```
 
+## CI/CD Integration
+
+### GitHub Actions Workflow
+
+A dedicated workflow (`.github/workflows/master-password-e2e.yml`) runs automatically on:
+- Pull requests affecting verification logic
+- Manual workflow dispatch
+- Changes to edge function or frontend security features
+
+**Required GitHub Secrets:**
+- `SUPABASE_URL`: Your Supabase project URL
+- `SUPABASE_ANON_KEY`: Supabase anonymous key
+- `E2E_MASTER_PW`: Test master password (test environment only)
+
+**Artifacts:**
+- HTML Playwright report (30 day retention)
+- Test results with screenshots/videos on failure
+
+### Manual Workflow Trigger
+
+```bash
+# Via GitHub UI: Actions → Master Password E2E Tests → Run workflow
+# Or via GitHub CLI:
+gh workflow run master-password-e2e.yml
+```
+
 ## Migration Notes
 
 If migrating from old system:
