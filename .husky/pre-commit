@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
-npx lint-staged
+# Run i18n validation before commit
+node scripts/check-i18n.js || exit 1

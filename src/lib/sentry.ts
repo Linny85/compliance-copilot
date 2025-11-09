@@ -39,8 +39,18 @@ export function initSentry() {
       },
     });
 
-    console.log('[Sentry] Initialized for production');
+    // Global error handlers for unhandled rejections
+    window.addEventListener('unhandledrejection', (event) => {
+      Sentry.captureException(event.reason || event);
+      console.error('[Unhandled Rejection]', event.reason);
+    });
+
+    console.log('[Sentry] Initialized for production with global error handlers');
   } else if (import.meta.env.DEV) {
+    // In development, still capture unhandled errors for debugging
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('[Unhandled Rejection]', event.reason);
+    });
     console.log('[Sentry] Skipped in development mode');
   }
 }
