@@ -114,33 +114,38 @@ if (result.success) {
 **Test Edge Function directly:**
 
 ```bash
-# Replace with your values:
-# <URL> = Your Supabase URL (e.g., https://eadjoqlyjxwqjfvukvqx.supabase.co)
-# <ANON> = Your Supabase anon key
-# <COMPANY_UUID> = A valid company ID
-# <PW> = Correct master password
+# Set environment variables (replace with your actual values)
+export SUPABASE_URL="https://<your-project>.supabase.co"
+export SUPABASE_ANON_KEY="<your-anon-key>"
+export COMPANY_ID="<your-company-uuid>"
+export CORRECT_PW="<your-test-password>"
 
-# Test 1: Wrong password → { ok: false }
-curl -s -X POST "<URL>/functions/v1/verify-master" \
-  -H "Authorization: Bearer <ANON>" \
+# Test 1: Wrong password → { "ok": false }
+curl -s -X POST "$SUPABASE_URL/functions/v1/verify-master" \
+  -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+  -H "apikey: $SUPABASE_ANON_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"company_id":"<COMPANY_UUID>","password":"wrong"}'
+  -d "{\"company_id\":\"$COMPANY_ID\",\"password\":\"wrong\"}"
 
-# Test 2: Correct password → { ok: true }
-curl -s -X POST "<URL>/functions/v1/verify-master" \
-  -H "Authorization: Bearer <ANON>" \
+# Test 2: Correct password → { "ok": true }
+curl -s -X POST "$SUPABASE_URL/functions/v1/verify-master" \
+  -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+  -H "apikey: $SUPABASE_ANON_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"company_id":"<COMPANY_UUID>","password":"<PW>"}'
+  -d "{\"company_id\":\"$COMPANY_ID\",\"password\":\"$CORRECT_PW\"}"
 
-# Test 3: Rate limit (6 rapid failures) → { ok: false, reason: "rate_limited" }
+# Test 3: Rate limit (6 rapid failures) → { "ok": false, "reason": "rate_limited" }
 for i in {1..6}; do
-  curl -s -X POST "<URL>/functions/v1/verify-master" \
-    -H "Authorization: Bearer <ANON>" \
+  curl -s -X POST "$SUPABASE_URL/functions/v1/verify-master" \
+    -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+    -H "apikey: $SUPABASE_ANON_KEY" \
     -H "Content-Type: application/json" \
-    -d '{"company_id":"<COMPANY_UUID>","password":"wrong"}'
+    -d "{\"company_id\":\"$COMPANY_ID\",\"password\":\"wrong\"}"
   echo ""
 done
 ```
+
+**Tip:** Pipe output through `| jq` for formatted JSON if you have jq installed.
 
 **Expected Results:**
 - All responses return HTTP 200 (timing attack mitigation)
@@ -151,14 +156,25 @@ done
 **Test RPC Function directly (Lovable Cloud → Database → SQL Editor):**
 
 ```sql
--- Replace <COMPANY_UUID> and <PW> with actual values
+-- 1) Ensure pgcrypto extension is enabled (one-time setup)
+create extension if not exists pgcrypto;
 
--- Should return false
+-- 2) Set up test password hash (TEST ENVIRONMENT ONLY!)
+-- This creates a hash for password 'correct' using bcrypt
+-- Replace <COMPANY_UUID> with your actual company UUID
+insert into public.org_secrets (company_id, master_password_hash)
+values ('<COMPANY_UUID>'::uuid, crypt('correct', gen_salt('bf')))
+on conflict (company_id) do update
+  set master_password_hash = excluded.master_password_hash;
+
+-- 3) Test with wrong password (should return false)
 select public.verify_master_password('<COMPANY_UUID>'::uuid, 'wrong');
 
--- Should return true
-select public.verify_master_password('<COMPANY_UUID>'::uuid, '<PW>');
+-- 4) Test with correct password (should return true)
+select public.verify_master_password('<COMPANY_UUID>'::uuid, 'correct');
 ```
+
+**⚠️ Security Note:** The hash setup example above is for test environments only. In production, master passwords should be set through the secure UI workflow, never via direct SQL.
 
 ### E2E Testing with Playwright
 
