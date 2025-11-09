@@ -4492,6 +4492,79 @@ export type Database = {
         }
         Relationships: []
       }
+      summary_controls: {
+        Row: {
+          ai_act_pct: number | null
+          company_id: string | null
+          controls_pct: number | null
+          dsgvo_pct: number | null
+          enabled_controls: number | null
+          nis2_pct: number | null
+          total_controls: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_tenant_scope"
+            referencedColumns: ["tenant_id"]
+          },
+          {
+            foreignKeyName: "check_rules_tenant_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      summary_evidence: {
+        Row: {
+          company_id: string | null
+          evidence_pct: number | null
+          total_evidence: number | null
+          verified_evidence: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evidences_tenant_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "mv_tenant_scope"
+            referencedColumns: ["tenant_id"]
+          },
+          {
+            foreignKeyName: "evidences_tenant_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "Unternehmen"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      summary_overview: {
+        Row: {
+          ai_act_pct: number | null
+          company_id: string | null
+          controls_pct: number | null
+          dsgvo_pct: number | null
+          evidence_pct: number | null
+          nis2_pct: number | null
+          overall_pct: number | null
+          training_pct: number | null
+        }
+        Relationships: []
+      }
+      summary_training: {
+        Row: {
+          company_id: string | null
+          total_users: number | null
+          training_pct: number | null
+          users_passed: number | null
+        }
+        Relationships: []
+      }
       v_approvals_pending: {
         Row: {
           action: string | null

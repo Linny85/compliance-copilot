@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { Building2, Lock, CheckCircle } from "lucide-react";
 import { useI18n } from "@/contexts/I18nContext";
 import { useLocation } from "react-router-dom";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 // 🔍 DIAGNOSE: Global action tracker
 if (typeof window !== 'undefined') {
@@ -292,9 +291,6 @@ const CompanyProfile = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
-      <div className="absolute top-4 right-4">
-        <LanguageSwitcher />
-      </div>
       
       {/* 🔍 DIAGNOSE: Visible error banner */}
       {diag && (

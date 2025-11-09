@@ -9,7 +9,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 type Step = 'company' | 'scope' | 'frameworks' | 'seed' | 'done';
 
@@ -58,7 +57,6 @@ const OnboardingWizard = () => {
       <Card className="w-full max-w-3xl p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div><h1 className="text-3xl font-bold">Quick Setup</h1></div>
-          <LanguageSwitcher />
         </div>
         <Progress value={progressValue} />
         {currentStep === 'company' && (
