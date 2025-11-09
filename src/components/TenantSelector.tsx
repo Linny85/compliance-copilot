@@ -8,14 +8,14 @@ import { useTenantStore } from '@/store/tenant';
 type Tenant = { id: string; name: string };
 
 export default function TenantSelector({ className }: { className?: string }) {
+  // CRITICAL: ALL hooks MUST be called before any early returns
   const { t, ready } = useTranslation('common', { useSuspense: false });
   const queryClient = useQueryClient();
   const { tenantId, setTenant } = useTenantStore();
   const [tenants, setTenants] = React.useState<Tenant[]>([]);
   const [loading, setLoading] = React.useState(true);
 
-  if (!ready) return null;
-
+  // useEffect MUST be called unconditionally, even if component returns null later
   React.useEffect(() => {
     (async () => {
       setLoading(true);
@@ -28,6 +28,9 @@ export default function TenantSelector({ className }: { className?: string }) {
       setLoading(false);
     })();
   }, []);
+
+  // Early return AFTER all hooks
+  if (!ready) return null;
 
   const handleChange = async (id: string) => {
     setTenant(id);
