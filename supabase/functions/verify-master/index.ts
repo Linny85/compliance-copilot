@@ -1,6 +1,10 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // CORS configuration with allowed origins
+// Set ALLOWED_ORIGINS environment variable as comma-separated list:
+// Example: "http://localhost:5173,https://preview.lovableproject.com,https://prod.example.com"
+// Wildcards *.lovableproject.com and *.lovable.app are checked separately in isOriginAllowed()
+// Fallback: localhost:5173 and 127.0.0.1:5173 for local development
 const ALLOWED_ORIGINS_ENV = Deno.env.get('ALLOWED_ORIGINS') || '';
 const ALLOWED_ORIGINS = ALLOWED_ORIGINS_ENV 
   ? ALLOWED_ORIGINS_ENV.split(',').map(o => o.trim())

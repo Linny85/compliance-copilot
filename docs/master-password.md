@@ -79,14 +79,50 @@ const { data: isValid, error } = await supabase
 
 **Setting ALLOWED_ORIGINS:**
 ```bash
-# In Supabase Edge Function Secrets or environment
-ALLOWED_ORIGINS=https://your-app.com,https://preview.your-app.com,http://localhost:5173
+# In Lovable Cloud Edge Functions (Project → Functions → Environment Variables)
+ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://your-preview-domain.lovableproject.com,https://your-prod-domain.com
 
 # For local development with Supabase CLI
 echo "ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173" >> supabase/.env.local
 ```
 
-**Note:** Preflight (OPTIONS) requests MUST receive proper CORS headers to avoid browser blocking POST requests. The edge function automatically extracts the `Origin` header and validates it against the allowed list.
+**Verification (curl with Origin):**
+
+Test that CORS headers are correctly configured by simulating browser preflight and POST requests:
+
+```bash
+export SUPABASE_URL="https://<your-project>.supabase.co"
+export ANON_KEY="<your-anon-key>"
+export TEST_ORIGIN="https://your-preview-domain.lovableproject.com"
+
+# Test OPTIONS preflight (should return 204 with CORS headers)
+curl -i -X OPTIONS "$SUPABASE_URL/functions/v1/verify-master" \
+  -H "Origin: $TEST_ORIGIN" \
+  -H "Access-Control-Request-Method: POST" \
+  -H "Access-Control-Request-Headers: authorization,apikey,content-type"
+
+# Expected:
+# HTTP/1.1 204 No Content
+# Access-Control-Allow-Origin: https://your-preview-domain.lovableproject.com
+# Access-Control-Allow-Headers: authorization, x-client-info, apikey, content-type
+# Access-Control-Allow-Methods: POST, OPTIONS
+
+# Test POST with Origin (should return 200 with CORS headers)
+curl -i -X POST "$SUPABASE_URL/functions/v1/verify-master" \
+  -H "Origin: $TEST_ORIGIN" \
+  -H "Authorization: Bearer $ANON_KEY" \
+  -H "apikey: $ANON_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"company_id":"<test-uuid>","password":"test"}'
+
+# Expected:
+# HTTP/1.1 200 OK
+# Access-Control-Allow-Origin: https://your-preview-domain.lovableproject.com
+# Content-Type: application/json
+# {"ok":false}
+```
+
+**Note:** Preflight (OPTIONS) requests MUST receive proper CORS headers to avoid browser blocking POST requests. The edge function automatically extracts the `Origin` header and validates it against the allowed list. If the origin is not whitelisted, the fallback origin (first in `ALLOWED_ORIGINS` or `localhost:5173`) is used.
 
 ### Frontend Integration
 
