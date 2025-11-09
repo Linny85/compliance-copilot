@@ -7,24 +7,26 @@ test.describe('Dashboard Summary', () => {
   });
 
   test('renders compliance metrics without NaN', async ({ page }) => {
-    // Wait for dashboard to load
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    // Wait for compliance progress card
+    await expect(page.getByText(/Compliance/i).first()).toBeVisible();
     
-    // Check that percentage values are valid numbers (0-100%)
-    const percentagePattern = /^\d+(\.\d+)?%$/;
+    // Overall percentage should be valid
+    const overallPct = page.locator('[data-testid="overall-pct"]');
+    await expect(overallPct).toBeVisible();
+    const overallText = await overallPct.innerText();
+    expect(overallText).toMatch(/^\d+%$/);
+    expect(overallText).not.toContain('NaN');
     
-    // Look for percentage displays (adjust selectors based on actual UI)
-    const percentages = page.locator('[data-testid*="pct"], [aria-label*="percent"], .percentage');
-    const count = await percentages.count();
+    // Framework percentages should be valid
+    const nis2Badge = page.locator('[data-testid="nis2-pct"]');
+    const aiBadge = page.locator('[data-testid="ai-pct"]');
+    const gdprBadge = page.locator('[data-testid="gdpr-pct"]');
     
-    if (count > 0) {
-      for (let i = 0; i < count; i++) {
-        const text = await percentages.nth(i).innerText();
-        // Should be a valid percentage or empty/placeholder
-        if (text && text.includes('%')) {
-          expect(text).toMatch(percentagePattern);
-        }
-      }
+    for (const badge of [nis2Badge, aiBadge, gdprBadge]) {
+      await expect(badge).toBeVisible();
+      const text = await badge.innerText();
+      expect(text).toMatch(/\d+%/);
+      expect(text).not.toContain('NaN');
     }
   });
 

@@ -227,7 +227,7 @@ export function ComplianceProgressCard() {
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold">
+              <span className="text-3xl font-bold" data-testid="overall-pct">
                 {displayOverall}%
               </span>
               <span 
@@ -242,13 +242,13 @@ export function ComplianceProgressCard() {
 
           {/* Framework Badges - Core Frameworks */}
           <div className="flex flex-wrap gap-2 justify-center">
-            <Badge variant={getBadgeVariant(nis2Pct)}>
+            <Badge variant={getBadgeVariant(nis2Pct)} data-testid="nis2-pct">
               {t('dashboard:labels.nis2')}: {nis2Pct}%
             </Badge>
-            <Badge variant={getBadgeVariant(aiPct)}>
+            <Badge variant={getBadgeVariant(aiPct)} data-testid="ai-pct">
               {t('dashboard:labels.ai_act')}: {aiPct}%
             </Badge>
-            <Badge variant={getBadgeVariant(gdprPct)}>
+            <Badge variant={getBadgeVariant(gdprPct)} data-testid="gdpr-pct">
               {t('dashboard:labels.gdpr')}: {gdprPct}%
             </Badge>
           </div>
