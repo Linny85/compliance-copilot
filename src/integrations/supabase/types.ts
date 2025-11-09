@@ -2991,6 +2991,7 @@ export type Database = {
           locale: string | null
           stripe_customer_id: string | null
           updated_at: string | null
+          user_id: string | null
         }
         Insert: {
           company_id?: string | null
@@ -3002,6 +3003,7 @@ export type Database = {
           locale?: string | null
           stripe_customer_id?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Update: {
           company_id?: string | null
@@ -3013,6 +3015,7 @@ export type Database = {
           locale?: string | null
           stripe_customer_id?: string | null
           updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
