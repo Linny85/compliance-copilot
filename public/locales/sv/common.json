@@ -5,6 +5,7 @@
   "greeting": "Välkommen tillbaka!",
   "quickPrompts": "Snabba kommandon",
   "loading": "Laddar…",
+  "verifying": "Verifierar…",
   "buttons": {
     "open": "Öppna",
     "cancel": "Avbryt",

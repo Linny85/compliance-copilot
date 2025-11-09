@@ -12,5 +12,8 @@
   },
   "help": {
     "whyAccess": "Your access runs through your subscription. By signing in, I activate your license and can assign documents & evidence directly to your organization – securely and GDPR-compliant."
+  },
+  "sectors": {
+    "it": "IT"
   }
 }

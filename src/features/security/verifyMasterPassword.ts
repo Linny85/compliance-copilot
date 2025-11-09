@@ -56,10 +56,17 @@ export async function verifyMasterPassword(password: string): Promise<VerifyMast
         return { success: false, error: 'invalid_password' };
       }
 
-      // If edge function fails, log and fall through to RPC
-      console.warn('Edge function failed, falling back to RPC:', edgeError);
+      // Check for FunctionsFetchError or CORS issues
+      const errorMsg = edgeError?.message || String(edgeError);
+      if (errorMsg.includes('FunctionsFetchError') || errorMsg.includes('CORS') || errorMsg.includes('Failed to fetch')) {
+        console.warn('Edge function network/CORS issue, falling back to RPC');
+        // Fall through to RPC fallback
+      } else {
+        console.warn('Edge function failed, falling back to RPC:', errorMsg);
+      }
     } catch (edgeException) {
-      console.warn('Edge function exception, falling back to RPC:', edgeException);
+      const exMsg = edgeException instanceof Error ? edgeException.message : String(edgeException);
+      console.warn('Edge function exception, falling back to RPC:', exMsg);
     }
 
     // Fallback: Use RPC function

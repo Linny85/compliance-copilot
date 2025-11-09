@@ -68,9 +68,25 @@ const { data: isValid, error } = await supabase
 **No Prefetch:** The edge function does NOT query any table directly. All password verification logic is delegated to the SECURITY DEFINER RPC function, which is the single source of truth.
 
 **CORS:**
-- Configured for Preview and Production domains
-- Supports preflight OPTIONS requests
-- Headers: `authorization`, `x-client-info`, `apikey`, `content-type`
+- Configured via `ALLOWED_ORIGINS` environment variable (comma-separated list)
+- Fallback origins: `http://localhost:5173`, `http://127.0.0.1:5173`, and wildcard `*.lovableproject.com`, `*.lovable.app`
+- Supports preflight OPTIONS requests (returns 204)
+- Response headers:
+  - `Access-Control-Allow-Origin`: Exact origin (not `*`) for credential support
+  - `Access-Control-Allow-Headers`: `authorization`, `x-client-info`, `apikey`, `content-type`
+  - `Access-Control-Allow-Methods`: `POST`, `OPTIONS`
+  - `Access-Control-Max-Age`: `86400` (24 hours)
+
+**Setting ALLOWED_ORIGINS:**
+```bash
+# In Supabase Edge Function Secrets or environment
+ALLOWED_ORIGINS=https://your-app.com,https://preview.your-app.com,http://localhost:5173
+
+# For local development with Supabase CLI
+echo "ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173" >> supabase/.env.local
+```
+
+**Note:** Preflight (OPTIONS) requests MUST receive proper CORS headers to avoid browser blocking POST requests. The edge function automatically extracts the `Origin` header and validates it against the allowed list.
 
 ### Frontend Integration
 

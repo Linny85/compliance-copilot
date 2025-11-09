@@ -5,6 +5,7 @@
   "greeting": "Willkommen zurück!",
   "quickPrompts": "Schnelle Eingaben",
   "loading": "Laden…",
+  "verifying": "Wird überprüft…",
   "buttons": {
     "open": "Öffnen",
     "cancel": "Abbrechen",

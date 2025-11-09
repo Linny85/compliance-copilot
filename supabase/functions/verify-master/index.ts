@@ -1,11 +1,40 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
-// CORS headers for Preview and Production domains
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*', // TODO: Restrict to specific domains in production
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-};
+// CORS configuration with allowed origins
+const ALLOWED_ORIGINS_ENV = Deno.env.get('ALLOWED_ORIGINS') || '';
+const ALLOWED_ORIGINS = ALLOWED_ORIGINS_ENV 
+  ? ALLOWED_ORIGINS_ENV.split(',').map(o => o.trim())
+  : [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+    ];
+
+// Helper to check if origin is allowed (supports wildcard *.lovableproject.com)
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return false;
+  
+  // Check exact matches
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  
+  // Check wildcard patterns
+  if (origin.endsWith('.lovableproject.com') || origin.endsWith('.lovable.app')) {
+    return true;
+  }
+  
+  return false;
+}
+
+// Get CORS headers for specific origin
+function getCorsHeaders(origin: string | null) {
+  const allowedOrigin = isOriginAllowed(origin) ? origin : ALLOWED_ORIGINS[0];
+  
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Max-Age': '86400',
+  };
+}
 
 // In-memory rate limiter (resets on cold start)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -31,6 +60,9 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
 }
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders, status: 204 });

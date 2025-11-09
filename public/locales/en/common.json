@@ -5,6 +5,7 @@
   "greeting": "Welcome back!",
   "quickPrompts": "Quick prompts",
   "loading": "Loading…",
+  "verifying": "Verifying…",
   "buttons": {
     "open": "Open",
     "cancel": "Cancel",
