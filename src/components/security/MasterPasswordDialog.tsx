@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useTenantId } from "@/hooks/useTenantId";
 
 interface MasterPasswordDialogProps {
   open: boolean;
@@ -15,6 +16,7 @@ interface MasterPasswordDialogProps {
 
 export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswordDialogProps) {
   const { t, ready } = useTranslation(['organization', 'common']);
+  const { tenantId } = useTenantId();
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,13 +27,21 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
     e.preventDefault();
     if (!password.trim()) return;
 
+    if (!tenantId) {
+      setError(t('common:tenant.missingDesc', 'Please select a tenant first.'));
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
 
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error: invokeError } = await supabase.functions.invoke('verify-master-pass', {
-        body: { master: password },
+        body: { 
+          master: password,
+          tenantId: tenantId
+        },
         headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}
       });
 
