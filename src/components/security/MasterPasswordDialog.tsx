@@ -53,22 +53,30 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
 
       // Handle specific error responses
       if (data?.ok === false) {
+        const code = data.code || data.error;
         const errorMap: Record<string, string> = {
+          E_NO_TENANT: t('common:tenant.missingDesc', 'Please select a tenant first.'),
+          E_NOT_SET: t('organization:master.notSet', 'Master password not set. Please contact your administrator.'),
+          E_BAD_MASTER: t('organization:master.invalid', 'Invalid master password.'),
+          E_LOCKED: t('organization:master.locked', 'Too many failed attempts. Account temporarily locked.'),
+          E_INPUT: t('organization:master.invalid', 'Invalid input.'),
+          E_SERVER: t('organization:master.generic', 'Technical error. Please try again later.'),
+          // Legacy support
           not_set: t('organization:master.notSet', 'Master password not set. Please contact your administrator.'),
           invalid: t('organization:master.invalid', 'Invalid master password.'),
           locked: t('organization:master.locked', 'Too many failed attempts. Account temporarily locked.'),
           rate_limited: t('organization:master.rateLimited', 'Too many requests. Please try again later.')
         };
 
-        if (data.error === 'not_set') {
+        if (code === 'E_NOT_SET' || data.error === 'not_set') {
           // Trigger setup flow via callback
           onSuccess('__SETUP_REQUIRED__');
           handleClose();
           return;
         }
         
-        let errorMsg = errorMap[data.error] || t('organization:master.generic', 'Verification currently not available. Please try again later.');
-        if (data.error === 'invalid' && data.attempts_remaining !== undefined) {
+        let errorMsg = errorMap[code] || errorMap[data.error] || t('organization:master.generic', 'Verification currently not available. Please try again later.');
+        if ((code === 'E_BAD_MASTER' || data.error === 'invalid') && data.attempts_remaining !== undefined) {
           errorMsg += ` (${data.attempts_remaining} attempts remaining)`;
         }
         

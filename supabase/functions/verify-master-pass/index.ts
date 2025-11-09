@@ -42,10 +42,13 @@ Deno.serve(async (req) => {
     if (base instanceof Response) return base;
     const { claims, userId } = base;
 
-    // Resolve tenant ID (try JWT claim first, fallback to profiles table)
-    const tenantId = await resolveTenantId(claims);
+    // Parse request body
+    const { master, tenantId: requestTenantId } = await req.json().catch(() => ({}));
+    
+    // Resolve tenant ID (prefer request body, fallback to JWT/profiles)
+    let tenantId = requestTenantId || await resolveTenantId(claims);
     if (!tenantId) {
-      return new Response(JSON.stringify({ ok: false, error: "no_tenant" }), {
+      return new Response(JSON.stringify({ ok: false, error: "no_tenant", code: "E_NO_TENANT" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
@@ -61,9 +64,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { master } = await req.json().catch(() => ({}));
     if (typeof master !== "string" || master.length < 1) {
-      return new Response(JSON.stringify({ ok: false, error: "invalid_input" }), {
+      return new Response(JSON.stringify({ ok: false, error: "invalid_input", code: "E_INPUT" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
@@ -76,7 +78,7 @@ Deno.serve(async (req) => {
       .maybeSingle();
 
     if (!secret?.master_hash) {
-      return new Response(JSON.stringify({ ok: false, error: "not_set" }), {
+      return new Response(JSON.stringify({ ok: false, error: "not_set", code: "E_NOT_SET" }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -85,7 +87,7 @@ Deno.serve(async (req) => {
     // Check lockout
     if (secret.locked_until && new Date(secret.locked_until) > new Date()) {
       await auditEvent({ tenantId, userId, event: "master.verify.fail", details: { reason: "locked" } });
-      return new Response(JSON.stringify({ ok: false, error: 'locked', locked_until: secret.locked_until }), {
+      return new Response(JSON.stringify({ ok: false, error: 'locked', code: 'E_LOCKED', locked_until: secret.locked_until }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -114,6 +116,7 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ 
         ok: false,
         error: fails >= MAX_FAILS ? 'locked' : 'invalid',
+        code: fails >= MAX_FAILS ? 'E_LOCKED' : 'E_BAD_MASTER',
         attempts_remaining: Math.max(0, MAX_FAILS - fails)
       }), {
         status: 200,
@@ -136,7 +139,12 @@ Deno.serve(async (req) => {
     });
   } catch (error) {
     console.error('Verify master password error:', error);
-    return new Response(JSON.stringify({ ok: false, error: 'server_error' }), {
+    return new Response(JSON.stringify({ 
+      ok: false, 
+      error: 'server_error',
+      code: 'E_SERVER',
+      detail: error instanceof Error ? error.message : String(error)
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
