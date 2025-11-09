@@ -122,6 +122,9 @@
     "na": "n/a"
   },
   "tooltips": {
+    "progress": "Compliance progress based on verified evidence",
+    "dsfa": "DPIA required where high risk is present",
+    "refresh": "Refresh",
     "dpia_na": "No DPIA required or not yet created.",
     "adminOnly": "Admins only",
     "noRules": "No active rules"

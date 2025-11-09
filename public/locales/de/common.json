@@ -122,6 +122,9 @@
     "na": "n/a"
   },
   "tooltips": {
+    "progress": "Erfüllungsgrad basierend auf verifizierten Nachweisen",
+    "dsfa": "Datenschutz-Folgenabschätzung erforderlich, wenn hohes Risiko",
+    "refresh": "Aktualisieren",
     "dpia_na": "Keine DSFA erforderlich bzw. noch nicht angelegt.",
     "adminOnly": "Nur Admins",
     "noRules": "Keine aktiven Regeln"

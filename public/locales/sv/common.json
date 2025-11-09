@@ -122,6 +122,9 @@
     "na": "n/a"
   },
   "tooltips": {
+    "progress": "Efterlevnadsgrad baserad på verifierade bevis",
+    "dsfa": "Konsekvensbedömning (DPIA) krävs vid hög risk",
+    "refresh": "Uppdatera",
     "dpia_na": "Ingen DPIA krävs eller ej skapad än.",
     "adminOnly": "Endast admin",
     "noRules": "Inga aktiva regler"
