@@ -109,7 +109,7 @@ export function ComplianceProgressCard() {
   const displayOverall = clampPct(overallPercent);
   const overall = displayOverall / 100;
   const scoreVariant = getScoreColor(overall);
-  const overallSource = typeof summary?.overall_score === 'number' ? 'overview.overall_pct' : 'fallback(weights)';
+  const overallSource = typeof summary?.overall_score === 'number' ? 'v_compliance_overview.overall_pct' : 'fallback(weights)';
   
   // Calculate delta in percentage points
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;

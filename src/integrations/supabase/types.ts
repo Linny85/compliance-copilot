@@ -4492,6 +4492,19 @@ export type Database = {
         }
         Relationships: []
       }
+      overview: {
+        Row: {
+          ai_act_pct: number | null
+          company_id: string | null
+          controls_pct: number | null
+          dsgvo_pct: number | null
+          evidence_pct: number | null
+          nis2_pct: number | null
+          overall_pct: number | null
+          training_pct: number | null
+        }
+        Relationships: []
+      }
       summary_controls: {
         Row: {
           ai_act_pct: number | null
