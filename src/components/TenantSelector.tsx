@@ -14,6 +14,13 @@ export default function TenantSelector({ className }: { className?: string }) {
   const [tenants, setTenants] = React.useState<Tenant[]>([]);
   const [loading, setLoading] = React.useState(true);
 
+  console.log('[selector.render] start');
+  console.log('[selector.state]', {
+    tenantIdFromStore: tenantId,
+    loading,
+    tenantsCount: tenants.length,
+  });
+
   if (!ready) return null;
 
   React.useEffect(() => {
@@ -30,6 +37,7 @@ export default function TenantSelector({ className }: { className?: string }) {
   }, []);
 
   const handleChange = async (id: string) => {
+    console.log('[selector.handleChange]', { id });
     setTenant(id);
     
     // Optional: im Profil sichern
@@ -43,6 +51,12 @@ export default function TenantSelector({ className }: { className?: string }) {
     // Gezielt tenant-abhängige Queries invalidieren
     queryClient.invalidateQueries({ queryKey: ['tenant'] });
   };
+
+  console.log('[selector.render] propsForSelect', {
+    valuePropType: typeof tenantId,
+    valueProp: tenantId,
+    tenantsItems: tenants.map(t => t.id),
+  });
 
   return (
     <div className={className}>
