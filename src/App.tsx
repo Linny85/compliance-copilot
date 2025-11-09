@@ -57,6 +57,7 @@ import RedirectTracer from "./testmode/RedirectTracer";
 import NetProbe from "./testmode/NetProbe";
 import DebugHealth from "./debug/DebugHealth";
 import DebugThrow from "./pages/DebugThrow";
+import I18nDebugPanel from "./features/i18n/I18nDebugPanel";
 
 installDomGuards();
 
@@ -78,6 +79,7 @@ const App = () => (
     <Toaster position="top-right" richColors closeButton expand duration={3500} />
     <NorrlandGuide />
     {import.meta.env.VITE_TEST_MODE === '1' && <RedirectTracer />}
+    {import.meta.env.DEV && <I18nDebugPanel />}
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <GlobalNavigationBridge />
       <AuthProvider>

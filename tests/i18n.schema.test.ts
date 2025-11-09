@@ -45,6 +45,13 @@ describe('i18n schema validation', () => {
         for (const k of gotKeys) {
           expect(['string', 'number', 'boolean']).toContain(typeof gotFlat[k]);
         }
+
+        // No empty strings
+        for (const k of gotKeys) {
+          if (typeof gotFlat[k] === 'string') {
+            expect((gotFlat[k] as string).trim()).not.toHaveLength(0);
+          }
+        }
       }
     });
   }

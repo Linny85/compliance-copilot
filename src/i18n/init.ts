@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import { detectBrowserLocale } from './detect';
+import { emitMissingKey } from './missingKeyBus';
 
 const DEV = import.meta.env.DEV;
 
@@ -348,6 +349,12 @@ if (!i18n.isInitialized) {
         console.warn('[i18n missing]', key);
       }
       return key;
+    },
+    missingKeyHandler: (lngs, ns, key) => {
+      if (import.meta.env.DEV) {
+        const lng = Array.isArray(lngs) ? lngs[0] : (lngs || 'unknown');
+        emitMissingKey({ lng, ns, key });
+      }
     },
   });
 }
