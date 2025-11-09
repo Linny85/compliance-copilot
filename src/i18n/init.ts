@@ -74,6 +74,9 @@ const devResources = DEV ? {
       loading: 'Lädt…',
       welcome: 'Willkommen'
     },
+    labels: { nis2: 'NIS2', ai_act: 'AI Act', gdpr: 'DSGVO' },
+    sections: { controls: 'Kontrollen', evidence: 'Nachweise', trainings: 'Schulungen', dpia: 'DSFA' },
+    training: { missing_data: 'Keine Trainingsdaten vorhanden.' },
     dashboard: {
       name: 'Dashboard',
       loading: 'Lädt…',
@@ -141,6 +144,9 @@ const devResources = DEV ? {
       loading: 'Loading…',
       welcome: 'Welcome'
     },
+    labels: { nis2: 'NIS2', ai_act: 'AI Act', gdpr: 'GDPR' },
+    sections: { controls: 'Controls', evidence: 'Evidence', trainings: 'Trainings', dpia: 'DPIA' },
+    training: { missing_data: 'No training data available.' },
     dashboard: {
       name: 'Dashboard',
       loading: 'Loading…',
@@ -208,6 +214,9 @@ const devResources = DEV ? {
       loading: 'Laddar…',
       welcome: 'Välkommen'
     },
+    labels: { nis2: 'NIS2', ai_act: 'AI Act', gdpr: 'GDPR' },
+    sections: { controls: 'Kontroller', evidence: 'Bevis', trainings: 'Utbildningar', dpia: 'DPIA' },
+    training: { missing_data: 'Ingen träningsdata tillgänglig.' },
     dashboard: {
       name: 'Instrumentpanel',
       loading: 'Laddar…',
@@ -352,6 +361,22 @@ i18n.on('languageChanged', (lng) => {
 });
 // Set initial lang
 document.documentElement.lang = i18n.language?.slice(0, 2) || 'de';
+
+// A2: DEV diagnostic - Runtime status of i18n resource bundles
+if (DEV) {
+  const langs = ['de', 'en', 'sv'];
+  const nss = ['common', 'dashboard', 'organization', 'norrly', 'training', 'labels', 'sections'];
+  console.group('[i18n bundles]');
+  console.log('isInitialized', i18n.isInitialized, 'language', i18n.language, 'ns', i18n.options.ns);
+  for (const l of langs) {
+    for (const ns of nss) {
+      const hasBundle = i18n.hasResourceBundle(l, ns);
+      const keys = Object.keys(i18n.getResourceBundle(l, ns) || {}).slice(0, 5);
+      console.log(l, ns, hasBundle, keys);
+    }
+  }
+  console.groupEnd();
+}
 
 // DEV fallback for incidents namespace
 const INCIDENTS_FALLBACK = {

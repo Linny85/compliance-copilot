@@ -15,14 +15,17 @@ export function OrganizationCard({ companyName, country, sector }: OrganizationC
   const { t } = useTranslation(['common', 'dashboard']);
 
   const getSectorLabel = (sectorValue: string) => {
+    // Guard against empty/null sector to prevent "sectors." log
+    if (!sectorValue) return t('dashboard:sector');
+    
     // Normalize: lowercase, replace spaces with underscores, remove special chars
-    const normalized = (sectorValue ?? 'other')
+    const normalized = sectorValue
       .toLowerCase()
       .replace(/\s+/g, '_')
       .replace(/[^a-z0-9_]/g, '');
     
     // Use t() with fallback to original value if translation key doesn't exist
-    return t(`sectors.${normalized}`, { defaultValue: sectorValue });
+    return t(`dashboard:sectors.${normalized}`, { defaultValue: sectorValue });
   };
 
   return (
