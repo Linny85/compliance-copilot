@@ -25,5 +25,14 @@ if git diff --cached -U0 | grep -iE "\+(.*)(SUPABASE_.*(service|role)|PG_CONNECT
   exit 1
 fi
 
+# Block flat dotted keys in i18n locale JSON files
+if git diff --cached --name-only | grep -E '^public/locales/.+\.json$' -q; then
+  if git diff --cached | grep -E "\+\s*\"[a-zA-Z0-9_]+\.[a-zA-Z0-9_.]+\"\s*:\s*\"" -q; then
+    echo "❌ Commit blocked: Flat dotted keys detected in locale JSON. Use nested objects."
+    echo "   Example: Use { \"sectors\": { \"it\": \"IT\" } } instead of { \"sectors.it\": \"IT\" }"
+    exit 1
+  fi
+fi
+
 # Run i18n validation
 node scripts/check-i18n.js || exit 1
