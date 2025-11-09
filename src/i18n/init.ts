@@ -61,12 +61,13 @@ const devResources = DEV ? {
         none: 'Kein Mandant gewählt',
         missingTitle: 'Kein Mandant ausgewählt',
         missingDesc: 'Bitte wählen Sie einen Mandanten, um Daten zu laden.'
-      }
+      },
+      loading: 'Lädt…'
     },
     norrly: {
       name: 'Norrly',
-      header: { subtitle: 'Norrly - dein Kollege fuer Klarheit in NIS2 & AI Act.' },
-      intro: { headline: 'Hi, ich bin Norrly', text: 'Ich erklaere, berate und begleite dich - von der Richtlinie bis zur Umsetzung.' },
+      header: { subtitle: 'Norrly – dein Kollege für Klarheit in NIS2 & AI Act.' },
+      intro: { headline: 'Hi, ich bin Norrly', text: 'Ich helfe dir bei NIS2 & AI Act.' },
       input: { open: 'Öffnen', cancel: 'Abbrechen', loading: 'Lädt…' },
       voice: { on: 'Stimme an', off: 'Stimme aus' },
       session: { reset: 'Session zurücksetzen' },
@@ -74,6 +75,9 @@ const devResources = DEV ? {
       welcome: 'Willkommen'
     },
     dashboard: {
+      name: 'Dashboard',
+      loading: 'Lädt…',
+      welcome: 'Willkommen',
       labels: { ai_act: 'EU AI Act', gdpr: 'DSGVO', nis2: 'NIS2' },
       sections: { controls: 'Kontrollen', evidence: 'Nachweise', trainings: 'Schulungen', dpia: 'DSFA' },
       training: { missing_data: 'Keine Daten' },
@@ -108,7 +112,11 @@ const devResources = DEV ? {
       complianceOverall: 'Gesamt',
       complianceOverallDesc: 'Gesamtwert inkl. Teilbereiche.',
       complianceOverallTooltipWithTraining: 'Gesamtwertung inkl. Trainingsabdeckung.',
-      complianceStatusNeeds: 'Erfordert Maßnahmen'
+      complianceStatusNeeds: 'Erfordert Maßnahmen',
+      createAuditTask: 'Audit-Aufgabe anlegen'
+    },
+    organization: {
+      sectors: { it: 'IT & Services', finance: 'Finanzen', health: 'Gesundheit' }
     }
   },
   en: {
@@ -120,12 +128,13 @@ const devResources = DEV ? {
         none: 'No tenant selected',
         missingTitle: 'No tenant selected',
         missingDesc: 'Please choose a tenant to load data.'
-      }
+      },
+      loading: 'Loading…'
     },
     norrly: {
       name: 'Norrly',
-      header: { subtitle: 'Norrly - your teammate for NIS2 & the AI Act.' },
-      intro: { headline: 'Hi, I am Norrly', text: 'I explain, advise and guide you from rule to rollout.' },
+      header: { subtitle: 'Norrly – your teammate for NIS2 & the AI Act.' },
+      intro: { headline: 'Hi, I\'m Norrly', text: 'I explain, advise and guide you from rule to rollout.' },
       input: { open: 'Open', cancel: 'Cancel', loading: 'Loading…' },
       voice: { on: 'Voice on', off: 'Voice off' },
       session: { reset: 'Reset session' },
@@ -133,6 +142,9 @@ const devResources = DEV ? {
       welcome: 'Welcome'
     },
     dashboard: {
+      name: 'Dashboard',
+      loading: 'Loading…',
+      welcome: 'Welcome',
       labels: { ai_act: 'EU AI Act', gdpr: 'GDPR', nis2: 'NIS2' },
       sections: { controls: 'Controls', evidence: 'Evidence', trainings: 'Trainings', dpia: 'DPIA' },
       training: { missing_data: 'No data' },
@@ -167,7 +179,11 @@ const devResources = DEV ? {
       complianceOverall: 'Overall',
       complianceOverallDesc: 'Overall score including sections.',
       complianceOverallTooltipWithTraining: 'Overall score incl. training coverage.',
-      complianceStatusNeeds: 'Needs action'
+      complianceStatusNeeds: 'Needs action',
+      createAuditTask: 'Create audit task'
+    },
+    organization: {
+      sectors: { it: 'IT & Services', finance: 'Finance', health: 'Health' }
     }
   },
   sv: {
@@ -179,12 +195,13 @@ const devResources = DEV ? {
         none: 'Ingen tenant vald',
         missingTitle: 'Ingen tenant vald',
         missingDesc: 'Välj en tenant för att läsa in data.'
-      }
+      },
+      loading: 'Laddar…'
     },
     norrly: {
       name: 'Norrly',
-      header: { subtitle: 'Norrly - din kollega foer NIS2 & AI-lagen.' },
-      intro: { headline: 'Hej, jag aer Norrly', text: 'Jag foerklarar, raadgiver och guidar dig till infoerande.' },
+      header: { subtitle: 'Norrly – din kollega för NIS2 & AI-lagen.' },
+      intro: { headline: 'Hej, jag är Norrly', text: 'Jag förklarar, rådgiver och guidar dig till införande.' },
       input: { open: 'Öppna', cancel: 'Avbryt', loading: 'Laddar…' },
       voice: { on: 'Röst på', off: 'Röst av' },
       session: { reset: 'Återställ session' },
@@ -192,6 +209,9 @@ const devResources = DEV ? {
       welcome: 'Välkommen'
     },
     dashboard: {
+      name: 'Instrumentpanel',
+      loading: 'Laddar…',
+      welcome: 'Välkommen',
       labels: { ai_act: 'EU AI Act', gdpr: 'GDPR', nis2: 'NIS2' },
       sections: { controls: 'Kontroller', evidence: 'Bevis', trainings: 'Utbildningar', dpia: 'DPIA' },
       training: { missing_data: 'Ingen data' },
@@ -226,7 +246,11 @@ const devResources = DEV ? {
       complianceOverall: 'Totalt',
       complianceOverallDesc: 'Totalsiffra inklusive delområden.',
       complianceOverallTooltipWithTraining: 'Totalsiffra inklusive utbildningstäckning.',
-      complianceStatusNeeds: 'Åtgärd krävs'
+      complianceStatusNeeds: 'Åtgärd krävs',
+      createAuditTask: 'Skapa revisionsuppgift'
+    },
+    organization: {
+      sectors: { it: 'IT & tjänster', finance: 'Finans', health: 'Hälsa' }
     }
   }
 } : undefined;
@@ -304,7 +328,7 @@ if (!i18n.isInitialized) {
     react: {
       useSuspense: false
     },
-    keySeparator: '.',
+    keySeparator: false,
     nsSeparator: ':',
     returnObjects: true,
     parseMissingKeyHandler: (key) => {
