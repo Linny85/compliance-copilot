@@ -374,6 +374,35 @@ After each workflow run (whether successful or failed):
 
 **Retention**: 7 days
 
+### Nightly CI (Preview Branch)
+
+A separate workflow (`.github/workflows/e2e-master-password-nightly.yml`) runs automatically:
+- **Schedule**: Daily at 02:00 UTC
+- **Branch**: Only on `preview` branch
+- **Trigger**: Automatic (cron) or manual via workflow_dispatch
+
+**Purpose**: Continuous validation of master-password verification on preview environment before production deployment.
+
+**Required Secrets** (same as main workflow):
+- `SUPABASE_URL`: Your Supabase project URL
+- `SUPABASE_ANON_KEY`: Supabase anonymous key
+- `E2E_MASTER_PW`: Test master password
+
+**Optional Slack Notification**:
+- Add `SLACK_WEBHOOK_URL` secret to receive failure notifications
+- Message format: `❌ E2E failed: repo@branch (sha) · Run: [link]`
+- Only sent on test failures, not on success
+
+**Artifacts**: 
+- **playwright-report-nightly**: HTML report (always)
+- **test-results-nightly**: Screenshots/videos (only on failure)
+- Retention: 7 days
+
+**Manual Trigger**:
+```bash
+gh workflow run e2e-master-password-nightly.yml
+```
+
 ### Troubleshooting CI Failures
 
 **Common Issues:**
