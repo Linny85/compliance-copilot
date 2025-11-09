@@ -18,11 +18,11 @@ export async function resolveTenantId(): Promise<string | null> {
       (data.session?.user as any)?.user_metadata?.tenant_id;
     if (typeof fromClaim === 'string' && fromClaim) return fromClaim;
 
-    // 2) Try profile (user_id!)
-    const { data: profile, error } = await (supabase as any)
+    // 2) Try profile (id!)
+    const { data: profile, error } = await supabase
       .from('profiles')
       .select('company_id')
-      .eq('user_id', user.id)
+      .eq('id', user.id)  // FIXED: profiles.id, not user_id
       .maybeSingle();
 
     if (!error && profile?.company_id) return profile.company_id;

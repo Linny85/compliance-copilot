@@ -31,7 +31,7 @@ export function useIsAdmin() {
       const { data: profile } = await supabase
         .from('profiles')
         .select('company_id')
-        .eq('id', user.id)
+        .eq('id', user.id)  // FIXED: profiles.id, not user_id
         .maybeSingle();
       
       if (!profile?.company_id) {

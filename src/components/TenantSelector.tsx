@@ -38,9 +38,9 @@ export default function TenantSelector({ className }: { className?: string }) {
     // Optional: im Profil sichern
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await (supabase as any).from('profiles')
+      await supabase.from('profiles')
         .update({ company_id: id })
-        .eq('user_id', user.id);
+        .eq('id', user.id);  // FIXED: profiles.id, not user_id
     }
     
     // Gezielt tenant-abhängige Queries invalidieren
