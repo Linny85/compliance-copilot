@@ -6051,6 +6051,10 @@ export type Database = {
         Args: { p_created_by?: string; p_tenant_id: string }
         Returns: undefined
       }
+      verify_master_password: {
+        Args: { p_company_id: string; p_password: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "master_admin" | "admin" | "member" | "editor"

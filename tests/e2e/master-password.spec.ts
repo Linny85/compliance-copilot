@@ -1,103 +1,136 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Master Password Gate', () => {
+// Test master password should be set in ENV: E2E_MASTER_PW
+const CORRECT_MASTER_PASSWORD = process.env.E2E_MASTER_PW || 'TestMaster123!';
+const WRONG_PASSWORD = 'DefinitelyWrongPassword123';
+
+test.describe('Master Password Verification', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to app - assumes /dashboard requires master password
-    await page.goto('/dashboard');
+    // Navigate to organization settings page
+    await page.goto('/organization');
+    
+    // Wait for page to be ready
+    await page.waitForLoadState('networkidle');
   });
 
-  test('shows master password dialog when accessing protected route', async ({ page }) => {
-    // Check if master password dialog is visible
-    const dialog = page.getByRole('dialog').filter({ hasText: /Master.*Password|Master.*Passwort/i });
-    await expect(dialog).toBeVisible({ timeout: 5000 });
-  });
+  test('shows error message on incorrect password', async ({ page }) => {
+    // Open master password dialog (adapt selector based on your implementation)
+    const triggerButton = page.locator('button:has-text("Master-Passwort ändern"), button:has-text("Change Master Password")').first();
+    if (await triggerButton.isVisible()) {
+      await triggerButton.click();
+    }
 
-  test('rejects wrong password with accessible error', async ({ page }) => {
-    const dialog = page.getByRole('dialog').filter({ hasText: /Master.*Password|Master.*Passwort/i });
+    // Wait for dialog to appear
+    const dialog = page.locator('[data-testid="mpw-dialog"]');
     await expect(dialog).toBeVisible({ timeout: 5000 });
-    
-    // Fill wrong password
-    const passwordInput = page.getByLabel(/Passwort|Password/i);
-    await passwordInput.fill('wrong-password-123');
-    
+
+    // Enter wrong password
+    const passwordInput = page.locator('[data-testid="mpw-input"]');
+    await passwordInput.fill(WRONG_PASSWORD);
+
     // Submit
-    const submitBtn = page.getByRole('button', { name: /Bestätigen|Confirm|Unlock|Freischalten/i });
-    await submitBtn.click();
+    const submitButton = page.locator('[data-testid="mpw-submit"]');
+    await submitButton.click();
+
+    // Wait for error message
+    const errorMessage = page.locator('[data-testid="mpw-error"]');
+    await expect(errorMessage).toBeVisible({ timeout: 10000 });
     
-    // Expect error message
-    await expect(page.getByText(/falsch|invalid|incorrect|wrong/i)).toBeVisible({ timeout: 3000 });
-    
-    // Dialog should still be visible
+    // Check error text contains indication of invalid password
+    const errorText = await errorMessage.textContent();
+    expect(errorText).toMatch(/falsch|invalid|incorrect/i);
+
+    // Dialog should remain open
     await expect(dialog).toBeVisible();
   });
 
-  test('accepts correct password and grants access', async ({ page }) => {
-    // Skip if no master password is set in env
-    if (!process.env.E2E_MASTER_PASSWORD) {
-      test.skip();
-      return;
+  test('succeeds with correct password and closes dialog', async ({ page }) => {
+    // Open master password dialog
+    const triggerButton = page.locator('button:has-text("Master-Passwort ändern"), button:has-text("Change Master Password")').first();
+    if (await triggerButton.isVisible()) {
+      await triggerButton.click();
     }
 
-    const dialog = page.getByRole('dialog').filter({ hasText: /Master.*Password|Master.*Passwort/i });
+    // Wait for dialog
+    const dialog = page.locator('[data-testid="mpw-dialog"]');
     await expect(dialog).toBeVisible({ timeout: 5000 });
-    
-    // Fill correct password
-    const passwordInput = page.getByLabel(/Passwort|Password/i);
-    await passwordInput.fill(process.env.E2E_MASTER_PASSWORD);
-    
+
+    // Enter correct password
+    const passwordInput = page.locator('[data-testid="mpw-input"]');
+    await passwordInput.fill(CORRECT_MASTER_PASSWORD);
+
     // Submit
-    const submitBtn = page.getByRole('button', { name: /Bestätigen|Confirm|Unlock|Freischalten/i });
-    await submitBtn.click();
+    const submitButton = page.locator('[data-testid="mpw-submit"]');
+    await submitButton.click();
+
+    // Dialog should close on success
+    await expect(dialog).not.toBeVisible({ timeout: 10000 });
+
+    // Protected fields should now be accessible (adapt based on your UI)
+    // Example: sensitive input fields are no longer disabled
+    const sensitiveFields = page.locator('input[type="password"][disabled], input[data-protected="true"][disabled]');
+    const disabledCount = await sensitiveFields.count();
     
-    // Dialog should disappear
-    await expect(dialog).toBeHidden({ timeout: 5000 });
-    
-    // Should see dashboard content
-    await expect(page.getByText(/Dashboard|Willkommen|Welcome/i)).toBeVisible({ timeout: 5000 });
+    // After successful master password verification, there should be fewer (or no) disabled fields
+    expect(disabledCount).toBeLessThanOrEqual(1);
   });
 
-  test('shows attempt counter on multiple failures', async ({ page }) => {
-    const dialog = page.getByRole('dialog').filter({ hasText: /Master.*Password|Master.*Passwort/i });
+  test('shows service unavailable error when backend is offline', async ({ page }) => {
+    // Abort all requests to simulate offline backend
+    await page.route('**/functions/v1/verify-master', route => route.abort());
+    await page.route('**/rest/v1/rpc/verify_master_password', route => route.abort());
+
+    // Open dialog
+    const triggerButton = page.locator('button:has-text("Master-Passwort ändern"), button:has-text("Change Master Password")').first();
+    if (await triggerButton.isVisible()) {
+      await triggerButton.click();
+    }
+
+    const dialog = page.locator('[data-testid="mpw-dialog"]');
     await expect(dialog).toBeVisible({ timeout: 5000 });
+
+    // Try to submit
+    const passwordInput = page.locator('[data-testid="mpw-input"]');
+    await passwordInput.fill(CORRECT_MASTER_PASSWORD);
+
+    const submitButton = page.locator('[data-testid="mpw-submit"]');
+    await submitButton.click();
+
+    // Should show service unavailable error
+    const errorMessage = page.locator('[data-testid="mpw-error"]');
+    await expect(errorMessage).toBeVisible({ timeout: 10000 });
     
-    // Try wrong password multiple times
-    const passwordInput = page.getByLabel(/Passwort|Password/i);
-    const submitBtn = page.getByRole('button', { name: /Bestätigen|Confirm|Unlock|Freischalten/i });
-    
-    for (let i = 0; i < 2; i++) {
-      await passwordInput.fill(`wrong-attempt-${i}`);
-      await submitBtn.click();
+    const errorText = await errorMessage.textContent();
+    expect(errorText).toMatch(/dienst|service|erreichbar|unavailable|offline/i);
+  });
+
+  test('shows rate limit error after too many attempts', async ({ page }) => {
+    // Open dialog
+    const triggerButton = page.locator('button:has-text("Master-Passwort ändern"), button:has-text("Change Master Password")').first();
+    if (await triggerButton.isVisible()) {
+      await triggerButton.click();
+    }
+
+    const dialog = page.locator('[data-testid="mpw-dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 5000 });
+
+    const passwordInput = page.locator('[data-testid="mpw-input"]');
+    const submitButton = page.locator('[data-testid="mpw-submit"]');
+
+    // Make 6 rapid incorrect attempts to trigger rate limit
+    for (let i = 0; i < 6; i++) {
+      await passwordInput.fill(`WrongPassword${i}`);
+      await submitButton.click();
+      
+      // Small delay between attempts
       await page.waitForTimeout(500);
     }
-    
-    // Should show attempts remaining or locked message
-    const hasAttemptInfo = await page.getByText(/Versuch|attempt|remaining|verbleib/i).isVisible().catch(() => false);
-    const hasLockedMsg = await page.getByText(/gesperrt|locked|blocked/i).isVisible().catch(() => false);
-    
-    expect(hasAttemptInfo || hasLockedMsg).toBeTruthy();
-  });
 
-  test('persists session across page reloads', async ({ page, context }) => {
-    // Skip if no master password is set
-    if (!process.env.E2E_MASTER_PASSWORD) {
-      test.skip();
-      return;
-    }
-
-    const dialog = page.getByRole('dialog').filter({ hasText: /Master.*Password|Master.*Passwort/i });
-    await expect(dialog).toBeVisible({ timeout: 5000 });
+    // Last attempt should show rate limit error
+    const errorMessage = page.locator('[data-testid="mpw-error"]');
+    await expect(errorMessage).toBeVisible({ timeout: 10000 });
     
-    // Unlock
-    await page.getByLabel(/Passwort|Password/i).fill(process.env.E2E_MASTER_PASSWORD);
-    await page.getByRole('button', { name: /Bestätigen|Confirm|Unlock|Freischalten/i }).click();
-    await expect(dialog).toBeHidden({ timeout: 5000 });
-    
-    // Reload page
-    await page.reload();
-    
-    // Should NOT show master password dialog again (session persisted)
-    await expect(page.getByText(/Dashboard|Willkommen|Welcome/i)).toBeVisible({ timeout: 5000 });
-    const dialogVisible = await dialog.isVisible().catch(() => false);
-    expect(dialogVisible).toBe(false);
+    const errorText = await errorMessage.textContent();
+    expect(errorText).toMatch(/viele|versuche|rate|limit|später|later/i);
   });
 });
