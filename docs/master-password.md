@@ -147,6 +147,9 @@ The script validates:
 **CI Integration:**
 Both E2E workflows (`master-password-e2e.yml` and `e2e-master-password-nightly.yml`) run the CORS self-test automatically after deployment and before Playwright tests. The workflow fails fast if CORS headers are missing or incorrect, preventing broken configurations from reaching production.
 
+**PR CORS Validation:**
+The `.github/workflows/pr-cors-validation.yml` workflow runs automatically on all pull requests to `preview` or `main` branches. It validates CORS configuration using `scripts/cors-selftest.mjs` before allowing the PR to be merged. PRs are blocked if CORS is misconfigured.
+
 **Pre-commit Hook (optional):**
 The `.husky/pre-commit` hook includes an optional CORS self-test that runs before commits. By default, it is skipped unless:
 - `GIT_CORS_CHECK=1` is set in your environment, OR

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
@@ -17,6 +18,16 @@ async function postVerifyMaster(origin: string, companyId: string, password: str
   });
   const body = await res.json().catch(() => ({}));
   return { status: res.status, headers: Object.fromEntries(res.headers.entries()), body };
+}
+
+async function rpcVerifyMaster(companyId: string, password: string) {
+  if (!supabaseUrl || !anonKey) throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY');
+  const supabase = createClient(supabaseUrl, anonKey);
+  const { data, error } = await supabase.rpc('verify_master_password', {
+    p_company_id: companyId,
+    p_password: password
+  });
+  return { data, error: error ? { message: error.message, code: error.code } : null };
 }
 
 export default function EdgeTestPanel() {
@@ -60,23 +71,43 @@ export default function EdgeTestPanel() {
           />
         </label>
 
-        <button
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
-          onClick={async () => {
-            try {
-              setLoading(true);
-              const r = await postVerifyMaster(origin, companyId, password);
-              setResult(r);
-            } catch (err) {
-              setResult({ error: String(err) });
-            } finally {
-              setLoading(false);
-            }
-          }}
-          disabled={loading}
-        >
-          {loading ? 'Testing…' : 'Test Edge POST'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50"
+            onClick={async () => {
+              try {
+                setLoading(true);
+                const r = await postVerifyMaster(origin, companyId, password);
+                setResult({ edge: r });
+              } catch (err) {
+                setResult({ error: String(err) });
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+          >
+            {loading ? 'Testing…' : 'Test Edge POST'}
+          </button>
+
+          <button
+            className="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/90 disabled:opacity-50"
+            onClick={async () => {
+              try {
+                setLoading(true);
+                const r = await rpcVerifyMaster(companyId, password);
+                setResult({ rpc: r });
+              } catch (err) {
+                setResult({ error: String(err) });
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={loading}
+          >
+            {loading ? 'Testing…' : 'Test RPC verify_master_password'}
+          </button>
+        </div>
 
         <pre className="whitespace-pre-wrap bg-muted text-muted-foreground p-3 rounded-lg text-xs overflow-auto max-h-96">
           {result ? JSON.stringify(result, null, 2) : 'Result will appear here.'}

@@ -180,6 +180,11 @@ const App = () => (
               <Route path="/ai-systems/register" element={<RegisterAISystem />} />
             </Route>
             
+            {/* DEV-only routes */}
+            {import.meta.env.DEV && (
+              <Route path="/dev" lazy={async () => ({ Component: (await import('./routes/dev')).default })} />
+            )}
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
