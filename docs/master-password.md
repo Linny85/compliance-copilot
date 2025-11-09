@@ -376,32 +376,51 @@ After each workflow run (whether successful or failed):
 
 ### Nightly CI (Preview Branch)
 
-A separate workflow (`.github/workflows/e2e-master-password-nightly.yml`) runs automatically:
-- **Schedule**: Daily at 02:00 UTC
-- **Branch**: Only on `preview` branch
-- **Trigger**: Automatic (cron) or manual via workflow_dispatch
+A separate workflow (`.github/workflows/e2e-master-password-nightly.yml`) runs automatically with concurrent test matrix:
 
-**Purpose**: Continuous validation of master-password verification on preview environment before production deployment.
+**Schedule**: Daily at 02:00 UTC on `preview` branch
 
-**Required Secrets** (same as main workflow):
-- `SUPABASE_URL`: Your Supabase project URL
+**Architecture** (prepare → test matrix → teardown):
+
+1. **prepare** job:
+   - Seeds preview data once via `scripts/run-seed.ts seed`
+   - Creates marker artifact to signal seeding completion
+   - Required secrets: `PREVIEW_PG_CONNECTION`, `PREVIEW_TENANT_USER_UUID`
+
+2. **test** job (matrix):
+   - Runs two suites in parallel:
+     - `master-password`: Tests master password verification flow
+     - `dashboard-summary`: Tests compliance dashboard rendering
+   - Each suite generates separate artifacts:
+     - `report-master-password` / `report-dashboard-summary` (HTML reports)
+     - `test-results-master-password` / `test-results-dashboard-summary` (failure screenshots/videos)
+   - Required secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `E2E_MASTER_PW`
+
+3. **teardown** job:
+   - Always runs (even on failure) to clean up preview data via `scripts/run-seed.ts cleanup`
+   - Sends optional Slack notification if tests failed (requires `SLACK_WEBHOOK_URL`)
+
+**Purpose**: Continuous validation of master-password verification AND compliance dashboard on preview environment before production deployment.
+
+**Required Secrets**:
+- `PREVIEW_PG_CONNECTION`: PostgreSQL connection string for preview
+- `PREVIEW_TENANT_USER_UUID`: Test user UUID for seeding
+- `SUPABASE_URL`: Supabase project URL
 - `SUPABASE_ANON_KEY`: Supabase anonymous key
 - `E2E_MASTER_PW`: Test master password
+- `SLACK_WEBHOOK_URL` (optional): Slack webhook for failure alerts
 
-**Optional Slack Notification**:
-- Add `SLACK_WEBHOOK_URL` secret to receive failure notifications
-- Message format: `❌ E2E failed: repo@branch (sha) · Run: [link]`
-- Only sent on test failures, not on success
-
-**Artifacts**: 
-- **playwright-report-nightly**: HTML report (always)
-- **test-results-nightly**: Screenshots/videos (only on failure)
-- Retention: 7 days
+**Artifacts** (retention: 7 days):
+- **report-master-password**: Master-password suite HTML report
+- **report-dashboard-summary**: Dashboard suite HTML report
+- **test-results-{suite}**: Screenshots/videos (only on failure)
 
 **Manual Trigger**:
 ```bash
 gh workflow run e2e-master-password-nightly.yml
 ```
+
+**Note**: Nightly workflow automatically seeds/cleanups data. On-demand workflow (`.github/workflows/master-password-e2e.yml`) also runs both suites in matrix but does NOT seed automatically—ensure test data exists before manual runs.
 
 ### Troubleshooting CI Failures
 

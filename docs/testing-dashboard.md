@@ -158,3 +158,67 @@ Access raw compliance data in development:
 
 Remove `?debug=1` to hide the panel. Not available in production builds.
 
+---
+
+## Concurrent Verification (CI Matrix)
+
+Both nightly and on-demand workflows run multiple E2E suites in parallel via GitHub Actions matrix:
+
+### Suites
+
+1. **master-password**: Tests master password verification flow (`tests/e2e/master-password.spec.ts`)
+2. **dashboard-summary**: Tests compliance dashboard rendering and calculations (`tests/e2e/dashboard-summary.spec.ts`)
+
+### Nightly Workflow (`.github/workflows/e2e-master-password-nightly.yml`)
+
+Runs on `preview` branch at 02:00 UTC daily with three jobs:
+
+**1. prepare** (runs once):
+- Seeds preview data via `scripts/run-seed.ts seed`
+- Creates marker artifact `seed-ok.txt`
+- Requires: `PREVIEW_PG_CONNECTION`, `PREVIEW_TENANT_USER_UUID`
+
+**2. test** (matrix: parallel):
+- Downloads seed marker
+- Runs each suite (master-password, dashboard-summary) concurrently
+- Uploads per-suite reports: `report-master-password`, `report-dashboard-summary`
+- Requires: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `E2E_MASTER_PW`
+
+**3. teardown** (always runs):
+- Cleans up preview data via `scripts/run-seed.ts cleanup`
+- Sends optional Slack notification on failure (requires `SLACK_WEBHOOK_URL`)
+
+### On-Demand Workflow (`.github/workflows/master-password-e2e.yml`)
+
+Manually triggered or on push to relevant paths. Runs both suites in matrix without seeding (assumes data exists).
+
+**Artifacts per suite:**
+- `playwright-report-master-password` / `playwright-report-dashboard-summary`
+- `test-results-master-password` / `test-results-dashboard-summary` (only on failure)
+
+### Required Secrets (Nightly)
+
+- `PREVIEW_PG_CONNECTION`: PostgreSQL connection string for preview environment
+- `PREVIEW_TENANT_USER_UUID`: Test user UUID for seeding
+- `SUPABASE_URL`: Supabase project URL
+- `SUPABASE_ANON_KEY`: Supabase anonymous key
+- `E2E_MASTER_PW`: Test master password
+- `SLACK_WEBHOOK_URL` (optional): Slack webhook for failure notifications
+
+### Viewing Results
+
+1. Go to **Actions** → Select workflow run
+2. Download per-suite artifacts:
+   - `report-master-password` → HTML report for master-password tests
+   - `report-dashboard-summary` → HTML report for dashboard tests
+3. If tests failed, also download `test-results-{suite}` for screenshots/videos
+
+### Manual Trigger (Matrix)
+
+```bash
+# Trigger on-demand workflow with both suites
+gh workflow run master-password-e2e.yml
+```
+
+**Note**: On-demand workflow does NOT seed/cleanup automatically. Use nightly workflow or manually seed before running.
+
