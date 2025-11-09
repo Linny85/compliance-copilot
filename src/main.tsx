@@ -38,6 +38,17 @@ if (import.meta.env.DEV && typeof window !== 'undefined' && localStorage.getItem
   document.documentElement.classList.add('debug-index-badge');
 }
 
+// DEV: Mount DevOverlay (only visible with ?dev=1)
+if (import.meta.env.DEV) {
+  import('./dev/DevOverlay').then(({ default: DevOverlay }) => {
+    const root = document.createElement('div');
+    document.body.appendChild(root);
+    import('react-dom/client').then(({ createRoot }) => {
+      createRoot(root).render(<DevOverlay />);
+    });
+  });
+}
+
 createRoot(document.getElementById("root")!).render(
   // StrictMode can be re-enabled later for testing
   // <React.StrictMode>

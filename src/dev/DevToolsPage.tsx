@@ -1,4 +1,5 @@
 import { EnvVarsStatusPanel } from './EnvVarsStatusPanel';
+import EdgeTestPanel from './EdgeTestPanel';
 
 export function DevToolsPage() {
   if (!import.meta.env.DEV) return null;
@@ -10,12 +11,16 @@ export function DevToolsPage() {
         Development utilities and environment status (only visible in DEV mode)
       </p>
 
-      <section className="mb-8">
+      <section id="env" className="mb-8">
         <h2 className="text-xl font-semibold mb-3 text-foreground">Environment Variables</h2>
         <EnvVarsStatusPanel />
       </section>
 
       <section className="mb-8">
+        <EdgeTestPanel />
+      </section>
+
+      <section id="docs" className="mb-8">
         <h2 className="text-xl font-semibold mb-3 text-foreground">Documentation Links</h2>
         <ul className="space-y-2 text-sm">
           <li>
