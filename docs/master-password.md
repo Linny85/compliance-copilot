@@ -109,34 +109,55 @@ if (result.success) {
 
 ## Testing
 
-### Manual Testing via curl
+### Smoke Tests (Edge Function & RPC)
 
-**Test correct password:**
+**Test Edge Function directly:**
+
 ```bash
-curl -X POST "https://your-project.supabase.co/functions/v1/verify-master" \
-  -H "Authorization: Bearer YOUR_ANON_KEY" \
+# Replace with your values:
+# <URL> = Your Supabase URL (e.g., https://eadjoqlyjxwqjfvukvqx.supabase.co)
+# <ANON> = Your Supabase anon key
+# <COMPANY_UUID> = A valid company ID
+# <PW> = Correct master password
+
+# Test 1: Wrong password → { ok: false }
+curl -s -X POST "<URL>/functions/v1/verify-master" \
+  -H "Authorization: Bearer <ANON>" \
   -H "Content-Type: application/json" \
-  -d '{
-    "company_id": "your-company-uuid",
-    "password": "your-master-password"
-  }'
+  -d '{"company_id":"<COMPANY_UUID>","password":"wrong"}'
+
+# Test 2: Correct password → { ok: true }
+curl -s -X POST "<URL>/functions/v1/verify-master" \
+  -H "Authorization: Bearer <ANON>" \
+  -H "Content-Type: application/json" \
+  -d '{"company_id":"<COMPANY_UUID>","password":"<PW>"}'
+
+# Test 3: Rate limit (6 rapid failures) → { ok: false, reason: "rate_limited" }
+for i in {1..6}; do
+  curl -s -X POST "<URL>/functions/v1/verify-master" \
+    -H "Authorization: Bearer <ANON>" \
+    -H "Content-Type: application/json" \
+    -d '{"company_id":"<COMPANY_UUID>","password":"wrong"}'
+  echo ""
+done
 ```
 
-**Expected Response:**
-```json
-{"ok": true}
-```
+**Expected Results:**
+- All responses return HTTP 200 (timing attack mitigation)
+- Test 1: `{ "ok": false }`
+- Test 2: `{ "ok": true }`
+- Test 3: Last response includes `{ "ok": false, "reason": "rate_limited" }` with headers `X-RateLimit-Remaining: 0` and `Retry-After: 300`
 
-**Test wrong password:**
-```bash
-# Same request with wrong password
-# Expected: {"ok": false}
-```
+**Test RPC Function directly (Lovable Cloud → Database → SQL Editor):**
 
-**Test rate limiting:**
-```bash
-# Run 6 times rapidly
-# 6th request should return: {"ok": false, "reason": "rate_limited"}
+```sql
+-- Replace <COMPANY_UUID> and <PW> with actual values
+
+-- Should return false
+select public.verify_master_password('<COMPANY_UUID>'::uuid, 'wrong');
+
+-- Should return true
+select public.verify_master_password('<COMPANY_UUID>'::uuid, '<PW>');
 ```
 
 ### E2E Testing with Playwright
@@ -170,6 +191,10 @@ npx playwright test tests/e2e/master-password.spec.ts -g "incorrect password"
 
 # With headed browser (see what's happening)
 npx playwright test tests/e2e/master-password.spec.ts --headed
+
+# With HTML report
+npx playwright test tests/e2e/master-password.spec.ts --reporter=html
+npx playwright show-report
 ```
 
 **Test Coverage:**
@@ -183,6 +208,21 @@ npx playwright test tests/e2e/master-password.spec.ts --headed
 - `mpw-input`: Password input field
 - `mpw-submit`: Submit button
 - `mpw-error`: Error message container
+
+### Verification Checklist
+
+**Before deploying to production:**
+
+1. ✅ Smoke tests pass (all 3 curl tests)
+2. ✅ RPC function returns correct boolean values
+3. ✅ E2E tests pass (all 4 scenarios)
+4. ✅ Rate limiting works (6th attempt blocked)
+5. ✅ CORS configured for production domain
+6. ✅ GitHub Secrets configured (SUPABASE_URL, SUPABASE_ANON_KEY, E2E_MASTER_PW)
+7. ✅ No secrets committed to source code
+8. ✅ Error messages mapped correctly in UI
+9. ✅ Audit logging enabled for verification attempts
+10. ✅ Key rotation procedure documented
 
 ## Security Best Practices
 
@@ -201,6 +241,23 @@ npx playwright test tests/e2e/master-password.spec.ts --headed
 - Never hardcode test passwords in source code
 
 ## Troubleshooting
+
+### Common Pitfalls
+
+| Issue | Likely Cause | Solution |
+|-------|--------------|----------|
+| `{ ok: false }` for correct password | Password hash mismatch or wrong table | Verify hash in `org_secrets.master_password_hash` matches algorithm (bcrypt via `pgcrypto`) |
+| `reason: "missing_fields"` | Missing `company_id` or `password` in request | Check request payload structure and frontend mapping |
+| `reason: "rate_limited"` during normal use | Rate limit map not reset | Wait 5 minutes or restart edge function (in-memory state) |
+| RPC returns `null` | Company not found in `org_secrets` | Insert row: `INSERT INTO org_secrets(company_id, master_password_hash) VALUES (...)` |
+| CORS error in frontend | Wrong origin in `corsHeaders` | Update edge function CORS config for your domain |
+| Tenant key not found | `profiles.id → company_id` mapping issue | Ensure frontend uses `.eq('id', user.id)` NOT `.eq('user_id', ...)` |
+| i18n keys missing | Wrong translation namespace | Use only existing keys: `invalid_password`, `rate_limited`, `service_unavailable`, `no_company` |
+
+**Critical Mapping Notes:**
+- **Tenant Resolution**: Frontend must query `profiles` by `id` (not `user_id`) to get `company_id`
+- **Hash Source**: RPC reads from `org_secrets.master_password_hash` (Edge function does NOT prefetch)
+- **i18n**: No new translation keys needed—use existing error mapping from `verifyMasterPassword.ts`
 
 ### "Service Unavailable" Error
 
