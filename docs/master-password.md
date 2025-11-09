@@ -363,6 +363,29 @@ A dedicated workflow (`.github/workflows/master-password-e2e.yml`) runs automati
 gh workflow run master-password-e2e.yml
 ```
 
+### Artifacts & Reports
+
+After each workflow run (whether successful or failed):
+1. Navigate to **Actions** → **Master Password E2E Tests** → Select the specific run
+2. Scroll to **Artifacts** section at the bottom
+3. Download:
+   - **playwright-report**: HTML report with test results, traces, and screenshots (always available)
+   - **test-results**: Raw screenshots/videos from failed tests (only on failure/cancellation)
+
+**Retention**: 7 days
+
+### Troubleshooting CI Failures
+
+**Common Issues:**
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Timeout after 30s | Slow network or edge function cold start | Check edge function logs; increase `--timeout` if needed |
+| CORS error | Preview/prod domain not whitelisted | Update `corsHeaders` in edge function to include GitHub Actions runner IP ranges |
+| `mpw-dialog` not found | Test runs before UI is fully loaded | Increase `waitForLoadState` timeout or add explicit wait for route |
+| Rate limit triggered immediately | Previous test run didn't clean up | Wait 5 minutes between runs or restart edge function to clear in-memory state |
+| Secrets not available | GitHub Secrets not configured | Verify `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `E2E_MASTER_PW` in repo settings |
+
 ## Migration Notes
 
 If migrating from old system:
