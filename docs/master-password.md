@@ -134,7 +134,20 @@ curl -X POST "https://your-project.supabase.co/functions/v1/verify-master" \
 
 ### E2E Testing with Playwright
 
-**Setup Environment Variable:**
+**Required GitHub Secrets:**
+
+For automated E2E testing, configure these repository secrets in Settings → Secrets → Actions:
+- `SUPABASE_URL`: Your Supabase project URL (e.g., https://xxxxx.supabase.co)
+- `SUPABASE_ANON_KEY`: Supabase anonymous/public key (safe to use in tests)
+- `E2E_MASTER_PW`: Test master password for happy-path verification (test account only)
+
+**⚠️ Security:**
+- Never commit these values to source code
+- Use separate test accounts/projects for E2E
+- Rotate test credentials monthly
+- If a key is leaked, immediately rotate it in Supabase dashboard
+
+**Setup Environment Variable (Local):**
 ```bash
 # In your .env or CI/CD secrets
 E2E_MASTER_PW=YourTestMasterPassword123
@@ -201,6 +214,21 @@ curl -v https://your-project.supabase.co/functions/v1/verify-master
 # Check CORS headers in browser Network tab
 # Should see: Access-Control-Allow-Origin header
 ```
+
+### Key Rotation
+
+**When to Rotate:**
+- Immediately after suspected exposure
+- After team member departure with admin access
+- Quarterly as preventive measure
+- After failed security audit
+
+**How to Rotate:**
+1. Generate new master password hash in Supabase dashboard
+2. Update `E2E_MASTER_PW` secret in GitHub repository settings
+3. Update `SUPABASE_ANON_KEY` if compromised (regenerate in Supabase)
+4. Notify team members about credential changes
+5. Verify all CI/CD pipelines still pass with new credentials
 
 ### Rate Limit Not Working
 

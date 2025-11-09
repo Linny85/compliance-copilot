@@ -87,10 +87,27 @@ Only `src/components/AppLayout.tsx` should have it.
 
 ## Automation
 
-> ⚠️ **SECURITY WARNING**  
-> **NEVER** paste real API keys, service role keys, or connection strings into code, docs, or chat.  
-> Use **GitHub Secrets** (`SUPABASE_PROJECT_URL`, `SUPABASE_SERVICE_ROLE`) for automation.  
-> Pass `TENANT_USER_UUID` via workflow input, not hardcoded values.
+> ⚠️ **SECURITY WARNING: Secrets Management**  
+> 
+> **NEVER** paste real API keys, service role keys, passwords, or connection strings into:
+> - Source code commits
+> - Documentation files  
+> - Chat messages or issue comments
+> - Pull request descriptions
+>
+> **ALWAYS** use **GitHub Secrets** (Settings → Secrets → Actions):
+> - `SUPABASE_PROJECT_URL` - Your Supabase project URL
+> - `SUPABASE_SERVICE_ROLE` - Service role key (admin access, NEVER commit!)
+> - `TENANT_USER_UUID` - Pass via workflow input (not hardcoded)
+> - `E2E_MASTER_PW` - Test master password (test account only, for E2E)
+>
+> **Key Rotation Best Practices:**
+> - Rotate immediately after suspected exposure
+> - Rotate quarterly as preventive measure
+> - Rotate after team member with admin access leaves
+> - Use separate test accounts/projects for CI/CD
+>
+> **If leaked:** Immediately revoke in Supabase dashboard → update GitHub secrets → audit access logs
 
 ### Automated Seeding via Script
 

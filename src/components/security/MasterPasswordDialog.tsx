@@ -106,7 +106,7 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent data-testid="mpw-dialog" role="dialog" aria-modal="true">
         <DialogHeader>
           <DialogTitle>{t('organization:master.title', 'Master Password')}</DialogTitle>
           <DialogDescription>
@@ -118,6 +118,8 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
           <div>
             <Input
               type="password"
+              data-testid="mpw-input"
+              autoComplete="current-password"
               placeholder={t('organization:master.placeholder', 'Master password')}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -127,7 +129,7 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
           </div>
 
           {error && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" data-testid="mpw-error" role="alert">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
@@ -137,7 +139,12 @@ export function MasterPasswordDialog({ open, onClose, onSuccess }: MasterPasswor
             <Button type="button" variant="outline" onClick={handleClose} disabled={loading}>
               {t('common:cancel', 'Cancel')}
             </Button>
-            <Button type="submit" disabled={loading || !password.trim()}>
+            <Button 
+              type="submit" 
+              data-testid="mpw-submit"
+              disabled={loading || !password.trim()}
+              aria-busy={loading ? 'true' : 'false'}
+            >
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
