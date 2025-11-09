@@ -109,7 +109,6 @@ export function ComplianceProgressCard() {
   const displayOverall = clampPct(overallPercent);
   const overall = displayOverall / 100;
   const scoreVariant = getScoreColor(overall);
-  const overallSource = typeof summary?.overall_score === 'number' ? 'v_compliance_overview.overall_pct' : 'fallback(weights)';
   
   // Calculate delta in percentage points
   const deltaPP = typeof trend?.delta_score === 'number' ? Math.round(trend.delta_score * 100) : null;
@@ -134,8 +133,6 @@ export function ComplianceProgressCard() {
   if (import.meta.env.DEV) {
     console.table({
       '⚠️ DATA SOURCE CHECK': '---',
-      'overall_source': overallSource,
-      'overall_raw': summary?.overall_score ?? 'NULL',
       'overall_display': `${displayOverall}%`,
       'nis2_chip': `${nis2Pct}%`,
       'ai_chip': `${aiPct}%`,
@@ -149,17 +146,6 @@ export function ComplianceProgressCard() {
     });
     console.log('Frameworks raw data:', frameworks);
   }
-  
-  const isDev = import.meta.env.DEV === true;
-  const host = typeof window !== 'undefined' ? window.location.hostname : '';
-  const isLovable = /lovable(project)?\./i.test(host);
-  const isPreview = isLovable; // Lovable hostnames are preview environments
-
-  const envInfo = (isDev || isPreview) ? {
-    env: isPreview ? 'Preview' : import.meta.env.MODE ?? 'dev',
-    projectId: (import.meta.env.VITE_SUPABASE_URL ?? '').split('.co').at(0)?.slice(-6) ?? '????',
-    tenant: (tenantId ?? '—').slice(0, 6)
-  } : null;
   
   const getCircleColor = (score: number) => {
     if (score >= 0.80) return "hsl(var(--success))";
@@ -250,12 +236,7 @@ export function ComplianceProgressCard() {
               >
                 {t('dashboard:complianceOverall')}
               </span>
-              {envInfo && (
-                <div className="text-[9px] opacity-50 mt-1 space-y-0.5">
-                  <div>src: {overallSource}</div>
-                  <div>{envInfo.env} • P:{envInfo.projectId} • T:{envInfo.tenant}</div>
-                </div>
-              )}
+              {/* debug removed */}
             </div>
           </div>
 

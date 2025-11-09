@@ -7,5 +7,17 @@ if git diff --cached -U0 | grep -E "\+.*profiles.*\.eq\(['\"]user_id['\"]" -q; t
   exit 1
 fi
 
+# Block accidental src_overview usage (use 'overview' instead)
+if git diff --cached -U0 | grep -E "\+.*\.from\(['\"]src_overview['\"]\)" -q; then
+  echo "❌ Commit blocked: Use 'overview' instead of 'src_overview'."
+  exit 1
+fi
+
+# Block new LanguageSwitcher outside AppLayout
+if git diff --cached -U0 | grep -E "\+.*<LanguageSwitcher\s*/?>" -q; then
+  echo "❌ Commit blocked: LanguageSwitcher only allowed in AppLayout."
+  exit 1
+fi
+
 # Run i18n validation
 node scripts/check-i18n.js || exit 1
