@@ -147,6 +147,21 @@ The script validates:
 **CI Integration:**
 Both E2E workflows (`master-password-e2e.yml` and `e2e-master-password-nightly.yml`) run the CORS self-test automatically after deployment and before Playwright tests. The workflow fails fast if CORS headers are missing or incorrect, preventing broken configurations from reaching production.
 
+**Pre-commit Hook (optional):**
+The `.husky/pre-commit` hook includes an optional CORS self-test that runs before commits. By default, it is skipped unless:
+- `GIT_CORS_CHECK=1` is set in your environment, OR
+- All three env vars are present: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `TEST_ORIGIN`
+
+To enable locally:
+```bash
+export GIT_CORS_CHECK=1
+export SUPABASE_URL="https://<project>.supabase.co"
+export SUPABASE_ANON_KEY="<anon-key>"
+export TEST_ORIGIN="https://preview.lovableproject.com"
+```
+
+To bypass temporarily, unset `GIT_CORS_CHECK` or remove the env vars.
+
 ### Frontend Integration
 
 **Service**: `src/features/security/verifyMasterPassword.ts`

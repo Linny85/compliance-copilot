@@ -36,3 +36,17 @@ fi
 
 # Run i18n validation
 node scripts/check-i18n.js || exit 1
+
+# --- CORS self-test (optional, env-gesteuert) ---
+if [ "${GIT_CORS_CHECK:-}" = "1" ] || { [ -n "${SUPABASE_URL:-}" ] && [ -n "${SUPABASE_ANON_KEY:-}" ] && [ -n "${TEST_ORIGIN:-}" ]; }; then
+  echo "🔎 Running CORS self-test for verify-master ..."
+  if timeout 20 node scripts/cors-selftest.mjs >/dev/null 2>&1; then
+    echo "✅ CORS self-test passed."
+  else
+    echo "❌ CORS self-test failed. Set ALLOWED_ORIGINS correctly or export SUPABASE_URL/SUPABASE_ANON_KEY/TEST_ORIGIN."
+    echo "   Tip: to bypass temporarily, unset GIT_CORS_CHECK or remove env vars."
+    exit 1
+  fi
+else
+  echo "ℹ️  CORS self-test skipped (missing env or GIT_CORS_CHECK not set)."
+fi
