@@ -1,0 +1,20 @@
+name: Guard profiles.id usage
+on: [push, pull_request]
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Scan for forbidden profiles.user_id pattern
+        run: |
+          set -euo pipefail
+          if grep -RIn --exclude-dir=node_modules --exclude-dir=dist \
+            -E "from\(['\"]profiles['\"]\)[^;]*\.eq\(['\"]user_id['\"]" src/ supabase/functions/ || \
+             grep -RIn --exclude-dir=node_modules --exclude-dir=dist \
+            -E "profiles[^[:alnum:]_].*user_id" src/ supabase/functions/; then
+            echo "❌ CI blocked: 'profiles.user_id' found. Use 'profiles.id' instead."
+            exit 1
+          fi
+          echo "✅ No forbidden profiles.user_id patterns found."

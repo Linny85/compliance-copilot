@@ -1,4 +1,11 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Run i18n validation before commit
+# Block commits with profiles.user_id pattern
+if git diff --cached -U0 | grep -E "\+.*profiles.*\.eq\(['\"]user_id['\"]" -q; then
+  echo "❌ Commit blocked: Use .eq('id', ...) for 'profiles' table, not 'user_id'."
+  exit 1
+fi
+
+# Run i18n validation
 node scripts/check-i18n.js || exit 1
