@@ -124,6 +124,26 @@ curl -i -X POST "$SUPABASE_URL/functions/v1/verify-master" \
 
 **Note:** Preflight (OPTIONS) requests MUST receive proper CORS headers to avoid browser blocking POST requests. The edge function automatically extracts the `Origin` header and validates it against the allowed list. If the origin is not whitelisted, the fallback origin (first in `ALLOWED_ORIGINS` or `localhost:5173`) is used.
 
+**Automated CORS Testing:**
+
+A Node.js test script is provided to validate CORS configuration:
+
+```bash
+# Run the CORS self-test
+node scripts/cors-selftest.mjs
+
+# With custom environment variables
+SUPABASE_URL="https://your-project.supabase.co" \
+SUPABASE_ANON_KEY="your-anon-key" \
+TEST_ORIGIN="https://your-preview-domain.lovableproject.com" \
+node scripts/cors-selftest.mjs
+```
+
+The script validates:
+- OPTIONS preflight returns 204 with proper CORS headers
+- POST request returns 200 with CORS headers and expected JSON body
+- Both responses include correct `Access-Control-Allow-Origin` header
+
 ### Frontend Integration
 
 **Service**: `src/features/security/verifyMasterPassword.ts`
