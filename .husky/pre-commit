@@ -19,5 +19,11 @@ if git diff --cached -U0 | grep -E "\+.*<LanguageSwitcher\s*/?>" -q; then
   exit 1
 fi
 
+# Block accidental secrets/keys in commits
+if git diff --cached -U0 | grep -iE "\+(.*)(SUPABASE_.*(service|role)|PG_CONNECTION|postgresql://[^@]+@|apikey|Bearer [A-Za-z0-9_-]{20,})" -q; then
+  echo "❌ Commit blocked: Possible API key or secret detected. Use GitHub Secrets instead."
+  exit 1
+fi
+
 # Run i18n validation
 node scripts/check-i18n.js || exit 1

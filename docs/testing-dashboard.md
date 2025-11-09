@@ -87,6 +87,11 @@ Only `src/components/AppLayout.tsx` should have it.
 
 ## Automation
 
+> ⚠️ **SECURITY WARNING**  
+> **NEVER** paste real API keys, service role keys, or connection strings into code, docs, or chat.  
+> Use **GitHub Secrets** (`SUPABASE_PROJECT_URL`, `SUPABASE_SERVICE_ROLE`) for automation.  
+> Pass `TENANT_USER_UUID` via workflow input, not hardcoded values.
+
 ### Automated Seeding via Script
 
 Instead of manually running SQL, use the automated script:
