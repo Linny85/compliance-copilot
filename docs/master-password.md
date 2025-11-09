@@ -47,18 +47,25 @@ const { data: isValid, error } = await supabase
 ```
 
 **HTTP Status Codes:**
-- `200`: Normal operation (check `ok` field)
-- `400`: Missing required fields
-- `405`: Method not allowed (only POST accepted)
-- `429`: Rate limit exceeded
-- `500`: Internal server error
+- `200`: All responses (including errors) return 200 to prevent timing attacks
+- `204`: CORS preflight (OPTIONS)
+
+**Important:** This endpoint always returns HTTP 200 with the `ok` field to prevent timing-based attacks. Never rely on HTTP status codes for determining password validity.
 
 **Rate Limiting:**
 - **Limit**: 5 attempts per 5 minutes
 - **Key**: `company_id` + client IP
+- **Response on limit**: `{ ok: false, reason: 'rate_limited' }` with HTTP 200
 - **Headers**: 
   - `X-RateLimit-Remaining`: Attempts remaining
-  - `Retry-After`: Seconds until reset (on 429)
+  - `Retry-After`: Seconds until reset (diagnostic only)
+
+**Verification Flow:**
+1. Rate limit check (company_id + IP)
+2. Single RPC call to `verify_master_password(p_company_id, p_password)`
+3. Return `{ ok: true }` on success, `{ ok: false }` on failure
+
+**No Prefetch:** The edge function does NOT query any table directly. All password verification logic is delegated to the SECURITY DEFINER RPC function, which is the single source of truth.
 
 **CORS:**
 - Configured for Preview and Production domains

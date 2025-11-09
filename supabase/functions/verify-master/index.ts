@@ -40,7 +40,7 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') {
     return new Response(
       JSON.stringify({ ok: false, reason: 'method_not_allowed' }),
-      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 
@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
     if (!company_id || !password) {
       return new Response(
         JSON.stringify({ ok: false, reason: 'missing_fields' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ ok: false, reason: 'rate_limited' }),
         { 
-          status: 429, 
+          status: 200, 
           headers: { 
             ...corsHeaders, 
             'Content-Type': 'application/json',
@@ -82,29 +82,8 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Fetch master password hash
-    const { data, error } = await supabase
-      .from('Unternehmen')
-      .select('master_code_hash')
-      .eq('id', company_id)
-      .single();
-
-    if (error || !data?.master_code_hash) {
-      console.error('Failed to fetch password hash:', error);
-      return new Response(
-        JSON.stringify({ ok: false }),
-        { 
-          status: 200, 
-          headers: { 
-            ...corsHeaders, 
-            'Content-Type': 'application/json',
-            'X-RateLimit-Remaining': rateCheck.remaining.toString()
-          } 
-        }
-      );
-    }
-
     // Use RPC to verify password (leverages SECURITY DEFINER function)
+    // This is the single source of truth for password verification
     const { data: isValid, error: rpcError } = await supabase
       .rpc('verify_master_password', {
         p_company_id: company_id,
@@ -144,7 +123,7 @@ Deno.serve(async (req) => {
     return new Response(
       JSON.stringify({ ok: false, reason: 'internal_error' }),
       { 
-        status: 500, 
+        status: 200, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
     );
