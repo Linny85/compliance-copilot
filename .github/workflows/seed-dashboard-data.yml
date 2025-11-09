@@ -1,0 +1,61 @@
+name: Seed Dashboard Test Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Operation mode'
+        required: true
+        type: choice
+        options:
+          - seed
+          - cleanup
+      tenant_user_uuid:
+        description: 'Target tenant user UUID'
+        required: true
+        type: string
+
+jobs:
+  seed-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Validate environment
+        run: |
+          if [[ "${{ secrets.SUPABASE_PROJECT_URL }}" == *"prod"* ]]; then
+            echo "❌ Refusing to run against production"
+            exit 1
+          fi
+          echo "✅ Environment validated"
+      
+      - name: Run ${{ inputs.mode }}
+        env:
+          SUPABASE_PROJECT_URL: ${{ secrets.SUPABASE_PROJECT_URL }}
+          SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
+          TENANT_USER_UUID: ${{ inputs.tenant_user_uuid }}
+        run: |
+          if [ "${{ inputs.mode }}" = "seed" ]; then
+            npm run seed:preview
+          else
+            npm run cleanup:preview
+          fi
+      
+      - name: Summary
+        run: |
+          echo "### 🎯 ${{ inputs.mode }} completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Mode**: ${{ inputs.mode }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tenant**: ${{ inputs.tenant_user_uuid }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Project**: ${SUPABASE_PROJECT_URL#https://}" >> $GITHUB_STEP_SUMMARY

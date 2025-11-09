@@ -82,3 +82,57 @@ Ensure you've removed `<LanguageSwitcher />` from:
 - src/pages/OnboardingWizard.tsx
 
 Only `src/components/AppLayout.tsx` should have it.
+
+---
+
+## Automation
+
+### Automated Seeding via Script
+
+Instead of manually running SQL, use the automated script:
+
+**Local execution:**
+
+```bash
+# Set required env vars
+export SUPABASE_PROJECT_URL="https://xxxxx.supabase.co"
+export SUPABASE_SERVICE_ROLE="your_service_role_key"
+export TENANT_USER_UUID="your_user_uuid"
+
+# Run seed
+npm run seed:preview
+
+# Run cleanup
+npm run cleanup:preview
+```
+
+**GitHub Actions workflow:**
+
+1. Go to **Actions** → **Seed Dashboard Test Data**
+2. Click **Run workflow**
+3. Select mode: `seed` or `cleanup`
+4. Enter your `tenant_user_uuid`
+5. Click **Run workflow**
+
+Required secrets (Settings → Secrets):
+- `SUPABASE_PROJECT_URL`
+- `SUPABASE_SERVICE_ROLE`
+
+### Debug Panel (DEV only)
+
+Access raw compliance data in development:
+
+1. Navigate to `/dashboard?debug=1`
+2. A debug panel appears bottom-right showing:
+   - Company ID
+   - Raw `v_compliance_overview` JSON
+   - Derived percentages (overall, NIS2, AI Act, GDPR, etc.)
+
+**Test IDs for E2E:**
+- `dbg-company-id`: Company/Tenant UUID
+- `dbg-overview-json`: Raw JSON from view
+- `dbg-overall`, `dbg-nis2`, `dbg-ai`, `dbg-dsgvo`: Individual percentages
+- `dbg-controls`, `dbg-evidence`, `dbg-training`, `dbg-dpia`: Component scores
+
+Remove `?debug=1` to hide the panel. Not available in production builds.
+

@@ -9,6 +9,7 @@ import { TrainingCertificatesCard } from "@/components/training/TrainingCertific
 import { ComplianceProgressCard } from "@/components/dashboard/ComplianceProgressCard";
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
 import TenantBanner from "@/components/TenantBanner";
+import { DashboardDebugPanel } from "@/components/DashboardDebugPanel";
 import { useTenantStore } from "@/store/tenant";
 
 import { useTranslation } from "react-i18next";
@@ -145,6 +146,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <DashboardDebugPanel />
     </div>
   );
 };
