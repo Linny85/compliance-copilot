@@ -50,8 +50,11 @@ const ABS_BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '/');
 const loadPathFn = (lng: string, ns: string) =>
   new URL(`${ABS_BASE}locales/${lng}/${ns}.json`, window.location.origin).toString();
 
+// Allow forced HTTP loading via env flag (bypasses dev fallback)
+const FORCE_HTTP = import.meta.env.VITE_I18N_FORCE_HTTP === 'true';
+
 // DEV fallback resources to prevent "not loaded" warnings
-const devResources = DEV ? {
+const devResources = (!FORCE_HTTP && DEV) ? {
   de: {
     common: {
       tenant: {
@@ -337,7 +340,7 @@ if (!i18n.isInitialized) {
     react: {
       useSuspense: false
     },
-    keySeparator: false,
+    // keySeparator default (.) for nested keys like "header.subtitle"
     nsSeparator: ':',
     returnObjects: true,
     parseMissingKeyHandler: (key) => {
