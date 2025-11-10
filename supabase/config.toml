@@ -99,6 +99,10 @@ verify_jwt = false
 APP_MODE = "trial"
 
 [[functions]]
+name = "verify-master"
+verify_jwt = false
+
+[[functions]]
 name = "verify-master-pass"
 verify_jwt = true
 
