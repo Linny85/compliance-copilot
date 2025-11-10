@@ -2556,6 +2556,57 @@ export type Database = {
         }
         Relationships: []
       }
+      mpw_audit_log: {
+        Row: {
+          company_id: string
+          id: number
+          ip: unknown
+          ok: boolean
+          reason: string | null
+          ts: string
+          user_agent: string | null
+        }
+        Insert: {
+          company_id: string
+          id?: number
+          ip?: unknown
+          ok: boolean
+          reason?: string | null
+          ts?: string
+          user_agent?: string | null
+        }
+        Update: {
+          company_id?: string
+          id?: number
+          ip?: unknown
+          ok?: boolean
+          reason?: string | null
+          ts?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      mpw_rate_limiter: {
+        Row: {
+          attempts: number
+          company_id: string
+          ip: unknown
+          window_start: string
+        }
+        Insert: {
+          attempts?: number
+          company_id: string
+          ip: unknown
+          window_start?: string
+        }
+        Update: {
+          attempts?: number
+          company_id?: string
+          ip?: unknown
+          window_start?: string
+        }
+        Relationships: []
+      }
       nis2: {
         Row: {
           classification: string | null
@@ -5811,6 +5862,15 @@ export type Database = {
         Args: { p_company_id: string; p_password: string }
         Returns: boolean
       }
+      check_mpw_rate_limit: {
+        Args: {
+          p_company_id: string
+          p_ip: unknown
+          p_max_attempts?: number
+          p_window_minutes?: number
+        }
+        Returns: Json
+      }
       claim_email_jobs: {
         Args: { p_limit: number }
         Returns: {
@@ -5978,6 +6038,10 @@ export type Database = {
         Returns: string
       }
       refresh_compliance_summary_rpc: { Args: never; Returns: string }
+      reset_master_password: {
+        Args: { p_company_id: string; p_new_password: string }
+        Returns: boolean
+      }
       resolve_effective_control: {
         Args: {
           p_control: string

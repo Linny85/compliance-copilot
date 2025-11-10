@@ -40,28 +40,9 @@ function getCorsHeaders(origin: string | null) {
   };
 }
 
-// In-memory rate limiter (resets on cold start)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+// Constants for rate limiting and audit logging
 const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 5 * 60 * 1000; // 5 minutes
-
-function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-
-  if (!entry || now > entry.resetAt) {
-    // Reset window
-    rateLimitMap.set(key, { count: 1, resetAt: now + WINDOW_MS });
-    return { allowed: true, remaining: MAX_ATTEMPTS - 1 };
-  }
-
-  if (entry.count >= MAX_ATTEMPTS) {
-    return { allowed: false, remaining: 0 };
-  }
-
-  entry.count++;
-  return { allowed: true, remaining: MAX_ATTEMPTS - entry.count };
-}
+const WINDOW_MINUTES = 5;
 
 Deno.serve(async (req) => {
   const origin = req.headers.get('origin');
@@ -91,13 +72,39 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Rate limiting key: company_id + IP
+    // Extract client info for rate limiting and audit logging
     const clientIP = req.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
-    const rateLimitKey = `${company_id}:${clientIP}`;
-    
-    const rateCheck = checkRateLimit(rateLimitKey);
-    if (!rateCheck.allowed) {
-      console.warn(`Rate limit exceeded for ${rateLimitKey}`);
+    const userAgent = req.headers.get('user-agent') || '';
+
+    // Create service role client (has access to all tables)
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
+    // Check persistent rate limit via database
+    const { data: rateLimitResult, error: rateLimitError } = await supabase
+      .rpc('check_mpw_rate_limit', {
+        p_company_id: company_id,
+        p_ip: clientIP,
+        p_max_attempts: MAX_ATTEMPTS,
+        p_window_minutes: WINDOW_MINUTES
+      });
+
+    if (rateLimitError) {
+      console.error('Rate limit check failed:', rateLimitError);
+    } else if (rateLimitResult && !rateLimitResult.allowed) {
+      console.warn(`Rate limit exceeded for ${company_id}:${clientIP}`);
+      
+      // Audit log the rate limit event
+      await supabase.from('mpw_audit_log').insert({
+        company_id,
+        ip: clientIP,
+        ok: false,
+        reason: 'rate_limited',
+        user_agent: userAgent
+      });
+
       return new Response(
         JSON.stringify({ ok: false, reason: 'rate_limited' }),
         { 
@@ -112,36 +119,33 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create service role client (has access to all tables)
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-
     // Use RPC to verify password (leverages SECURITY DEFINER function)
-    // This is the single source of truth for password verification
     const { data: isValid, error: rpcError } = await supabase
       .rpc('verify_master_password', {
         p_company_id: company_id,
         p_password: password
       });
 
+    // Determine reason for audit log
+    let reason = '';
     if (rpcError) {
       console.error('RPC verification failed:', rpcError);
-      return new Response(
-        JSON.stringify({ ok: false }),
-        { 
-          status: 200, 
-          headers: { 
-            ...corsHeaders, 
-            'Content-Type': 'application/json',
-            'X-RateLimit-Remaining': rateCheck.remaining.toString()
-          } 
-        }
-      );
+      reason = 'rpc_error';
+    } else if (!isValid) {
+      reason = 'invalid_password';
     }
 
+    // Audit log the verification attempt
+    await supabase.from('mpw_audit_log').insert({
+      company_id,
+      ip: clientIP,
+      ok: Boolean(isValid),
+      reason: reason || null,
+      user_agent: userAgent
+    });
+
     // Always return 200 with ok field to prevent timing attacks
+    const remaining = rateLimitResult?.remaining ?? MAX_ATTEMPTS - 1;
     return new Response(
       JSON.stringify({ ok: Boolean(isValid) }),
       { 
@@ -149,7 +153,7 @@ Deno.serve(async (req) => {
         headers: { 
           ...corsHeaders, 
           'Content-Type': 'application/json',
-          'X-RateLimit-Remaining': rateCheck.remaining.toString()
+          'X-RateLimit-Remaining': remaining.toString()
         } 
       }
     );
