@@ -118,7 +118,7 @@ export default function OrganizationView() {
   const getSectorLabel = (sectorValue?: string) => {
     if (!sectorValue) return t('organization:notSpecified');
     const normalized = sectorValue.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-    return t(`organization:sectors.${normalized}`, sectorValue);
+    return t(`common:sectors.${normalized}`, sectorValue);
   };
 
   const getCompanySizeLabel = (size?: string) => {

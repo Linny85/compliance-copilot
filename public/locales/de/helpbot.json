@@ -1,8 +1,12 @@
 {
   "title": "Helpbot",
   "intro": "Wie kann ich dir helfen?",
-  "cta.ask": "Frage stellen",
-  "error.load": "Helpbot-Texte konnten nicht geladen werden.",
+  "cta": {
+    "ask": "Frage stellen"
+  },
+  "error": {
+    "load": "Helpbot-Texte konnten nicht geladen werden."
+  },
   "sectors": {
     "it": "IT"
   }
