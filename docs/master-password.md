@@ -14,8 +14,17 @@ The master password verification system provides secure authentication for sensi
 
 - **Security**: `SECURITY DEFINER` - runs with elevated privileges without exposing password hashes
 - **Algorithm**: Uses `pgcrypto` extension with bcrypt/crypt for secure comparison
-- **Access**: Granted to `anon` and `authenticated` roles
+- **Access**: Granted to `anon`, `authenticated`, and `service_role` roles
 - **Returns**: `boolean` - true if password matches, false otherwise
+
+**Installation:**
+
+The function is created via database migration and includes:
+- `pgcrypto` extension for secure bcrypt hashing
+- Fallback chain for hash lookup: `org_secrets.master_password_hash` → `Unternehmen.master_code_hash` → `Unternehmen.master_pass_hash`
+- `SECURITY DEFINER` to access tables without exposing sensitive data
+- `STRICT` to automatically return NULL on NULL inputs
+- `SET search_path = public` to prevent schema injection attacks
 
 **Usage via Supabase client:**
 ```typescript
@@ -25,6 +34,11 @@ const { data: isValid, error } = await supabase
     p_password: 'password-here'
   });
 ```
+
+**Contract:**
+- Returns `true` if password matches stored hash
+- Returns `false` if password doesn't match or no hash found
+- Never throws exceptions (uses exception handlers for missing tables/columns)
 
 #### 2. Edge Function (Preferred) - `/functions/v1/verify-master`
 
