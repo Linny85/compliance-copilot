@@ -4,6 +4,12 @@
 
 The Dev Tools page provides development utilities and environment status checks. It is only accessible in development mode (`import.meta.env.DEV`).
 
+## Quick Start
+
+- **Activate DEV Overlay**: Add `?dev=1` to any URL (e.g., `http://localhost:5173/dashboard?dev=1`)
+- **Toggle Overlay**: Press **Ctrl/Cmd + D**
+- **Dev Route**: Navigate to **/dev** (only available in DEV builds)
+
 ## Access
 
 **Recommended approach:** Create a dedicated dev route in your routing configuration:
@@ -26,7 +32,7 @@ if (import.meta.env.DEV && searchParams.get('dev') === '1') {
 }
 ```
 
-## Features
+## Modules
 
 ### Env Vars Status Panel
 
@@ -43,12 +49,51 @@ Shows the presence/absence of critical environment variables:
 
 **Security note:** No actual secret values are exposed—only present/absent status for frontend vars. Server/CI vars show as "n/a" since they cannot be read from the browser.
 
+### Edge Function Tests
+
+Provides smoke tests for backend functions:
+- **Edge POST**: Test `verify-master` edge function with custom Origin header
+- **RPC Test**: Test `verify_master_password` RPC function via Supabase client
+
+Both tests use only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from environment variables. No secrets are displayed or logged.
+
+### DB Query Inspector (Read-Only)
+
+Filtered read-only access to whitelisted database views:
+- `v_compliance_overview`
+- `summary_overview`
+- `summary_controls`
+- `summary_evidence`
+- `summary_training`
+
+Supports optional `tenant_id` filtering and configurable result limits (1-100). No mutating queries are possible.
+
+### Feature Flag Tester (Local Simulation)
+
+Test feature flags with local overrides:
+- Reads flags from optional `feature_flags` table (if available)
+- Allows local simulation without changing server state
+- Shows effective flag values (local override > server value > default)
+- Local overrides only affect DEV mode and don't persist
+
 ## Usage in Development
 
 1. Start the dev server: `npm run dev`
-2. Navigate to `/dev` (or your configured route)
-3. Review environment variable status
-4. Follow documentation links for configuration guidance
+2. Add `?dev=1` to any URL to activate the floating overlay
+3. Navigate to `/dev` for the full dev tools page
+4. Use individual panels:
+   - **Env Vars**: Check environment configuration
+   - **Edge Tests**: Test backend functions (verify-master)
+   - **DB Query Inspector**: Query whitelisted views
+   - **Feature Flags**: Test flag behavior locally
+
+## Security
+
+- No secrets are displayed or logged in any panel
+- All panels are DEV-only (`import.meta.env.DEV`)
+- DB Query Inspector: read-only access to whitelisted views only
+- Feature Flag Tester: local overrides don't modify server state
+- CORS validation runs separately via `scripts/cors-selftest.mjs` (CI & optional pre-commit)
 
 ## Related Documentation
 

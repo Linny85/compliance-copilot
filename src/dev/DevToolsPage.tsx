@@ -1,5 +1,7 @@
 import { EnvVarsStatusPanel } from './EnvVarsStatusPanel';
 import EdgeTestPanel from './EdgeTestPanel';
+import DbQueryInspector from './DbQueryInspector';
+import FeatureFlagTester from './FeatureFlagTester';
 
 export function DevToolsPage() {
   if (!import.meta.env.DEV) return null;
@@ -18,6 +20,14 @@ export function DevToolsPage() {
 
       <section className="mb-8">
         <EdgeTestPanel />
+      </section>
+
+      <section className="mb-8">
+        <DbQueryInspector />
+      </section>
+
+      <section className="mb-8">
+        <FeatureFlagTester />
       </section>
 
       <section id="docs" className="mb-8">
