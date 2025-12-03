@@ -310,7 +310,7 @@ CREATE INDEX idx_org_secrets_locked
 ### A. Master setzen
 
 ```bash
-curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/set-master-code \
+curl -sS https://pmpnvdtkzvbledkvbtac.functions.supabase.co/set-master-code \
   -H "Authorization: Bearer <JWT>" \
   -H "Content-Type: application/json" \
   -d '{"master":"MySecurePassword123"}'
@@ -320,7 +320,7 @@ curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/set-master-code \
 ### B. Verifizieren → Token erhalten
 
 ```bash
-curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/verify-master-pass \
+curl -sS https://pmpnvdtkzvbledkvbtac.functions.supabase.co/verify-master-pass \
   -H "Authorization: Bearer <JWT>" \
   -H "Content-Type: application/json" \
   -d '{"master":"MySecurePassword123"}'
@@ -330,7 +330,7 @@ curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/verify-master-pass \
 ### C. Update mit Token
 
 ```bash
-curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/update-organization \
+curl -sS https://pmpnvdtkzvbledkvbtac.functions.supabase.co/update-organization \
   -H "Authorization: Bearer <JWT>" \
   -H "X-Org-Edit: <EDIT_TOKEN>" \
   -H "Content-Type: application/json" \
@@ -341,7 +341,7 @@ curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/update-organization 
 ### D. Rotation
 
 ```bash
-curl -sS https://eadjoqlyjxwqjfvukvqx.functions.supabase.co/rotate-master-code \
+curl -sS https://pmpnvdtkzvbledkvbtac.functions.supabase.co/rotate-master-code \
   -H "Authorization: Bearer <JWT>" \
   -H "Content-Type: application/json" \
   -d '{"oldPassword":"MySecurePassword123","newPassword":"NewSecurePassword456"}'
@@ -446,7 +446,7 @@ WHERE tenant_id = '<UUID>';
 ### Logs prüfen
 
 ```bash
-supabase functions logs --project-ref eadjoqlyjxwqjfvukvqx --since 1h \
+supabase functions logs --project-ref pmpnvdtkzvbledkvbtac --since 1h \
   | grep -E "verify-master-pass|update-organization|rotate-master-code"
 ```
 

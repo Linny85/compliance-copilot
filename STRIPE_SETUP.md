@@ -2,7 +2,7 @@
 
 ## Required Secrets
 
-Set these in Lovable Cloud (Settings → Environment Variables):
+Set these in the Supabase project settings (Settings → Environment Variables):
 
 ```bash
 STRIPE_SECRET_KEY=sk_test_... # or sk_live_...
@@ -18,7 +18,7 @@ STRIPE_PRICE_BASIC=price_...
 - Copy the Price ID (starts with `price_...`)
 
 ### 2. Configure Webhook
-- URL: `https://eadjoqlyjxwqjfvukvqx.supabase.co/functions/v1/stripe-webhook`
+- URL: `https://pmpnvdtkzvbledkvbtac.supabase.co/functions/v1/stripe-webhook`
 - Events to send:
   - `checkout.session.completed`
   - `checkout.session.async_payment_succeeded`
@@ -39,7 +39,7 @@ STRIPE_PRICE_BASIC=price_...
 
 ```bash
 # Forward webhooks to your local environment
-stripe listen --forward-to https://eadjoqlyjxwqjfvukvqx.supabase.co/functions/v1/stripe-webhook
+stripe listen --forward-to https://pmpnvdtkzvbledkvbtac.supabase.co/functions/v1/stripe-webhook
 
 # Trigger test events
 stripe trigger checkout.session.completed

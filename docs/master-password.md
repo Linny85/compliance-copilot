@@ -10,7 +10,7 @@ The master password verification system provides secure authentication for sensi
 
 #### 1. SQL Function (RPC) - Fallback Method
 
-**Function**: `public.verify_master_password(p_company_id uuid, p_password text)`
+**Function**: `public.verify_master_password(company_id uuid, pass text)`
 
 - **Security**: `SECURITY DEFINER` - runs with elevated privileges without exposing password hashes
 - **Algorithm**: Uses `pgcrypto` extension with bcrypt/crypt for secure comparison
@@ -30,8 +30,8 @@ The function is created via database migration and includes:
 ```typescript
 const { data: isValid, error } = await supabase
   .rpc('verify_master_password', {
-    p_company_id: 'uuid-here',
-    p_password: 'password-here'
+    company_id: 'uuid-here',
+    pass: 'password-here'
   });
 ```
 
@@ -76,14 +76,14 @@ const { data: isValid, error } = await supabase
 
 **Verification Flow:**
 1. Rate limit check (company_id + IP)
-2. Single RPC call to `verify_master_password(p_company_id, p_password)`
+2. Single RPC call to `verify_master_password(company_id, pass)`
 3. Return `{ ok: true }` on success, `{ ok: false }` on failure
 
 **No Prefetch:** The edge function does NOT query any table directly. All password verification logic is delegated to the SECURITY DEFINER RPC function, which is the single source of truth.
 
 **CORS:**
 - Configured via `ALLOWED_ORIGINS` environment variable (comma-separated list)
-- Fallback origins: `http://localhost:5173`, `http://127.0.0.1:5173`, and wildcard `*.lovableproject.com`, `*.lovable.app`
+- Fallback origins: `http://localhost:5173`, `http://127.0.0.1:5173`, and wildcard `*.compliancecopilot.com`, `*.copilot.app`
 - Supports preflight OPTIONS requests (returns 204)
 - Response headers:
   - `Access-Control-Allow-Origin`: Exact origin (not `*`) for credential support
@@ -93,8 +93,8 @@ const { data: isValid, error } = await supabase
 
 **Setting ALLOWED_ORIGINS:**
 ```bash
-# In Lovable Cloud Edge Functions (Project → Functions → Environment Variables)
-ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://your-preview-domain.lovableproject.com,https://your-prod-domain.com
+# In Supabase Edge Functions (Project → Functions → Environment Variables)
+ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173,https://your-preview-domain.compliancecopilot.com,https://your-prod-domain.com
 
 # For local development with Supabase CLI
 echo "ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173" >> supabase/.env.local
@@ -107,7 +107,7 @@ Test that CORS headers are correctly configured by simulating browser preflight 
 ```bash
 export SUPABASE_URL="https://<your-project>.supabase.co"
 export ANON_KEY="<your-anon-key>"
-export TEST_ORIGIN="https://your-preview-domain.lovableproject.com"
+export TEST_ORIGIN="https://your-preview-domain.compliancecopilot.com"
 
 # Test OPTIONS preflight (should return 204 with CORS headers)
 curl -i -X OPTIONS "$SUPABASE_URL/functions/v1/verify-master" \
@@ -117,7 +117,7 @@ curl -i -X OPTIONS "$SUPABASE_URL/functions/v1/verify-master" \
 
 # Expected:
 # HTTP/1.1 204 No Content
-# Access-Control-Allow-Origin: https://your-preview-domain.lovableproject.com
+# Access-Control-Allow-Origin: https://your-preview-domain.compliancecopilot.com
 # Access-Control-Allow-Headers: authorization, x-client-info, apikey, content-type
 # Access-Control-Allow-Methods: POST, OPTIONS
 
@@ -131,7 +131,7 @@ curl -i -X POST "$SUPABASE_URL/functions/v1/verify-master" \
 
 # Expected:
 # HTTP/1.1 200 OK
-# Access-Control-Allow-Origin: https://your-preview-domain.lovableproject.com
+# Access-Control-Allow-Origin: https://your-preview-domain.compliancecopilot.com
 # Content-Type: application/json
 # {"ok":false}
 ```
@@ -149,7 +149,7 @@ node scripts/cors-selftest.mjs
 # With custom environment variables
 SUPABASE_URL="https://your-project.supabase.co" \
 SUPABASE_ANON_KEY="your-anon-key" \
-TEST_ORIGIN="https://your-preview-domain.lovableproject.com" \
+TEST_ORIGIN="https://your-preview-domain.compliancecopilot.com" \
 node scripts/cors-selftest.mjs
 ```
 
@@ -174,7 +174,7 @@ To enable locally:
 export GIT_CORS_CHECK=1
 export SUPABASE_URL="https://<project>.supabase.co"
 export SUPABASE_ANON_KEY="<anon-key>"
-export TEST_ORIGIN="https://preview.lovableproject.com"
+export TEST_ORIGIN="https://preview.compliancecopilot.com"
 ```
 
 To bypass temporarily, unset `GIT_CORS_CHECK` or remove the env vars.
@@ -260,7 +260,7 @@ done
 - Test 2: `{ "ok": true }`
 - Test 3: Last response includes `{ "ok": false, "reason": "rate_limited" }` with headers `X-RateLimit-Remaining: 0` and `Retry-After: 300`
 
-**Test RPC Function directly (Lovable Cloud → Database → SQL Editor):**
+**Test the RPC function directly (Supabase → Database → SQL Editor):**
 
 ```sql
 -- 1) Ensure pgcrypto extension is enabled (one-time setup)

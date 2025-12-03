@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 BOLD='\033[1m'
 
 # Supabase Konfiguration
-SUPABASE_URL="${SUPABASE_URL:-https://eadjoqlyjxwqjfvukvqx.supabase.co}"
+SUPABASE_URL="${SUPABASE_URL:-https://pmpnvdtkzvbledkvbtac.supabase.co}"
 SUPABASE_SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY}"
 
 if [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then

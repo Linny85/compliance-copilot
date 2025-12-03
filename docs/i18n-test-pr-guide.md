@@ -6,7 +6,7 @@ This guide walks you through creating a test PR to verify that the i18n sync gua
 
 ## 📋 Prerequisites
 
-- GitHub repository connected to Lovable
+- GitHub repository connected to the Compliance Copilot repo
 - CI workflows enabled in repository settings
 - Local development environment set up
 
@@ -18,7 +18,7 @@ This guide walks you through creating a test PR to verify that the i18n sync gua
 # Create a new branch for testing
 git checkout -b test/i18n-ci-verification
 
-# Or in Lovable: The AI will create the branch automatically when you push
+# Or in the Compliance Copilot tooling: The AI will create the branch automatically when you push
 ```
 
 ### Step 2: Add Test Translation Key

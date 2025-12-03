@@ -14,7 +14,7 @@ npm install --save-dev cross-env
 
 ### 2. Add NPM Scripts
 
-**⚠️ Manual Step Required** - Add to `package.json` (file is read-only in Lovable):
+**⚠️ Manual Step Required** - Add to `package.json` (file is managed by the Compliance Copilot setup):
 
 ```json
 {
