@@ -1,12 +1,6 @@
 name: E2E • Playwright (Demo/Trial/Prod × Browsers)
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: "0 3 * * *"   # täglich 03:00 UTC
   workflow_dispatch:
 
 permissions:

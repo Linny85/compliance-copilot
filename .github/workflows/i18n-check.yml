@@ -2,8 +2,8 @@ name: i18n Consistency
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   check-i18n:

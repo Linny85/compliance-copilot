@@ -27,6 +27,7 @@
 - Helpbot-Funktionen sowie `verify-master` sind auf den neuen Provider und das generische Gateway umgestellt.
 - Shared Helper (`audit`, `crypto`, `locale`, `openaiClient`) wurden von `any`-Casts und leeren Catch-Blöcken befreit.
 
+## License Enforcement & Status (Stand 2025-12-05)
 - Migration `20251110091545_7f5a8e9c-4fbc-4ce5-a3c1-7dd0a9ab90c5.sql` erweitert `Unternehmen` um tier/expiry/origin/notes-Spalten; Typdefinitionen (`src/integrations/supabase/types.ts`) sind synchron.
 - Shared Helper: `_shared/license.ts` liefert `getLicenseStatus` & `assertLicense`, `_shared/origin.ts` kapselt Host-Parsen/CORS-Enforcement und wird via `_shared/access.ts` re-exportiert.
 - Edge Functions: alle helpbot-Einstiegspunkte (`helpbot-chat`, `helpbot-ingest`, `helpbot-query`, `helpbot-upload`, `helpbot-memory-train`, `helpbot-healthcheck`, `helpbot-feedback`), `send-email`, `create-evidence-request`, `submit-evidence`, die QA/ops-Monitor-Flows (`update-qa-monitor*`, `update-ops-dashboard`, `ops-digest`/`send-ops-digest`) sowie `create-tenant` setzen jetzt `assertOrigin` + `assertLicense` durch.
@@ -34,6 +35,11 @@
 - Frontend: neuer Hook `useTenantLicense`, Header-Badge (`TenantLicenseBadge`) und Warn-Banner (`TenantLicenseNotice`) visualisieren aktiven/abgelaufenen Status + Link zu licensing.
 - Tests & Build: `npm test` ✅ (Vitest 47 Tests/5 Dateien), `npm run build` ✅ (nur bekannte Vite-Warnungen zu Supabase-Client/Browserslist).
 - `npm run lint` schlägt weiterhin wegen bekannter Altlasten (`helpbot-*`, `send-email`, `admin/`, `testmode/`) fehl – neue License/Origin-Dateien sind lint-sauber.
+
+## CI & Workflows (Stand 2025-12-05)
+- Harte PR-Gates: `pr-tests.yml` (führt `npm test` + `npm run build` aus), `locales-validate.yml` (Syntax/Key-Check), `ci-gitleaks.yml` (Secrets-Scan). Diese drei Workflows müssen grün sein, bevor ein PR gemerged wird.
+- Optionale/Manuelle Jobs: Alle Playwright-E2E-Suiten (`e2e.yml`, `e2e-playwright.yml`, `master-password-e2e.yml`, `e2e-master-password-nightly.yml`), UI-/Layout-Vergleiche (`ui-layout.yml`), Guard-/CORS-Selftests (`guard-profiles.yml`, `pr-cors-validation.yml`), Supabase/Deno-Triage (`edge-check.yml` nur noch auf `main` + manual), sowie sämtliche i18n-Reports/-Syncs (`i18n-check.yml`, `i18n-report*.yml`, `i18n-sync*.yml`). Diese Workflows können via `workflow_dispatch` oder nach Merge auf `main` ausgeführt werden, blockieren aber keine PRs mehr.
+- Hinweis: Die Nightly-/Demo-/Trial-E2E-Jobs bleiben bestehen, laufen jedoch nur noch auf Knopfdruck bzw. nach Merge. So bleibt der Ressourcenverbrauch niedrig, bis stabile Preview-/Demo-Umgebungen wieder verfügbar sind.
 
 ## Offene Baustellen für später
 - Restliches Lint-Schuldenpaket in `admin/`, `testmode/`, Supabase Edge Functions.

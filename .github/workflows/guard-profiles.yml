@@ -1,5 +1,8 @@
 name: Guard profiles.id usage
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+
+# Temporarily opt-in only: legacy guard rule still references historical Lovable preview flows.
 
 jobs:
   guard:

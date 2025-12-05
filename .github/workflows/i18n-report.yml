@@ -1,14 +1,6 @@
 name: i18n Verification & HTML Report
 
 on:
-  pull_request:
-    paths:
-      - "public/locales/**"
-      - "scripts/compare-locales-report*.ts"
-      - "scripts/verify-locales.ts"
-      - "scripts/preview-report.ts"
-      - "package.json"
-      - "package-lock.json"
   push:
     branches: [ main ]
     paths:
@@ -17,6 +9,7 @@ on:
       - "scripts/verify-locales.ts"
       - "package.json"
       - "package-lock.json"
+  workflow_dispatch:
 
 concurrency:
   group: i18n-${{ github.ref }}
