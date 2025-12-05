@@ -86,7 +86,12 @@ export default function NewAuditTask() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label htmlFor="title">{t('audit:fields.title')} *</Label>
+            <Label htmlFor="title">
+              {t('audit:fields.title')}
+              <span className="text-destructive ml-1" aria-hidden="true">
+                {t('common:requiredIndicator', '*')}
+              </span>
+            </Label>
             <Input
               id="title"
               placeholder={t('audit:fields.titlePlaceholder')}

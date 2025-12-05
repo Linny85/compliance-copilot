@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,11 +39,8 @@ export default function AuditTaskDetail() {
   const [generating, setGenerating] = useState(false);
   const dfLocale = getDateFnsLocale(i18n.language);
 
-  useEffect(() => {
-    if (id) loadTask();
-  }, [id]);
-
-  async function loadTask() {
+  const loadTask = useCallback(async () => {
+    if (!id) return;
     try {
       const { data, error } = await supabase
         .from("audit_tasks")
@@ -59,7 +56,11 @@ export default function AuditTaskDetail() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [id, t]);
+
+  useEffect(() => {
+    loadTask();
+  }, [loadTask]);
 
   async function handleSave() {
     if (!task) return;

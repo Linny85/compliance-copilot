@@ -49,8 +49,8 @@ export function AppModeProvider({ children }: { children: React.ReactNode }) {
     queryFn: async () => {
       if (!profile?.company_id) return null;
       const { data } = await supabase
-        .from('v_billing_status' as any)
-        .select('*')
+        .from('v_billing_status')
+        .select('paid_active, trial_active')
         .eq('company_id', profile.company_id)
         .maybeSingle();
       return data;
@@ -62,9 +62,9 @@ export function AppModeProvider({ children }: { children: React.ReactNode }) {
     if (!billingStatus) return;
     
     let newMode: AppMode = "demo";
-    if ((billingStatus as any).paid_active) {
+    if (billingStatus.paid_active) {
       newMode = "prod";
-    } else if ((billingStatus as any).trial_active) {
+    } else if (billingStatus.trial_active) {
       newMode = "trial";
     }
     
@@ -88,6 +88,7 @@ export function AppModeProvider({ children }: { children: React.ReactNode }) {
   return <AppModeContext.Provider value={value}>{children}</AppModeContext.Provider>;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppMode = () => {
   const ctx = useContext(AppModeContext);
   if (!ctx) throw new Error("useAppMode must be used within <AppModeProvider>");

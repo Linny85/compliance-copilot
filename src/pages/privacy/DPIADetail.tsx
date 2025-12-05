@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import { FileText, Save, Send, BarChart3, Download } from "lucide-react";
+
+type AnswerValue = string | number | boolean | null;
 
 interface Question {
   id: string;
@@ -22,23 +25,47 @@ interface Question {
 
 interface Answer {
   question_id: string;
-  value: any;
+  value: AnswerValue;
   evidence_id: string | null;
+}
+
+type AnswerPayload = {
+  question_id: string;
+  value: AnswerValue;
+};
+
+interface DPIARecord {
+  id: string;
+  title: string;
+  status: string;
+  risk_level: string | null;
+  questionnaire_id: string;
+  score: {
+    overall: number;
+    impact?: number;
+    likelihood?: number;
+  } | null;
+}
+
+interface ScoreResponse {
+  risk_level: string;
+  score: {
+    overall: number;
+    impact?: number;
+    likelihood?: number;
+  };
 }
 
 export default function DPIADetail() {
   const { id } = useParams();
   const { toast } = useToast();
-  const [record, setRecord] = useState<any>(null);
+  const { t } = useTranslation(['privacy', 'common']);
+  const [record, setRecord] = useState<DPIARecord | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answers, setAnswers] = useState<Record<string, AnswerValue>>({});
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     try {
@@ -47,7 +74,7 @@ export default function DPIADetail() {
         .from("dpia_records")
         .select("*, dpia_questionnaires(id)")
         .eq("id", id)
-        .single();
+        .single<DPIARecord>();
 
       if (recError) throw recError;
       setRecord(recordData);
@@ -60,7 +87,8 @@ export default function DPIADetail() {
         .order("section", { ascending: true });
 
       if (qError) throw qError;
-      setQuestions(qData || []);
+      const typedQuestions = (qData ?? []) as Question[];
+      setQuestions(typedQuestions);
 
       // Load answers
       const { data: aData } = await supabase
@@ -68,23 +96,34 @@ export default function DPIADetail() {
         .select("*")
         .eq("record_id", id);
 
-      const ansMap: Record<string, any> = {};
-      (aData || []).forEach((a: any) => {
+      const ansMap: Record<string, AnswerValue> = {};
+      const typedAnswers = (aData ?? []) as Answer[];
+      typedAnswers.forEach((a) => {
         ansMap[a.question_id] = a.value;
       });
       setAnswers(ansMap);
-    } catch (err: any) {
-      toast({ title: "Error loading DPIA", description: err.message, variant: "destructive" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast({ title: t('privacy:dpiaDetail.toast.loadError', 'Error loading DPIA'), description: message, variant: "destructive" });
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, t, toast]);
 
-  const handleSave = async () => {
-    const answerArray = questions.map((q) => ({
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  const buildAnswerPayload = (): AnswerPayload[] => (
+    questions.map((q) => ({
       question_id: q.id,
       value: answers[q.id] ?? null,
-    }));
+    }))
+  );
+
+  const handleSave = async () => {
+    if (!id) return;
+    const answerArray = buildAnswerPayload();
 
     try {
       const { error } = await supabase.functions.invoke("dpia-save", {
@@ -92,17 +131,16 @@ export default function DPIADetail() {
       });
 
       if (error) throw error;
-      toast({ title: "Progress saved" });
-    } catch (err: any) {
-      toast({ title: "Error saving", description: err.message, variant: "destructive" });
+      toast({ title: t('privacy:dpiaDetail.toast.progressSaved', 'Progress saved') });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast({ title: t('privacy:dpiaDetail.toast.saveError', 'Error saving'), description: message, variant: "destructive" });
     }
   };
 
   const handleSubmit = async () => {
-    const answerArray = questions.map((q) => ({
-      question_id: q.id,
-      value: answers[q.id] ?? null,
-    }));
+    if (!id) return;
+    const answerArray = buildAnswerPayload();
 
     try {
       const { error } = await supabase.functions.invoke("dpia-submit", {
@@ -110,30 +148,41 @@ export default function DPIADetail() {
       });
 
       if (error) throw error;
-      toast({ title: "DPIA submitted" });
+      toast({ title: t('privacy:dpiaDetail.toast.submitted', 'DPIA submitted') });
       loadData();
-    } catch (err: any) {
-      toast({ title: "Error submitting", description: err.message, variant: "destructive" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast({ title: t('privacy:dpiaDetail.toast.submitError', 'Error submitting'), description: message, variant: "destructive" });
     }
   };
 
   const handleScore = async () => {
+    if (!id) return;
     try {
-      const { data, error } = await supabase.functions.invoke("dpia-score", {
+      const { data, error } = await supabase.functions.invoke<ScoreResponse>("dpia-score", {
         body: { record_id: id },
       });
 
       if (error) throw error;
-      toast({ title: "DPIA scored", description: `Risk: ${data.risk_level}, Score: ${(data.score.overall * 100).toFixed(1)}%` });
+      if (!data) throw new Error(t('privacy:dpiaDetail.toast.scoreMissing', 'No score data returned'));
+      toast({
+        title: t('privacy:dpiaDetail.toast.scored', 'DPIA scored'),
+        description: t('privacy:dpiaDetail.toast.scoreDescription', 'Risk: {{risk}}, Score: {{score}}%', {
+          risk: data.risk_level,
+          score: (data.score.overall * 100).toFixed(1),
+        }),
+      });
       loadData();
-    } catch (err: any) {
-      toast({ title: "Error scoring", description: err.message, variant: "destructive" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast({ title: t('privacy:dpiaDetail.toast.scoreError', 'Error scoring'), description: message, variant: "destructive" });
     }
   };
 
   const handleExport = async () => {
+    if (!id) return;
     try {
-      const { data, error } = await supabase.functions.invoke("dpia-export", {
+      const { data, error } = await supabase.functions.invoke<Record<string, unknown>>("dpia-export", {
         body: { record_id: id },
       });
 
@@ -144,49 +193,68 @@ export default function DPIADetail() {
       a.href = url;
       a.download = `dpia-bundle-${id}.json`;
       a.click();
-      toast({ title: "DPIA exported" });
-    } catch (err: any) {
-      toast({ title: "Error exporting", description: err.message, variant: "destructive" });
+      toast({ title: t('privacy:dpiaDetail.toast.exported', 'DPIA exported') });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      toast({ title: t('privacy:dpiaDetail.toast.exportError', 'Error exporting'), description: message, variant: "destructive" });
     }
   };
 
   const renderQuestion = (q: Question) => {
     const value = answers[q.id];
-    const onChange = (v: any) => setAnswers({ ...answers, [q.id]: v });
+    const onChange = (nextValue: AnswerValue) => {
+      setAnswers((prev) => ({ ...prev, [q.id]: nextValue }));
+    };
 
     switch (q.type) {
       case "bool":
         return (
           <div className="flex gap-2">
             <Button variant={value === true ? "default" : "outline"} onClick={() => onChange(true)}>
-              Yes
+              {t('common:yes', 'Yes')}
             </Button>
             <Button variant={value === false ? "default" : "outline"} onClick={() => onChange(false)}>
-              No
+              {t('common:no', 'No')}
             </Button>
           </div>
         );
       case "number":
-        return <Input type="number" value={value || ""} onChange={(e) => onChange(Number(e.target.value))} />;
+        return (
+          <Input
+            type="number"
+            value={value ?? ""}
+            onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
+          />
+        );
       case "text":
-        return <Textarea value={value || ""} onChange={(e) => onChange(e.target.value)} />;
+        return (
+          <Textarea
+            value={(value as string) || ""}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        );
       default:
-        return <Input value={value || ""} onChange={(e) => onChange(e.target.value)} />;
+        return (
+          <Input
+            value={(value as string) || ""}
+            onChange={(e) => onChange(e.target.value)}
+          />
+        );
     }
   };
 
   const groupBySection = () => {
     const sections: Record<string, Question[]> = {};
     questions.forEach((q) => {
-      const sec = q.section || "General";
-      if (!sections[sec]) sections[sec] = [];
-      sections[sec].push(q);
+      const sectionLabel = q.section ?? t('privacy:dpiaDetail.sections.general', 'General');
+      if (!sections[sectionLabel]) sections[sectionLabel] = [];
+      sections[sectionLabel].push(q);
     });
     return sections;
   };
 
-  if (loading) return <div className="container p-6">Loading...</div>;
-  if (!record) return <div className="container p-6">DPIA not found</div>;
+  if (loading) return <div className="container p-6">{t('privacy:dpiaDetail.loading', 'Loading...')}</div>;
+  if (!record) return <div className="container p-6">{t('privacy:dpiaDetail.notFound', 'DPIA not found')}</div>;
 
   const sections = groupBySection();
 
@@ -207,23 +275,23 @@ export default function DPIADetail() {
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleSave}>
               <Save className="w-4 h-4 mr-2" />
-              Save
+              {t('privacy:dpiaDetail.actions.save', 'Save')}
             </Button>
             {record.status === "open" && (
               <Button onClick={handleSubmit}>
                 <Send className="w-4 h-4 mr-2" />
-                Submit
+                {t('privacy:dpiaDetail.actions.submit', 'Submit')}
               </Button>
             )}
             {(record.status === "submitted" || record.status === "in_review") && (
               <Button onClick={handleScore}>
                 <BarChart3 className="w-4 h-4 mr-2" />
-                Score
+                {t('privacy:dpiaDetail.actions.score', 'Score')}
               </Button>
             )}
             <Button variant="outline" onClick={handleExport}>
               <Download className="w-4 h-4 mr-2" />
-              Export
+              {t('privacy:dpiaDetail.actions.export', 'Export')}
             </Button>
           </div>
         </CardHeader>
@@ -231,8 +299,8 @@ export default function DPIADetail() {
 
       <Tabs defaultValue="questions">
         <TabsList>
-          <TabsTrigger value="questions">Questions</TabsTrigger>
-          <TabsTrigger value="score">Score</TabsTrigger>
+          <TabsTrigger value="questions">{t('privacy:dpiaDetail.tabs.questions', 'Questions')}</TabsTrigger>
+          <TabsTrigger value="score">{t('privacy:dpiaDetail.tabs.score', 'Score')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="questions" className="space-y-6">
@@ -246,7 +314,11 @@ export default function DPIADetail() {
                   <div key={q.id} className="space-y-2">
                     <Label>
                       {q.text}
-                      {q.required && <span className="text-destructive ml-1">*</span>}
+                      {q.required && (
+                        <span className="text-destructive ml-1" aria-hidden="true">
+                          {t('common:requiredIndicator', '*')}
+                        </span>
+                      )}
                     </Label>
                     {renderQuestion(q)}
                   </div>
@@ -259,36 +331,48 @@ export default function DPIADetail() {
         <TabsContent value="score">
           <Card>
             <CardHeader>
-              <CardTitle>DPIA Score</CardTitle>
+              <CardTitle>{t('privacy:dpiaDetail.score.title', 'DPIA Score')}</CardTitle>
             </CardHeader>
             <CardContent>
               {record.score ? (
                 <div className="space-y-4">
                   <div>
-                    <Label>Overall Score</Label>
-                    <div className="text-3xl font-bold">{(record.score.overall * 100).toFixed(1)}%</div>
+                    <Label>{t('privacy:dpiaDetail.score.overall', 'Overall Score')}</Label>
+                    <div className="text-3xl font-bold">
+                      {t('privacy:dpiaDetail.score.percent', '{{value}}%', {
+                        value: (record.score.overall * 100).toFixed(1),
+                      })}
+                    </div>
                   </div>
                   <div>
-                    <Label>Risk Level</Label>
+                    <Label>{t('privacy:dpiaDetail.score.risk', 'Risk Level')}</Label>
                     <Badge variant="destructive" className="text-lg">
                       {record.risk_level}
                     </Badge>
                   </div>
                   {record.score.impact !== undefined && (
                     <div>
-                      <Label>Impact</Label>
-                      <div className="text-xl">{(record.score.impact * 100).toFixed(1)}%</div>
+                      <Label>{t('privacy:dpiaDetail.score.impact', 'Impact')}</Label>
+                      <div className="text-xl">
+                        {t('privacy:dpiaDetail.score.percent', '{{value}}%', {
+                          value: (record.score.impact * 100).toFixed(1),
+                        })}
+                      </div>
                     </div>
                   )}
                   {record.score.likelihood !== undefined && (
                     <div>
-                      <Label>Likelihood</Label>
-                      <div className="text-xl">{(record.score.likelihood * 100).toFixed(1)}%</div>
+                      <Label>{t('privacy:dpiaDetail.score.likelihood', 'Likelihood')}</Label>
+                      <div className="text-xl">
+                        {t('privacy:dpiaDetail.score.percent', '{{value}}%', {
+                          value: (record.score.likelihood * 100).toFixed(1),
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-muted-foreground">No score available yet. Submit and score the DPIA first.</p>
+                <p className="text-muted-foreground">{t('privacy:dpiaDetail.score.empty', 'No score available yet. Submit and score the DPIA first.')}</p>
               )}
             </CardContent>
           </Card>
