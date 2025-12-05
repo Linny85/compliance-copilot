@@ -1,8 +1,10 @@
 // Kollege Norrly - Hardened AI Compliance Assistant
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { corsHeaders } from "../_shared/cors.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
 import { classifyQuery, getDenialMessage, checkRateLimit as checkGuardRateLimit, recordDenial } from "./guardRails.ts";
 import { chat as aiChat, getAiProviderInfo } from "../_shared/aiClient.ts";
+import { assertOrigin, requireUserAndTenant, extractOriginHost } from "../_shared/access.ts";
+import { assertLicense, type LicenseFailureReason, type TenantLicense } from "../_shared/license.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -11,14 +13,11 @@ const OFFLINE_MODE = !aiInfo.keySet;
 const PROVIDER_LABEL = aiInfo.provider.toUpperCase();
 
 // Helper functions
-function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json", ...corsHeaders },
-  });
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
 }
 
-const err = (message: string, reqId: string, status = 400) => 
+const err = (message: string, reqId: string, status = 400, req?: Request) => 
   json({ 
     ok: false, 
     error: message, 
@@ -27,7 +26,7 @@ const err = (message: string, reqId: string, status = 400) =>
     content: message,
     choices: [{ index: 0, message: { role: "assistant", content: message }, finish_reason: "error" }],
     reqId 
-  }, status);
+  }, status, req);
 
 // Success envelope with multiple schema compatibility
 type HistoryEntry = Record<string, unknown>;
@@ -98,6 +97,68 @@ const VALID_LANGS: readonly Lang[] = ["de", "en", "sv"] as const;
 function normalizeLang(input?: string): Lang {
   const two = (input ?? "de").toLowerCase().slice(0, 2);
   return (VALID_LANGS as readonly string[]).includes(two) ? (two as Lang) : "de";
+}
+
+function buildLicenseBlockResponse(
+  reason: LicenseFailureReason,
+  lang: Lang,
+  license?: TenantLicense
+): { status: number; message: string } {
+  const status = reason === "origin_blocked" ? 403 : 402;
+  const allowed = license?.license_allowed_origins?.length
+    ? license.license_allowed_origins.join(", ")
+    : null;
+  const tier = license?.license_tier ?? "trial";
+  const expires = license?.license_expires_at
+    ? formatDateByLang(license.license_expires_at, lang)
+    : null;
+
+  const messages: Record<Lang, Record<LicenseFailureReason, string>> = {
+    de: {
+      no_license:
+        "Kein aktives Mandanten-Abonnement gefunden. Bitte kontaktiere das Compliance-Team, um die Lizenz zu aktivieren.",
+      expired:
+        expires
+          ? `Die Mandantenlizenz ist seit ${expires} abgelaufen. Bitte verlängert oder upgrade sie, bevor du NORRLY nutzt.`
+          : "Die Mandantenlizenz ist abgelaufen. Bitte verlängert oder upgrade sie, bevor du NORRLY nutzt.",
+      origin_blocked:
+        allowed
+          ? `Diese Domain ist nicht für dieses Konto freigeschaltet. Erlaubte Domains: ${allowed}.`
+          : "Diese Domain ist nicht für dieses Konto freigeschaltet. Bitte aktualisiert die erlaubten Domains in den Lizenzeinstellungen.",
+      capability_blocked:
+        `Die Lizenzstufe (${tier}) erlaubt diese Funktion nicht. Bitte upgrade für Zugriff auf dieses Feature.`,
+    },
+    en: {
+      no_license:
+        "No active subscription found for this tenant. Please ask your compliance admin to activate the license.",
+      expired:
+        expires
+          ? `Your tenant license expired on ${expires}. Please renew or upgrade before using NORRLY again.`
+          : "Your tenant license expired. Please renew or upgrade before using NORRLY again.",
+      origin_blocked:
+        allowed
+          ? `This domain is not approved for this tenant. Allowed domains: ${allowed}.`
+          : "This domain is not approved for this tenant. Update the allowed domains in the license settings.",
+      capability_blocked:
+        `The current tier (${tier}) does not include this capability. Please upgrade your plan.`,
+    },
+    sv: {
+      no_license:
+        "Ingen aktiv licens hittades för denna tenant. Be ert compliance-team att aktivera licensen.",
+      expired:
+        expires
+          ? `Tenant-licensen gick ut ${expires}. Förnya eller uppgradera innan du använder NORRLY igen.`
+          : "Tenant-licensen har gått ut. Förnya eller uppgradera innan du använder NORRLY igen.",
+      origin_blocked:
+        allowed
+          ? `Denna domän är inte godkänd för kontot. Tillåtna domäner: ${allowed}.`
+          : "Denna domän är inte godkänd för kontot. Uppdatera licensens domänlista.",
+      capability_blocked:
+        `Licensnivån (${tier}) inkluderar inte denna funktion. Uppgradera planen för att fortsätta.`,
+    },
+  };
+
+  return { status, message: messages[lang][reason] };
 }
 
 // === Audit-Hilfsfunktionen ===
@@ -218,6 +279,13 @@ type ChatRequest = {
   debug?: boolean;
   [key: string]: unknown;
 };
+
+function namespacedSessionId(raw: string | undefined, tenantId: string): string {
+  const clean = (raw ?? "").replace(/[^a-zA-Z0-9:-]/g, "").slice(0, 120);
+  if (clean && clean.startsWith(`${tenantId}:`)) return clean;
+  const suffix = clean || crypto.randomUUID();
+  return `${tenantId}:${suffix}`;
+}
 
 async function getContext(sessionId: string): Promise<ChatRow[]> {
   try {
@@ -412,7 +480,8 @@ function legalGuard(answer: string, userQuestion: string): { answer: string; tri
 async function runAssistantChat(
   messages: { role: "system" | "user" | "assistant"; content: string }[], 
   lang: Lang, 
-  question: string
+  question: string,
+  tenantId: string
 ): Promise<string> {
   if (OFFLINE_MODE) {
     return offlineFallbackAnswer(question, lang);
@@ -423,6 +492,7 @@ async function runAssistantChat(
       model: Deno.env.get("MODEL") ?? "gpt-4.1-mini",
       temperature: 0.7,
       maxTokens: 1000,
+      tenantId,
     });
   } catch (error) {
     console.error("[helpbot-chat] AI call failed, using fallback", error);
@@ -579,35 +649,55 @@ function tryKnownFix(question: string, lang: Lang): string | null {
 // === Serve ===
 Deno.serve(async (req: Request) => {
   const reqId = crypto.randomUUID();
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
 
   try {
-    if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-    if (req.method !== "POST") return err("Method Not Allowed", reqId, 405);
+    if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+    if (req.method !== "POST") return err("Method Not Allowed", reqId, 405, req);
+
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { userId, tenantId } = access;
 
     const ct = req.headers.get("content-type") ?? "";
-    if (!ct.toLowerCase().includes("application/json")) return err("Unsupported Media Type", reqId, 415);
+    if (!ct.toLowerCase().includes("application/json")) return err("Unsupported Media Type", reqId, 415, req);
 
     let rawBody: unknown;
     try {
       rawBody = await req.json();
     } catch {
-      return err("Invalid JSON body", reqId, 400);
+      return err("Invalid JSON body", reqId, 400, req);
     }
 
     const body = (rawBody ?? {}) as ChatRequest;
 
     const question = (body?.question ?? "").toString().trim();
     const rawLang = (body?.lang ?? "").toString();
-    const sessionId: string = body?.session_id || crypto.randomUUID();
-    const userId: string | undefined = body?.user_id;
+    const sessionId: string = namespacedSessionId(body?.session_id, tenantId);
     const lang = normalizeLang(rawLang);
 
-    if (!question) return err("Missing field: 'question'", reqId, 400);
-    if (question.length > 4000) return err("Question too long (max 4000 chars)", reqId, 413);
+    if (!question) return err("Missing field: 'question'", reqId, 400, req);
+    if (question.length > 4000) return err("Question too long (max 4000 chars)", reqId, 413, req);
+
+    const originHost = extractOriginHost(req);
+    const licenseResult = await assertLicense(sbAdmin, tenantId, {
+      capability: "helpbot",
+      originHost,
+    });
+    if (!licenseResult.ok) {
+      const { status, message } = buildLicenseBlockResponse(licenseResult.reason, lang, licenseResult.license ?? undefined);
+      return json(
+        successEnvelope({ sessionId, answer: message, reqId, agent: AGENT }),
+        status,
+        req,
+      );
+    }
 
     // Basic rate limit
     const rl = await checkRate(sessionId);
-    if (!rl.ok) return json({ ok: false, error: "Rate limit exceeded", retry_after: rl.retryAfterSec, reqId }, 429);
+    if (!rl.ok) return json({ ok: false, error: "Rate limit exceeded", retry_after: rl.retryAfterSec, reqId }, 429, req);
 
     // === Security Guardrails ===
     // Check for malicious queries before processing
@@ -624,7 +714,7 @@ Deno.serve(async (req: Request) => {
         answer: rateLimitMsg, 
         reqId, 
         agent: AGENT 
-      }), 429);
+      }), 429, req);
     }
 
     const classification = classifyQuery(question);
@@ -639,7 +729,7 @@ Deno.serve(async (req: Request) => {
         const questionPreview = question.slice(0, 16).replace(/[^\w]/g, '_');
         
         await sbAdmin.from("audit_log").insert({
-          tenant_id: null,
+          tenant_id: tenantId,
           actor_id: userId,
           action: "helpbot.query_blocked",
           entity: "helpbot",
@@ -665,7 +755,7 @@ Deno.serve(async (req: Request) => {
         answer: denialMsg, 
         reqId, 
         agent: AGENT 
-      }), 200);
+      }), 200, req);
     }
     
     // For REVIEW classification, we'll limit the scope but allow processing
@@ -676,16 +766,16 @@ Deno.serve(async (req: Request) => {
       const [cmd, arg] = question.toLowerCase().split(/\s+/, 2);
 
       if (cmd === "/resources") {
-        return json(successEnvelope({ sessionId, answer: RESOURCES[lang], reqId, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer: RESOURCES[lang], reqId, agent: AGENT }), 200, req);
       }
       if (cmd === "/contact") {
-        return json(successEnvelope({ sessionId, answer: CONTACT[lang], reqId, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer: CONTACT[lang], reqId, agent: AGENT }), 200, req);
       }
       if (cmd === "/summary") {
         const hist = await getContext(sessionId);
         const summary = hist.map(h => (h.role === "user" ? "👤" : "🤖") + " " + h.content).join("\n");
         const label = lang === "de" ? "Zusammenfassung (letzte Nachrichten):" : lang === "sv" ? "Sammanfattning (senaste meddelanden):" : "Summary (recent messages):";
-        return json(successEnvelope({ sessionId, answer: `**${label}**\n${summary}`, history: hist, reqId, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer: `**${label}**\n${summary}`, history: hist, reqId, agent: AGENT }), 200, req);
       }
       if (cmd === "/translate") {
         const target = normalizeLang(arg ?? lang);
@@ -698,14 +788,14 @@ Deno.serve(async (req: Request) => {
           .limit(10);
         const lastAssistantRows = (data ?? []) as ChatRow[];
         const lastAssistant = lastAssistantRows.find((row) => row.role === "assistant")?.content ?? "";
-        if (!lastAssistant) return json({ ok: false, error: "Nothing to translate", reqId }, 400);
+        if (!lastAssistant) return json({ ok: false, error: "Nothing to translate", reqId }, 400, req);
 
         const translated = await runAssistantChat([
           { role: "system", content: "Translate the following text faithfully. Do not add explanations." },
           { role: "user", content: `Target language: ${target}\n\nText:\n${lastAssistant}` },
-        ], target, lastAssistant);
+        ], target, lastAssistant, tenantId);
         await saveMsg(sessionId, "assistant", translated);
-        return json(successEnvelope({ sessionId, answer: translated, reqId, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer: translated, reqId, agent: AGENT }), 200, req);
       }
 
       if (cmd === "/csp") {
@@ -723,7 +813,7 @@ Content-Security-Policy:
   base-uri 'none';
   frame-ancestors 'none';
 \`\`\``;
-        return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200, req);
       }
 
       if (cmd === "/headers") {
@@ -750,7 +840,7 @@ Permissions-Policy:
 add_header Content-Security-Policy "default-src 'self'; script-src 'nonce-$request_id' 'strict-dynamic' 'wasm-unsafe-eval' https: 'self'; connect-src 'self' https: wss:; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https: data:; frame-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none';" always;
 add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), accelerometer=(), gyroscope=(), magnetometer=(), usb=(), bluetooth=(), interest-cohort=()" always;
 \`\`\``;
-        return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer, reqId, agent: AGENT }), 200, req);
       }
 
       if (cmd === "/health") {
@@ -766,10 +856,10 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
         };
         const statusLabel = lang === "de" ? "✅ Systemstatus:" : lang === "sv" ? "✅ Systemstatus:" : "✅ System status:";
         const answer = `${statusLabel}\n\`\`\`json\n${JSON.stringify(health, null, 2)}\n\`\`\``;
-        return json(successEnvelope({ sessionId, answer, history: [], reqId, provider: health.provider, agent: AGENT }), 200);
+        return json(successEnvelope({ sessionId, answer, history: [], reqId, provider: health.provider, agent: AGENT }), 200, req);
       }
 
-      return json({ ok: false, error: `Unknown command: ${cmd}`, reqId }, 400);
+      return json({ ok: false, error: `Unknown command: ${cmd}`, reqId }, 400, req);
     }
 
     // === Known Pattern Detection (vor AI-Call) ===
@@ -782,7 +872,7 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
         .select("role, content, id, created_at")
         .eq("session_id", sessionId)
         .order("created_at", { ascending: true });
-      return json(successEnvelope({ sessionId, answer: quickFix, history: fullHistory ?? [], reqId, agent: AGENT }), 200);
+      return json(successEnvelope({ sessionId, answer: quickFix, history: fullHistory ?? [], reqId, agent: AGENT }), 200, req);
     }
 
     // Kontext + Persistenz
@@ -946,7 +1036,7 @@ ${memoryBlock}`
       { role: "user", content: resolvedQuestion },
     ] as { role: "system" | "user" | "assistant"; content: string }[];
 
-    const rawAnswer = await runAssistantChat(messages, lang, resolvedQuestion);
+    const rawAnswer = await runAssistantChat(messages, lang, resolvedQuestion, tenantId);
 
     // Intro deaktiviert – Begrüßung erfolgt jetzt ausschließlich über System-Prompt
     // if (isFirstTurn) {
@@ -1032,15 +1122,15 @@ ${memoryBlock}`
           },
           promptPreview: enhancedSystemPrompt.slice(0, 400)
         }
-      }), 200);
+      }), 200, req);
     }
 
-    return json(successEnvelope(basePayload), 200);
+    return json(successEnvelope(basePayload), 200, req);
 
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     const stack = error instanceof Error ? error.stack : undefined;
     console.error("[helpbot-chat] fatal", { error: message, stack });
-    return err(`Internal error: ${message || "Unknown"}`, crypto.randomUUID(), 500);
+    return err(`Internal error: ${message || "Unknown"}`, crypto.randomUUID(), 500, req);
   }
 });

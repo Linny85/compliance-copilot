@@ -36,6 +36,8 @@
     "evidence": "Ladda upp bevis och dokument."
   },
   "quickstart": {
-    "dashboard": []
+    "dashboard": {
+      "empty": "Inga snabbåtgärder konfigurerade ännu."
+    }
   }
 }

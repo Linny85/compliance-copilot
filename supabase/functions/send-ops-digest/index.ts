@@ -3,23 +3,30 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const cors = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const INTERNAL_TOKEN = Deno.env.get("INTERNAL_JOB_SECRET") ?? "";
 
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+// Internal job: expects Supabase Scheduler with secret header; not for public browser use.
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
+
+  const providedSecret = req.headers.get("x-internal-token") ?? "";
+  if (!INTERNAL_TOKEN || providedSecret !== INTERNAL_TOKEN) {
+    return new Response("Forbidden", { status: 403 });
+  }
 
   try {
     const { tenant_id } = await req.json().catch(() => ({}));
     const sb = createClient(URL, SERVICE);
 
     if (!tenant_id)
-      return new Response(JSON.stringify({ error: "tenant_id required" }), {
-        status: 400,
-        headers: cors,
-      });
+      return json({ error: "tenant_id required" }, 400);
 
     const { data: ops } = await sb
       .from("ops_dashboard")
@@ -44,9 +51,7 @@ serve(async (req) => {
 
     const to = (admins ?? []).map((a: any) => a.email).filter(Boolean);
     if (to.length === 0)
-      return new Response(JSON.stringify({ ok: true, note: "no admins" }), {
-        headers: cors,
-      });
+      return json({ ok: true, note: "no admins" });
 
     const light = ops?.traffic_light ?? "green";
     const subject = `Ops Digest – ${light.toUpperCase()} – SR ${ops?.success_rate_30d ?? 0}%`;
@@ -76,18 +81,9 @@ serve(async (req) => {
       body: JSON.stringify({ tenant_id, to, subject, html }),
     });
 
-    return new Response(
-      JSON.stringify({ ok: res.ok, to: to.length }),
-      { headers: { ...cors, "Content-Type": "application/json" } }
-    );
+    return json({ ok: res.ok, to: to.length });
   } catch (e: any) {
     console.error("[send-ops-digest] error:", e);
-    return new Response(
-      JSON.stringify({ error: e.message || String(e) }),
-      {
-        status: 500,
-        headers: { ...cors, "Content-Type": "application/json" },
-      }
-    );
+    return json({ error: e.message || String(e) }, 500);
   }
 });

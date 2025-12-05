@@ -16,29 +16,29 @@
     "nis2": {
       "title": "NIS2 Core",
       "url": "#",
-      "bullets": [
-        "NIS2 basics & obligations",
-        "Roles & responsibilities",
-        "Practical implementation"
-      ]
+      "bullets": {
+        "line1": "NIS2 basics & obligations",
+        "line2": "Roles & responsibilities",
+        "line3": "Practical implementation"
+      }
     },
     "lead": {
       "title": "EU AI Act – Leadership",
       "url": "#",
-      "bullets": [
-        "Liability & governance",
-        "Risk classes & duties",
-        "Implementation roadmap"
-      ]
+      "bullets": {
+        "line1": "Liability & governance",
+        "line2": "Risk classes & duties",
+        "line3": "Implementation roadmap"
+      }
     },
     "emp": {
       "title": "EU AI Act – Employees",
       "url": "#",
-      "bullets": [
-        "Using AI safely & productively",
-        "Data & prompting best practices",
-        "Everyday do's & don'ts"
-      ]
+      "bullets": {
+        "line1": "Using AI safely & productively",
+        "line2": "Data & prompting best practices",
+        "line3": "Everyday do's & don'ts"
+      }
     }
   },
   "viewCourse": "View course",

@@ -139,9 +139,31 @@
     "close": "Stäng",
     "confirm": "Bekräfta",
     "error": "Fel",
-    "success": "Framgång",
+    "success": "Klart",
     "language": "Språk",
     "settings": "Inställningar",
+    "orContinueWith": "eller fortsätt med",
+    "fullName": "Fullständigt namn",
+    "auditLog": "Revisionslogg",
+    "time": "Tid",
+    "action": "Åtgärd",
+    "entity": "Objekt",
+    "entityId": "ID",
+    "actor": "Utförare",
+    "details": "Detaljer",
+    "showPayload": "Visa payload",
+    "controls": "Kontroller",
+    "controlsDesc": "Ramverkskontroller och krav",
+    "availableControls": "Tillgängliga kontroller",
+    "availableControlsDesc": "Kontroller från ramverk som NIS2, ISO 27001 och DORA",
+    "code": "Kod",
+    "title": "Titel",
+    "framework": "Ramverk",
+    "severity": "Allvarlighetsgrad",
+    "evidenceTypes": "Bevistyper",
+    "actions": "Åtgärder",
+    "createPolicy": "Skapa policy",
+    "disabled": "Inaktiverad",
     "previous": "Föregående",
     "next": "Nästa",
     "forbidden": "Åtkomst nekad (endast admin).",
@@ -162,6 +184,58 @@
     "medium": "Medel",
     "high": "Hög",
     "critical": "Kritisk"
+  },
+  "vendors": {
+    "title": "Leverantörsriskhantering",
+    "subtitle": "Hantera tredjepartsrisker och bedömningar",
+    "action": {
+      "onboard": "Registrera leverantör",
+      "save": "Spara"
+    },
+    "dialog": {
+      "onboard_title": "Registrera ny leverantör"
+    },
+    "field": {
+      "name": "Leverantörsnamn",
+      "name_placeholder": "Ange leverantörsnamn",
+      "category": "Kategori",
+      "criticality": "Kritikalitet",
+      "status": "Status",
+      "risk": "Risknivå",
+      "score": "Poäng"
+    },
+    "filter": {
+      "status": "Status",
+      "risk": "Risk",
+      "all": "Alla"
+    },
+    "search_placeholder": "Sök leverantörer...",
+    "empty": "Inga leverantörer hittades",
+    "status": {
+      "new": "Ny",
+      "in_review": "Under granskning",
+      "approved": "Godkänd",
+      "restricted": "Begränsad",
+      "offboarded": "Avslutad"
+    },
+    "risk": {
+      "low": "Låg",
+      "med": "Medel",
+      "high": "Hög",
+      "critical": "Kritisk"
+    },
+    "criticality": {
+      "low": "Låg",
+      "med": "Medel",
+      "high": "Hög",
+      "critical": "Kritisk"
+    },
+    "success": {
+      "onboarded": "Leverantör skapad"
+    },
+    "error": {
+      "name_required": "Leverantörsnamn krävs"
+    }
   },
   "dpia": {
     "title": "Konsekvensbedömning av dataskydd",
@@ -189,7 +263,35 @@
     "health": "Hälsovård",
     "manufacturing": "Tillverkning",
     "public": "Offentlig sektor",
-    "other": "Annat"
+    "other": "Övrigt"
+  },
+  "compliance": {
+    "progress": "Efterlevnadsstatus",
+    "noData": "Inga efterlevnadsdata ännu. Slutför kontroller, ladda upp bevis och färdigställ DPIA:er för att se utvecklingen.",
+    "overall": "Total efterlevnad",
+    "refresh": "Uppdatera översikt",
+    "refreshSuccess": "Efterlevnadsöversikten uppdaterades",
+    "refreshError": "Det gick inte att uppdatera översikten",
+    "trend": {
+      "up": "Förbättrad",
+      "down": "Försämrad",
+      "points": "pp"
+    },
+    "framework": {
+      "nis2": "NIS2",
+      "ai_act": "AI-lagen",
+      "gdpr": "GDPR"
+    },
+    "breakdown": {
+      "controls": "Kontroller",
+      "evidence": "Bevis",
+      "training": "Utbildning",
+      "dpia": "DPIA"
+    },
+    "todos": {
+      "title": "Viktigast just nu",
+      "empty": "Alla uppgifter är klara"
+    }
   },
   "adminAccess": {
     "denied": "Åtkomst nekad",
@@ -202,6 +304,30 @@
     "none": "Ingen tenant vald. Vänligen välj ovan.",
     "missingTitle": "Ingen tenant vald",
     "missingDesc": "Välj en tenant för att läsa in data."
+  },
+  "license": {
+    "label": "Licens",
+    "loading": "Kontrollerar licens…",
+    "badge": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "error": "Licenskontrollen misslyckades"
+    },
+    "tier": {
+      "trial": "Test",
+      "basic": "Standard",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "none": "Ingen licens"
+    },
+    "banner": {
+      "title": "Licens krävs",
+      "inactive": "Ingen giltig licens är kopplad till denna tenant. Helpbot, AI och e-post är avstängda tills licensen återaktiveras.",
+      "no_license": "Ingen licens är kopplad till tenanten. Uppgradera innan premiumfunktionerna används.",
+      "expired": "Tenantens licens har gått ut. Förnya för att aktivera Helpbot, AI och e-post igen.",
+      "origin_blocked": "Denna domän finns inte i licensens tillåtna lista. Uppdatera listan för att låsa upp åtkomst.",
+      "link": "Hantera licens"
+    }
   },
   "actions": {
     "reload": "Ladda om"

@@ -1,5 +1,6 @@
-import { corsHeaders } from "../_shared/cors.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
 import { getAiProviderInfo, aiFetch } from "../_shared/aiClient.ts";
+import { assertOrigin, requireUserAndTenant } from "../_shared/access.ts";
 
 type DnsReport = {
   a: string[];
@@ -8,9 +9,17 @@ type DnsReport = {
 };
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
   
   try {
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { tenantId } = access;
+
     const info = getAiProviderInfo();
     const base = info.baseUrl;
     const keySet = info.keySet;
@@ -39,7 +48,7 @@ Deno.serve(async (req) => {
       const mRes = await aiFetch("/models", {
         method: "GET",
         headers: { "Accept": "application/json", "Connection": "close" }
-      });
+      }, tenantId);
       modelsStatus = mRes.status;
       modelsBody = (await mRes.text()).slice(0, 600);
     } catch (e) {
@@ -57,7 +66,7 @@ Deno.serve(async (req) => {
           model: Deno.env.get("EMB_MODEL") ?? "text-embedding-3-small",
           input: "health-check"
         }),
-      });
+      }, tenantId);
       embStatus = embRes.status;
       embBody = (await embRes.text()).slice(0, 600);
     } catch (e) {
@@ -65,7 +74,7 @@ Deno.serve(async (req) => {
       embBody = String(e);
     }
 
-    return new Response(JSON.stringify({
+    return jsonResponse({
       base,
       keySet,
       provider: info.provider,
@@ -74,16 +83,13 @@ Deno.serve(async (req) => {
       models: { status: modelsStatus, body: modelsBody },
       embeddings: { status: embStatus, body: embBody },
       ts: new Date().toISOString()
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" }});
+    }, 200, req);
   } catch (error: unknown) {
     console.error('[helpbot-health] Error:', error);
-    return new Response(JSON.stringify({ 
+    return jsonResponse({ 
       error: String(error), 
       base: getAiProviderInfo().baseUrl,
       ts: new Date().toISOString()
-    }), {
-      status: 500, 
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+    }, 500, req);
   }
 });

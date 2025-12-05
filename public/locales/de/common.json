@@ -265,6 +265,34 @@
     "public": "Öffentlicher Sektor",
     "other": "Sonstiges"
   },
+  "compliance": {
+    "progress": "Compliance-Fortschritt",
+    "noData": "Noch keine Compliance-Daten verfügbar. Führe Checks durch, lade Nachweise hoch und schließe DSFA ab, um deinen Fortschritt zu sehen.",
+    "overall": "Gesamt-Compliance",
+    "refresh": "Übersicht aktualisieren",
+    "refreshSuccess": "Compliance-Übersicht erfolgreich aktualisiert",
+    "refreshError": "Fehler beim Aktualisieren der Compliance-Übersicht",
+    "trend": {
+      "up": "Verbessert",
+      "down": "Verschlechtert",
+      "points": "Pp"
+    },
+    "framework": {
+      "nis2": "NIS2",
+      "ai_act": "AI Act",
+      "gdpr": "DSGVO"
+    },
+    "breakdown": {
+      "controls": "Kontrollen",
+      "evidence": "Nachweise",
+      "training": "Trainings",
+      "dpia": "DSFA"
+    },
+    "todos": {
+      "title": "Top-Prioritäten",
+      "empty": "Alle Aufgaben erledigt"
+    }
+  },
   "adminAccess": {
     "denied": "Kein Zugriff",
     "message": "Dieser Bereich ist nur für Administratoren zugänglich. Bitte melden Sie sich mit einem Konto mit Administratorrechten an."
@@ -276,6 +304,30 @@
     "none": "Kein Mandant gewählt. Bitte oben einen Mandanten auswählen.",
     "missingTitle": "Kein Mandant ausgewählt",
     "missingDesc": "Bitte wählen Sie einen Mandanten, um Daten zu laden."
+  },
+  "license": {
+    "label": "Lizenz",
+    "loading": "Lizenz wird geprüft…",
+    "badge": {
+      "active": "Aktiv",
+      "inactive": "Inaktiv",
+      "error": "Lizenzprüfung fehlgeschlagen"
+    },
+    "tier": {
+      "trial": "Testphase",
+      "basic": "Standard",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "none": "Keine Lizenz"
+    },
+    "banner": {
+      "title": "Lizenz erforderlich",
+      "inactive": "Für diesen Mandanten ist keine gültige Lizenz hinterlegt. Helpbot, AI und E-Mail bleiben deaktiviert, bis die Lizenz reaktiviert wird.",
+      "no_license": "Es ist keine Lizenz für diesen Mandanten hinterlegt. Bitte bucht einen passenden Plan, um alle Funktionen zu nutzen.",
+      "expired": "Die Mandantenlizenz ist abgelaufen. Verlängert sie, um Helpbot, AI und E-Mail wieder freizuschalten.",
+      "origin_blocked": "Diese Domain ist nicht für die Lizenz freigegeben. Aktualisiert die Domainliste in den Lizenzeinstellungen.",
+      "link": "Lizenz verwalten"
+    }
   },
   "actions": {
     "reload": "Neu laden"

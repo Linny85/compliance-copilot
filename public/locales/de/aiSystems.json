@@ -1,3 +1,42 @@
 {
-  "_": "placeholder to keep namespace valid"
+  "title": "Dokumentgenerierung",
+  "subtitle": "Erstelle und verwalte Richtlinien, Berichte und Zertifikate für deine Organisation.",
+  "actions": {
+    "register": "Neues Dokument erstellen",
+    "cancel": "Abbrechen"
+  },
+  "empty": {
+    "title": "Noch keine Dokumente",
+    "description": "Starte mit deinem ersten Policy- oder Report-Entwurf.",
+    "button": "Erstes Dokument erstellen"
+  },
+  "dialog": {
+    "title": "Dokument erstellen",
+    "description": "Dokumentiere ein neues Compliance-Artefakt für deine Organisation"
+  },
+  "fields": {
+    "system_name": "Systemname",
+    "custom_name": "Individueller Name (optional)",
+    "custom_name_ph": "Individuellen Systemnamen eingeben",
+    "description": "Beschreibung",
+    "purpose": "Zweck",
+    "risk": "Risikoklassifizierung",
+    "deployment": "Bereitstellungsstatus"
+  },
+  "presets": {
+    "label": "Schnellvorlagen",
+    "custom": "Weitere / Individuell",
+    "hintText": "Wähle ein gängiges KI-System, um Felder vorzufüllen, oder entscheide dich für \"Individuell\"."
+  },
+  "risk": {
+    "minimal": "Minimales Risiko",
+    "limited": "Begrenztes Risiko",
+    "high": "Hohes Risiko"
+  },
+  "deploy": {
+    "planned": "Geplant",
+    "testing": "Testphase",
+    "live": "Live",
+    "retired": "Ausgemustert"
+  }
 }

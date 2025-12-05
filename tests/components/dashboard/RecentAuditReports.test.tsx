@@ -1,22 +1,46 @@
 import React from "react";
+import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import RecentAuditReports from "@/components/dashboard/RecentAuditReports";
+import { setQueryResult, setStorageDownload } from "../../mocks/supabaseClient.mock";
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
-jest.mock("@/integrations/supabase/client", () => require("../../mocks/supabaseClient.mock"));
-jest.mock("sonner", () => ({ toast: { success: jest.fn(), error: jest.fn() } }));
+vi.mock("@/integrations/supabase/client", () => import("../../mocks/supabaseClient.mock"));
+vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+
+const translationMap: Record<string, string> = {
+  "dashboard:recentAuditReports": "Recent Audit Reports",
+  "dashboard:recentAuditReportsDesc": "Latest generated compliance reports",
+  "dashboard:viewAll": "View All",
+  "dashboard:noReportsYet": "No reports generated yet",
+  "dashboard:createAuditTask": "Create Audit Task",
+  "common:loading": "Loading",
+};
+
+vi.mock("react-i18next", async () => {
+  const actual = await vi.importActual<typeof import("react-i18next")>("react-i18next");
+  return {
+    ...actual,
+    useTranslation: () => ({
+      t: (key: string) => translationMap[key] ?? key,
+      ready: true,
+      i18n: { language: "en", changeLanguage: vi.fn() },
+    }),
+    Trans: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+  };
+});
 
 // Mock useNavigate to assert navigations
-const navigateMock = jest.fn();
-jest.mock("react-router-dom", () => {
-  const actual = jest.requireActual("react-router-dom");
+const navigateMock = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual<typeof import("react-router-dom")>("react-router-dom");
   return { ...actual, useNavigate: () => navigateMock };
 });
 
 // Mock URL.createObjectURL to avoid jsdom errors
-const createUrlMock = jest.fn(() => "blob://fake");
-const revokeUrlMock = jest.fn();
+const createUrlMock = vi.fn(() => "blob://fake");
+const revokeUrlMock = vi.fn();
 beforeAll(() => {
   // @ts-ignore
   global.URL.createObjectURL = createUrlMock;
@@ -25,7 +49,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 function renderWidget() {
@@ -38,7 +62,6 @@ function renderWidget() {
 
 describe("RecentAuditReports", () => {
   test("shows loading then renders recent reports list", async () => {
-    const { setQueryResult } = require("../../mocks/supabaseClient.mock");
     setQueryResult([
       {
         id: "a1",
@@ -60,14 +83,11 @@ describe("RecentAuditReports", () => {
   });
 
   test("empty state when no reports are present", async () => {
-    const { setQueryResult } = require("../../mocks/supabaseClient.mock");
     setQueryResult([]); // no reports
 
     renderWidget();
 
-    await waitFor(() => {
-      expect(screen.getByText(/No reports generated yet/i)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(/No reports generated yet/i)).toBeInTheDocument();
 
     const btn = screen.getByRole("button", { name: /Create Audit Task/i });
     fireEvent.click(btn);
@@ -75,7 +95,6 @@ describe("RecentAuditReports", () => {
   });
 
   test("download click triggers storage download and file save", async () => {
-    const { setQueryResult, setStorageDownload } = require("../../mocks/supabaseClient.mock");
     setQueryResult([
       {
         id: "a2",
@@ -98,11 +117,11 @@ describe("RecentAuditReports", () => {
   });
 
   test("View All navigates to /audit", async () => {
-    const { setQueryResult } = require("../../mocks/supabaseClient.mock");
     setQueryResult([]);
 
     renderWidget();
 
+    await screen.findByText(/No reports generated yet/i);
     const viewAll = screen.getByRole("button", { name: /View All/i });
     fireEvent.click(viewAll);
     expect(navigateMock).toHaveBeenCalledWith("/audit");

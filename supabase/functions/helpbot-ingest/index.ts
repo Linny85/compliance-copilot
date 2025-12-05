@@ -1,5 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { embedBatch, getAiProviderInfo } from "../_shared/aiClient.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { assertOrigin, requireUserAndTenant } from "../_shared/access.ts";
 
 console.log('[helpbot-ingest boot]', getAiProviderInfo());
 
@@ -15,9 +17,28 @@ type IngestReq = {
 };
 
 Deno.serve(async (req) => {
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
   try {
-    if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
-    const body = (await req.json()) as IngestReq;
+    if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+    if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405, req);
+
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { tenantId } = access;
+
+    let body: IngestReq;
+    try {
+      body = (await req.json()) as IngestReq;
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400, req);
+    }
+
+    if (!body?.title?.trim() || !body?.text?.trim()) {
+      return json({ error: "title and text are required" }, 400, req);
+    }
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -42,7 +63,7 @@ Deno.serve(async (req) => {
     const chunks = chunkText(body.text, 1500);
 
     // 3) Embeddings abrufen
-    const embeddings = await embedBatch(chunks);
+    const embeddings = await embedBatch(chunks, { tenantId });
 
     // 4) Speichern (mit upsert für Chunk-Dedupe)
     const rows = chunks.map((c, i) => ({
@@ -56,16 +77,16 @@ Deno.serve(async (req) => {
       .upsert(rows, { onConflict: 'doc_id,chunk_no' });
     if (insErr) throw insErr;
 
-    return json({ ok: true, doc_id: doc.id, chunks: rows.length });
+    return json({ ok: true, doc_id: doc.id, chunks: rows.length }, 200, req);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Internal error";
     console.error("[helpbot-ingest]", error);
-    return json({ error: message }, 500);
+    return json({ error: message }, 500, req);
   }
 });
 
-function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
 }
 
 function chunkText(text: string, maxLen = 1500) {

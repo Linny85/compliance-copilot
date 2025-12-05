@@ -101,6 +101,7 @@ export async function chatCompletion(params: ChatOptions & { messages: ChatMessa
 }
 
 export async function chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<string> {
+  // TODO: per-tenant quota / rate limit when multi-tenant AI usage is enforced
   const { content } = await chatCompletion({ ...options, messages });
   return content;
 }
@@ -176,8 +177,8 @@ export async function embedBatch(texts: string[], options: EmbedOptions = {}): P
   return (entries ?? []).map((entry) => entry.embedding);
 }
 
-export async function aiFetch(path: string, init: RequestInit = {}) {
-  const apiKey = await resolveApiKey();
+export async function aiFetch(path: string, init: RequestInit = {}, tenantId?: string) {
+  const apiKey = await resolveApiKey(tenantId);
   const baseUrl = resolveBaseUrl();
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   const url = `${baseUrl}${normalizedPath}`;

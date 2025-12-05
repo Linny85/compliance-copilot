@@ -14,10 +14,8 @@
 - Kern-Dateien, die in Phase 2 behandelt wurden (`vite.config.ts`, `tailwind.config.ts`, `src/state/AppModeProvider.tsx`, `src/utils/i18nSafe.ts`, `src/i18n/init.ts`, `supabase/functions/_shared/{aiClient,audit,crypto,locale,openaiClient}.ts`, Landing/branding assets) sind lint-sauber bzw. enthalten keine harten Errors mehr.
 
 ## Test-Status
-- `npm test` ➜ startet jetzt korrekt Vitest, endet aber mit Failures.
-  - Playwright-Specs (E2E) laufen versehentlich unter Vitest und werfen "test() darf hier nicht aufgerufen werden".
-  - Component-Test `tests/components/dashboard/RecentAuditReports.test.tsx` scheitert, weil `@testing-library/react` nicht installiert ist.
-- Aussage: "Test-Suite muss später noch strukturiert werden (Trennung Unit vs. E2E, ggf. Playwright separat)."
+- `npm test` ✅ – Vitest läuft jetzt über 47 Tests/5 Dateien komplett durch; Playwright-E2E bleiben separat (`npx playwright test`) und werden bewusst nicht im Default-Run gestartet.
+- Aussage: "Unit-Suite grün, Playwright-/Legacy-Tests weiterhin ausstehend, saubere Trennung folgt in der Playwright-Aufgabe."
 
 ## Branding & Secrets
 - `rg -i "legacy brand"` (ehem. externe Bezeichnung) → keine Treffer mehr im Code; letzte Prüfung direkt nach Phase 2.
@@ -29,10 +27,19 @@
 - Helpbot-Funktionen sowie `verify-master` sind auf den neuen Provider und das generische Gateway umgestellt.
 - Shared Helper (`audit`, `crypto`, `locale`, `openaiClient`) wurden von `any`-Casts und leeren Catch-Blöcken befreit.
 
+- Migration `20251110091545_7f5a8e9c-4fbc-4ce5-a3c1-7dd0a9ab90c5.sql` erweitert `Unternehmen` um tier/expiry/origin/notes-Spalten; Typdefinitionen (`src/integrations/supabase/types.ts`) sind synchron.
+- Shared Helper: `_shared/license.ts` liefert `getLicenseStatus` & `assertLicense`, `_shared/origin.ts` kapselt Host-Parsen/CORS-Enforcement und wird via `_shared/access.ts` re-exportiert.
+- Edge Functions: alle helpbot-Einstiegspunkte (`helpbot-chat`, `helpbot-ingest`, `helpbot-query`, `helpbot-upload`, `helpbot-memory-train`, `helpbot-healthcheck`, `helpbot-feedback`), `send-email`, `create-evidence-request`, `submit-evidence`, die QA/ops-Monitor-Flows (`update-qa-monitor*`, `update-ops-dashboard`, `ops-digest`/`send-ops-digest`) sowie `create-tenant` setzen jetzt `assertOrigin` + `assertLicense` durch.
+- Endpoint: neue Edge Function `license-status` liefert tenant-spezifische Lizenzinformationen über `GET /functions/v1/license-status` inkl. `assertOrigin`, `requireUserAndTenant` und CORS-Härtung.
+- Frontend: neuer Hook `useTenantLicense`, Header-Badge (`TenantLicenseBadge`) und Warn-Banner (`TenantLicenseNotice`) visualisieren aktiven/abgelaufenen Status + Link zu licensing.
+- Tests & Build: `npm test` ✅ (Vitest 47 Tests/5 Dateien), `npm run build` ✅ (nur bekannte Vite-Warnungen zu Supabase-Client/Browserslist).
+- `npm run lint` schlägt weiterhin wegen bekannter Altlasten (`helpbot-*`, `send-email`, `admin/`, `testmode/`) fehl – neue License/Origin-Dateien sind lint-sauber.
+
 ## Offene Baustellen für später
 - Restliches Lint-Schuldenpaket in `admin/`, `testmode/`, Supabase Edge Functions.
 - Test-Suite-Struktur: Vitest vs. Playwright sauber trennen, fehlende Bibliotheken installieren, ggf. Tests kategorisieren.
 - Weitere E2E-Abdeckung und Refactors (z. B. `helpbot`-Pipelines, Compliance-Dashboards) nach dem Freeze evaluieren.
+- Neue License-Layer-Helper (`_shared/license.ts`, `_shared/access.ts`) besitzen noch keine Vitest-Abdeckung; Suite `tests/unit/license*.test.ts`/`access*.test.ts` muss erst angelegt werden.
 
 ## Empfohlene Commit-Struktur
 (Basis: `git status -sb`, `git diff --stat`)

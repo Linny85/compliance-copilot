@@ -8,7 +8,9 @@
   "actions": {
     "newRequest": "Ny förfrågan",
     "upload": "Ladda upp bevis",
-    "review": "Granska"
+    "review": "Granska",
+    "cancel": "Avbryt",
+    "save": "Spara"
   },
   "dialogs": {
     "newRequest": {
@@ -23,7 +25,15 @@
     "status": "Status",
     "verdict": "Beslut",
     "note": "Anteckning",
-    "control": "Kontroll"
+    "control": "Kontroll",
+    "controlPlaceholder": "Välj en kontroll",
+    "severity": "Allvarlighetsgrad"
+  },
+  "severity": {
+    "low": "Låg",
+    "medium": "Medel",
+    "high": "Hög",
+    "critical": "Kritisk"
   },
   "status": {
     "open": "Öppen",
@@ -39,7 +49,7 @@
   },
   "empty": {
     "noRequests": "Inga bevisförfrågningar",
-    "noEvidence": "Inget bevis uppladdat"
+    "noEvidence": "Inga bevis uppladdade"
   },
   "success": {
     "request_created": "Bevisförfrågan skapad",
@@ -63,6 +73,9 @@
     "training_record": "Utbildningsintyg",
     "screenshot": "Skärmdump",
     "dataset": "Dataset",
-    "assessment": "Bedömning"
+    "assessment": "Bedömning",
+    "process": "Process",
+    "plan": "Plan",
+    "test-report": "Testrapport"
   }
 }

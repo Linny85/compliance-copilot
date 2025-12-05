@@ -2,45 +2,61 @@
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { PDFDocument, StandardFonts, rgb } from "https://esm.sh/pdf-lib@1.17.1";
-import { corsHeaders } from "../_shared/cors.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { assertOrigin, requireUserAndTenant } from "../_shared/access.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const APP_MODE = Deno.env.get("APP_MODE") ?? "trial";
+const sbAdmin = createClient(supabaseUrl, supabaseServiceKey);
+
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
+}
 
 serve(async (req) => {
-  // Handle CORS
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
   if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
-  // Demo-Modus blockieren
-  if (APP_MODE === 'demo') {
-    return new Response(
-      JSON.stringify({ error: "Generation disabled in demo mode" }),
-      { 
-        status: 403, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      }
-    );
+  if (req.method !== "POST") {
+    return json({ error: "Method Not Allowed" }, 405, req);
+  }
+
+  const access = requireUserAndTenant(req);
+  if (access instanceof Response) return access;
+  const { tenantId, userId } = access;
+
+  if (APP_MODE === "demo") {
+    return json({ error: "Generation disabled in demo mode" }, 403, req);
   }
 
   try {
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    
-    const { audit_id, tenant_id, user_email, send_email = false } = await req.json();
-
-    if (!audit_id || !tenant_id) {
-      return new Response(
-        JSON.stringify({ error: "audit_id and tenant_id are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    let payload: { audit_id?: string; tenant_id?: string; user_email?: string; send_email?: boolean };
+    try {
+      payload = await req.json();
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400, req);
     }
 
-    console.log(`[generate-audit-report] Processing audit ${audit_id} for tenant ${tenant_id}`);
+    const { audit_id, tenant_id: tenantFromBody, user_email, send_email = false } = payload ?? {};
+
+    if (!audit_id) {
+      return json({ error: "audit_id is required" }, 400, req);
+    }
+
+    if (tenantFromBody && tenantFromBody !== tenantId) {
+      return json({ error: "Forbidden tenant scope" }, 403, req);
+    }
+
+    console.log(`[generate-audit-report] Processing audit ${audit_id} for tenant ${tenantId}`);
 
     // 1. Load audit task data
-    const { data: task, error: taskError } = await supabase
+    const { data: task, error: taskError } = await sbAdmin
       .from("audit_tasks")
       .select(`
         *,
@@ -48,15 +64,12 @@ serve(async (req) => {
         creator:created_by(id, email)
       `)
       .eq("id", audit_id)
-      .eq("tenant_id", tenant_id)
+      .eq("tenant_id", tenantId)
       .single();
 
     if (taskError || !task) {
       console.error("[generate-audit-report] Task not found:", taskError);
-      return new Response(
-        JSON.stringify({ error: "Audit task not found" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return json({ error: "Audit task not found" }, 404, req);
     }
 
     // 2. Generate PDF
@@ -205,7 +218,7 @@ serve(async (req) => {
       color: rgb(0.5, 0.5, 0.5),
     });
     
-    page.drawText(`Tenant ID: ${tenant_id}`, {
+    page.drawText(`Tenant ID: ${tenantId}`, {
       x: 50,
       y: footerY - 12,
       size: 8,
@@ -230,9 +243,9 @@ serve(async (req) => {
     // 3. Upload to storage
     const timestamp = Date.now();
     const fileName = `audit_${audit_id}_${timestamp}.pdf`;
-    const storagePath = `${tenant_id}/${fileName}`;
+    const storagePath = `${tenantId}/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await sbAdmin.storage
       .from("reports")
       .upload(storagePath, pdfBytes, {
         contentType: "application/pdf",
@@ -250,7 +263,7 @@ serve(async (req) => {
     console.log("[generate-audit-report] PDF uploaded to:", storagePath);
 
     // 4. Update audit task
-    const { error: updateError } = await supabase
+    const { error: updateError } = await sbAdmin
       .from("audit_tasks")
       .update({
         report_generated_at: new Date().toISOString(),
@@ -263,9 +276,9 @@ serve(async (req) => {
     }
 
     // 5. Log to audit_log
-    await supabase.from("audit_log").insert({
-      tenant_id,
-      actor_id: task.created_by,
+    await sbAdmin.from("audit_log").insert({
+      tenant_id: tenantId,
+      actor_id: userId,
       action: "audit_report.generated",
       entity: "audit_task",
       entity_id: audit_id,
@@ -311,20 +324,14 @@ serve(async (req) => {
       }
     }
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        path: storagePath,
-        file_name: fileName,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return json({
+      success: true,
+      path: storagePath,
+      file_name: fileName,
+    }, 200, req);
   } catch (error: any) {
     console.error("[generate-audit-report] Error:", error);
-    return new Response(
-      JSON.stringify({ error: error?.message ?? "Unknown error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return json({ error: error?.message ?? "Unknown error" }, 500, req);
   }
 });
 

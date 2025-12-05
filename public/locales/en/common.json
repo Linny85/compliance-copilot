@@ -305,6 +305,30 @@
     "missingTitle": "No tenant selected",
     "missingDesc": "Please choose a tenant to load data."
   },
+  "license": {
+    "label": "License",
+    "loading": "Checking license…",
+    "badge": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "error": "License check failed"
+    },
+    "tier": {
+      "trial": "Trial",
+      "basic": "Standard",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "none": "No license"
+    },
+    "banner": {
+      "title": "License required",
+      "inactive": "No valid license is linked to this tenant. Helpbot, AI and email remain disabled until the license is reactivated.",
+      "no_license": "No license is linked to this tenant. Please upgrade before using premium features.",
+      "expired": "The tenant license expired. Renew it to unlock Helpbot, AI and email again.",
+      "origin_blocked": "This domain is not whitelisted for the tenant license. Update the allowed domains to unlock access.",
+      "link": "Manage license"
+    }
+  },
   "actions": {
     "reload": "Reload"
   }

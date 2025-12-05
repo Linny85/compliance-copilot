@@ -29,20 +29,19 @@ describe('compliance helpers', () => {
       expect(toPct(1.0)).toBe(100);
     });
 
-    it('behält 0..100 Werte bei', () => {
-      expect(toPct(43)).toBe(43);
-      expect(toPct(75)).toBe(75);
-      expect(toPct(100)).toBe(100);
-    });
-
-    it('begrenzt nicht automatisch (nutze clampPct dafür)', () => {
-      expect(toPct(1.2)).toBe(120); // rounded
-      expect(toPct(150)).toBe(150);
+    it('konvertiert Werte > 1 ebenfalls als Einheit', () => {
+      expect(toPct(1.2)).toBe(120);
+      expect(toPct(1.75)).toBe(175);
     });
 
     it('behandelt null/undefined als 0', () => {
       expect(toPct(null)).toBe(0);
       expect(toPct(undefined)).toBe(0);
+    });
+
+    it('gibt 0 für ungültige oder negative Werte zurück', () => {
+      expect(toPct(-0.1)).toBe(0);
+      expect(toPct(NaN)).toBe(0);
     });
   });
 

@@ -1,38 +1,61 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { assertOrigin, requireUserAndTenant, sessionBelongsToTenant } from "../_shared/access.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
 Deno.serve(async (req) => {
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   try {
     if (req.method !== "POST") {
-      return json({ error: "Method Not Allowed" }, 405);
+      return json({ error: "Method Not Allowed" }, 405, req);
     }
 
-    const { message_id, user_id, rating, comment } = await req.json();
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { userId, tenantId } = access;
 
-    if (!message_id || ![-1, 0, 1].includes(rating)) {
-      return json({ error: "Invalid input: message_id required and rating must be -1, 0, or 1" }, 400);
+    let payload: { message_id?: string; rating?: number; comment?: string };
+    try {
+      payload = await req.json();
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400, req);
+    }
+
+    const { message_id, rating, comment } = payload ?? {};
+    const normalizedRating = Number(rating);
+
+    if (!message_id || ![-1, 0, 1].includes(normalizedRating)) {
+      return json({ error: "Invalid input: message_id required and rating must be -1, 0, or 1" }, 400, req);
     }
 
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    console.log(`[helpbot-feedback] Received feedback for message ${message_id}: rating=${rating}`);
+    const { data: message, error: messageErr } = await sb
+      .from("helpbot_messages")
+      .select("session_id")
+      .eq("id", message_id)
+      .maybeSingle();
+
+    if (messageErr || !message || !sessionBelongsToTenant(message.session_id, tenantId)) {
+      return json({ error: "Message not found" }, 404, req);
+    }
+
+    console.log(`[helpbot-feedback] Received feedback for message ${message_id}: rating=${normalizedRating}`);
 
     // Save feedback
     const { error: insertErr } = await sb.from("helpbot_feedback").insert({
       message_id,
-      user_id: user_id ?? null,
-      rating,
+      user_id: userId,
+      rating: normalizedRating,
       comment: comment ?? null
     });
 
@@ -42,7 +65,7 @@ Deno.serve(async (req) => {
     }
 
     // Adjust relevance score based on feedback
-    const delta = rating === 1 ? 0.05 : rating === -1 ? -0.05 : 0;
+    const delta = normalizedRating === 1 ? 0.05 : normalizedRating === -1 ? -0.05 : 0;
     
     if (delta !== 0) {
       const { error: adjustErr } = await sb.rpc("adjust_relevance", {
@@ -58,16 +81,13 @@ Deno.serve(async (req) => {
       }
     }
 
-    return json({ ok: true, message: "Feedback saved successfully" });
+    return json({ ok: true, message: "Feedback saved successfully" }, 200, req);
   } catch (e: any) {
     console.error("[helpbot-feedback] Error:", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+    return json({ error: e?.message ?? "Internal error" }, 500, req);
   }
 });
 
-function json(body: any, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" }
-  });
+function json(body: any, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
 }

@@ -1,5 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { embed, chat, getAiProviderInfo } from "../_shared/aiClient.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { assertOrigin, requireUserAndTenant } from "../_shared/access.ts";
 
 console.log('[helpbot-query boot]', getAiProviderInfo());
 
@@ -21,16 +23,35 @@ type SearchRow = {
 };
 
 Deno.serve(async (req) => {
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
   try {
-    if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
-    const body = (await req.json()) as QueryReq;
+    if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+    if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405, req);
+
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { tenantId } = access;
+
+    let body: QueryReq;
+    try {
+      body = (await req.json()) as QueryReq;
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400, req);
+    }
+
+    if (!body?.question?.trim()) {
+      return json({ error: "question is required" }, 400, req);
+    }
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const qVec = await embed(body.question);
+    const qVec = await embed(body.question, { tenantId });
 
     // Filter dynamisch (optional)
     const filters: string[] = [];
@@ -54,7 +75,7 @@ Deno.serve(async (req) => {
         answer: noAnswer(body.lang ?? "de"),
         sources: [],
         disclaimer: disclaimer(body.lang ?? "de"),
-      });
+      }, 200, req);
     }
 
     const context = matches.map((row, i) =>
@@ -70,20 +91,20 @@ Deno.serve(async (req) => {
     const answer = await chat([
       { role: "system", content: sys },
       { role: "user", content: prompt }
-    ]);
+    ], { tenantId });
 
     const sources = matches.map((row) => ({ title: row.title, uri: row.source_uri }));
 
-    return json({ answer, sources, disclaimer: disclaimer(body.lang ?? "de") });
+    return json({ answer, sources, disclaimer: disclaimer(body.lang ?? "de") }, 200, req);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Internal error";
     console.error("[helpbot-query]", error);
-    return json({ error: message }, 500);
+    return json({ error: message }, 500, req);
   }
 });
 
-function json(body: unknown, status=200) {
-  return new Response(JSON.stringify(body), { status, headers: { "Content-Type":"application/json" } });
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
 }
 function escapeSql(s:string){ return s.replace(/'/g,"''"); }
 
