@@ -82,11 +82,11 @@ export async function signBundleHashEd25519(bundleHashHex: string): Promise<{
       sig: sigB64,
       pubkey_b64: pubB64,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[crypto] Signing failed:', error);
     return {
       alg: 'none',
-      note: `Signing failed: ${error?.message || String(error)}`,
+      note: `Signing failed: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
 }
@@ -116,7 +116,7 @@ export async function verifySignatureEd25519(
     );
 
     return await crypto.subtle.verify('Ed25519', pubKey, signature, data);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[crypto] Verification failed:', error);
     return false;
   }

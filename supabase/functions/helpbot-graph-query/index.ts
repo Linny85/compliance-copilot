@@ -1,14 +1,15 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
-import { embed, chat, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { embed, chat, getAiProviderInfo } from "../_shared/aiClient.ts";
 
-console.log('[helpbot-graph-query boot]', {
-  base: getLovableBaseUrl(),
-  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
-});
+console.log('[helpbot-graph-query boot]', getAiProviderInfo());
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+type EntityMatch = { label?: string };
+type GraphContextEntry = { entity: string; neighbor: string; relation: string; weight?: number };
+type HybridContextEntry = { source_type?: string; content?: string };
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -43,11 +44,13 @@ Deno.serve(async (req) => {
       console.error("[helpbot-graph-query] Error matching entities:", entErr);
     }
 
-    const entityLabels = entities?.map((e: any) => e.label) ?? [];
+    const entityLabels = ((entities ?? []) as EntityMatch[])
+      .map((entity) => entity.label)
+      .filter((label): label is string => Boolean(label));
     console.log(`[helpbot-graph-query] Found ${entityLabels.length} relevant entities:`, entityLabels);
 
     // 3️⃣ Get graph context (entity relationships)
-    let graphContext: any[] = [];
+    let graphContext: GraphContextEntry[] = [];
     if (entityLabels.length > 0) {
       const { data: graphCtx, error: graphErr } = await sb.rpc("get_graph_context", {
         p_entity_labels: entityLabels,
@@ -57,7 +60,7 @@ Deno.serve(async (req) => {
       if (graphErr) {
         console.error("[helpbot-graph-query] Error getting graph context:", graphErr);
       } else {
-        graphContext = graphCtx ?? [];
+        graphContext = (graphCtx ?? []) as GraphContextEntry[];
       }
     }
 
@@ -73,6 +76,7 @@ Deno.serve(async (req) => {
     if (hybridErr) {
       console.error("[helpbot-graph-query] Error getting hybrid context:", hybridErr);
     }
+    const hybridContext = (hybridCtx ?? []) as HybridContextEntry[];
 
     // 5️⃣ Build context string
     const contextParts: string[] = [];
@@ -80,16 +84,16 @@ Deno.serve(async (req) => {
     // Add graph relationships
     if (graphContext.length > 0) {
       contextParts.push("=== Knowledge Graph Context ===");
-      graphContext.forEach(r => {
-        contextParts.push(`${r.entity} [${r.relation}] ${r.neighbor} (weight: ${r.weight})`);
+      graphContext.forEach((relation) => {
+        contextParts.push(`${relation.entity} [${relation.relation}] ${relation.neighbor} (weight: ${relation.weight ?? 1})`);
       });
     }
 
     // Add hybrid RAG context
-    if (hybridCtx && hybridCtx.length > 0) {
+    if (hybridContext.length > 0) {
       contextParts.push("\n=== Document & Entity Context ===");
-      hybridCtx.forEach((c: any) => {
-        contextParts.push(`[${c.source_type}] ${c.content}`);
+      hybridContext.forEach((contextEntry) => {
+        contextParts.push(`[${contextEntry.source_type}] ${contextEntry.content}`);
       });
     }
 
@@ -126,9 +130,9 @@ Deno.serve(async (req) => {
     ]);
 
     // 8️⃣ Extract sources from hybrid context
-    const sources = hybridCtx
-      ?.filter((c: any) => c.source_type === "chunk")
-      .map((c: any) => ({ title: "Document", uri: "#" })) ?? [];
+    const sources = hybridContext
+      .filter((contextEntry) => contextEntry.source_type === "chunk")
+      .map(() => ({ title: "Document", uri: "#" }));
 
     console.log(`[helpbot-graph-query] Generated answer (${answer.length} chars)`);
 
@@ -140,9 +144,10 @@ Deno.serve(async (req) => {
       sources,
       disclaimer: getDisclaimer(lang)
     });
-  } catch (e: any) {
-    console.error("[helpbot-graph-query] Error:", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal error";
+    console.error("[helpbot-graph-query] Error:", error);
+    return json({ error: message }, 500);
   }
 });
 
@@ -156,7 +161,7 @@ function getDisclaimer(lang: string): string {
   }
 }
 
-function json(body: any, status = 200) {
+function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" }

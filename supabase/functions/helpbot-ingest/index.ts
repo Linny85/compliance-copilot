@@ -1,10 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { embedBatch, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { embedBatch, getAiProviderInfo } from "../_shared/aiClient.ts";
 
-console.log('[helpbot-ingest boot]', {
-  base: getLovableBaseUrl(),
-  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
-});
+console.log('[helpbot-ingest boot]', getAiProviderInfo());
 
 type IngestReq = {
   title: string;
@@ -53,21 +50,22 @@ Deno.serve(async (req) => {
       chunk_no: i,
       content: c,
       tokens: null,
-      embedding: embeddings[i] as any
+      embedding: embeddings[i]
     }));
     const { error: insErr } = await sb.from("helpbot_chunks")
       .upsert(rows, { onConflict: 'doc_id,chunk_no' });
     if (insErr) throw insErr;
 
     return json({ ok: true, doc_id: doc.id, chunks: rows.length });
-  } catch (e: any) {
-    console.error("[helpbot-ingest]", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal error";
+    console.error("[helpbot-ingest]", error);
+    return json({ error: message }, 500);
   }
 });
 
-function json(b: any, status = 200) {
-  return new Response(JSON.stringify(b), { status, headers: { "Content-Type": "application/json" } });
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 }
 
 function chunkText(text: string, maxLen = 1500) {

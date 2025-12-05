@@ -1,20 +1,26 @@
 import { corsHeaders } from "../_shared/cors.ts";
-import { getLovableBaseUrl, lovableFetch } from "../_shared/lovableClient.ts";
+import { getAiProviderInfo, aiFetch } from "../_shared/aiClient.ts";
+
+type DnsReport = {
+  a: string[];
+  aaaa: string[];
+  err: string | null;
+};
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   
   try {
-    const base = getLovableBaseUrl();
-    const key = (Deno.env.get("LOVABLE_API_KEY") ?? "").trim();
-    const keySet = key.length > 0;
+    const info = getAiProviderInfo();
+    const base = info.baseUrl;
+    const keySet = info.keySet;
 
     // 0) DNS resolution from Edge Runtime
-    let dns: any = { a: [], aaaa: [], err: null };
+    const dns: DnsReport = { a: [], aaaa: [], err: null };
     try {
       dns.a = await Deno.resolveDns(new URL(base).hostname, "A");
       try { dns.aaaa = await Deno.resolveDns(new URL(base).hostname, "AAAA"); } catch { dns.aaaa = []; }
-    } catch (e) { dns.err = String(e); }
+    } catch (error) { dns.err = String(error); }
 
     // 1) TLS/Reachability via HEAD
     let tlsOk = true, tlsStatus = 0, tlsBody = "";
@@ -30,7 +36,7 @@ Deno.serve(async (req) => {
     // 2) /models endpoint (if available)
     let modelsStatus = 0, modelsBody = "";
     try {
-      const mRes = await lovableFetch("/models", {
+      const mRes = await aiFetch("/models", {
         method: "GET",
         headers: { "Accept": "application/json", "Connection": "close" }
       });
@@ -44,7 +50,7 @@ Deno.serve(async (req) => {
     // 3) Minimal embedding test (without dimensions)
     let embStatus = 0, embBody = "";
     try {
-      const embRes = await lovableFetch("/embeddings", {
+      const embRes = await aiFetch("/embeddings", {
         method: "POST",
         headers: { "Accept": "application/json", "Connection": "close" },
         body: JSON.stringify({
@@ -62,18 +68,18 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({
       base,
       keySet,
-      keyPreview: keySet ? (key.slice(0, 4) + "…" + key.slice(-4)) : null,
+      provider: info.provider,
       dns,
       tls: { ok: tlsOk, status: tlsStatus, body: tlsBody },
       models: { status: modelsStatus, body: modelsBody },
       embeddings: { status: embStatus, body: embBody },
       ts: new Date().toISOString()
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" }});
-  } catch (e: any) {
-    console.error('[helpbot-health] Error:', e);
+  } catch (error: unknown) {
+    console.error('[helpbot-health] Error:', error);
     return new Response(JSON.stringify({ 
-      error: String(e), 
-      base: getLovableBaseUrl(),
+      error: String(error), 
+      base: getAiProviderInfo().baseUrl,
       ts: new Date().toISOString()
     }), {
       status: 500, 

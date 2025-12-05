@@ -1,11 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
-import { embed, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { embed, getAiProviderInfo } from "../_shared/aiClient.ts";
 
-console.log('[helpbot-memory-eval boot]', {
-  base: getLovableBaseUrl(),
-  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
-});
+console.log('[helpbot-memory-eval boot]', getAiProviderInfo());
 
 const MAX_CONTEXT_MESSAGES = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "10");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -89,9 +86,10 @@ Deno.serve(async (req) => {
       count: top.length,
       total_evaluated: msgs.length
     });
-  } catch (e: any) {
-    console.error("[helpbot-memory-eval] Error:", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+  } catch (error: unknown) {
+    console.error("[helpbot-memory-eval] Error:", error);
+    const message = error instanceof Error ? error.message : "Internal error";
+    return json({ error: message }, 500);
   }
 });
 
@@ -109,7 +107,7 @@ function cosine(a: number[], b: number[]): number {
   return dot / (magA * magB);
 }
 
-function json(body: any, status = 200) {
+function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" }

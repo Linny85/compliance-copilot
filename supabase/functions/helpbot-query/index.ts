@@ -1,10 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { embed, chat, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { embed, chat, getAiProviderInfo } from "../_shared/aiClient.ts";
 
-console.log('[helpbot-query boot]', {
-  base: getLovableBaseUrl(),
-  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
-});
+console.log('[helpbot-query boot]', getAiProviderInfo());
 
 const TOP_K = Number(Deno.env.get("HELPBOT_TOP_K") ?? "6");
 const THRESH = Number(Deno.env.get("HELPBOT_SIM_THRESHOLD") ?? "0.35");
@@ -14,6 +11,13 @@ type QueryReq = {
   lang?: "de"|"en"|"sv";
   jurisdiction?: string;
   doc_types?: ("law"|"guideline"|"product-doc")[];
+};
+
+type SearchRow = {
+  sim: number | string;
+  title?: string;
+  source_uri?: string;
+  content?: string;
 };
 
 Deno.serve(async (req) => {
@@ -44,7 +48,7 @@ Deno.serve(async (req) => {
     });
     if (qErr) throw qErr;
 
-    const matches = (rows ?? []).filter((r: any) => Number(r.sim) <= THRESH);
+    const matches = ((rows ?? []) as SearchRow[]).filter((row) => Number(row.sim) <= THRESH);
     if (!matches.length) {
       return json({
         answer: noAnswer(body.lang ?? "de"),
@@ -53,8 +57,8 @@ Deno.serve(async (req) => {
       });
     }
 
-    const context = matches.map((r: any, i: number) =>
-      `[[DOC ${i+1} | ${r.title} | ${r.source_uri}]]\n${r.content}`
+    const context = matches.map((row, i) =>
+      `[[DOC ${i + 1} | ${row.title} | ${row.source_uri}]]\n${row.content}`
     ).join("\n\n---\n\n");
 
     const sys = systemPrompt(body.lang ?? "de");
@@ -68,17 +72,18 @@ Deno.serve(async (req) => {
       { role: "user", content: prompt }
     ]);
 
-    const sources = matches.map((r: any) => ({ title: r.title, uri: r.source_uri }));
+    const sources = matches.map((row) => ({ title: row.title, uri: row.source_uri }));
 
     return json({ answer, sources, disclaimer: disclaimer(body.lang ?? "de") });
-  } catch (e: any) {
-    console.error("[helpbot-query]", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal error";
+    console.error("[helpbot-query]", error);
+    return json({ error: message }, 500);
   }
 });
 
-function json(b:any, status=200) {
-  return new Response(JSON.stringify(b), { status, headers: { "Content-Type":"application/json" } });
+function json(body: unknown, status=200) {
+  return new Response(JSON.stringify(body), { status, headers: { "Content-Type":"application/json" } });
 }
 function escapeSql(s:string){ return s.replace(/'/g,"''"); }
 

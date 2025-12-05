@@ -1,12 +1,14 @@
 // Kollege Norrly - Hardened AI Compliance Assistant
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { corsHeaders } from "../_shared/cors.ts";
 import { classifyQuery, getDenialMessage, checkRateLimit as checkGuardRateLimit, recordDenial } from "./guardRails.ts";
+import { chat as aiChat, getAiProviderInfo } from "../_shared/aiClient.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-const OFFLINE_MODE = !LOVABLE_API_KEY;
+const aiInfo = getAiProviderInfo();
+const OFFLINE_MODE = !aiInfo.keySet;
+const PROVIDER_LABEL = aiInfo.provider.toUpperCase();
 
 // Helper functions
 function json(body: unknown, status = 200) {
@@ -28,21 +30,27 @@ const err = (message: string, reqId: string, status = 400) =>
   }, status);
 
 // Success envelope with multiple schema compatibility
-function successEnvelope(params: {
+type HistoryEntry = Record<string, unknown>;
+type SourceEntry = Record<string, unknown>;
+
+type SuccessEnvelopeParams = {
   sessionId: string;
   answer: string;
-  history?: any[];
+  history?: HistoryEntry[];
   reqId?: string;
   provider?: string;
-  agent?: any;
-  sources?: any[];
-}) {
+  agent?: typeof AGENT;
+  sources?: SourceEntry[];
+  debug?: Record<string, unknown>;
+};
+
+function successEnvelope(params: SuccessEnvelopeParams) {
   const { 
     sessionId, 
     answer, 
     history = [], 
     reqId = crypto.randomUUID(), 
-    provider = "LOVABLE_AI", 
+    provider = PROVIDER_LABEL,
     agent,
     sources = []
   } = params;
@@ -201,6 +209,15 @@ const sbAdmin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
 type ChatRow = { role: "user" | "assistant" | "system"; content: string };
 type ChatMsg = { role: 'user' | 'assistant'; content: string };
+type ChatRequest = {
+  question?: string;
+  lang?: string;
+  session_id?: string;
+  user_id?: string;
+  module?: string;
+  debug?: boolean;
+  [key: string]: unknown;
+};
 
 async function getContext(sessionId: string): Promise<ChatRow[]> {
   try {
@@ -212,8 +229,8 @@ async function getContext(sessionId: string): Promise<ChatRow[]> {
       .limit(8);
     if (error) throw error;
     return (data ?? []).reverse() as ChatRow[];
-  } catch (e) {
-    console.warn("[helpbot-chat] context fetch failed", e);
+  } catch (error) {
+      console.warn("[helpbot-chat] context fetch failed", error instanceof Error ? error : new Error(String(error)));
     return [];
   }
 }
@@ -224,13 +241,13 @@ function roughTokenCount(text: string): number {
 }
 
 async function loadMemory(
-  sbAdmin: any,
+  client: SupabaseClient,
   userId: string | null,
   module: string,
   locale: string
 ): Promise<ChatMsg[]> {
   if (!userId) return [];
-  const { data, error } = await sbAdmin
+  const { data, error } = await client
     .from('helpbot_memory')
     .select('messages')
     .eq('user_id', userId)
@@ -242,7 +259,7 @@ async function loadMemory(
 }
 
 async function saveMemory(
-  sbAdmin: any,
+  client: SupabaseClient,
   userId: string | null,
   module: string,
   locale: string,
@@ -251,7 +268,7 @@ async function saveMemory(
 ) {
   if (!userId || append.length === 0) return;
 
-  const { data: existing } = await sbAdmin
+  const { data: existing } = await client
     .from('helpbot_memory')
     .select('messages')
     .eq('user_id', userId)
@@ -279,7 +296,7 @@ async function saveMemory(
     updated_at: new Date().toISOString()
   };
 
-  await sbAdmin
+  await client
     .from('helpbot_memory')
     .upsert(upsertRow, { onConflict: 'user_id,module,locale' });
 }
@@ -292,8 +309,8 @@ async function saveMsg(sessionId: string, role: "user" | "assistant", content: s
       content,
     });
     if (error) throw error;
-  } catch (e) {
-    console.warn("[helpbot-chat] save failed", e);
+  } catch (error) {
+      console.warn("[helpbot-chat] save failed", error instanceof Error ? error : new Error(String(error)));
   }
 }
 
@@ -348,8 +365,8 @@ async function getKnowledgeContext(lang: Lang, mod: string, questionHint?: strin
       ctx += (ctx ? '\n' : '') + c;
     }
     return ctx;
-  } catch (e) {
-    console.warn('[helpbot-chat] getKnowledgeContext failed', e);
+  } catch (error) {
+    console.warn('[helpbot-chat] getKnowledgeContext failed', error);
     return '';
   }
 }
@@ -366,8 +383,8 @@ async function resolveSynonyms(text: string): Promise<string> {
       result = result.replace(regex, s.module);
     }
     return result;
-  } catch (e) {
-    console.warn('[helpbot-chat] resolveSynonyms failed', e);
+  } catch (error) {
+    console.warn('[helpbot-chat] resolveSynonyms failed', error);
     return text;
   }
 }
@@ -391,39 +408,24 @@ function legalGuard(answer: string, userQuestion: string): { answer: string; tri
   return { answer, triggered: false, reason: 'none' };
 }
 
-// === Lovable Chat Call ===
-async function chat(
+// === AI Chat Call ===
+async function runAssistantChat(
   messages: { role: "system" | "user" | "assistant"; content: string }[], 
   lang: Lang, 
   question: string
 ): Promise<string> {
-  if (!LOVABLE_API_KEY) {
+  if (OFFLINE_MODE) {
     return offlineFallbackAnswer(question, lang);
   }
-  
+
   try {
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        temperature: 0.7,
-        max_tokens: 1000,
-        messages,
-      }),
+    return await aiChat(messages, {
+      model: Deno.env.get("MODEL") ?? "gpt-4.1-mini",
+      temperature: 0.7,
+      maxTokens: 1000,
     });
-    if (!res.ok) {
-      const t = await res.text();
-      throw new Error(`Lovable AI error ${res.status}: ${t}`);
-    }
-    const data = await res.json();
-    return data?.choices?.[0]?.message?.content ?? "";
-  } catch (e) {
-    console.error("[helpbot-chat] AI call failed, using fallback", e);
-    // Bei Ausfall des Providers: elegant auf Fallback wechseln
+  } catch (error) {
+    console.error("[helpbot-chat] AI call failed, using fallback", error);
     return offlineFallbackAnswer(question, lang);
   }
 }
@@ -585,8 +587,14 @@ Deno.serve(async (req: Request) => {
     const ct = req.headers.get("content-type") ?? "";
     if (!ct.toLowerCase().includes("application/json")) return err("Unsupported Media Type", reqId, 415);
 
-    let body: any;
-    try { body = await req.json(); } catch { return err("Invalid JSON body", reqId, 400); }
+    let rawBody: unknown;
+    try {
+      rawBody = await req.json();
+    } catch {
+      return err("Invalid JSON body", reqId, 400);
+    }
+
+    const body = (rawBody ?? {}) as ChatRequest;
 
     const question = (body?.question ?? "").toString().trim();
     const rawLang = (body?.lang ?? "").toString();
@@ -688,10 +696,11 @@ Deno.serve(async (req: Request) => {
           .eq("session_id", sessionId)
           .order("created_at", { ascending: false })
           .limit(10);
-        const lastAssistant = (data ?? []).find((r: any) => r.role === "assistant")?.content ?? "";
+        const lastAssistantRows = (data ?? []) as ChatRow[];
+        const lastAssistant = lastAssistantRows.find((row) => row.role === "assistant")?.content ?? "";
         if (!lastAssistant) return json({ ok: false, error: "Nothing to translate", reqId }, 400);
 
-        const translated = await chat([
+        const translated = await runAssistantChat([
           { role: "system", content: "Translate the following text faithfully. Do not add explanations." },
           { role: "user", content: `Target language: ${target}\n\nText:\n${lastAssistant}` },
         ], target, lastAssistant);
@@ -746,11 +755,11 @@ add_header Permissions-Policy "geolocation=(), microphone=(), camera=(), acceler
 
       if (cmd === "/health") {
         const health = {
-          provider: LOVABLE_API_KEY ? "LOVABLE_AI" : "OFFLINE",
+          provider: OFFLINE_MODE ? "OFFLINE" : PROVIDER_LABEL,
           env: {
             SUPABASE_URL: !!SUPABASE_URL,
             SERVICE_ROLE: !!SERVICE_ROLE,
-            LOVABLE_API_KEY: !!LOVABLE_API_KEY,
+            AI_KEY: aiInfo.keySet,
           },
           rate_limit: "30 req / 5 min per session",
           time: new Date().toISOString(),
@@ -937,7 +946,7 @@ ${memoryBlock}`
       { role: "user", content: resolvedQuestion },
     ] as { role: "system" | "user" | "assistant"; content: string }[];
 
-    let rawAnswer = await chat(messages, lang, resolvedQuestion);
+    const rawAnswer = await runAssistantChat(messages, lang, resolvedQuestion);
 
     // Intro deaktiviert – Begrüßung erfolgt jetzt ausschließlich über System-Prompt
     // if (isFirstTurn) {
@@ -1003,7 +1012,7 @@ ${memoryBlock}`
       answer, 
       history: fullHistory ?? [], 
       reqId, 
-      provider: "LOVABLE_AI", 
+      provider: PROVIDER_LABEL, 
       agent: AGENT 
     };
 
@@ -1028,8 +1037,10 @@ ${memoryBlock}`
 
     return json(successEnvelope(basePayload), 200);
 
-  } catch (e: any) {
-    console.error("[helpbot-chat] fatal", { error: String(e), stack: e?.stack });
-    return err(`Internal error: ${e?.message ?? "Unknown"}`, crypto.randomUUID(), 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    const stack = error instanceof Error ? error.stack : undefined;
+    console.error("[helpbot-chat] fatal", { error: message, stack });
+    return err(`Internal error: ${message || "Unknown"}`, crypto.randomUUID(), 500);
   }
 });

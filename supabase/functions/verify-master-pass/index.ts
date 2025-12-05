@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     const { master, tenantId: requestTenantId } = await req.json().catch(() => ({}));
     
     // Resolve tenant ID (prefer request body, fallback to JWT/profiles)
-    let tenantId = requestTenantId || await resolveTenantId(claims);
+    const tenantId = requestTenantId || await resolveTenantId(claims);
     if (!tenantId) {
       return new Response(JSON.stringify({ ok: false, error: "no_tenant", code: "E_NO_TENANT" }), {
         status: 400,

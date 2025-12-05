@@ -32,7 +32,9 @@ export async function getTenantOpenAIKey(tenantId?: string): Promise<string | nu
       .eq('tenant_id', tenantId)
       .maybeSingle();
     if (!error && data?.openai_api_key) return data.openai_api_key;
-  } catch {}
+  } catch (error) {
+    console.error('[openaiClient] tenant_settings lookup failed:', error);
+  }
 
   // Try 2: tenants
   try {
@@ -42,7 +44,9 @@ export async function getTenantOpenAIKey(tenantId?: string): Promise<string | nu
       .eq('id', tenantId)
       .maybeSingle();
     if (!error && data?.openai_api_key) return data.openai_api_key;
-  } catch {}
+  } catch (error) {
+    console.error('[openaiClient] tenants lookup failed:', error);
+  }
 
   // Try 3: unternehmen
   try {
@@ -52,7 +56,8 @@ export async function getTenantOpenAIKey(tenantId?: string): Promise<string | nu
       .eq('id', tenantId)
       .maybeSingle();
     if (!error && data?.openai_api_key) return data.openai_api_key;
-  } catch {
+  } catch (error) {
+    console.error('[openaiClient] unternehmen lookup failed:', error);
     // Try 4: "Unternehmen" (quoted)
     try {
       const { data, error } = await supabase
@@ -61,7 +66,9 @@ export async function getTenantOpenAIKey(tenantId?: string): Promise<string | nu
         .eq('id', tenantId)
         .maybeSingle();
       if (!error && data?.openai_api_key) return data.openai_api_key;
-    } catch {}
+    } catch (nestedError) {
+      console.error('[openaiClient] "Unternehmen" lookup failed:', nestedError);
+    }
   }
 
   // Fallback to global key
