@@ -13,7 +13,8 @@ test.describe('Dashboard – Tenant-Pinning & Stability', () => {
     await page.waitForLoadState('networkidle');
     
     // Banner should be visible when no tenant is set
-    const noBanner = await page.getByText(/kein mandant gewählt|no tenant selected/i).isVisible().catch(() => false);
+    const tenantBanner = page.getByText(/kein mandant (?:gewählt|verbunden)|mandant wählen|no tenant (?:selected|linked)/i);
+    const noBanner = await tenantBanner.isVisible().catch(() => false);
     
     if (noBanner) {
       // Set tenant and verify banner disappears
@@ -25,7 +26,7 @@ test.describe('Dashboard – Tenant-Pinning & Stability', () => {
       await page.waitForLoadState('networkidle');
       
       // Banner should be hidden
-      await expect(page.getByText(/kein mandant gewählt|no tenant selected/i)).not.toBeVisible();
+      await expect(tenantBanner).not.toBeVisible();
     }
   });
 
@@ -90,7 +91,12 @@ test.describe('Dashboard – Tenant-Pinning & Stability', () => {
     
     // Check if we're in a dev/preview environment
     const hostname = await page.evaluate(() => window.location.hostname);
-    const isDevOrPreview = hostname === 'localhost' || hostname.includes('lovableproject');
+    const isDevOrPreview = hostname === 'localhost'
+      || hostname === '127.0.0.1'
+      || hostname.endsWith('.app.github.dev')
+      || hostname.endsWith('.codespaces.app')
+      || hostname.endsWith('.compliance-copilot.com')
+      || hostname.includes('compliance-copilot');
     
     if (isDevOrPreview) {
       // Debug badge should be visible

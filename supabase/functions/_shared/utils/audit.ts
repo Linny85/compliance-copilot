@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import { supabaseAdmin } from "./security.ts";
 
 /** Einheitliche Audit-API (typsicher & fehlertolerant) */

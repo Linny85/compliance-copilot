@@ -36,6 +36,8 @@
     "evidence": "Upload evidence and documents."
   },
   "quickstart": {
-    "dashboard": []
+    "dashboard": {
+      "empty": "No quickstart actions configured yet."
+    }
   }
 }

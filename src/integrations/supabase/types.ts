@@ -3978,6 +3978,11 @@ export type Database = {
           master_pass_iter: number | null
           master_pass_salt: string | null
           name: string
+          license_tier: "trial" | "basic" | "pro" | "enterprise"
+          license_expires_at: string | null
+          license_max_users: number | null
+          license_allowed_origins: string[]
+          license_notes: string | null
           onboarding_completed_at: string | null
           onboarding_done: boolean | null
           onboarding_progress: number | null
@@ -4011,6 +4016,11 @@ export type Database = {
           master_pass_iter?: number | null
           master_pass_salt?: string | null
           name: string
+          license_tier?: "trial" | "basic" | "pro" | "enterprise"
+          license_expires_at?: string | null
+          license_max_users?: number | null
+          license_allowed_origins?: string[]
+          license_notes?: string | null
           onboarding_completed_at?: string | null
           onboarding_done?: boolean | null
           onboarding_progress?: number | null
@@ -4044,6 +4054,11 @@ export type Database = {
           master_pass_iter?: number | null
           master_pass_salt?: string | null
           name?: string
+          license_tier?: "trial" | "basic" | "pro" | "enterprise"
+          license_expires_at?: string | null
+          license_max_users?: number | null
+          license_allowed_origins?: string[]
+          license_notes?: string | null
           onboarding_completed_at?: string | null
           onboarding_done?: boolean | null
           onboarding_progress?: number | null

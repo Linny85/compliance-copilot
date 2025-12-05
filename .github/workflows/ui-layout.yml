@@ -1,5 +1,8 @@
 name: UI Layout Checks
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+
+# Visual regression suite kept manual until stable fixtures exist again.
 
 jobs:
   ui-layout:

@@ -1,14 +1,15 @@
-import i18n from 'i18next';
+import i18n, { type BackendModule, type ReadCallback } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import Backend from 'i18next-http-backend';
 import { detectBrowserLocale } from './detect';
 import { emitMissingKey } from './missingKeyBus';
 
 const DEV = import.meta.env.DEV;
 
+type JsonRecord = Record<string, unknown>;
+
 // Helper: converts flat JSON {"a.b": "x", "a.c": "y"} to nested {a:{b:"x", c:"y"}}
-function toNested(obj: Record<string, any>): Record<string, any> {
-  const out: any = {};
+function toNested(obj: JsonRecord): JsonRecord {
+  const out: JsonRecord = {};
   for (const [k, v] of Object.entries(obj)) {
     if (!k.includes('.')) {
       out[k] = v;
@@ -21,8 +22,10 @@ function toNested(obj: Record<string, any>): Record<string, any> {
       if (i === parts.length - 1) {
         cur[p] = v;
       } else {
-        cur[p] ??= {};
-        cur = cur[p];
+        if (typeof cur[p] !== 'object' || cur[p] === null) {
+          cur[p] = {};
+        }
+        cur = cur[p] as JsonRecord;
       }
     }
   }
@@ -31,7 +34,7 @@ function toNested(obj: Record<string, any>): Record<string, any> {
 
 // Add DEV-only fetch tracer to catch 404/HTML responses
 if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
-  // @ts-ignore
+  // @ts-expect-error Dev-only marker on window
   window.__I18N_FETCH_TRACER__ = true;
   const origFetch = window.fetch;
   window.fetch = async (input, init) => {
@@ -41,7 +44,11 @@ if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
       if (/\/locales\/.+\.json/.test(url)) {
         console.debug('[i18n] fetch', res.status, url);
       }
-    } catch {}
+    } catch (error) {
+      if (DEV) {
+        console.warn('[i18n] fetch tracer failed to log request', error);
+      }
+    }
     return res;
   };
 }
@@ -50,6 +57,61 @@ if (DEV && !('__I18N_FETCH_TRACER__' in window)) {
 const ABS_BASE = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '/');
 const loadPathFn = (lng: string, ns: string) =>
   new URL(`${ABS_BASE}locales/${lng}/${ns}.json`, window.location.origin).toString();
+
+type LocalBackendOptions = {
+  loadPath?: string | ((lng: string, ns: string) => string);
+  requestOptions?: RequestInit;
+};
+
+function createLocalBackend(): BackendModule {
+  let backendOptions: LocalBackendOptions | undefined;
+
+  const resolvePath = (lng: string, ns: string) => {
+    if (!backendOptions?.loadPath) {
+      return loadPathFn(lng, ns);
+    }
+    if (typeof backendOptions.loadPath === 'function') {
+      return backendOptions.loadPath(lng, ns);
+    }
+    return backendOptions.loadPath
+      .replace('{{lng}}', lng)
+      .replace('{{ns}}', ns);
+  };
+
+  const buildFetchInit = (): RequestInit => {
+    const options = backendOptions?.requestOptions ?? {};
+    const headers = new Headers(options.headers ?? {});
+    if (!headers.has('Accept')) {
+      headers.set('Accept', 'application/json');
+    }
+    return {
+      cache: options.cache ?? 'no-store',
+      ...options,
+      headers,
+    };
+  };
+
+  return {
+    type: 'backend',
+    init(_services, options) {
+      backendOptions = options as LocalBackendOptions;
+    },
+    read(language: string, namespace: string, callback: ReadCallback) {
+      const targetUrl = resolvePath(language, namespace);
+      fetch(targetUrl, buildFetchInit())
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`[i18n] Failed to load ${targetUrl}: ${response.status}`);
+          }
+          return response.text();
+        })
+        .then((payload) => callback(null, payload))
+        .catch((error) => callback(error as Error, null));
+    },
+  };
+}
+
+const LocalBackend = createLocalBackend();
 
 // Allow forced HTTP loading via env flag (bypasses dev fallback)
 const FORCE_HTTP = import.meta.env.VITE_I18N_FORCE_HTTP === 'true';
@@ -98,12 +160,12 @@ const devResources = (!FORCE_HTTP && DEV) ? {
       generatePolicyDesc: 'Erzeuge Richtlinien auf Basis deiner Daten.',
       nextStepsHeader: 'Nächste Schritte',
       nextStepsSub: 'Starte hier, um schneller voranzukommen.',
-      trialStatus: 'Teststatus',
+      trialStatus: 'Evaluierungszugang',
       active: 'Aktiv',
-      trialStatusDesc: 'Deine Testphase läuft.',
+      trialStatusDesc: 'Dein Evaluierungsfenster läuft.',
       daysRemaining: '{{count}} Tage verbleibend',
-      upgradePlan: 'Plan upgraden',
-      trialNote: 'Du kannst jederzeit upgraden.',
+      upgradePlan: 'Plan verwalten',
+      trialNote: 'Der Evaluierungszugang ist begrenzt – ein Upgrade hält Automationen aktiv.',
       organization: 'Organisation',
       organizationDesc: 'Stammdaten deiner Organisation.',
       companyName: 'Unternehmensname',
@@ -168,12 +230,12 @@ const devResources = (!FORCE_HTTP && DEV) ? {
       generatePolicyDesc: 'Create policies from your data.',
       nextStepsHeader: 'Next steps',
       nextStepsSub: 'Start here to move faster.',
-      trialStatus: 'Trial status',
+      trialStatus: 'Evaluation access',
       active: 'Active',
-      trialStatusDesc: 'Your trial is running.',
+      trialStatusDesc: 'Your evaluation window is active.',
       daysRemaining: '{{count}} days remaining',
-      upgradePlan: 'Upgrade plan',
-      trialNote: 'You can upgrade any time.',
+      upgradePlan: 'Manage plan',
+      trialNote: 'Evaluation access is limited – upgrade to keep automations running.',
       organization: 'Organization',
       organizationDesc: 'Your organization master data.',
       companyName: 'Company name',
@@ -238,12 +300,12 @@ const devResources = (!FORCE_HTTP && DEV) ? {
       generatePolicyDesc: 'Skapa policyer baserat på dina data.',
       nextStepsHeader: 'Nästa steg',
       nextStepsSub: 'Börja här för att komma igång snabbare.',
-      trialStatus: 'Teststatus',
+      trialStatus: 'Utvärderingsåtkomst',
       active: 'Aktiv',
-      trialStatusDesc: 'Din testperiod pågår.',
+      trialStatusDesc: 'Din utvärderingsperiod är aktiv.',
       daysRemaining: '{{count}} dagar kvar',
-      upgradePlan: 'Uppgradera plan',
-      trialNote: 'Du kan uppgradera när som helst.',
+      upgradePlan: 'Hantera plan',
+      trialNote: 'Utvärderingsåtkomsten är begränsad – uppgradera för att behålla automationer.',
       organization: 'Organisation',
       organizationDesc: 'Din organisations grunddata.',
       companyName: 'Företagsnamn',
@@ -270,17 +332,18 @@ const devResources = (!FORCE_HTTP && DEV) ? {
 
 // Detect initial language
 const initialLng = detectBrowserLocale(['de', 'en', 'sv'], 'de');
+const startLng = initialLng || 'de';
 
 // Singleton guard to prevent double initialization
 if (!i18n.isInitialized) {
   i18n
-    .use(Backend)
+    .use(LocalBackend)
     .use(initReactI18next)
     .init({
-    lng: initialLng,
-    fallbackLng: 'de',
+    lng: startLng,
+    fallbackLng: ['de', 'en'],
     debug: import.meta.env.DEV,
-    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'ops', 'organization', 'audit', 'incidents'],
+    ns: ['common', 'dashboard', 'documents', 'billing', 'nis2', 'checks', 'controls', 'admin', 'helpbot', 'norrly', 'training', 'assistant', 'aiSystems', 'aiAct', 'evidence', 'scope', 'nav', 'reports', 'ops', 'organization', 'audit', 'incidents', 'landing'],
     defaultNS: 'common',
     preload: ['de', 'en', 'sv'],
     load: 'currentOnly',
@@ -303,7 +366,7 @@ if (!i18n.isInitialized) {
         }
 
         // 2) Parse JSON
-        let parsed: any;
+        let parsed: unknown;
         try {
           parsed = JSON.parse(trimmed);
         } catch (e) {
@@ -312,14 +375,21 @@ if (!i18n.isInitialized) {
           throw new Error(`[i18n] Invalid JSON in ${langInfo}/${nsInfo}: ${e instanceof Error ? e.message : String(e)}`);
         }
 
+        if (!parsed || typeof parsed !== 'object') {
+          return parsed;
+        }
+
+        const parsedRecord = parsed as JsonRecord;
         // 3) Auto-convert flat→nested only if needed
-        const hasFlat = Object.keys(parsed).some(k => k.includes('.'));
+        const hasFlat = Object.keys(parsedRecord).some(k => k.includes('.'));
         if (import.meta.env.DEV) {
           const langInfo = typeof languages === 'string' ? languages : languages?.[0];
           const nsInfo = typeof namespaces === 'string' ? namespaces : namespaces?.[0];
           try {
-            console.debug('[i18n.parse]', `${langInfo}/${nsInfo}`, 'flat=', hasFlat, 'keys=', Object.keys(parsed).slice(0, 5));
-          } catch {}
+            console.debug('[i18n.parse]', `${langInfo}/${nsInfo}`, 'flat=', hasFlat, 'keys=', Object.keys(parsedRecord).slice(0, 5));
+          } catch (error) {
+            console.warn('[i18n] failed to log parse debug info', error);
+          }
         }
         if (hasFlat) {
           if (import.meta.env.DEV) {
@@ -327,10 +397,10 @@ if (!i18n.isInitialized) {
             const nsInfo = typeof namespaces === 'string' ? namespaces : namespaces?.[0];
             console.warn(`[i18n] Converting flat keys to nested for ${langInfo}/${nsInfo}`);
           }
-          return toNested(parsed);
+          return toNested(parsedRecord);
         }
 
-        return parsed;
+        return parsedRecord;
       }
     },
     interpolation: { escapeValue: false },

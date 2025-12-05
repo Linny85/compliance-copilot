@@ -36,6 +36,8 @@
     "evidence": "Lade Nachweise und Dokumente hoch."
   },
   "quickstart": {
-    "dashboard": []
+    "dashboard": {
+      "empty": "Noch keine Quickstart-Aktionen hinterlegt."
+    }
   }
 }

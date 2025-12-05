@@ -1,31 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { corsHeaders } from "../_shared/cors.ts";
-
-// =========================================================
-// 🌐 Dual-Provider Configuration (Lovable + OpenAI Fallback)
-// =========================================================
-
-const PROVIDER = Deno.env.get("AI_PROVIDER") ?? "lovable";
-
-const API_KEY = PROVIDER === "openai"
-  ? Deno.env.get("OPENAI_API_KEY")
-  : Deno.env.get("LOVABLE_API_KEY");
-
-const BASE_URL = PROVIDER === "openai"
-  ? Deno.env.get("OPENAI_BASE_URL") ?? "https://api.openai.com/v1"
-  : Deno.env.get("LOVABLE_BASE_URL") ?? "https://ai.gateway.lovable.dev/v1";
-
-const MODEL = Deno.env.get("MODEL") ?? "google/gemini-2.5-flash";
-const EMB_MODEL = Deno.env.get("EMB_MODEL") ?? "text-embedding-3-large";
-const EMB_DIMENSIONS = Number(Deno.env.get("EMB_DIMENSIONS") ?? "1536");
+import { chatCompletion, embed } from "../_shared/aiClient.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-
-function logProvider() {
-  console.log(`[AI Provider] ${PROVIDER.toUpperCase()} → ${BASE_URL}`);
-}
-logProvider();
+const GRAPH_MODEL = Deno.env.get("HELPBOT_GRAPH_MODEL") ?? Deno.env.get("MODEL") ?? "gpt-4.1-mini";
+const EMB_DIM_VALUE = Number(Deno.env.get("EMB_DIMENSIONS") ?? "0");
+const EMBED_OPTIONS = EMB_DIM_VALUE > 0 ? { dimensions: EMB_DIM_VALUE } : undefined;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -54,32 +35,18 @@ Deno.serve(async (req) => {
       ? "Du är en entitetsextraktionsassistent. Identifiera juridiska eller tematiska entiteter och deras relationer i följande text. Returnera JSON: {\"entities\":[{\"label\":\"...\",\"type\":\"...\",\"description\":\"...\"}],\"relations\":[{\"source\":\"...\",\"target\":\"...\",\"relation\":\"...\"}]} Typer: law, article, concept, organization, topic. Relationer: refers_to, explains, derived_from, contradicts, same_as."
       : "Du bist ein Entitätsextraktionsassistent. Erkenne juristische oder thematische Entitäten und deren Beziehungen im folgenden Text. Antworte als JSON: {\"entities\":[{\"label\":\"...\",\"type\":\"...\",\"description\":\"...\"}],\"relations\":[{\"source\":\"...\",\"target\":\"...\",\"relation\":\"...\"}]} Typen: law, article, concept, organization, topic. Relationen: refers_to, explains, derived_from, contradicts, same_as.";
 
-    const response = await fetch(`${BASE_URL}/chat/completions`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content }
-        ],
-        response_format: { type: "json_object" }
-      })
+    const completion = await chatCompletion({
+      model: GRAPH_MODEL,
+      responseFormat: { type: "json_object" },
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content }
+      ]
     });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error("[helpbot-graph-extract] AI error:", data);
-      throw new Error(data?.error?.message ?? "AI extraction failed");
-    }
 
     let extractedData;
     try {
-      extractedData = JSON.parse(data.choices[0].message.content);
+      extractedData = JSON.parse(completion.content);
     } catch (parseErr) {
       console.error("[helpbot-graph-extract] Failed to parse JSON:", parseErr);
       return json({ ok: true, entities: 0, relations: 0, warning: "Failed to parse extraction result" });
@@ -95,7 +62,7 @@ Deno.serve(async (req) => {
     for (const e of entities) {
       if (!e.label) continue;
 
-      const embedding = await embed(e.label);
+      const embedding = await embed(e.label, EMBED_OPTIONS);
 
       // Check if entity already exists
       const { data: existing } = await sb
@@ -194,36 +161,14 @@ Deno.serve(async (req) => {
       entities: entityMap.size,
       relations: relationsCreated
     });
-  } catch (e: any) {
-    console.error("[helpbot-graph-extract] Error:", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal error";
+    console.error("[helpbot-graph-extract] Error:", error);
+    return json({ error: message }, 500);
   }
 });
 
-async function embed(text: string): Promise<number[]> {
-  const response = await fetch(`${BASE_URL}/embeddings`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${API_KEY}`
-    },
-    body: JSON.stringify({
-      model: EMB_MODEL,
-      input: text,
-      dimensions: EMB_DIMENSIONS
-    })
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data?.error?.message ?? "Embedding failed");
-  }
-
-  return data.data[0].embedding as number[];
-}
-
-function json(body: any, status = 200) {
+function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" }

@@ -5,6 +5,8 @@ import { AppModeBanner } from "@/components/AppModeBanner";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import TenantSelector from "@/components/TenantSelector";
+import TenantLicenseBadge from "@/components/TenantLicenseBadge";
+import TenantLicenseNotice from "@/components/TenantLicenseNotice";
 
 /**
  * Shared layout for all authenticated routes
@@ -21,12 +23,14 @@ export function AppLayout() {
           <header className="h-12 flex items-center justify-between px-4 border-b border-border bg-background sticky top-0 z-40" data-testid="app-header" role="banner">
             <SidebarTrigger />
             <div className="flex items-center gap-3">
+              <TenantLicenseBadge />
               <TenantSelector />
               <LanguageSwitcher />
             </div>
           </header>
           <main className="flex-1 flex flex-col overflow-auto" role="main">
             <AppModeBanner />
+            <TenantLicenseNotice />
             <Outlet />
           </main>
         </div>

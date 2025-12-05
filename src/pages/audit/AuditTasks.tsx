@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,11 +28,7 @@ export default function AuditTasks() {
   const navigate = useNavigate();
   const dfLocale = getDateFnsLocale(i18n.language);
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  async function loadTasks() {
+  const loadTasks = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("audit_tasks")
@@ -47,7 +43,11 @@ export default function AuditTasks() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [t]);
+
+  useEffect(() => {
+    loadTasks();
+  }, [loadTasks]);
 
   function getStatusColor(status: string): "default" | "secondary" | "destructive" | "outline" {
     const colors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {

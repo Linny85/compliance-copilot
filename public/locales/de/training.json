@@ -16,29 +16,29 @@
     "nis2": {
       "title": "NIS2-Core",
       "url": "#",
-      "bullets": [
-        "Grundlagen & Pflichten nach NIS2",
-        "Rollen & Verantwortlichkeiten",
-        "Praktische Umsetzung im Unternehmen"
-      ]
+      "bullets": {
+        "line1": "Grundlagen & Pflichten nach NIS2",
+        "line2": "Rollen & Verantwortlichkeiten",
+        "line3": "Praktische Umsetzung im Unternehmen"
+      }
     },
     "lead": {
       "title": "EU AI Act – Führung",
       "url": "#",
-      "bullets": [
-        "Haftung & Governance",
-        "Risikoklassen & Pflichten",
-        "Implementierungsfahrplan"
-      ]
+      "bullets": {
+        "line1": "Haftung & Governance",
+        "line2": "Risikoklassen & Pflichten",
+        "line3": "Implementierungsfahrplan"
+      }
     },
     "emp": {
       "title": "EU AI Act – Mitarbeitende",
       "url": "#",
-      "bullets": [
-        "KI sicher & produktiv einsetzen",
-        "Daten & Prompting-Best-Practices",
-        "Do's & Don'ts im Alltag"
-      ]
+      "bullets": {
+        "line1": "KI sicher & produktiv einsetzen",
+        "line2": "Daten & Prompting-Best-Practices",
+        "line3": "Do's & Don'ts im Alltag"
+      }
     }
   },
   "viewCourse": "Kurs ansehen",

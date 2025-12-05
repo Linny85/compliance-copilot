@@ -2,24 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { VComplianceSummaryRow, VFrameworkComplianceRow, TrendData } from '@/lib/compliance/score';
 import { getTenantId } from '@/lib/tenant';
+import { toPct as pctHelper, toUnit as unitHelper, clampPct as clampPctHelper } from '@/lib/compliance/helpers';
 
-// Helper: normalize 0..1 or 0..100 → 0..1
-export const toUnit = (x: any): number => {
-  const n = Number(x ?? 0);
-  if (!Number.isFinite(n)) return 0;
-  return n > 1 ? n / 100 : n;
-};
-
-// Helper: convert to percentage for display (0..100 int)
-export const toPct = (x: any): number => {
-  const v = Number.isFinite(+x) ? +x : 0;
-  const pct = v <= 1 ? v * 100 : v;
-  return Math.max(0, Math.min(100, Math.round(pct)));
-};
-
-// Helper: clamp percentage to 0..100
-export const clampPct = (n: number): number =>
-  Math.max(0, Math.min(100, Math.round(Number(n) || 0)));
+export const toUnit = unitHelper;
+export const toPct = pctHelper;
+export const clampPct = clampPctHelper;
 
 export function useComplianceData() {
   const [summary, setSummary] = useState<VComplianceSummaryRow | null>(null);

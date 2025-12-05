@@ -1,9 +1,11 @@
+import { SupabaseClient } from '@supabase/supabase-js';
+
 /**
  * Resolves the appropriate locale for a request
  * Priority: X-Locale header → User preference → Tenant default → fallback 'en'
  */
 export async function resolveLocale(
-  supabase: any,
+  supabase: SupabaseClient,
   req: Request,
   tenantId?: string
 ): Promise<string> {

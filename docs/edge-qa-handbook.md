@@ -463,7 +463,7 @@ npm run edge:check
 **Fix:**
 
 ```bash
-export QA_BASE_URL=https://your-app.lovable.app
+export QA_BASE_URL=https://app.compliance-copilot.example
 export QA_AUTH_COOKIE="sb-access-token=..."
 npm run qa:auth
 ```

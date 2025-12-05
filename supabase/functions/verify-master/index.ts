@@ -2,26 +2,32 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 // CORS configuration with allowed origins
 // Set ALLOWED_ORIGINS environment variable as comma-separated list:
-// Example: "http://localhost:5173,https://preview.lovableproject.com,https://prod.example.com"
-// Wildcards *.lovableproject.com and *.lovable.app are checked separately in isOriginAllowed()
-// Fallback: localhost:5173 and 127.0.0.1:5173 for local development
+// Example: "http://localhost:5173,https://preview.compliance-copilot.dev,https://app.compliance-copilot.example"
+// Codespaces (*.app.github.dev) and internal *.compliance-copilot.dev hosts are allowed automatically.
+// Fallback: localhost:5173 and 127.0.0.1:5173 for local development plus a production placeholder domain.
 const ALLOWED_ORIGINS_ENV = Deno.env.get('ALLOWED_ORIGINS') || '';
 const ALLOWED_ORIGINS = ALLOWED_ORIGINS_ENV 
   ? ALLOWED_ORIGINS_ENV.split(',').map(o => o.trim())
   : [
       'http://localhost:5173',
       'http://127.0.0.1:5173',
+      'https://app.compliance-copilot.example',
     ];
 
-// Helper to check if origin is allowed (supports wildcard *.lovableproject.com)
+// Helper to check if origin is allowed (supports wildcard *.app.github.dev for Codespaces)
 function isOriginAllowed(origin: string | null): boolean {
   if (!origin) return false;
   
   // Check exact matches
   if (ALLOWED_ORIGINS.includes(origin)) return true;
   
-  // Check wildcard patterns
-  if (origin.endsWith('.lovableproject.com') || origin.endsWith('.lovable.app')) {
+  // Codespaces: https://<port>-<id>.app.github.dev
+  if (origin.endsWith('.app.github.dev')) {
+    return true;
+  }
+
+  // Future Compliance Copilot preview/prod domains
+  if (origin.endsWith('.compliance-copilot.dev') || origin.endsWith('.compliance-copilot.example')) {
     return true;
   }
   

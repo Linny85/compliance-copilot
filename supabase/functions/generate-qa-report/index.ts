@@ -1,80 +1,69 @@
 // deno-lint-ignore-file no-explicit-any
 import { createClient } from "@supabase/supabase-js";
 import { PDFDocument, StandardFonts } from "pdf-lib";
-import { corsHeaders } from "../_shared/cors.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { assertOrigin, requireUserAndTenant } from "../_shared/access.ts";
 
 const URL = Deno.env.get("SUPABASE_URL")!;
-const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const sbAdmin = createClient(URL, SERVICE_KEY);
+
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
+}
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
   if (req.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method Not Allowed" }), { 
-      status: 405, 
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+    return json({ error: "Method Not Allowed" }, 405, req);
   }
 
-  const auth = req.headers.get("Authorization") || "";
-  const sb = createClient(URL, ANON_KEY, { global: { headers: { Authorization: auth }}});
+  const access = requireUserAndTenant(req);
+  if (access instanceof Response) return access;
+  const { tenantId, userId } = access;
 
   try {
-    const { data: { user } } = await sb.auth.getUser();
-    if (!user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { 
-        status: 401, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
-    }
-
-    const { data: profile } = await sb.from("profiles").select("company_id").eq("id", user.id).maybeSingle();
-    if (!profile?.company_id) {
-      return new Response(JSON.stringify({ error: "No tenant" }), { 
-        status: 400, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
-    }
-    const tenant_id = profile.company_id;
-
-    // Verify admin
-    const { data: roles } = await sb.from("user_roles")
+    const { data: roles, error: rolesError } = await sbAdmin
+      .from("user_roles")
       .select("role")
-      .eq("user_id", user.id)
-      .eq("company_id", tenant_id)
-      .in("role", ["admin","master_admin"]);
-    
+      .eq("user_id", userId)
+      .eq("company_id", tenantId)
+      .in("role", ["admin", "master_admin"]);
+
+    if (rolesError) throw rolesError;
     if (!roles || roles.length === 0) {
-      return new Response(JSON.stringify({ error: "FORBIDDEN_ADMIN_ONLY" }), { 
-        status: 403, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" }
-      });
+      return json({ error: "FORBIDDEN_ADMIN_ONLY" }, 403, req);
     }
 
-    const sbSrv = createClient(URL, SERVICE_KEY);
-
-    console.log(`[generate-qa-report] Generating report for tenant ${tenant_id}`);
+    console.log(`[generate-qa-report] Generating report for tenant ${tenantId}`);
 
     // Get latest QA result
-    const { data: qa } = await sbSrv
+    const { data: qa } = await sbAdmin
       .from("qa_results")
       .select("*")
-      .eq("tenant_id", tenant_id)
+      .eq("tenant_id", tenantId)
       .order("started_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 
     // Get 24h stats
-    const since = new Date(Date.now() - 24*60*60*1000).toISOString();
-    const { data: last24h } = await sbSrv
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { data: last24h } = await sbAdmin
       .from("notification_deliveries")
       .select("status_code, duration_ms, channel, created_at")
-      .eq("tenant_id", tenant_id)
+      .eq("tenant_id", tenantId)
       .gte("created_at", since);
 
-    const sent = (last24h || []).filter(d => (d.status_code ?? 0) < 400).length;
+    const sent = (last24h || []).filter((d) => (d.status_code ?? 0) < 400).length;
     const failed = (last24h || []).length - sent;
-    const durations = (last24h || []).map(d => d.duration_ms).filter(Boolean).sort((a, b) => a - b);
+    const durations = (last24h || [])
+      .map((d) => d.duration_ms)
+      .filter(Boolean)
+      .sort((a, b) => a - b);
     const medianMs = durations.length ? durations[Math.floor(durations.length / 2)] : 0;
 
     // Create PDF
@@ -90,7 +79,7 @@ Deno.serve(async (req) => {
     };
 
     drawText("Compliance Copilot – QA Report", 18, true);
-    drawText(`Tenant: ${tenant_id}`, 12);
+    drawText(`Tenant: ${tenantId}`, 12);
     drawText(`Generated: ${new Date().toISOString()}`, 12);
     y -= 8;
 
@@ -108,27 +97,21 @@ Deno.serve(async (req) => {
     const pdfBytes = await pdf.save();
 
     // Upload to storage
-    const fileName = `qa-reports/${tenant_id}/${new Date().toISOString().slice(0,10)}.pdf`;
-    const { error: upErr } = await sbSrv.storage
+    const fileName = `qa-reports/${tenantId}/${new Date().toISOString().slice(0, 10)}.pdf`;
+    const { error: upErr } = await sbAdmin.storage
       .from("qa-reports")
       .upload(fileName, pdfBytes, {
         upsert: true,
         contentType: "application/pdf",
       });
-    
+
     if (upErr) throw upErr;
 
     console.log(`[generate-qa-report] Report saved to ${fileName}`);
 
-    return new Response(JSON.stringify({ ok: true, path: fileName }), {
-      status: 200, 
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+    return json({ ok: true, path: fileName }, 200, req);
   } catch (e: any) {
     console.error("[generate-qa-report] Error:", e);
-    return new Response(JSON.stringify({ error: String(e.message || e) }), {
-      status: 500, 
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+    return json({ error: String(e.message || e) }, 500, req);
   }
 });

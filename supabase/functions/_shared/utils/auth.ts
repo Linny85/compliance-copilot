@@ -5,6 +5,16 @@
 
 export type Role = 'viewer' | 'member' | 'manager' | 'admin';
 
+export type JwtClaims = {
+  sub?: string;
+  tenant_id?: string;
+  app_metadata?: {
+    roles?: string[];
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+};
+
 export const ROLE_ORDER: Role[] = ['viewer', 'member', 'manager', 'admin'];
 
 /**
@@ -27,7 +37,7 @@ export function hasRoleAtLeast(roles: string[] | undefined, need: Role): boolean
  * @param req - Incoming request
  * @returns Parsed JWT claims or null if invalid
  */
-export function getClaims(req: Request): any | null {
+export function getClaims(req: Request): JwtClaims | null {
   const auth = req.headers.get('Authorization');
   if (!auth?.startsWith('Bearer ')) return null;
   
@@ -37,7 +47,8 @@ export function getClaims(req: Request): any | null {
     if (!payload) return null;
     
     const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-    return JSON.parse(decoded);
+    const parsed = JSON.parse(decoded);
+    return typeof parsed === 'object' && parsed !== null ? parsed as JwtClaims : null;
   } catch {
     return null;
   }
@@ -48,7 +59,7 @@ export function getClaims(req: Request): any | null {
  * @param claims - Parsed JWT claims
  * @returns Array of role strings
  */
-export function getRoles(claims: any): string[] {
+export function getRoles(claims: JwtClaims | null | undefined): string[] {
   return claims?.app_metadata?.roles ?? [];
 }
 
@@ -57,7 +68,7 @@ export function getRoles(claims: any): string[] {
  * @param claims - Parsed JWT claims
  * @returns Tenant ID or null
  */
-export function getTenantId(claims: any): string | null {
+export function getTenantId(claims: JwtClaims | null | undefined): string | null {
   return claims?.tenant_id ?? null;
 }
 
@@ -66,7 +77,7 @@ export function getTenantId(claims: any): string | null {
  * @param claims - Parsed JWT claims
  * @returns User ID (sub) or null
  */
-export function getUserId(claims: any): string | null {
+export function getUserId(claims: JwtClaims | null | undefined): string | null {
   return claims?.sub ?? null;
 }
 
@@ -111,7 +122,7 @@ export function requireRole(req: Request, minRole: Role = 'member'): Response | 
  * @param claims - Parsed JWT claims
  * @returns true if user is admin
  */
-export function isAdmin(claims: any): boolean {
+export function isAdmin(claims: JwtClaims | null | undefined): boolean {
   const roles = getRoles(claims);
   return roles.includes('admin');
 }
@@ -121,6 +132,6 @@ export function isAdmin(claims: any): boolean {
  * @param claims - Parsed JWT claims
  * @returns true if user is manager or admin
  */
-export function isManager(claims: any): boolean {
+export function isManager(claims: JwtClaims | null | undefined): boolean {
   return hasRoleAtLeast(getRoles(claims), 'manager');
 }

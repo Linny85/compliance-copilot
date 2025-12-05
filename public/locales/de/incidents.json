@@ -1,29 +1,30 @@
 {
+  "title": "Vorfallserfassung",
   "form": {
     "incident": {
       "title": "Titel des Vorfalls *",
       "titlePlaceholder": "z. B. Unbefugter Zugriff auf Kundendaten",
       "searchOrType": "Suchen oder eigenen Titel eingeben…",
-      "useEntered": "„{{text}}" verwenden",
-      "templates": [
-        "Unbefugter Zugriff auf Kundendaten",
-        "Kontoübernahme / kompromittiertes Administratorkonto",
-        "Datenexfiltration",
-        "Cloud-Fehlkonfiguration mit Datenfreigabe",
-        "Phishing mit erfolgreichem Login",
-        "Ransomware-Befall mit Systemverschlüsselung",
-        "DDoS-Attacke auf Produktivsysteme",
-        "Kritischer Dienst-/Systemausfall",
-        "Ausfall eines kritischen Drittanbieters",
-        "Malware-Ausbruch im Unternehmensnetz",
-        "Ausnutzung einer kritischen Schwachstelle",
-        "Manipulation kritischer Konfiguration",
-        "Kompromittiertes Code-Repository (Supply Chain)",
-        "SQL-Injection / Web-Exploit",
-        "Diebstahl/Verlust unverschlüsselter Geräte",
-        "Fehlversand / Fehlberechtigung",
-        "Insider-Vorfall"
-      ]
+      "useEntered": "\u201E{{text}}\u201C verwenden",
+      "templates": {
+        "t1": "Unbefugter Zugriff auf Kundendaten",
+        "t2": "Kontoübernahme / kompromittiertes Administratorkonto",
+        "t3": "Datenexfiltration",
+        "t4": "Cloud-Fehlkonfiguration mit Datenfreigabe",
+        "t5": "Phishing mit erfolgreichem Login",
+        "t6": "Ransomware-Befall mit Systemverschlüsselung",
+        "t7": "DDoS-Attacke auf Produktivsysteme",
+        "t8": "Kritischer Dienst-/Systemausfall",
+        "t9": "Ausfall eines kritischen Drittanbieters",
+        "t10": "Malware-Ausbruch im Unternehmensnetz",
+        "t11": "Ausnutzung einer kritischen Schwachstelle",
+        "t12": "Manipulation kritischer Konfiguration",
+        "t13": "Kompromittiertes Code-Repository (Supply Chain)",
+        "t14": "SQL-Injection / Web-Exploit",
+        "t15": "Diebstahl/Verlust unverschlüsselter Geräte",
+        "t16": "Fehlversand / Fehlberechtigung",
+        "t17": "Insider-Vorfall"
+      }
     }
   }
 }

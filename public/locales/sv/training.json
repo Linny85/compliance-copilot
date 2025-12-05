@@ -16,29 +16,29 @@
     "nis2": {
       "title": "NIS2-Kärna",
       "url": "#",
-      "bullets": [
-        "Grunder & skyldigheter enligt NIS2",
-        "Roller & ansvar",
-        "Praktiskt genomförande"
-      ]
+      "bullets": {
+        "line1": "Grunder & skyldigheter enligt NIS2",
+        "line2": "Roller & ansvar",
+        "line3": "Praktiskt genomförande"
+      }
     },
     "lead": {
       "title": "EU AI-lagen – Ledarskap",
       "url": "#",
-      "bullets": [
-        "Ansvar & styrning",
-        "Riskklasser & skyldigheter",
-        "Vägkarta för införande"
-      ]
+      "bullets": {
+        "line1": "Ansvar & styrning",
+        "line2": "Riskklasser & skyldigheter",
+        "line3": "Vägkarta för införande"
+      }
     },
     "emp": {
       "title": "EU AI-lagen – Medarbetare",
       "url": "#",
-      "bullets": [
-        "Använd AI säkert & effektivt",
-        "Data & prompting-praxis",
-        "Gör & gör inte i vardagen"
-      ]
+      "bullets": {
+        "line1": "Använd AI säkert & effektivt",
+        "line2": "Data & prompting-praxis",
+        "line3": "Gör & gör inte i vardagen"
+      }
     }
   },
   "viewCourse": "Visa kurs",

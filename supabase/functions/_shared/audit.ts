@@ -23,7 +23,7 @@ function extractFirstIp(ipHeader: string | null | undefined): string | undefined
   const firstIp = ipHeader.split(',')[0].trim();
   
   // Basic validation: should look like an IP address
-  if (firstIp && /^[\d\.:a-f]+$/i.test(firstIp)) {
+  if (firstIp && /^[\d.:a-f]+$/i.test(firstIp)) {
     return firstIp;
   }
   

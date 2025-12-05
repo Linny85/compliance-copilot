@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { useI18n } from '@/contexts/I18nContext';
+import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -100,7 +100,7 @@ const Field = ({
 
 /* ---------------------- Component ---------------------- */
 export default function RegisterAISystem() {
-  const { tx } = useI18n();
+  const { t } = useTranslation(['aiSystems', 'common']);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -161,13 +161,14 @@ export default function RegisterAISystem() {
         throw new Error(error.message || 'Failed to register AI system');
       }
 
-      toast({ title: tx('aiSystems.register.success', 'AI System registered successfully') });
+      toast({ title: t('aiSystems:register.success', 'AI System registered successfully') });
       navigate('/ai-systems');
-    } catch (err: any) {
-      console.error('[RegisterAISystem] Error:', err);
+    } catch (error) {
+      console.error('[RegisterAISystem] Error:', error);
+      const message = error instanceof Error ? error.message : 'Unknown error';
       toast({ 
-        title: tx('common.error', 'Error'), 
-        description: err.message,
+        title: t('common:error', 'Error'), 
+        description: message,
         variant: 'destructive' 
       });
     }
@@ -176,15 +177,15 @@ export default function RegisterAISystem() {
   return (
     <div className="mx-auto max-w-3xl px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold">{tx('aiSystems.register.title')}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{tx('aiSystems.register.description')}</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">{t('aiSystems:register.title')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('aiSystems:register.description')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Preset chooser */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">{tx('aiSystems.register.presets.label')}</CardTitle>
+            <CardTitle className="text-lg">{t('aiSystems:register.presets.label')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -209,12 +210,12 @@ export default function RegisterAISystem() {
                 onClick={() => applyPreset('__custom__')} 
                 className="justify-start h-auto py-3 w-full"
               >
-                {tx('aiSystems.register.presets.custom')}
+                {t('aiSystems:register.presets.custom')}
               </Button>
             </div>
 
             <div className="mt-3 text-xs text-muted-foreground">
-              {tx('aiSystems.register.presets.hintText')}
+              {t('aiSystems:register.presets.hintText')}
             </div>
           </CardContent>
         </Card>
@@ -222,11 +223,11 @@ export default function RegisterAISystem() {
         {/* Form fields */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">{tx('common.details', 'Details')}</CardTitle>
+            <CardTitle className="text-lg">{t('common:details', 'Details')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <Field 
-              label={tx('aiSystems.register.fields.system_name')} 
+              label={t('aiSystems:register.fields.system_name')} 
               error={errors.system_name?.message}
             >
               <Input 
@@ -237,18 +238,18 @@ export default function RegisterAISystem() {
 
             {isCustom && (
               <Field 
-                label={tx('aiSystems.register.fields.custom_name')}
-                hint={tx('aiSystems.register.fields.custom_name_ph')}
+                label={t('aiSystems:register.fields.custom_name')}
+                hint={t('aiSystems:register.fields.custom_name_ph')}
               >
                 <Input 
-                  placeholder={tx('aiSystems.register.fields.custom_name_ph')} 
+                  placeholder={t('aiSystems:register.fields.custom_name_ph')} 
                   {...register('custom_name')} 
                 />
               </Field>
             )}
 
             <Field 
-              label={tx('aiSystems.register.fields.description')} 
+              label={t('aiSystems:register.fields.description')} 
               error={errors.description?.message}
             >
               <Textarea 
@@ -259,7 +260,7 @@ export default function RegisterAISystem() {
             </Field>
 
             <Field 
-              label={tx('aiSystems.register.fields.purpose')} 
+              label={t('aiSystems:register.fields.purpose')} 
               error={errors.purpose?.message}
             >
               <Textarea 
@@ -271,7 +272,7 @@ export default function RegisterAISystem() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field 
-                label={tx('aiSystems.register.fields.risk')} 
+                label={t('aiSystems:register.fields.risk')} 
                 error={errors.risk?.message}
               >
                 <Controller
@@ -280,12 +281,12 @@ export default function RegisterAISystem() {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder={tx('aiSystems.risk.minimal')} />
+                        <SelectValue placeholder={t('aiSystems:risk.minimal')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="minimal">{tx('aiSystems.risk.minimal')}</SelectItem>
-                        <SelectItem value="limited">{tx('aiSystems.risk.limited')}</SelectItem>
-                        <SelectItem value="high">{tx('aiSystems.risk.high')}</SelectItem>
+                        <SelectItem value="minimal">{t('aiSystems:risk.minimal')}</SelectItem>
+                        <SelectItem value="limited">{t('aiSystems:risk.limited')}</SelectItem>
+                        <SelectItem value="high">{t('aiSystems:risk.high')}</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
@@ -293,7 +294,7 @@ export default function RegisterAISystem() {
               </Field>
 
               <Field 
-                label={tx('aiSystems.register.fields.deployment')} 
+                label={t('aiSystems:register.fields.deployment')} 
                 error={errors.deployment_status?.message}
               >
                 <Controller
@@ -302,13 +303,13 @@ export default function RegisterAISystem() {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
-                        <SelectValue placeholder={tx('aiSystems.deploy.planned')} />
+                        <SelectValue placeholder={t('aiSystems:deploy.planned')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="planned">{tx('aiSystems.deploy.planned')}</SelectItem>
-                        <SelectItem value="testing">{tx('aiSystems.deploy.testing')}</SelectItem>
-                        <SelectItem value="live">{tx('aiSystems.deploy.live')}</SelectItem>
-                        <SelectItem value="retired">{tx('aiSystems.deploy.retired')}</SelectItem>
+                        <SelectItem value="planned">{t('aiSystems:deploy.planned')}</SelectItem>
+                        <SelectItem value="testing">{t('aiSystems:deploy.testing')}</SelectItem>
+                        <SelectItem value="live">{t('aiSystems:deploy.live')}</SelectItem>
+                        <SelectItem value="retired">{t('aiSystems:deploy.retired')}</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
@@ -326,14 +327,14 @@ export default function RegisterAISystem() {
             onClick={() => navigate(-1)}
             className="w-full sm:w-auto"
           >
-            {tx('aiSystems.register.actions.cancel')}
+            {t('aiSystems:register.actions.cancel')}
           </Button>
           <Button 
             type="submit" 
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
-            {isSubmitting ? tx('common.saving', 'Saving...') : tx('aiSystems.register.actions.submit')}
+            {isSubmitting ? t('common:saving', 'Saving...') : t('aiSystems:register.actions.submit')}
           </Button>
         </div>
       </form>

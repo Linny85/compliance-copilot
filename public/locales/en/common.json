@@ -53,18 +53,18 @@
     "registerAIDesc": "Catalog your AI systems for EU AI Act compliance",
     "generatePolicy": "Generate Policy",
     "generatePolicyDesc": "Create compliance documentation templates",
-    "trial": "Trial",
+    "trial": "Evaluation",
     "daysLeft": "{{count}} day left",
     "daysLeft_other": "{{count}} days left",
-    "trialExpired": "Trial Expired",
-    "upgradePlan": "Upgrade Plan",
-    "trialStatus": "Trial Status",
+    "trialExpired": "Evaluation Ended",
+    "upgradePlan": "Manage Plan",
+    "trialStatus": "Evaluation Access",
     "trialStatusDesc": "Your subscription information",
     "active": "Active",
     "expired": "Expired",
     "daysRemaining_one": "day remaining",
     "daysRemaining_other": "days remaining",
-    "trialNote": "Full access during trial period",
+    "trialNote": "Evaluation access is limited during onboarding",
     "organization": "Organization",
     "organizationDesc": "Company information and contact details",
     "companyName": "Company Name",
@@ -304,6 +304,30 @@
     "none": "No tenant selected. Please choose one above.",
     "missingTitle": "No tenant selected",
     "missingDesc": "Please choose a tenant to load data."
+  },
+  "license": {
+    "label": "License",
+    "loading": "Checking license…",
+    "badge": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "error": "License check failed"
+    },
+    "tier": {
+      "trial": "Trial",
+      "basic": "Standard",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "none": "No license"
+    },
+    "banner": {
+      "title": "License required",
+      "inactive": "No valid license is linked to this tenant. Helpbot, AI and email remain disabled until the license is reactivated.",
+      "no_license": "No license is linked to this tenant. Please upgrade before using premium features.",
+      "expired": "The tenant license expired. Renew it to unlock Helpbot, AI and email again.",
+      "origin_blocked": "This domain is not whitelisted for the tenant license. Update the allowed domains to unlock access.",
+      "link": "Manage license"
+    }
   },
   "actions": {
     "reload": "Reload"

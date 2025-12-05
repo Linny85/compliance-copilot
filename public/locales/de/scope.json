@@ -1,26 +1,53 @@
 {
-  "title": "Mandanten-Analyse",
-  "form": {
-    "sector": "Sektor",
-    "is_ti_connected": "An TI (Telematikinfrastruktur) angeschlossen",
-    "employees": "Mitarbeiterzahl",
-    "turnover": "Umsatz (EUR)",
-    "balance": "Bilanzsumme (EUR)",
-    "uses_ai_for_work": "Mitarbeitende nutzen KI-Funktionen",
-    "ai_role": "KI-Rolle",
-    "submit": "Analyse durchführen",
-    "success": "Analyse erfolgreich durchgeführt",
-    "error": "Fehler bei der Analyse"
+  "title": "Scope-Matrix",
+  "subtitle": "Definiere und verwalte den Compliance-Umfang deiner Organisation",
+  "empty_state": "Keine Scope-Einheiten gefunden",
+  "kinds": {
+    "business_unit": "Geschäftseinheit",
+    "process": "Prozess",
+    "system": "System",
+    "vendor": "Dienstleister"
   },
-  "cards": {
-    "ti": {
-      "title": "Telematikinfrastruktur"
+  "filters": {
+    "title": "Einheiten filtern",
+    "all": "Alle Typen"
+  },
+  "fields": {
+    "kind": "Typ",
+    "name": "Name",
+    "name_placeholder": "Einheitsnamen eingeben",
+    "control": "Kontrolle",
+    "control_search_placeholder": "Nach Code oder Titel suchen...",
+    "status": "Status",
+    "note": "Notiz",
+    "note_placeholder": "Optionale Notiz oder Ausnahmegrund"
+  },
+  "status": {
+    "in_scope": "Im Scope",
+    "out_of_scope": "Außerhalb Scope",
+    "exception": "Ausnahme"
+  },
+  "actions": {
+    "new_unit": "Neue Einheit",
+    "create": "Einheit erstellen",
+    "assign_control": "Kontrolle zuweisen",
+    "assign": "Zuweisen"
+  },
+  "dialogs": {
+    "create_unit": {
+      "title": "Scope-Einheit erstellen"
     },
-    "nis2": {
-      "title": "NIS2 Einstufung"
-    },
-    "ai": {
-      "title": "EU AI Act – Schulung"
+    "assign_control": {
+      "title": "Kontrolle einer Einheit zuweisen"
     }
+  },
+  "success": {
+    "unit_created": "Scope-Einheit erstellt",
+    "control_assigned": "Kontrolle zugewiesen"
+  },
+  "errors": {
+    "load_failed": "Scope-Einheiten konnten nicht geladen werden",
+    "create_failed": "Einheit konnte nicht erstellt werden",
+    "assign_failed": "Kontrolle konnte nicht zugewiesen werden"
   }
 }

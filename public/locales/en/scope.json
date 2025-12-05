@@ -1,26 +1,53 @@
 {
-  "title": "Tenant Analysis",
-  "form": {
-    "sector": "Sector",
-    "is_ti_connected": "Connected to TI (Telematics Infrastructure)",
-    "employees": "Number of Employees",
-    "turnover": "Turnover (EUR)",
-    "balance": "Balance Sheet (EUR)",
-    "uses_ai_for_work": "Employees use AI functions",
-    "ai_role": "AI Role",
-    "submit": "Run Analysis",
-    "success": "Analysis completed successfully",
-    "error": "Error during analysis"
+  "title": "Scope Matrix",
+  "subtitle": "Define and maintain the compliance scope across your organization",
+  "empty_state": "No scope units found",
+  "kinds": {
+    "business_unit": "Business unit",
+    "process": "Process",
+    "system": "System",
+    "vendor": "Vendor"
   },
-  "cards": {
-    "ti": {
-      "title": "Telematics Infrastructure"
+  "filters": {
+    "title": "Filter units",
+    "all": "All types"
+  },
+  "fields": {
+    "kind": "Type",
+    "name": "Name",
+    "name_placeholder": "Enter unit name",
+    "control": "Control",
+    "control_search_placeholder": "Search by code or title...",
+    "status": "Status",
+    "note": "Note",
+    "note_placeholder": "Optional note or exception reason"
+  },
+  "status": {
+    "in_scope": "In scope",
+    "out_of_scope": "Out of scope",
+    "exception": "Exception"
+  },
+  "actions": {
+    "new_unit": "New unit",
+    "create": "Create unit",
+    "assign_control": "Assign control",
+    "assign": "Assign"
+  },
+  "dialogs": {
+    "create_unit": {
+      "title": "Create scope unit"
     },
-    "nis2": {
-      "title": "NIS2 Classification"
-    },
-    "ai": {
-      "title": "EU AI Act – Training"
+    "assign_control": {
+      "title": "Assign control to unit"
     }
+  },
+  "success": {
+    "unit_created": "Scope unit created",
+    "control_assigned": "Control assigned"
+  },
+  "errors": {
+    "load_failed": "Failed to load scope units",
+    "create_failed": "Failed to create unit",
+    "assign_failed": "Failed to assign control"
   }
 }

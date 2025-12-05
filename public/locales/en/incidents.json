@@ -1,6 +1,30 @@
 {
-  "title": "Incidents",
-  "new": "Report incident",
-  "list": "Incident list",
-  "empty": "No incidents yet."
+  "title": "Incident reporting",
+  "form": {
+    "incident": {
+      "title": "Incident title *",
+      "titlePlaceholder": "e.g. Unauthorized access to customer data",
+      "searchOrType": "Search or enter your own title…",
+      "useEntered": "Use \"{{text}}\"",
+      "templates": {
+        "t1": "Unauthorized access to customer data",
+        "t2": "Account takeover / compromised admin account",
+        "t3": "Data exfiltration",
+        "t4": "Cloud misconfiguration exposing data",
+        "t5": "Phishing with successful login",
+        "t6": "Ransomware infection encrypting systems",
+        "t7": "DDoS attack on production systems",
+        "t8": "Critical service or system outage",
+        "t9": "Critical third-party outage",
+        "t10": "Malware outbreak in corporate network",
+        "t11": "Exploited critical vulnerability",
+        "t12": "Manipulation of critical configuration",
+        "t13": "Compromised code repository (supply chain)",
+        "t14": "SQL injection / web exploit",
+        "t15": "Theft or loss of unencrypted devices",
+        "t16": "Misdelivery / incorrect permissions",
+        "t17": "Insider incident"
+      }
+    }
+  }
 }

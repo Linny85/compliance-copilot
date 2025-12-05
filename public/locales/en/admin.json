@@ -95,7 +95,7 @@
       "upgrade": "Upgrade",
       "downgrade": "Downgrade",
       "manageBilling": "Open billing portal",
-      "startTrial": "Start free trial"
+      "startTrial": "Request evaluation access"
     },
     "states": {
       "active": "Active",

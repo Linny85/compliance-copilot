@@ -1,8 +1,18 @@
-// deno-lint-ignore-file no-explicit-any
 import { createClient } from "@supabase/supabase-js";
 import { encodeBase64 } from "std/encoding/base64.ts";
 
 export type Role = 'viewer' | 'member' | 'manager' | 'admin';
+
+export type JwtClaims = {
+  sub?: string;
+  tenant_id?: string;
+  company_id?: string;
+  app_metadata?: {
+    roles?: string[];
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+};
 
 const SUPABASE_URL  = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY   = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -11,27 +21,28 @@ const PEPPER = Deno.env.get("ORG_MASTER_PEPPER") || "default-pepper-change-in-pr
 
 export const supabaseAdmin = createClient(SUPABASE_URL, SERVICE_KEY);
 
-export function getClaims(req: Request): any | null {
+export function getClaims(req: Request): JwtClaims | null {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
   try {
     const payload = auth.split(".")[1];
     const json = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
-    return JSON.parse(json);
+    const parsed = JSON.parse(json);
+    return typeof parsed === "object" && parsed !== null ? parsed as JwtClaims : null;
   } catch {
     return null;
   }
 }
 
-export function jwtTenantId(claims: any): string | null {
+export function jwtTenantId(claims: JwtClaims | null): string | null {
   return claims?.tenant_id ?? null;
 }
 
-export function jwtUserId(claims: any): string | null {
+export function jwtUserId(claims: JwtClaims | null): string | null {
   return claims?.sub ?? null;
 }
 
-export function roles(claims: any): string[] {
+export function roles(claims: JwtClaims | null): string[] {
   return claims?.app_metadata?.roles ?? [];
 }
 
@@ -42,7 +53,7 @@ export function hasRoleAtLeast(rs: string[], need: Role): boolean {
   return order.indexOf(top) >= order.indexOf(need);
 }
 
-export function requireAuth(req: Request): {claims:any, tenantId:string, userId:string} | Response {
+export function requireAuth(req: Request): {claims: JwtClaims; tenantId: string; userId: string} | Response {
   const claims = getClaims(req);
   if (!claims) return new Response("Unauthorized", { status: 401 });
   const tenantId = jwtTenantId(claims);
@@ -51,7 +62,7 @@ export function requireAuth(req: Request): {claims:any, tenantId:string, userId:
   return { claims, tenantId, userId };
 }
 
-export function requireRole(req: Request, min: Role = 'member'): {claims:any, tenantId:string, userId:string} | Response {
+export function requireRole(req: Request, min: Role = 'member'): {claims: JwtClaims; tenantId: string; userId: string} | Response {
   const base = requireAuth(req);
   if (base instanceof Response) return base;
   if (!hasRoleAtLeast(roles(base.claims), min)) {
@@ -84,7 +95,7 @@ export async function verifyMaster(hash: string, pw: string, tenantId: string): 
 }
 
 /* ----- Helper to extract tenant from JWT or profile ----- */
-export async function resolveTenantId(claims: any): Promise<string | null> {
+export async function resolveTenantId(claims: JwtClaims | null): Promise<string | null> {
   // First try direct JWT claim
   const directClaim = claims?.tenant_id || claims?.company_id;
   if (directClaim) return directClaim;
@@ -93,11 +104,13 @@ export async function resolveTenantId(claims: any): Promise<string | null> {
   const userId = jwtUserId(claims);
   if (!userId) return null;
   
+  type ProfileRow = { company_id: string | null };
+
   const { data } = await supabaseAdmin
     .from('profiles')
     .select('company_id')
     .eq('id', userId)
-    .maybeSingle();
+    .maybeSingle<ProfileRow>();
   
   return data?.company_id ?? null;
 }
@@ -123,7 +136,7 @@ export async function verifyEditToken(token: string): Promise<Record<string,unkn
     if (!ok) return null;
     const payload = JSON.parse(atob(p.replaceAll("-","+").replaceAll("_","/")));
     if (typeof payload.exp !== "number" || payload.exp < Math.floor(Date.now()/1000)) return null;
-    return payload;
+    return payload as Record<string, unknown>;
   } catch { return null; }
 }
 

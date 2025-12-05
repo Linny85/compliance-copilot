@@ -1,6 +1,30 @@
 {
-  "title": "Incidenter",
-  "new": "Rapportera incident",
-  "list": "Incidentlista",
-  "empty": "Inga incidenter ännu."
+  "title": "Incidentrapportering",
+  "form": {
+    "incident": {
+      "title": "Incidenttitel *",
+      "titlePlaceholder": "t.ex. Obehörig åtkomst till kunddata",
+      "searchOrType": "Sök eller ange egen titel…",
+      "useEntered": "Använd \"{{text}}\"",
+      "templates": {
+        "t1": "Obehörig åtkomst till kunddata",
+        "t2": "Kontokapning / komprometterat adminkonto",
+        "t3": "Dataexfiltration",
+        "t4": "Molnfelkonfiguration med dataexponering",
+        "t5": "Phishing med lyckad inloggning",
+        "t6": "Ransomware-angrepp med systemkryptering",
+        "t7": "DDoS-attack mot produktionssystem",
+        "t8": "Kritiskt tjänst-/systemavbrott",
+        "t9": "Avbrott hos kritisk tredjepart",
+        "t10": "Skadlig kod i företagsnätet",
+        "t11": "Utnyttjad kritisk sårbarhet",
+        "t12": "Manipulation av kritisk konfiguration",
+        "t13": "Komprometterat kodrepo (supply chain)",
+        "t14": "SQL-injektion / webbexploit",
+        "t15": "Stöld/förlust av okrypterade enheter",
+        "t16": "Felutskick / felaktiga behörigheter",
+        "t17": "Insiderincident"
+      }
+    }
+  }
 }

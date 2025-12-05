@@ -1,10 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { embed, chat, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { embed, chat, getAiProviderInfo } from "../_shared/aiClient.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { assertOrigin, requireUserAndTenant } from "../_shared/access.ts";
 
-console.log('[helpbot-query boot]', {
-  base: getLovableBaseUrl(),
-  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
-});
+console.log('[helpbot-query boot]', getAiProviderInfo());
 
 const TOP_K = Number(Deno.env.get("HELPBOT_TOP_K") ?? "6");
 const THRESH = Number(Deno.env.get("HELPBOT_SIM_THRESHOLD") ?? "0.35");
@@ -16,17 +15,43 @@ type QueryReq = {
   doc_types?: ("law"|"guideline"|"product-doc")[];
 };
 
+type SearchRow = {
+  sim: number | string;
+  title?: string;
+  source_uri?: string;
+  content?: string;
+};
+
 Deno.serve(async (req) => {
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
   try {
-    if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405);
-    const body = (await req.json()) as QueryReq;
+    if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+    if (req.method !== "POST") return json({ error: "Method Not Allowed" }, 405, req);
+
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { tenantId } = access;
+
+    let body: QueryReq;
+    try {
+      body = (await req.json()) as QueryReq;
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400, req);
+    }
+
+    if (!body?.question?.trim()) {
+      return json({ error: "question is required" }, 400, req);
+    }
 
     const sb = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const qVec = await embed(body.question);
+    const qVec = await embed(body.question, { tenantId });
 
     // Filter dynamisch (optional)
     const filters: string[] = [];
@@ -44,17 +69,17 @@ Deno.serve(async (req) => {
     });
     if (qErr) throw qErr;
 
-    const matches = (rows ?? []).filter((r: any) => Number(r.sim) <= THRESH);
+    const matches = ((rows ?? []) as SearchRow[]).filter((row) => Number(row.sim) <= THRESH);
     if (!matches.length) {
       return json({
         answer: noAnswer(body.lang ?? "de"),
         sources: [],
         disclaimer: disclaimer(body.lang ?? "de"),
-      });
+      }, 200, req);
     }
 
-    const context = matches.map((r: any, i: number) =>
-      `[[DOC ${i+1} | ${r.title} | ${r.source_uri}]]\n${r.content}`
+    const context = matches.map((row, i) =>
+      `[[DOC ${i + 1} | ${row.title} | ${row.source_uri}]]\n${row.content}`
     ).join("\n\n---\n\n");
 
     const sys = systemPrompt(body.lang ?? "de");
@@ -66,19 +91,20 @@ Deno.serve(async (req) => {
     const answer = await chat([
       { role: "system", content: sys },
       { role: "user", content: prompt }
-    ]);
+    ], { tenantId });
 
-    const sources = matches.map((r: any) => ({ title: r.title, uri: r.source_uri }));
+    const sources = matches.map((row) => ({ title: row.title, uri: row.source_uri }));
 
-    return json({ answer, sources, disclaimer: disclaimer(body.lang ?? "de") });
-  } catch (e: any) {
-    console.error("[helpbot-query]", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+    return json({ answer, sources, disclaimer: disclaimer(body.lang ?? "de") }, 200, req);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal error";
+    console.error("[helpbot-query]", error);
+    return json({ error: message }, 500, req);
   }
 });
 
-function json(b:any, status=200) {
-  return new Response(JSON.stringify(b), { status, headers: { "Content-Type":"application/json" } });
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
 }
 function escapeSql(s:string){ return s.replace(/'/g,"''"); }
 

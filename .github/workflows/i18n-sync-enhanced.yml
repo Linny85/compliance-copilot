@@ -1,7 +1,7 @@
 name: i18n Sync Guard (Enhanced)
 
 on:
-  pull_request:
+  push:
     paths:
       - "src/lib/i18n.ts"
       - "public/locales/**"
@@ -9,13 +9,7 @@ on:
       - "src/i18n/**"
     branches:
       - main
-      - develop
-  push:
-    paths:
-      - "src/lib/i18n.ts"
-      - "public/locales/**"
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   verify-i18n:

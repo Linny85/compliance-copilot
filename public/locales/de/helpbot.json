@@ -1,11 +1,17 @@
 {
-  "title": "Helpbot",
-  "intro": "Wie kann ich dir helfen?",
+  "intro": "Hi, ich bin NORRLY aus dem Compliance-Team. Soll ich dich durch die Organisationsverwaltung führen oder beim Erstellen eines Dokuments helfen?",
+  "nameExplained": "NORRLY – abgeleitet von Norrland + ally. Dein Partner für klare, praxisnahe Antworten.",
   "cta": {
-    "ask": "Frage stellen"
+    "verify": "Master-Passwort verifizieren",
+    "whyAccess": "Warum brauche ich Zugriff?",
+    "createDoc": "Dokument erstellen",
+    "name": "Wer ist NORRLY?"
   },
-  "error": {
-    "load": "Helpbot-Texte konnten nicht geladen werden."
+  "token": {
+    "stale": "Deine Sitzung ist abgelaufen, weil das Master-Passwort rotiert wurde. Bitte erneut verifizieren."
+  },
+  "help": {
+    "whyAccess": "Dein Zugriff läuft über dein Abonnement. Mit der Anmeldung aktiviere ich deine Lizenz und kann Dokumente & Nachweise direkt deiner Organisation zuordnen – sicher und DSGVO-konform."
   },
   "sectors": {
     "it": "IT"

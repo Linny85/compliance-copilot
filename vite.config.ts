@@ -1,53 +1,72 @@
-import { defineConfig } from "vite";
+import { defineConfig, type PluginOption } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 import i18nVerify from "./scripts/vite-i18n-verify-plugin";
 
-// Detect Lovable/Preview environment to avoid sandbox issues
-const isLovable =
-  process.env.LOVABLE_ENV === '1' ||
-  process.env.NODE_ENV === 'preview' ||
-  process.env.VERCEL === '1' ||
-  false;
+const shouldVerify = process.env.I18N_VERIFY === '1';
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-  server: {
-    host: "::",
-    port: 8080,
-  },
-  plugins: [
-    react(), 
-    mode === "development" && componentTagger(),
-    !isLovable && process.env.I18N_VERIFY === '1' && i18nVerify({
-      localesDir: 'public/locales',
-      cmd: 'npm run i18n:verify',
-      debounceMs: 300,
-    }),
-  ].filter(Boolean) as any[],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-      react: path.resolve(__dirname, './node_modules/react'),
-      'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+export default defineConfig(({ mode }) => {
+  const plugins: PluginOption[] = [react()];
+
+  if (shouldVerify) {
+    plugins.push(
+      i18nVerify({
+        localesDir: 'public/locales',
+        cmd: 'npm run i18n:verify',
+        debounceMs: 300,
+      })
+    );
+  }
+
+  return {
+    server: {
+      host: "0.0.0.0",
+      port: 5173,
     },
-    dedupe: ['react', 'react-dom'],
-  },
-  optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      '@tanstack/react-query',
-      'i18next',
-      'react-i18next',
-      'zustand',
-    ],
-    esbuildOptions: {
-      target: 'es2020',
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+        react: path.resolve(__dirname, './node_modules/react'),
+        'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+      },
+      dedupe: ['react', 'react-dom'],
     },
-  },
-  build: {
-    sourcemap: mode === 'production', // Enable source maps for Sentry
-  },
-}));
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        '@tanstack/react-query',
+        'i18next',
+        'react-i18next',
+        'zustand',
+      ],
+      esbuildOptions: {
+        target: 'es2020',
+      },
+    },
+    build: {
+      sourcemap: mode === 'production', // Enable source maps for Sentry
+    },
+    test: {
+      environment: 'jsdom',
+      globals: true,
+      setupFiles: ['tests/setupTests.ts'],
+      include: [
+        'src/**/*.{test,spec}.{ts,tsx}',
+        'tests/unit/**/*.{test,spec}.{ts,tsx}',
+        'tests/components/**/*.{test,spec}.{ts,tsx}',
+        'tests/lib/**/*.{test,spec}.{ts,tsx}',
+        'tests/**/*.test.{ts,tsx}',
+      ],
+      exclude: [
+        'tests/e2e/**',
+        'tests/visual/**',
+        'playwright/**',
+        'node_modules/**',
+        'dist/**',
+      ],
+    },
+  };
+});

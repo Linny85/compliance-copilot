@@ -1,44 +1,62 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders } from "../_shared/cors.ts";
-import { embed, getLovableBaseUrl } from "../_shared/lovableClient.ts";
+import { buildCorsHeaders, json as jsonResponse } from "../_shared/cors.ts";
+import { embed, getAiProviderInfo } from "../_shared/aiClient.ts";
+import { assertOrigin, requireUserAndTenant, sessionBelongsToTenant } from "../_shared/access.ts";
 
-console.log('[helpbot-memory-eval boot]', {
-  base: getLovableBaseUrl(),
-  keySet: Boolean(Deno.env.get('LOVABLE_API_KEY'))
-});
+console.log('[helpbot-memory-eval boot]', getAiProviderInfo());
 
 const MAX_CONTEXT_MESSAGES = Number(Deno.env.get("HELPBOT_MAX_HISTORY") ?? "10");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 Deno.serve(async (req) => {
+  const originCheck = assertOrigin(req);
+  if (originCheck) return originCheck;
+  const cors = buildCorsHeaders(req);
+
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
+    return new Response(null, { headers: cors });
   }
 
   try {
     if (req.method !== "POST") {
-      return json({ error: "Method Not Allowed" }, 405);
+      return json({ error: "Method Not Allowed" }, 405, req);
     }
 
-    const { session_id, question } = await req.json();
+    const access = requireUserAndTenant(req);
+    if (access instanceof Response) return access;
+    const { tenantId } = access;
 
-    if (!session_id || !question?.trim()) {
-      return json({ error: "session_id and question required" }, 400);
+    let payload: { session_id?: string; question?: string };
+    try {
+      payload = await req.json();
+    } catch {
+      return json({ error: "Invalid JSON body" }, 400, req);
+    }
+
+    const sessionId = payload.session_id?.toString() ?? "";
+    const question = payload.question?.toString() ?? "";
+
+    if (!sessionId || !question.trim()) {
+      return json({ error: "session_id and question required" }, 400, req);
+    }
+
+    if (!sessionBelongsToTenant(sessionId, tenantId)) {
+      return json({ error: "Session not found" }, 404, req);
     }
 
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE);
 
-    console.log(`[helpbot-memory-eval] Evaluating relevance for session ${session_id}`);
+    console.log(`[helpbot-memory-eval] Evaluating relevance for session ${sessionId}`);
 
     // 1️⃣ Generate embedding for current question
-    const qEmb = await embed(question);
+    const qEmb = await embed(question, { tenantId });
 
     // 2️⃣ Retrieve all previous messages with embeddings
     const { data: msgs, error: msgErr } = await sb
       .from("helpbot_messages")
       .select("id, role, content, embedding, created_at")
-      .eq("session_id", session_id)
+      .eq("session_id", sessionId)
       .not("embedding", "is", null);
 
     if (msgErr) {
@@ -48,7 +66,7 @@ Deno.serve(async (req) => {
 
     if (!msgs || msgs.length === 0) {
       console.log("[helpbot-memory-eval] No messages with embeddings found");
-      return json({ top_messages: [], count: 0 });
+      return json({ top_messages: [], count: 0 }, 200, req);
     }
 
     // 3️⃣ Calculate cosine similarity for each message
@@ -88,10 +106,11 @@ Deno.serve(async (req) => {
       })),
       count: top.length,
       total_evaluated: msgs.length
-    });
-  } catch (e: any) {
-    console.error("[helpbot-memory-eval] Error:", e);
-    return json({ error: e?.message ?? "Internal error" }, 500);
+    }, 200, req);
+  } catch (error: unknown) {
+    console.error("[helpbot-memory-eval] Error:", error);
+    const message = error instanceof Error ? error.message : "Internal error";
+    return json({ error: message }, 500, req);
   }
 });
 
@@ -109,9 +128,6 @@ function cosine(a: number[], b: number[]): number {
   return dot / (magA * magB);
 }
 
-function json(body: any, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" }
-  });
+function json(body: unknown, status = 200, req?: Request) {
+  return jsonResponse(body, status, req);
 }
