@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Shield, FileCheck, Brain, Users, CheckCircle2, ArrowRight } from "lucide-react";
@@ -9,6 +10,7 @@ import { seedDemo } from "@/data/seed";
 const Landing = () => {
   const navigate = useNavigate();
   const { switchTo } = useAppMode();
+  const { t } = useTranslation('landing');
   const [demoLoading, setDemoLoading] = useState(false);
 
   const handleViewDemo = async () => {
@@ -32,7 +34,7 @@ const Landing = () => {
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <Shield className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">Compliance-Copilot</span>
+            <span className="text-2xl font-bold">Compliance Copilot</span>
           </div>
           <div className="flex gap-2">
             <Button variant="ghost" onClick={() => navigate("/auth")}>
@@ -49,21 +51,20 @@ const Landing = () => {
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-hero bg-clip-text text-transparent">
-            EU Compliance Made Simple
+            {t('hero.title')}
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Navigate NIS2 Directive and AI Act requirements with confidence. 
-            Manage risks, document systems, and ensure regulatory compliance.
+            {t('hero.subtitle')}
           </p>
           <div className="flex gap-4 justify-center pt-4">
             <Button size="lg" onClick={() => navigate("/auth")} className="shadow-glow">
-              Start Free Trial <ArrowRight className="ml-2 h-5 w-5" />
+              {t('hero.ctaPrimary')} <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button size="lg" variant="outline" onClick={handleViewDemo} disabled={demoLoading}>
-              {demoLoading ? "Demo wird vorbereitet…" : "View Demo"}
+              {demoLoading ? t('hero.ctaSecondaryLoading') : t('hero.ctaSecondary')}
             </Button>
           </div>
-          <p className="text-sm text-muted-foreground">14-day free trial • No credit card required</p>
+          <p className="text-sm text-muted-foreground">{t('hero.trialNote')}</p>
         </div>
       </section>
 
@@ -107,11 +108,11 @@ const Landing = () => {
       {/* Benefits */}
       <section className="bg-secondary py-20">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Compliance-Copilot?</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Why Compliance Copilot?</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
               "Complete multi-tenant isolation for data security",
-              "14-day free trial with full feature access",
+              "Evaluation previews are gated and auditable",
               "Automated risk scoring and compliance tracking",
               "Master code-based admin control",
               "EU data storage and GDPR compliance",
@@ -131,10 +132,10 @@ const Landing = () => {
         <div className="max-w-2xl mx-auto space-y-6">
           <h2 className="text-4xl font-bold">Ready to Get Compliant?</h2>
           <p className="text-xl text-muted-foreground">
-            Join organizations already using Compliance-Copilot to meet EU regulatory requirements.
+            Join organizations already using Compliance Copilot to meet EU regulatory requirements.
           </p>
           <Button size="lg" onClick={() => navigate("/auth")} className="shadow-glow">
-            Start Your Free Trial
+            Book a live walkthrough
           </Button>
         </div>
       </section>
@@ -142,7 +143,7 @@ const Landing = () => {
       {/* Footer */}
       <footer className="border-t py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2024 Compliance-Copilot. Built for EU NIS2 & AI Act compliance.</p>
+          <p>© 2024 Compliance Copilot. Built for EU NIS2 & AI Act compliance.</p>
         </div>
       </footer>
     </div>
