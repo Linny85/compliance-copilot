@@ -43,6 +43,9 @@
     "finish": "Slutför",
     "step": "Steg {{current}} av {{total}}"
   },
+    "app": {
+      "name": "Compliance Copilot"
+    },
   "dashboard": {
     "welcome": "Välkommen",
     "nextSteps": "Nästa steg",

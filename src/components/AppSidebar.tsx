@@ -154,7 +154,7 @@ export function AppSidebar() {
           <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground font-bold text-lg">
             N
           </div>
-          <span className="font-semibold text-sidebar-foreground">NIS2 AI Guard</span>
+          <span className="font-semibold text-sidebar-foreground">Compliance Copilot</span>
         </div>
       )}
       

@@ -39,10 +39,13 @@
     "companySize": "Unternehmensgröße",
     "masterCode": "Master-Code",
     "deleteCode": "Lösch-Code",
-    "continue": "Weiter",
+      "continue": "Weiter",
     "finish": "Abschließen",
     "step": "Schritt {{current}} von {{total}}"
   },
+    "app": {
+      "name": "Compliance Copilot"
+    },
   "dashboard": {
     "welcome": "Willkommen",
     "nextSteps": "Nächste Schritte",
